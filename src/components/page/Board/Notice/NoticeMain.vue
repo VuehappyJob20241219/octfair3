@@ -1,6 +1,6 @@
 <template>
   <div class="divNoticeList">
-    현재 페이지: 0 총 개수: 0
+    현재 페이지:{{ cPage }} 총 개수: {{ noticeList?.noticeCnt }}
     <table>
       <colgroup>
         <col width="10%" />
@@ -18,8 +18,16 @@
         </tr>
       </thead>
       <tbody>
-        <template>
-          <template>
+        <template v-if="noticeList">
+          <template v-if="noticeList.noticeCnt > 0">
+            <tr v-for="notice in noticeList.notice" v-bind:key="notice.noticeIdx">
+              <td>{{ notice.noticeIdx }}</td>
+              <td>{{ notice.title }}</td>
+              <td>{{ notice.createdDate.split(" ")[0] }}</td>
+              <td>{{ notice.author }}</td>
+            </tr>
+          </template>
+          <template v-else>
             <tr>
               <td colspan="7">일치하는 검색 결과가 없습니다</td>
             </tr>
@@ -27,10 +35,47 @@
         </template>
       </tbody>
     </table>
+    <Pagination
+      :totalItems="noticeList?.noticeCnt || 0"
+      :items-per-page="5"
+      :max-pages-shown="5"
+      :onClick="searchList"
+      v-model="cPage"
+    />
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import axios from "axios";
+import { onMounted } from "vue";
+import { useRoute } from "vue-router";
+import Pagination from "../../../common/Pagination.vue";
+
+const route = useRoute();
+const noticeList = ref();
+const cPage = ref(1);
+const searchList = () => {
+  const param = new URLSearchParams({
+    searchTitle: route.query.searchTitle || "",
+    searchStDate: route.query.searchStDate || "",
+    searchEdDate: route.query.searchEdDate || "",
+    currentPage: cPage.value,
+    pageSize: 5,
+  });
+  axios
+    .post("/api/board/noticeListJson.do", param)
+    .then((res) => {
+      noticeList.value = res.data;
+    })
+    .catch(() => {});
+};
+
+watch(route, searchList);
+
+onMounted(() => {
+  searchList();
+});
+</script>
 
 <style lang="scss" scoped>
 table {
