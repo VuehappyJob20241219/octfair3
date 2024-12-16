@@ -1,6 +1,5 @@
 <template>
   <div class="divNoticeList">
-    <NoticeModal></NoticeModal>
     현재 페이지: 0 총 개수: 0
     <table>
       <colgroup>
