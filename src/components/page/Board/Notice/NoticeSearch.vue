@@ -4,13 +4,15 @@
     <input type="date" v-model="searchStartDate" />
     <input type="date" v-model="searchEndtDate" />
     <button @click="handlerSearch">검색</button>
-    <button>신규등록</button>
+    <button @click="handlerModal">신규등록</button>
   </div>
 </template>
 <script setup>
 import { ref, watchEffect } from "vue";
 import router from "../../../../router";
+import { useModalStore } from "../../../../stores/modalState";
 
+const modalStateNotice = useModalStore();
 const keyword = ref("");
 const searchStartDate = ref("");
 const searchEndtDate = ref("");
@@ -30,6 +32,10 @@ const handlerSearch = () => {
 // 인자로 받는 함수 안에 반응형 객체(ref 같은거)가 있으면, 객체가 변경될 때 마다, 해당 함수를 실행 시켜줌
 // 근데. 밑에 watchEffect는 ref같은게 없어요 그래서 그냥 새로고침 누르면 최초에 한 번 실행되는 것
 watchEffect(() => window.location.search && router.push(window.location.pathname, { replace: true }));
+
+const handlerModal = () => {
+  modalStateNotice.setModalState();
+};
 </script>
 
 <style lang="scss" scoped>

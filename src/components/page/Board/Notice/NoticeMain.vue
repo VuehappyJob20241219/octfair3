@@ -1,4 +1,10 @@
 <template>
+  <NoticeModal
+    v-if="modalStateNotice.modalState"
+    @postSuccess="searchList"
+    @modalClose="() => (noticeIdx = 0)"
+    :idx="noticeIdx"
+  />
   <div class="divNoticeList">
     현재 페이지:{{ cPage }} 총 개수: {{ noticeList?.noticeCnt }}
     <table>
@@ -22,7 +28,7 @@
           <template v-if="noticeList.noticeCnt > 0">
             <tr v-for="notice in noticeList.notice" v-bind:key="notice.noticeIdx">
               <td>{{ notice.noticeIdx }}</td>
-              <td>{{ notice.title }}</td>
+              <td @click="handlerModal(notice.noticeIdx)">{{ notice.title }}</td>
               <td>{{ notice.createdDate.split(" ")[0] }}</td>
               <td>{{ notice.author }}</td>
             </tr>
@@ -50,11 +56,15 @@ import axios from "axios";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 import Pagination from "../../../common/Pagination.vue";
+import { useModalStore } from "../../../../stores/modalState";
 
 const route = useRoute();
 const noticeList = ref();
 const cPage = ref(1);
-const searchList = () => {
+const modalStateNotice = useModalStore();
+const noticeIdx = ref(0);
+
+const searchList = async () => {
   const param = new URLSearchParams({
     searchTitle: route.query.searchTitle || "",
     searchStDate: route.query.searchStDate || "",
@@ -62,12 +72,17 @@ const searchList = () => {
     currentPage: cPage.value,
     pageSize: 5,
   });
-  axios
+  await axios
     .post("/api/board/noticeListJson.do", param)
     .then((res) => {
       noticeList.value = res.data;
     })
     .catch(() => {});
+};
+
+const handlerModal = (idx) => {
+  noticeIdx.value = idx;
+  modalStateNotice.setModalState();
 };
 
 watch(route, searchList);
