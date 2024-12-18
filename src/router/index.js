@@ -30,6 +30,12 @@ const routes = [
             name: "noticeDetail",
             component: NoticeDetail,
           },
+          {
+            //단일 라우터
+            path: "notice.do/insert",
+            name: "noticeInsert",
+            component: NoticeDetail,
+          },
         ],
       },
     ],

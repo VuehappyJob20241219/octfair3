@@ -8,7 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ContextBox: typeof import('./src/components/common/ContextBox.vue')['default']
-    copy: typeof import('./src/components/page/Board/Notice/NoticeSearch copy.vue')['default']
+    copy: typeof import('./src/components/page/Board/Notice/NoticeMain copy.vue')['default']
     FirstNoticeMain: typeof import('./src/components/page/Board/Notice/FirstNoticeMain.vue')['default']
     FirstNoticeModal: typeof import('./src/components/page/Board/Notice/FirstNoticeModal.vue')['default']
     FirstNoticeSearch: typeof import('./src/components/page/Board/Notice/FirstNoticeSearch.vue')['default']
@@ -16,7 +16,9 @@ declare module 'vue' {
     LeftManuBar: typeof import('./src/components/layout/LeftManuBar.vue')['default']
     LoginMain: typeof import('./src/components/page/Login/LoginMain.vue')['default']
     NoticeDetail: typeof import('./src/components/page/Board/Notice/NoticeDetail.vue')['default']
+    'NoticeDetail copy': typeof import('./src/components/page/Board/Notice/NoticeDetail copy.vue')['default']
     NoticeMain: typeof import('./src/components/page/Board/Notice/NoticeMain.vue')['default']
+    'NoticeMain copy': typeof import('./src/components/page/Board/Notice/NoticeMain copy.vue')['default']
     NoticeModal: typeof import('./src/components/page/Board/Notice/NoticeModal.vue')['default']
     NoticeSearch: typeof import('./src/components/page/Board/Notice/NoticeSearch.vue')['default']
     Pagination: typeof import('./src/components/common/Pagination.vue')['default']

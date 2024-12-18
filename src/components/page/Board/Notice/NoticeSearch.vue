@@ -4,15 +4,26 @@
     <input type="date" v-model="searchKey.searchStartDate" />
     <input type="date" v-model="searchKey.searchEndDate" />
     <button @click="handlerSearch">검색</button>
-    <button>신규등록</button>
+    <button @click="handleNewInsert">신규등록</button>
   </div>
 </template>
 <script setup>
+import { useQueryClient } from "@tanstack/vue-query";
+import router from "../../../../router";
+const queryClient = useQueryClient();
 const injectValue = inject("provideValue");
 const searchKey = ref({});
 
 const handlerSearch = () => {
   injectValue.value = { ...searchKey.value };
+};
+
+const handleNewInsert = () => {
+  queryClient.removeQueries({
+    queryKey: ["noticeDetail"],
+  });
+  // 페이지 이동
+  router.push("notice.do/insert");
 };
 </script>
 
