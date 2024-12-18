@@ -8,16 +8,16 @@
         내용 :
         <input type="text" v-model="detailValue.content" />
       </label>
-      파일 :<input type="file" style="display: none" id="fileInput" @change="handlerFile" />
+      파일 :<input type="file" style="display: none" id="fileInput" />
       <label class="img-label" htmlFor="fileInput"> 파일 첨부하기 </label>
       <div>
-        <div v-if="imageUrl">
-          <label>미리보기</label>
-          <img :src="imageUrl" />
-        </div>
-        <div v-else>
-          <label>파일명</label>
-        </div>
+        <!-- <div v-if="imageUrl">
+                    <label>미리보기</label>
+                    <img :src="imageUrl" />
+                </div>
+                <div v-else>
+                    <label>파일명</label>
+                </div> -->
       </div>
       <div class="button-box">
         <button @click="params.idx ? handlerUpdateBtn() : handlerInsertBtn()">
@@ -36,39 +36,27 @@ import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import { computed, watchEffect } from "vue";
 import { useUserInfo } from "../../../../stores/userInfo";
-import { useNoticeDetailUpdateMutation } from "../../../hook/notice/useNoticeDetailUpdateMutation";
-import { useNoticeDetailInsertMutation } from "../../../hook/notice/useNoticeDetailInsertMutation";
-import { useNoticeDetailDeleteMutation } from "../../../hook/notice/useNoticeDetailDeleteMutation";
 
 const { params } = useRoute();
 const detailValue = ref({});
+const router = useRouter();
+const queryClient = useQueryClient();
 const userInfo = useUserInfo();
-const userid = userInfo.user.loginId;
-const notiseIdx = params.idx;
-const fileData = ref("");
-const imageUrl = ref("");
+
+const number = ref(0);
+const number2 = ref(0);
+const fullNum = computed(() => {
+  return `${number.value}+${number2.value}`;
+});
+// computed 계산된 속성, 우리가 값을 내기 전에 복잡한 로직을 수행하는 경우가 있어서
+// 근데 그것을 매번 할 수 가 없어서
+// 같은 로직을 매번 사용하는 수고를 덜어줌
+// 왜냐? -> 계산된 속성(computed) 최초에 한 번만 로직을 수행하고,
+// 그 이후에는 computed에 저장된 값만 사용함
 
 const searchDetail = async () => {
   const result = await axios.post(`/api/board/noticeDetailBody.do`, { noticeSeq: params.idx });
-  // if (result.data) {
-  //   getFileImage();
-  // }
   return result.data;
-};
-
-const getFileImage = () => {
-  let param = new URLSearchParams();
-  param.append("noticeSeq", props.idx);
-  const postAtion = {
-    url: "/api/board/noticeDownload.do",
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-  axios(postAtion).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    imageUrl.value = url;
-  });
 };
 
 const {
@@ -83,24 +71,65 @@ const {
 });
 // useQuery 화면이 시작될 때 자동 실행
 
-const { mutate: handlerInsertBtn } = useNoticeDetailInsertMutation(detailValue, fileData, userid);
-const { mutate: handlerUpdateBtn } = useNoticeDetailUpdateMutation(detailValue, fileData, params.idx);
-const { mutate: handlerDeleteBtn } = useNoticeDetailDeleteMutation(notiseIdx);
-
-const handlerFile = (e) => {
-  const fileinfo = e.target.files;
-  const fileinfoSplit = fileinfo[0].name.split(".");
-  const fileExtension = fileinfoSplit[1].toLowerCase();
-  if (fileExtension === "jpg" || fileExtension === "gif" || fileExtension === "png" || fileExtension === "webp") {
-    imageUrl.value = URL.createObjectURL(fileinfo[0]);
-  }
-  fileData.value = fileinfo[0];
+const apiSuccess = () => {
+  alert("성공");
+  router.go(-1);
+  queryClient.invalidateQueries({
+    queryKey: ["noticeList"],
+    // 무조건 다시 실행해줘
+  });
 };
+
+const insertNoticeDetail = async () => {
+  const textData = {
+    title: detailValue.value.title,
+    context: detailValue.value.content,
+    loginId: userInfo.user.loginId,
+  };
+  await axios.post("/api/board/noticeSaveBody.do", textData);
+};
+
+const { mutate: handlerInsertBtn } = useMutation({
+  mutationFn: insertNoticeDetail,
+  onSuccess: apiSuccess,
+  mutationKey: ["noticeInsert"],
+});
+
+const updateNoticeDetail = async () => {
+  const textData = {
+    ...detailValue.value,
+    noticeSeq: params.idx,
+    context: detailValue.value.content,
+  };
+  await axios.post("/api/board/noticeUpdateBody.do", textData);
+};
+
+const { mutate: handlerUpdateBtn } = useMutation({
+  mutationFn: updateNoticeDetail,
+  onSuccess: apiSuccess,
+  mutationKey: ["noticeUpdate"],
+});
+
+const deleteNoticeDetail = async () => {
+  await axios.post("/api/board/noticeDeleteBody.do", { noticeSeq: params.idx });
+};
+
+const { mutate: handlerDeleteBtn } = useMutation({
+  mutationFn: deleteNoticeDetail,
+  onSuccess: apiSuccess,
+  mutationKey: ["noticeDelete"],
+});
 
 watchEffect(() => {
   if (isSuccess.value && noticeDetail.value) {
     detailValue.value = toRaw(noticeDetail.value.detail);
+    //toRaw는 Vue의 reactive 객체나 배열에서 Proxy를 벗기고 원본 객체를 반환합니다.
+    // 즉, toRaw를 사용하면 Vue의 반응형 시스템을 거치지 않은 원래의 객체를 얻을 수 있습니다.
   }
+});
+
+watchEffect(() => {
+  console.log("params.idx:", params.idx);
 });
 </script>
 
