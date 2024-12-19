@@ -23,8 +23,5 @@ declare module 'vue' {
     Pagination: typeof import('./src/components/common/Pagination.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    SecondNoticeDetail: typeof import('./src/components/page/Board/Notice/secondNoticeDetail.vue')['default']
-    SecondNoticeMain: typeof import('./src/components/page/Board/Notice/secondNoticeMain.vue')['default']
-    SecondNoticeSearch: typeof import('./src/components/page/Board/Notice/secondNoticeSearch.vue')['default']
   }
 }

@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Login from "../views/Login/Login.vue";
 import DashBoard from "../views/DashBoard/DashBoard.vue";
 import Notice from "../views/Board/Notice.vue";
-import SecondNoticeDetail from "../components/page/Board/Notice/secondNoticeDetail.vue";
+import FirstNoticeDetail from "../components/page/Board/Notice/FirstNoticeDetail.vue";
 
 const routes = [
   {
@@ -28,13 +28,13 @@ const routes = [
             //단일 라우터
             path: "notice.do/:idx",
             name: "noticeDetail",
-            component: SecondNoticeDetail,
+            component: FirstNoticeDetail,
           },
           {
             //단일 라우터
             path: "notice.do/insert",
             name: "noticeInsert",
-            component: SecondNoticeDetail,
+            component: FirstNoticeDetail,
           },
         ],
       },
