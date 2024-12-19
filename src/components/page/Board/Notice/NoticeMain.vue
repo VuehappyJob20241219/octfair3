@@ -54,15 +54,14 @@
 <script setup>
 import axios from "axios";
 import { onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import Pagination from "../../../common/Pagination.vue";
 import { useModalStore } from "../../../../stores/modalState";
 
-const route = useRoute();
-const noticeList = ref();
-const cPage = ref(1);
+const router = useRouter();
 const modalStateNotice = useModalStore();
 const noticeIdx = ref(0);
+const { data: noticeList, isLoading, refetch, isSuccess, isError } = useNoticeListSearchQuery(injectedValue, cPage);
 
 const searchList = async () => {
   const param = new URLSearchParams({
