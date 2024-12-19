@@ -35,7 +35,7 @@
           </template>
           <template v-else>
             <tr>
-              <td colspan="7">일치하는 검색 결과가 없습니다</td>
+              <td colspan="7">등록된 이력서가 없습니다.</td>
             </tr>
           </template>
         </template>
