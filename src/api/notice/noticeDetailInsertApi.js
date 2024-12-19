@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Notice } from "../api";
+import { Notice } from "../axiosApi/qnaApi";
 
 export const insertNoticeDetail = async (detailValue, fileData, userid) => {
   const textData = {

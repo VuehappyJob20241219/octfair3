@@ -1,40 +1,29 @@
 <template>
   <div class="search-box">
-    <input v-model.lazy="keyword" />
-    <input type="date" v-model="searchStartDate" />
-    <input type="date" v-model="searchEndtDate" />
+    <input v-model="searchKey.searchTitle" />
+    <input type="date" v-model="searchKey.searchStartDate" />
+    <input type="date" v-model="searchKey.searchEndDate" />
     <button @click="handlerSearch">검색</button>
-    <button @click="handlerModal">신규등록</button>
+    <button @click="handleNewInsert">신규등록</button>
   </div>
 </template>
 <script setup>
-import { ref, watchEffect } from "vue";
+import { useQueryClient } from "@tanstack/vue-query";
 import router from "../../../../router";
-import { useModalStore } from "../../../../stores/modalState";
-
-const modalStateNotice = useModalStore();
-const keyword = ref("");
-const searchStartDate = ref("");
-const searchEndtDate = ref("");
+const queryClient = useQueryClient();
+const injectValue = inject("provideValue");
+const searchKey = ref({});
 
 const handlerSearch = () => {
-  //1. url 파라미터 쿼리
-  const query = [];
-  !keyword.value || query.push(`searchTitle=${keyword.value}`);
-  !searchStartDate.value || query.push(`searchStDate=${searchStartDate.value}`);
-  !searchEndtDate.value || query.push(`searchEdDate=${searchEndtDate.value}`);
-
-  const queryString = query.length > 0 ? `?${query.join(`&`)}` : ``;
-
-  router.push(queryString);
+  injectValue.value = { ...searchKey.value };
 };
 
-// 인자로 받는 함수 안에 반응형 객체(ref 같은거)가 있으면, 객체가 변경될 때 마다, 해당 함수를 실행 시켜줌
-// 근데. 밑에 watchEffect는 ref같은게 없어요 그래서 그냥 새로고침 누르면 최초에 한 번 실행되는 것
-watchEffect(() => window.location.search && router.push(window.location.pathname, { replace: true }));
-
-const handlerModal = () => {
-  modalStateNotice.setModalState();
+const handleNewInsert = () => {
+  queryClient.removeQueries({
+    queryKey: ["noticeDetail"],
+  });
+  // 페이지 이동
+  router.push("notice.do/insert");
 };
 </script>
 

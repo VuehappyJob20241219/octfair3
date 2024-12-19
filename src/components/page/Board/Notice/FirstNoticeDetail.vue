@@ -50,9 +50,7 @@ const imageUrl = ref("");
 
 const searchDetail = async () => {
   const result = await axios.post(`/api/board/noticeDetailBody.do`, { noticeSeq: params.idx });
-  // if (result.data) {
-  //   getFileImage();
-  // }
+
   return result.data;
 };
 

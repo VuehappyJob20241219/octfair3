@@ -8,21 +8,23 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ContextBox: typeof import('./src/components/common/ContextBox.vue')['default']
-    copy: typeof import('./src/components/page/Board/Notice/NoticeMain copy.vue')['default']
+    copy: typeof import('./src/components/page/Board/Notice/FirstNoticeMain copy.vue')['default']
+    FirstNoticeDetail: typeof import('./src/components/page/Board/Notice/FirstNoticeDetail.vue')['default']
+    'FirstNoticeDetail copy': typeof import('./src/components/page/Board/Notice/FirstNoticeDetail copy.vue')['default']
     FirstNoticeMain: typeof import('./src/components/page/Board/Notice/FirstNoticeMain.vue')['default']
-    FirstNoticeModal: typeof import('./src/components/page/Board/Notice/FirstNoticeModal.vue')['default']
+    'FirstNoticeMain copy': typeof import('./src/components/page/Board/Notice/FirstNoticeMain copy.vue')['default']
     FirstNoticeSearch: typeof import('./src/components/page/Board/Notice/FirstNoticeSearch.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     LeftManuBar: typeof import('./src/components/layout/LeftManuBar.vue')['default']
     LoginMain: typeof import('./src/components/page/Login/LoginMain.vue')['default']
-    NoticeDetail: typeof import('./src/components/page/Board/Notice/NoticeDetail.vue')['default']
-    'NoticeDetail copy': typeof import('./src/components/page/Board/Notice/NoticeDetail copy.vue')['default']
     NoticeMain: typeof import('./src/components/page/Board/Notice/NoticeMain.vue')['default']
-    'NoticeMain copy': typeof import('./src/components/page/Board/Notice/NoticeMain copy.vue')['default']
     NoticeModal: typeof import('./src/components/page/Board/Notice/NoticeModal.vue')['default']
     NoticeSearch: typeof import('./src/components/page/Board/Notice/NoticeSearch.vue')['default']
     Pagination: typeof import('./src/components/common/Pagination.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SecondNoticeDetail: typeof import('./src/components/page/Board/Notice/secondNoticeDetail.vue')['default']
+    SecondNoticeMain: typeof import('./src/components/page/Board/Notice/secondNoticeMain.vue')['default']
+    SecondNoticeSearch: typeof import('./src/components/page/Board/Notice/secondNoticeSearch.vue')['default']
   }
 }
