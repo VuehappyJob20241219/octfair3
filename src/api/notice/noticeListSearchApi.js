@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Notice } from "../axiosApi/qnaApi";
+import { Notice } from "../axiosApi/noticeApi";
 
 export const noticeListSearchApi = async (injectedValue, cPage) => {
   const param = new URLSearchParams({
