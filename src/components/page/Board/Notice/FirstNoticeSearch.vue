@@ -10,6 +10,7 @@
 <script setup>
 import { useQueryClient } from "@tanstack/vue-query";
 import router from "../../../../router";
+
 const queryClient = useQueryClient();
 const injectValue = inject("provideValue");
 const searchKey = ref({});
