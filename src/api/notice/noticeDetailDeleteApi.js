@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Notice } from "../api";
+import { Notice } from "../axiosApi/noticeApi";
 
 export const noticeDetailDeleteApi = async (notiseIdx) => {
   console.log("값 궁금", notiseIdx);
