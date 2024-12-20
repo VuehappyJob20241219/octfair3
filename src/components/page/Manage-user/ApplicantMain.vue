@@ -48,9 +48,8 @@
             :onClick="applicantList" v-model="cPage" />
     </div>
 
-
-
 </template>
+
 
 <script setup>
 import axios from "axios";
@@ -89,6 +88,15 @@ const handlerModal = (id) => {
     loginId.value = id;
     modalStateApplicant.setModalState();
 };
+
+// const execDaumPostcode = () => {
+//     new daum.Postcode({
+//         oncomplete: function(data) {
+            
+
+//         }
+//     }).open();
+// }
 
 watch(route, searchList);
 
