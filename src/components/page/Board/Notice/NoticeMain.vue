@@ -53,7 +53,6 @@
 </template>
 
 <script setup>
-
 import { useRouter } from "vue-router";
 import Pagination from "../../../common/Pagination.vue";
 import { useModalStore } from "../../../../stores/modalState";
