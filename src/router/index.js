@@ -6,6 +6,7 @@ import Post from "../views/ManageHire/Post.vue";
 import FirstNoticeDetail from "../components/page/Board/Notice/FirstNoticeDetail.vue";
 import Applicant from "../views/Manage-user/Applicant.vue";
 import Resume from "../views/Apply/Resume.vue";
+import Faq from "../views/Board/Faq.vue";
 
 const routes = [
   {
@@ -39,6 +40,11 @@ const routes = [
             name: "noticeInsert",
             component: FirstNoticeDetail,
           },
+          {
+            path: "faq.do",
+            name: "faq",
+            component: Faq,
+          },
         ],
       },
       {
@@ -71,7 +77,7 @@ const routes = [
             path: "post.do",
             name: "post",
             component: Post,
-          }
+          },
         ],
       },
     ],
