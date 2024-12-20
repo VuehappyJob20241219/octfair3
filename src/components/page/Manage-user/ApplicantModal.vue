@@ -47,7 +47,7 @@
                             </tr>
                             <tr>
                                 <th>이메일</th>
-                                <td><input type="text" v-model="applicantDetail.email" /></td>
+                                <td><input type="email" v-model="applicantDetail.email"/></td>
                             </tr>
                             <tr>
                                 <th>가입일자</th>
@@ -115,7 +115,8 @@ const openDaumPostcode = () => { //카카오API사용
 }
 
 const handlerSaveBtn = () => {
-    //유효성 검사 필요
+    //유효성 검사
+
     const param = new URLSearchParams({
         ... applicantDetail.value
     });
@@ -127,6 +128,11 @@ const handlerSaveBtn = () => {
         };
     })
 
+}
+
+const checkForm = () => {
+    //유효성검사 함수
+    
 }
 
 const handlerModal = () => {
