@@ -9,6 +9,9 @@ declare module 'vue' {
   export interface GlobalComponents {
     ApplicantMain: typeof import('./src/components/page/Manage-user/ApplicantMain.vue')['default']
     ApplicantSearch: typeof import('./src/components/page/Manage-user/ApplicantSearch.vue')['default']
+    BizPostDetail: typeof import('./src/components/page/ManageHire/BizPost/BizPostDetail.vue')['default']
+    BizPostInsert: typeof import('./src/components/page/ManageHire/BizPost/BizPostInsert.vue')['default']
+    BizPostMain: typeof import('./src/components/page/ManageHire/BizPost/BizPostMain.vue')['default']
     ContextBox: typeof import('./src/components/common/ContextBox.vue')['default']
     copy: typeof import('./src/components/page/Board/Notice/FirstNoticeMain copy.vue')['default']
     FirstNoticeDetail: typeof import('./src/components/page/Board/Notice/FirstNoticeDetail.vue')['default']
