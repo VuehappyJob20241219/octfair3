@@ -1,5 +1,6 @@
 <template>
   <div class="divResumeList">
+    현재 페이지:{{ cPage }} 총 개수: {{ resumeList?.resumeCnt }}
     <table>
       <colgroup>
         <col width="50%" />
@@ -15,12 +16,12 @@
       </thead>
       <tbody>
         <template v-if="resumeList">
-          <template v-if="resumeList.resIdx > 0">
-            <tr v-for="resume in resumeList" :key="resume.resIdx">
+          <template v-if="resumeList.resumeCnt > 0">
+            <tr v-for="resume in resumeList.resumeList" :key="resume.resIdx">
               <td>{{ resume.resTitle }}</td>
               <td>
-                <button>복사하기</button>
-                <button>삭제하기</button>
+                <button class="copy-button">복사하기</button>
+                <button class="delete-button">삭제하기</button>
               </td>
               <td>{{ resume.updatedDate }}</td>
             </tr>
@@ -33,34 +34,46 @@
         </template>
       </tbody>
     </table>
+    <Pagination
+      :totalItems="resumeList?.resumeCnt || 0"
+      :items-per-page="5"
+      :max-pages-shown="5"
+      :onClick="resumeSearchList"
+      v-model="cPage"
+    />
   </div>
 </template>
 
 <script setup>
 import axios from "axios";
-import { useUserInfo } from "../../../stores/userInfo";
+import { useUserInfo } from "../../../../stores/userInfo";
 import { onMounted, ref } from "vue";
+import Pagination from "../../../common/Pagination.vue";
 
 const userInfo = useUserInfo();
 const { user } = userInfo;
 const resumeList = ref();
+const cPage = ref(1);
 
 const resumeSearchList = async () => {
   const param = {
     loginId: user.loginId,
     userNm: user.userNm,
     userType: user.userType,
+    currentPage: cPage.value,
+    pageSize: 5,
   };
   await axios
     .post("/api/apply/resumeListBody.do", param)
     .then((res) => {
-      resumeList.value = res.data.resume;
-      console.log("값 확인", resumeList.value); // 데이터 로드 후 로그 출력
+      resumeList.value = res.data;
+      console.log("값 확인", resumeList.value); // 데이터 로드 후 로그 출
     })
     .catch((error) => {
       console.error("데이터 로드 중 오류 발생:", error);
     });
 };
+
 onMounted(() => {
   resumeSearchList();
 });
@@ -92,6 +105,28 @@ table {
     background-color: #d3d3d3;
     opacity: 0.9;
     cursor: pointer;
+  }
+
+  .copy-button {
+    background-color: #39b0e8; /* 초록색 */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .delete-button {
+    background-color: #718da7; /* 빨간색 */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  button:hover {
+    opacity: 0.9;
   }
 }
 </style>
