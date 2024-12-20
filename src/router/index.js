@@ -3,6 +3,7 @@ import Login from "../views/Login/Login.vue";
 import DashBoard from "../views/DashBoard/DashBoard.vue";
 import Notice from "../views/Board/Notice.vue";
 import FirstNoticeDetail from "../components/page/Board/Notice/FirstNoticeDetail.vue";
+import Applicant from "../views/Manage-user/Applicant.vue"
 
 const routes = [
   {
@@ -38,6 +39,18 @@ const routes = [
           },
         ],
       },
+      {
+        path: "manage-user",
+        name: "manage-user",
+        children: [
+          {
+            path: "applicant.do",
+            name: "applicant",
+            component: Applicant
+          }
+        ]
+      }
+
     ],
   },
 ];
