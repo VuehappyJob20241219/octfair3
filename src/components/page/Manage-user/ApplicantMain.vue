@@ -1,6 +1,4 @@
 <template>
-
-
     <div class="divManage-applicantList">
         <table>
             <colgroup>
@@ -50,7 +48,6 @@
 import axios from "axios";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
-
 
 const route = useRoute();
 const applicantList = ref();
