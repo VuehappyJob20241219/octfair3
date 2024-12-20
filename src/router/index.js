@@ -79,8 +79,7 @@ const routes = [
             component: Post,
           }
         ],
-      },
-      },      
+      },     
     ],
   },
 ];
