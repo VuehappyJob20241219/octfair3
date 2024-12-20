@@ -3,7 +3,8 @@ import Login from "../views/Login/Login.vue";
 import DashBoard from "../views/DashBoard/DashBoard.vue";
 import Notice from "../views/Board/Notice.vue";
 import FirstNoticeDetail from "../components/page/Board/Notice/FirstNoticeDetail.vue";
-import Applicant from "../views/Manage-user/Applicant.vue"
+import Applicant from "../views/Manage-user/Applicant.vue";
+import Resume from "../views/Apply/Resume.vue";
 
 const routes = [
   {
@@ -46,11 +47,21 @@ const routes = [
           {
             path: "applicant.do",
             name: "applicant",
-            component: Applicant
-          }
-        ]
-      }
-
+            component: Applicant,
+          },
+        ],
+      },
+      {
+        path: "apply",
+        name: "apply",
+        children: [
+          {
+            path: "resume.do",
+            name: "resume",
+            component: Resume,
+          },
+        ],
+      },
     ],
   },
 ];
