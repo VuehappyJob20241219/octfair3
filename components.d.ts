@@ -7,6 +7,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BizPostDetail: typeof import('./src/components/page/ManageHire/BizPost/BizPostDetail.vue')['default']
+    BizPostInsert: typeof import('./src/components/page/ManageHire/BizPost/BizPostInsert.vue')['default']
     BizPostMain: typeof import('./src/components/page/ManageHire/BizPost/BizPostMain.vue')['default']
     BizPostSearch: typeof import('./src/components/page/ManageHire/BizPost/BizPostSearch.vue')['default']
     ContextBox: typeof import('./src/components/common/ContextBox.vue')['default']

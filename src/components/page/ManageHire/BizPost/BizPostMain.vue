@@ -1,7 +1,7 @@
 <template>
 <div>
   <div>
-    <button>
+    <button @click="handleNewInsert">
       공고 등록
     </button>
   </div>
@@ -59,9 +59,12 @@
 
 <script setup>
 import axios from "axios";
-import { onMounted } from "vue";
+// import { onMounted } from "vue";
 import Pagination from "../../../common/Pagination.vue";
 import { useQuery } from "@tanstack/vue-query";
+import { useQueryClient } from "@tanstack/vue-query";
+import router from "../../../../router";
+const queryClient = useQueryClient();
 
 // const HirePost = ref();
 const cPage = ref(1);
@@ -72,8 +75,7 @@ const searchList = async () => {
     pageSize: 5,
   });
   const result = await axios.post("/api/manage-hire/managehireListBody.do", param);
-  return result.data;
-   
+  return result.data;   
 };
 
 const {
@@ -88,6 +90,12 @@ const {
   staleTime: 1000 * 60,
 });
 
+const handleNewInsert = () => {
+  queryClient.removeQueries({
+    queryKey: ["HirePost"],
+  });
+  router.push("bizPost.do/insert");
+};
 </script>
 
 <style lang="scss" scoped>
