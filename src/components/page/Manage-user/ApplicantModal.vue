@@ -76,6 +76,7 @@
                         </tbody>
                     </table>
                 </div>
+                <button @click="handlerSaveBtn">수정</button>
                 <button @click="handlerModal">취소</button>
             </div>
         </div>
@@ -102,17 +103,30 @@ const searchDetail = () => {
         .then((res) => {
             applicantDetail.value = res.data.detail;
         });
-    console.log(applicantDetail.value);
 };
 
 const openDaumPostcode = () => { //카카오API사용
     new daum.Postcode({
         oncomplete: (data) => {
-            console.log(data.zonecode);
             applicantDetail.value.zipCode = data.zonecode;
             applicantDetail.value.address = data.roadAddress;
         },
     }).open();
+}
+
+const handlerSaveBtn = () => {
+    //유효성 검사 필요
+    const param = new URLSearchParams({
+        ... applicantDetail.value
+    });
+
+    axios.post("/api/manage-user/applicantInfoUpdate.do",param).then((res) => {
+        if(res.data.result === 'success'){
+            handlerModal();
+            emit('postSuccess');
+        };
+    })
+
 }
 
 const handlerModal = () => {
@@ -121,6 +135,10 @@ const handlerModal = () => {
 
 onMounted(() => {
     props.loginId && searchDetail();
+});
+
+onUnmounted(() => {
+  emit("modalClose");
 });
 
 </script>
