@@ -20,7 +20,7 @@
             <tr v-for="resume in resumeList.resumeList" :key="resume.resIdx">
               <td>{{ resume.resTitle }}</td>
               <td>
-                <button class="copy-button">복사하기</button>
+                <button class="copy-button" @click="resumeCopy(resume.resIdx)">복사하기</button>
                 <button class="delete-button">삭제하기</button>
               </td>
               <td>{{ resume.updatedDate }}</td>
@@ -47,13 +47,14 @@
 <script setup>
 import axios from "axios";
 import { useUserInfo } from "../../../../stores/userInfo";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import Pagination from "../../../common/Pagination.vue";
 
 const userInfo = useUserInfo();
 const { user } = userInfo;
-const resumeList = ref();
+const resumeList = ref([]);
 const cPage = ref(1);
+const resumeCopyResult = ref();
 
 const resumeSearchList = async () => {
   const param = {
@@ -67,12 +68,26 @@ const resumeSearchList = async () => {
     .post("/api/apply/resumeListBody.do", param)
     .then((res) => {
       resumeList.value = res.data;
-      console.log("값 확인", resumeList.value); // 데이터 로드 후 로그 출
     })
     .catch((error) => {
       console.error("데이터 로드 중 오류 발생:", error);
     });
 };
+
+//이력서 복사
+const resumeCopy = async (idx) => {
+  const param = {
+    resIdx: idx,
+  };
+  await axios.post("/api/apply/resumeCopyBody.do", param).then((res) => {
+    resumeCopyResult.value = res.data;
+    if (resumeCopyResult.value.result === "success") {
+      resumeSearchList();
+    }
+  });
+};
+
+//이력서 삭제
 
 onMounted(() => {
   resumeSearchList();
