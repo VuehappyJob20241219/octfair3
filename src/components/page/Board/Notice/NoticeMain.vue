@@ -36,7 +36,7 @@
           </template>
           <template v-else>
             <tr>
-              <td colspan="7">등록된 이력서가 없습니다.</td>
+              <td colspan="7">일치하는 검색 결과가 없습니다</td>
             </tr>
           </template>
         </template>
@@ -70,7 +70,6 @@ const handlerModal = (param) => {
     name: "noticeDetail",
     params: { idx: param },
   });
-  //url 스트링이여야 한다. 인덱스가 넘버엿어서 스트링으로 변환
 };
 </script>
 
