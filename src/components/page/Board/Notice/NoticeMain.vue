@@ -72,6 +72,7 @@ const searchList = async () => {
     currentPage: cPage.value,
     pageSize: 5,
   });
+  console.log(param);
   await axios
     .post("/api/board/noticeListJson.do", param)
     .then((res) => {
