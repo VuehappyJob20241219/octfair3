@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Login from "../views/Login/Login.vue";
 import DashBoard from "../views/DashBoard/DashBoard.vue";
 import Notice from "../views/Board/Notice.vue";
+import Post from "../views/ManageHire/Post.vue";
 import FirstNoticeDetail from "../components/page/Board/Notice/FirstNoticeDetail.vue";
 
 const routes = [
@@ -36,6 +37,39 @@ const routes = [
             name: "noticeInsert",
             component: FirstNoticeDetail,
           },
+        ],
+      },
+      {
+        path: "manage-user",
+        name: "manage-user",
+        children: [
+          {
+            path: "applicant.do",
+            name: "applicant",
+            component: Applicant,
+          },
+        ],
+      },
+      {
+        path: "apply",
+        name: "apply",
+        children: [
+          {
+            path: "resume.do",
+            name: "resume",
+            component: Resume,
+          },
+        ],
+      },
+      {
+        path: "manage-hire",
+        name: "manage-hire",
+        children: [
+          {
+            path: "post.do",
+            name: "post",
+            component: Post,
+          }
         ],
       },
     ],
