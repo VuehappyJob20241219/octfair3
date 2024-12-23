@@ -27,7 +27,7 @@
           <template v-if="faqList.faqCnt > 0">
             <tr v-for="faq in faqList.faq" :key="faq.faq_idx" >
               <td>{{ faq.faq_idx }}</td>
-              <td @click="handlerModal(faq.faq_idx)">{{ faq.title }}</td>
+              <td @click="handlerModal(faq.faq_idx)"> {{ faq.title }}</td>
               <td>{{ faq.created_date.substr(0,10)}}</td>
               <td>{{ faq.author }}</td>
             </tr>
