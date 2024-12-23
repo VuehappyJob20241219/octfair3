@@ -1,5 +1,6 @@
 <template>
-  <FaqModal v-if="faqModalState.modalState"
+  <FaqModal
+    v-if="faqModalState.modalState"
     @postSuccess="searchList"
     @modalClose="() => (faqSeq = 0)"
     :idx="faq_idx"
@@ -24,10 +25,10 @@
       <tbody>
         <template v-if="faqList">
           <template v-if="faqList.faqCnt > 0">
-            <tr v-for="faq in faqList.faq" :key="faq.faq_idx" >
+            <tr v-for="faq in faqList.faq" :key="faq.faq_idx">
               <td>{{ faq.faq_idx }}</td>
-              <td @click="handlerModal(faq.faq_idx)"> {{ faq.title }}</td>
-              <td>{{ faq.created_date.substr(0,10)}}</td>
+              <td @click="handlerModal(faq.faq_idx)">{{ faq.title }}</td>
+              <td>{{ faq.created_date.substr(0, 10) }}</td>
               <td>{{ faq.author }}</td>
             </tr>
           </template>
@@ -59,9 +60,9 @@
 import axios from "axios";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
-import Pagination from "../../../common/Pagination.vue";
 import { useModalStore } from "../../../../stores/modalState";
 import { useUserInfo } from "../../../../stores/userInfo";
+import Pagination from "../../../common/Pagination.vue";
 import FaqModal from "./FaqModal.vue";
 
 const route = useRoute();
@@ -81,24 +82,22 @@ const searchList = async () => {
     currentPage: cPage.value,
     pageSize: 5,
     faq_type: faq_fype,
-  }); 
-  await axios.post("/api/board/faqListRe.do", param).then((res) => {
-    faqList.value = res.data;    
   });
-
+  await axios.post("/api/board/faqListRe.do", param).then((res) => {
+    faqList.value = res.data;
+  });
 };
 
 const handlerModal = (idx) => {
   faqModalState.setModalState();
-  axios.post("/api/board/faqDetail.do", { faqSeq: idx }).then((res)=>{
-    faqList.value=res.data;
-  })
+  axios.post("/api/board/faqDetail.do", { faqSeq: idx }).then((res) => {
+    faqList.value = res.data;
+  });
 };
 
 watch(route, searchList);
 
 onMounted(() => {
-  searchList();
   searchList();
 });
 </script>
