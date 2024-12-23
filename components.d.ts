@@ -10,6 +10,7 @@ declare module 'vue' {
     ApplicantMain: typeof import('./src/components/page/Manage-user/ApplicantMain.vue')['default']
     ApplicantModal: typeof import('./src/components/page/Manage-user/ApplicantModal.vue')['default']
     ApplicantSearch: typeof import('./src/components/page/Manage-user/ApplicantSearch.vue')['default']
+    BizMain: typeof import('./src/components/page/Manage-user/BizMain.vue')['default']
     ContextBox: typeof import('./src/components/common/ContextBox.vue')['default']
     copy: typeof import('./src/components/page/Board/Notice/FirstNoticeMain copy.vue')['default']
     FirstNoticeDetail: typeof import('./src/components/page/Board/Notice/FirstNoticeDetail.vue')['default']
