@@ -1,6 +1,6 @@
 <template>
     <div class="search-box">
-        기업명
+        사업자명
         <input v-model.lazy="keyword" />
         <button @click="handlerSearch">검색</button>
     </div>
