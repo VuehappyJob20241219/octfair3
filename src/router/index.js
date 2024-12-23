@@ -44,7 +44,7 @@ const routes = [
             path: "faq.do",
             name: "faq",
             component: Faq,
-          }
+          },
         ],
       },
       {
@@ -77,9 +77,9 @@ const routes = [
             path: "post.do",
             name: "post",
             component: Post,
-          }
+          },
         ],
-      },     
+      },
     ],
   },
 ];

@@ -22,7 +22,6 @@
         </tr>
       </thead>
       <tbody>
-        <template>...로딩중</template>
         <template v-if="faqList">
           <template v-if="faqList.faqCnt > 0">
             <tr v-for="faq in faqList.faq" :key="faq.faq_idx" >
@@ -40,6 +39,13 @@
         </template>
       </tbody>
     </table>
+    <Pagination
+      :totalItems="faqList?.faqCnt || 0"
+      :items-per-page="5"
+      :max-pages-shown="5"
+      :onClick="searchList"
+      v-model="cPage"
+    />
     <Pagination
       :totalItems="faqList?.faqCnt || 0"
       :items-per-page="5"
@@ -83,7 +89,6 @@ const searchList = async () => {
 };
 
 const handlerModal = (idx) => {
-  console.log(typeof idx);
   faqModalState.setModalState();
   axios.post("/api/board/faqDetail.do", { faqSeq: idx }).then((res)=>{
     faqList.value=res.data;

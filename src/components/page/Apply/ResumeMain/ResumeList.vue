@@ -21,7 +21,7 @@
               <td>{{ resume.resTitle }}</td>
               <td>
                 <button class="copy-button" @click="resumeCopy(resume.resIdx)">복사하기</button>
-                <button class="delete-button">삭제하기</button>
+                <button class="delete-button" @click="resumeDelete(resume.resIdx)">삭제하기</button>
               </td>
               <td>{{ resume.updatedDate }}</td>
             </tr>
@@ -49,12 +49,14 @@ import axios from "axios";
 import { useUserInfo } from "../../../../stores/userInfo";
 import { onMounted, ref, watch } from "vue";
 import Pagination from "../../../common/Pagination.vue";
+import { Resume } from "../../../../api/axiosApi/resumeApi";
 
 const userInfo = useUserInfo();
 const { user } = userInfo;
 const resumeList = ref([]);
 const cPage = ref(1);
 const resumeCopyResult = ref();
+const resumeDeleteResult = ref();
 
 const resumeSearchList = async () => {
   const param = {
@@ -65,7 +67,7 @@ const resumeSearchList = async () => {
     pageSize: 5,
   };
   await axios
-    .post("/api/apply/resumeListBody.do", param)
+    .post(Resume.ListResume, param)
     .then((res) => {
       resumeList.value = res.data;
     })
@@ -79,7 +81,7 @@ const resumeCopy = async (idx) => {
   const param = {
     resIdx: idx,
   };
-  await axios.post("/api/apply/resumeCopyBody.do", param).then((res) => {
+  await axios.post(Resume.CopyResume, param).then((res) => {
     resumeCopyResult.value = res.data;
     if (resumeCopyResult.value.result === "success") {
       resumeSearchList();
@@ -88,6 +90,18 @@ const resumeCopy = async (idx) => {
 };
 
 //이력서 삭제
+const resumeDelete = async (idx) => {
+  const param = {
+    resIdx: idx,
+  };
+
+  await axios.post(Resume.DeleteResume, param).then((res) => {
+    resumeDeleteResult.value = res.data;
+    if (resumeDeleteResult.value.result === "success") {
+      resumeSearchList();
+    }
+  });
+};
 
 onMounted(() => {
   resumeSearchList();
