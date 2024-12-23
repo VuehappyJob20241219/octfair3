@@ -2,7 +2,7 @@
     <teleport to="body">
         <div class="backdrop">
             <div class="container">
-                <label>개인 회원 정보</label>
+                <label class = "title">개인 회원 정보</label>
                 <div class="content">
                     <table>
                         <!-- <colgroup>
@@ -51,7 +51,7 @@
                             </tr>
                             <tr>
                                 <th>가입일자</th>
-                                <td><input type="date" v-model="applicantDetail.regdate"/></td>
+                                <td><input type="date" v-model="applicantDetail.regdate" /></td>
                             </tr>
                             <tr>
                                 <th>활성화</th>
@@ -116,17 +116,17 @@ const openDaumPostcode = () => { //카카오API사용
 
 const handlerSaveBtn = () => {
     //유효성 검사
-    if(!checkForm()){
+    if (!checkForm()) {
         console.log("수정에 실패하였습니다.");
         return;
     }
 
     const param = new URLSearchParams({
-        ... applicantDetail.value
+        ...applicantDetail.value
     });
 
-    axios.post("/api/manage-user/applicantInfoUpdate.do",param).then((res) => {
-        if(res.data.result === 'success'){
+    axios.post("/api/manage-user/applicantInfoUpdate.do", param).then((res) => {
+        if (res.data.result === 'success') {
             handlerModal();
             emit('postSuccess');
         };
@@ -146,43 +146,43 @@ const checkForm = () => {
     let phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
     let ZipCodeRules = /[0-9\-]{5}/;
 
-    if(inputName.length<1){
+    if (inputName.length < 1) {
         alert("이름을 입력하세요.");
         return false;
     }
-    if(inputSex.length<1){
+    if (inputSex.length < 1) {
         alert("성별을 선택해주세요.");
         return false;
     }
-    if(inputBirthday.length<1){
+    if (inputBirthday.length < 1) {
         alert("생일을 입력해주세요.");
         return false;
     }
-    if(inputPhone.length<1){
+    if (inputPhone.length < 1) {
         alert("전화번호를 선택해주세요.");
         return false;
     }
-    if(!phoneRules.test(inputPhone)){
+    if (!phoneRules.test(inputPhone)) {
         alert("전화번호 형식을 확인해주세요.");
         return false;
     }
-    if(inputEmail.length<1){
+    if (inputEmail.length < 1) {
         alert("이메일을 선택해주세요.");
         return false;
     }
-    if(!emailRules.test(inputEmail)){
+    if (!emailRules.test(inputEmail)) {
         alert("이메일 형식을 확인해주세요.");
         return false;
     }
-    if(inputRegDate.length<1){
+    if (inputRegDate.length < 1) {
         alert("가입일자를 입력해주세요.");
         return false;
     }
-    if(inputZipCode.length<1){
+    if (inputZipCode.length < 1) {
         alert("우편번호(주소)를 입력해주세요.");
         return false;
     }
-    if(!ZipCodeRules.test(inputZipCode)){
+    if (!ZipCodeRules.test(inputZipCode)) {
         alert("우편번호를 확인해주세요.");
         return false;
     }
@@ -193,14 +193,14 @@ const pwReset = () => {
     const param = new URLSearchParams({
         loginId: applicantDetail.value.loginId
     });
-    
+
     axios.post("/api/manage-user/applicantPwReset.do", param)
-    .then((res)=>{
-        console.log(res.data.result);
-        if(res.data.result === "success"){
-            alert("비밀번호가 초기화되었습니다.");
-        }
-    })
+        .then((res) => {
+            console.log(res.data.result);
+            if (res.data.result === "success") {
+                alert("비밀번호가 초기화되었습니다.");
+            }
+        })
 }
 
 
@@ -231,22 +231,17 @@ onUnmounted(() => {
     justify-content: center;
     align-items: center;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
+    z-index: 999;
     font-weight: bold;
+    overflow: hidden; /* 모달 영역을 벗어나는 내용 숨김 */
 }
 
 label {
     display: flex;
     flex-direction: column;
 }
-
-input[type="text"] {
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    width: 200px;
+label.title{
+    font-size: 18px;
 }
 
 .container {
@@ -255,32 +250,30 @@ input[type="text"] {
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
     position: relative;
-    width: 50%;
+    max-width: 60%;
+    max-height: 90%; /* 모달 높이를 화면에 맞게 제한 */
+    overflow-y: auto; /* 내부 스크롤 가능하게 설정 */
 }
 
-img {
-    width: 100px;
-    height: 100px;
-}
-
-.img-label {
-    margin-top: 10px;
-    padding: 6px 25px;
-    background-color: #ccc;
+input[type="text"],
+input[type="date"],
+input[type="email"],
+input[type="tel"] {
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     border-radius: 4px;
-    color: rgba(0, 0, 0, 0.9);
-    cursor: pointer;
+    border: 1px solid #ccc;
+    // font-size: 13px;
+    width: 200px;
+}
 
-    &:hover {
-        background-color: #45a049;
-        color: white;
-    }
-
-    &:active {
-        background-color: #3e8e41;
-        box-shadow: 0 2px #666;
-        transform: translateY(2px);
-    }
+select {
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
 }
 
 .button-box {
@@ -322,10 +315,6 @@ table {
     font-size: 14px;
     text-align: left;
 
-    // tr{
-    //     vertical-align: middle; /* 세로 가운데 정렬 */
-    // }
-
     th {
         white-space: nowrap;
         /* 줄 바꿈 방지 */
@@ -349,12 +338,5 @@ table {
     tbody {
         width: 500px;
     }
-
-    // /* 테이블 올렸을 때 */
-    // tbody tr:hover {
-    //     background-color: #d3d3d3;
-    //     opacity: 0.9;
-    //     cursor: pointer;
-    // }
 }
 </style>
