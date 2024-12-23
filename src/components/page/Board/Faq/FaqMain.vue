@@ -5,6 +5,8 @@
     @modalClose="() => (faqSeq = 0)"
     :idx="faq_idx"
   />
+  <button @click="personalFaq">개인회원</button>
+  <button @click="companyFaq">기업회원</button>
   <div class="divFaqList">
     <table>
       <colgroup>
@@ -12,7 +14,7 @@
         <col width="50%" />
         <col width="30%" />
         <col width="10%" />
-      </colgroup>
+      </colgroup> 
 
       <thead>
         <tr>
@@ -22,6 +24,7 @@
           <th scope="col">작성자</th>
         </tr>
       </thead>
+      
       <tbody>
         <template v-if="faqList">
           <template v-if="faqList.faqCnt > 0">
@@ -68,7 +71,7 @@ const faq_idx = ref(0);
 const faqModalState = useModalStore();
 const userInfo = useUserInfo();
 
-const faq_fype = userInfo.user.userType === "B" ? 1 : 2;
+const faq_fype = ref(userInfo.user.userType === "B" ? "1" : "2");
 
 const searchList = async () => {
   const param = new URLSearchParams({
@@ -77,12 +80,22 @@ const searchList = async () => {
     searchEdDate: route.query.searchEdDate || "",
     currentPage: cPage.value,
     pageSize: 5,
-    faq_type: faq_fype,
+    faq_type: faq_fype.value,
   });
   await axios.post("/api/board/faqListRe.do", param).then((res) => {
     faqList.value = res.data;
   });
 };
+
+const personalFaq = () => {
+  faq_fype.value = "1";
+  searchList();
+}
+
+const companyFaq = () => {
+  faq_fype.value = "2";
+  searchList();
+}
 
 const handlerModal = (idx) => {
   console.log(idx);

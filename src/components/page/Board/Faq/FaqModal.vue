@@ -1,20 +1,14 @@
 <template>
   <teleport to="body">
-    <div class="backdrop">
-      <div class="container">
-        <label> 제목 :<input type="text" v-model="faqDetail.title" /> </label>
-        <label>
-          내용 :
-          <input type="text" v-model="faqDetail.content" />
-        </label>
-      </div>
-    </div>
+    <label> 제목 :<input type="text" v-model="faqDetail.title" /> </label>
+    <label> 내용 :<input type="text" v-model="faqDetail.content" /> </label>
   </teleport>
 </template>
 
 <script setup>
 import axios from "axios";
 import { onMounted } from "vue";
+
 
 const faqDetail = ref({});
 const props = defineProps(["idx"]);
@@ -28,6 +22,8 @@ const searchDetail = () => {
 onMounted(() => {
   props.idx && searchDetail();
 });
+
+
 </script>
 
 <style lang="scss" scoped>
@@ -122,4 +118,6 @@ button {
     transform: translateY(2px);
   }
 }
+
 </style>
+<style src="@vueform/toggle/themes/default.css"></style>
