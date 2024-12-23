@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    CompanyDetail: typeof import('./src/components/page/Company/CompanyDetail.vue')['default']
     CompanyUpdate: typeof import('./src/components/page/Company/CompanyUpdate.vue')['default']
     ContextBox: typeof import('./src/components/common/ContextBox.vue')['default']
     copy: typeof import('./src/components/page/Board/Notice/FirstNoticeMain copy.vue')['default']
