@@ -28,6 +28,8 @@ declare module 'vue' {
     'FirstNoticeMain copy': typeof import('./src/components/page/Board/Notice/FirstNoticeMain copy.vue')['default']
     FirstNoticeSearch: typeof import('./src/components/page/Board/Notice/FirstNoticeSearch.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    HistoryMain: typeof import('./src/components/page/Apply/History/HistoryMain.vue')['default']
+    HistorySearch: typeof import('./src/components/page/Apply/History/HistorySearch.vue')['default']
     LeftManuBar: typeof import('./src/components/layout/LeftManuBar.vue')['default']
     LoginMain: typeof import('./src/components/page/Login/LoginMain.vue')['default']
     NoticeMain: typeof import('./src/components/page/Board/Notice/NoticeMain.vue')['default']
