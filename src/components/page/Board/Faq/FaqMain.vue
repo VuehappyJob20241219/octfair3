@@ -99,6 +99,7 @@ watch(route, searchList);
 
 onMounted(() => {
   searchList();
+  searchList();
 });
 </script>
 

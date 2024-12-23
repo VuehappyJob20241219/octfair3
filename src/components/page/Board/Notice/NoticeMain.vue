@@ -24,21 +24,21 @@
         </tr>
       </thead>
       <tbody>
-        <template v-if="noticeList">
-            <template v-if="noticeList.noticeCnt">
-                <tr v-for="notice in noticeList.notice" :key="notice.noticeIdx" 
-                    @click="handlerModal(notice.noticeIdx)">
-                    <td>{{ notice.noticeIdx}} </td>
-                    <td>{{ notice.title}}</td>
-                    <td>{{ notice.createdDate.substr(0, 10) }}</td>
-                    <td>{{ notice.author }}</td>
-                </tr>
-            </template>
-            <template v-else>
-                <tr>
-                    <td colspan="7">일치하는 검색 결과가 없습니다</td>
-                </tr>
-            </template>
+        <template v-if="isLoading">...로딩중</template>
+        <template v-if="isSuccess">
+          <template v-if="noticeList.noticeCnt > 0">
+            <tr v-for="notice in noticeList.notice" v-bind:key="notice.noticeIdx">
+              <td>{{ notice.noticeIdx }}</td>
+              <td @click="handlerModal(notice.noticeIdx)">{{ notice.title }}</td>
+              <td>{{ notice.createdDate.split(" ")[0] }}</td>
+              <td>{{ notice.author }}</td>
+            </tr>
+          </template>
+          <template v-else>
+            <tr>
+              <td colspan="7">등록된 이력서가 없습니다.</td>
+            </tr>
+          </template>
         </template>
       </tbody>
     </table>
