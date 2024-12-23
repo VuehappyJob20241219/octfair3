@@ -28,18 +28,18 @@ const routes = [
             name: "notice",
             component: Notice,
           },
-          {
-            //단일 라우터
-            path: "notice.do/:idx",
-            name: "noticeDetail",
-            component: FirstNoticeDetail,
-          },
-          {
-            //단일 라우터
-            path: "notice.do/insert",
-            name: "noticeInsert",
-            component: FirstNoticeDetail,
-          },
+          // {
+          //   //단일 라우터
+          //   path: "notice.do/:idx",
+          //   name: "noticeDetail",
+          //   component: FirstNoticeDetail,
+          // },
+          // {
+          //   //단일 라우터
+          //   path: "notice.do/insert",
+          //   name: "noticeInsert",
+          //   component: FirstNoticeDetail,
+          // },
           {
             path: "faq.do",
             name: "faq",
