@@ -1,4 +1,6 @@
 <template>
+    <MypageModal v-if="modalStatePw.modalState" />
+
     <div class="content">
         <table>
             <colgroup>
@@ -14,7 +16,7 @@
                 </tr>
                 <tr>
                     <th>비밀번호</th>
-                    <td><button>수정</button></td>
+                    <td><button @click="pwModal">수정</button></td>
                 </tr>
                 <tr>
                     <th>이름</th>
@@ -39,7 +41,7 @@
                     <th>이메일</th>
                     <td><input type="email" v-model="bizDetail.email" /></td>
                 </tr>
-                <tr>
+                <tr v-if="bizDetail.userType == B">
                     <th>기업정보</th>
                     <td><button>수정</button></td>
                 </tr>
@@ -65,11 +67,13 @@
 
 <script setup>
 import axios from "axios";
+import { useModalStore } from "../../../stores/modalState";
 import { useUserInfo } from '../../../stores/userInfo';
 
 const props = defineProps(["loginId"]);
 const userInfo = useUserInfo();
 const bizDetail = ref({});
+const modalStatePw = useModalStore();
 
 const searchDetail = () => {
     const param = new URLSearchParams({
@@ -94,6 +98,10 @@ const openDaumPostcode = () => { //카카오API사용
 onMounted(() => {
     userInfo.user.loginId && searchDetail();
 });
+
+const pwModal = () => {
+    modalStatePw.setModalState();
+};
 
 </script>
 

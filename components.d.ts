@@ -29,6 +29,7 @@ declare module 'vue' {
     LeftManuBar: typeof import('./src/components/layout/LeftManuBar.vue')['default']
     LoginMain: typeof import('./src/components/page/Login/LoginMain.vue')['default']
     MypageMain: typeof import('./src/components/page/Mypage/MypageMain.vue')['default']
+    MypageModal: typeof import('./src/components/page/Mypage/MypageModal.vue')['default']
     MypageUpdate: typeof import('./src/components/page/Mypage/MypageUpdate.vue')['default']
     NoticeMain: typeof import('./src/components/page/Board/Notice/NoticeMain.vue')['default']
     NoticeModal: typeof import('./src/components/page/Board/Notice/NoticeModal.vue')['default']
