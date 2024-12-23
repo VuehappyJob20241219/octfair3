@@ -196,7 +196,8 @@ const pwReset = () => {
     
     axios.post("/api/manage-user/applicantPwReset.do", param)
     .then((res)=>{
-        if(res.result === "success"){
+        console.log(res.data.result);
+        if(res.data.result === "success"){
             alert("비밀번호가 초기화되었습니다.");
         }
     })
