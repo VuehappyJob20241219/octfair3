@@ -1,4 +1,5 @@
 <template>
+  <button class="newResumeCreateMove" @click="newResumeCreate">안녕</button>
   <div class="divResumeList">
     현재 페이지:{{ cPage }} 총 개수: {{ resumeList?.resumeCnt }}
     <table>
@@ -20,8 +21,15 @@
             <tr v-for="resume in resumeList.resumeList" :key="resume.resIdx">
               <td>{{ resume.resTitle }}</td>
               <td>
-                <button class="copy-button" @click="resumeCopy(resume.resIdx)">복사하기</button>
-                <button class="delete-button" @click="resumeDelete(resume.resIdx)">삭제하기</button>
+                <button class="copy-button" @click="resumeCopy(resume.resIdx)">
+                  복사하기
+                </button>
+                <button
+                  class="delete-button"
+                  @click="resumeDelete(resume.resIdx)"
+                >
+                  삭제하기
+                </button>
               </td>
               <td>{{ resume.updatedDate }}</td>
             </tr>
@@ -50,6 +58,7 @@ import { useUserInfo } from "../../../../stores/userInfo";
 import { onMounted, ref, watch } from "vue";
 import Pagination from "../../../common/Pagination.vue";
 import { Resume } from "../../../../api/axiosApi/resumeApi";
+import { useRouter } from "vue-router";
 
 const userInfo = useUserInfo();
 const { user } = userInfo;
@@ -57,6 +66,7 @@ const resumeList = ref([]);
 const cPage = ref(1);
 const resumeCopyResult = ref();
 const resumeDeleteResult = ref();
+const router = useRouter();
 
 const resumeSearchList = async () => {
   const param = {
@@ -70,6 +80,7 @@ const resumeSearchList = async () => {
     .post(Resume.ListResume, param)
     .then((res) => {
       resumeList.value = res.data;
+      console.log(resumeList.value.resumeList);
     })
     .catch((error) => {
       console.error("데이터 로드 중 오류 발생:", error);
@@ -103,12 +114,28 @@ const resumeDelete = async (idx) => {
   });
 };
 
+const newResumeCreate = () => {
+  router.push("resume-new.do");
+};
+
 onMounted(() => {
   resumeSearchList();
 });
 </script>
 
 <style lang="scss" scoped>
+.newResumeCreateMove {
+  position: absolute; /* 부모 컴포넌트 기준 위치 */
+  top: 3%; /* divResumeList 상단 위로 배치 */
+  right: 12%;
+  background-color: #39b0e8;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
 table {
   width: 100%;
   border-collapse: collapse;
