@@ -2,9 +2,12 @@ import { createRouter, createWebHistory } from "vue-router";
 import Login from "../views/Login/Login.vue";
 import DashBoard from "../views/DashBoard/DashBoard.vue";
 import Notice from "../views/Board/Notice.vue";
+import Post from "../views/ManageHire/Post.vue";
 import FirstNoticeDetail from "../components/page/Board/Notice/FirstNoticeDetail.vue";
-import Applicant from "../views/Manage-user/Applicant.vue"
+import Applicant from "../views/Manage-user/Applicant.vue";
 import Biz from "../views/Manage-user/Biz.vue"
+import Resume from "../views/Apply/Resume.vue";
+import Faq from "../views/Board/Faq.vue";
 
 const routes = [
   {
@@ -26,17 +29,22 @@ const routes = [
             name: "notice",
             component: Notice,
           },
+          // {
+          //   //단일 라우터
+          //   path: "notice.do/:idx",
+          //   name: "noticeDetail",
+          //   component: FirstNoticeDetail,
+          // },
+          // {
+          //   //단일 라우터
+          //   path: "notice.do/insert",
+          //   name: "noticeInsert",
+          //   component: FirstNoticeDetail,
+          // },
           {
-            //단일 라우터
-            path: "notice.do/:idx",
-            name: "noticeDetail",
-            component: FirstNoticeDetail,
-          },
-          {
-            //단일 라우터
-            path: "notice.do/insert",
-            name: "noticeInsert",
-            component: FirstNoticeDetail,
+            path: "faq.do",
+            name: "faq",
+            component: Faq,
           },
         ],
       },
@@ -47,14 +55,36 @@ const routes = [
           {
             path: "applicant.do",
             name: "applicant",
-            component: Applicant
+            component: Applicant,
           },
           {
             path: "biz.do",
             name: "biz",
             component: Biz
           }
-        ]
+        ],
+      },
+      {
+        path: "apply",
+        name: "apply",
+        children: [
+          {
+            path: "resume.do",
+            name: "resume",
+            component: Resume,
+          },
+        ],
+      },
+      {
+        path: "manage-hire",
+        name: "manage-hire",
+        children: [
+          {
+            path: "post.do",
+            name: "post",
+            component: Post,
+          },
+        ],
       },
     ],
   },
