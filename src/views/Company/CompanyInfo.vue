@@ -1,6 +1,6 @@
 <template>
-  <ContextBox>기업 수정 및 삭제 </ContextBox>
-  <CompanyUpdate />
+  <ContextBox>기업 상세 조회</ContextBox>
+  <CompanyDetail />
 </template>
 
 <script setup></script>
