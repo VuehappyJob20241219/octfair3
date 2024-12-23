@@ -47,13 +47,6 @@
       :onClick="searchList"
       v-model="cPage"
     />
-    <Pagination
-      :totalItems="faqList?.faqCnt || 0"
-      :items-per-page="5"
-      :max-pages-shown="5"
-      :onClick="searchList"
-      v-model="cPage"
-    />
   </div>
 </template>
 <script setup>
