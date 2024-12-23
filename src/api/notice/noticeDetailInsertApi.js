@@ -4,7 +4,7 @@ import { Notice } from "../axiosApi/noticeApi";
 export const insertNoticeDetail = async (detailValue, fileData, userid) => {
   const textData = {
     title: detailValue.title,
-    context: detailValue.content,
+    context: detailValue.context,
     loginId: userid,
   };
   const formData = new FormData();

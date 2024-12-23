@@ -30,7 +30,7 @@
             <tr v-for="notice in noticeList.notice" v-bind:key="notice.noticeIdx">
               <td>{{ notice.noticeIdx }}</td>
               <td @click="handlerDetail(notice.noticeIdx)">{{ notice.title }}</td>
-              <td>{{ notice.createdDate.split(" ")[0] }}</td>
+              <td>{{ notice.createdDate}}</td>
               <td>{{ notice.author }}</td>
             </tr>
           </template>

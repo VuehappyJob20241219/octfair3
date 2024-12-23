@@ -1,13 +1,11 @@
 <template>
-  <div class="divNoticeList">
-    현재 페이지: {{ cPage }}, 총 개수: {{ noticeList?.noticeCnt }}
-    <NoticeModal
-      v-if="modalState.modalState"
-      @postSuccess="searchList"
-      @modalClose="() => (noticeIdx = 0)"
-      :idx="noticeIdx"
-    />
-    <!-- <NoticeModal v-show="modalValue"/> -->
+  <FaqModal
+    v-if="faqModalState.modalState"
+    @postSuccess="searchList"
+    @modalClose="() => (faqSeq = 0)"
+    :idx="faq_idx"
+  />
+  <div class="divFaqList">
     <table>
       <colgroup>
         <col width="10%" />
@@ -25,17 +23,13 @@
         </tr>
       </thead>
       <tbody>
-        <template v-if="noticeList">
-          <template v-if="noticeList.noticeCnt">
-            <tr
-              v-for="notice in noticeList.notice"
-              :key="notice.noticeIdx"
-              @click="handlerModal(notice.noticeIdx)"
-            >
-              <td>{{ notice.noticeIdx }}</td>
-              <td>{{ notice.title }}</td>
-              <td>{{ notice.createdDate.substr(0, 10) }}</td>
-              <td>{{ notice.author }}</td>
+        <template v-if="faqList">
+          <template v-if="faqList.faqCnt > 0">
+            <tr v-for="faq in faqList.faq" :key="faq.faq_idx">
+              <td>{{ faq.faq_idx }}</td>
+              <td @click="handlerModal(faq.faq_idx)">{{ faq.title }}</td>
+              <td>{{ faq.created_date.substr(0, 10) }}</td>
+              <td>{{ faq.author }}</td>
             </tr>
           </template>
           <template v-else>
@@ -47,7 +41,7 @@
       </tbody>
     </table>
     <Pagination
-      :totalItems="noticeList?.noticeCnt || 0"
+      :totalItems="faqList?.faqCnt || 0"
       :items-per-page="5"
       :max-pages-shown="5"
       :onClick="searchList"
@@ -55,40 +49,43 @@
     />
   </div>
 </template>
-
 <script setup>
-import { useModalStore } from "@/stores/modalState";
 import axios from "axios";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
+import { useModalStore } from "../../../../stores/modalState";
+import { useUserInfo } from "../../../../stores/userInfo";
 import Pagination from "../../../common/Pagination.vue";
+import FaqModal from "./FaqModal.vue";
 
 const route = useRoute();
-// console.log(route);
-// watch(route, () => console.log(route.query));
-const noticeList = ref();
-// const noticeCount = ref(0);
+const faqList = ref();
 const cPage = ref(1);
-const modalState = useModalStore();
-const noticeIdx = ref(0);
+const faq_idx = ref(0);
+const faqModalState = useModalStore();
+const userInfo = useUserInfo();
 
-const searchList = () => {
+const faq_fype = userInfo.user.userType === "B" ? 1 : 2;
+
+const searchList = async () => {
   const param = new URLSearchParams({
     searchTitle: route.query.searchTitle || "",
     searchStDate: route.query.searchStDate || "",
     searchEdDate: route.query.searchEdDate || "",
     currentPage: cPage.value,
     pageSize: 5,
+    faq_type: faq_fype,
   });
-  axios.post("/api/board/noticeListJson.do", param).then((res) => {
-    noticeList.value = res.data;
+  await axios.post("/api/board/faqListRe.do", param).then((res) => {
+    faqList.value = res.data;
   });
 };
 
 const handlerModal = (idx) => {
-  console.log(idx);
-  modalState.setModalState();
-  noticeIdx.value = idx;
+  faqModalState.setModalState();
+  axios.post("/api/board/faqDetail.do", { faqSeq: idx }).then((res) => {
+    faqList.value = res.data;
+  });
 };
 
 watch(route, searchList);
@@ -96,10 +93,6 @@ watch(route, searchList);
 onMounted(() => {
   searchList();
 });
-
-// onBeforeMounted(()=>{
-//     searchList();
-// })
 </script>
 
 <style lang="scss" scoped>
