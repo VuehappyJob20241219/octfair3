@@ -24,7 +24,7 @@
                             </tr>
                             <tr>
                                 <th>비밀번호</th>
-                                <td><button>초기화</button></td>
+                                <td><button @click="pwReset">초기화</button></td>
                             </tr>
                             <tr>
                                 <th>이름</th>
@@ -189,6 +189,18 @@ const checkForm = () => {
     return true;
 }
 
+const pwReset = () => {
+    const param = new URLSearchParams({
+        loginId: applicantDetail.value.loginId
+    });
+    
+    axios.post("/api/manage-user/applicantPwReset.do", param)
+    .then((res)=>{
+        if(res.result === "success"){
+            alert("비밀번호가 초기화되었습니다.");
+        }
+    })
+}
 
 
 const handlerModal = () => {
