@@ -25,9 +25,12 @@
       <tbody>
         <template v-if="faqList">
           <template v-if="faqList.faqCnt > 0">
-            <tr v-for="faq in faqList.faq" :key="faq.faq_idx">
+            <tr v-for="faq in faqList.faq"
+             :key="faq.faq_idx"
+             @click="handlerModal(faq.faq_idx)"
+             >
               <td>{{ faq.faq_idx }}</td>
-              <td @click="handlerModal(faq.faq_idx)">{{ faq.title }}</td>
+              <td>{{ faq.title }}</td>
               <td>{{ faq.created_date.substr(0, 10) }}</td>
               <td>{{ faq.author }}</td>
             </tr>
@@ -82,10 +85,9 @@ const searchList = async () => {
 };
 
 const handlerModal = (idx) => {
+  console.log(idx);
   faqModalState.setModalState();
-  axios.post("/api/board/faqDetail.do", { faqSeq: idx }).then((res) => {
-    faqList.value = res.data;
-  });
+  faq_idx.value = idx;
 };
 
 watch(route, searchList);

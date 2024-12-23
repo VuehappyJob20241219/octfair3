@@ -64,10 +64,7 @@ import { useRoute } from "vue-router";
 import Pagination from "../../../common/Pagination.vue";
 
 const route = useRoute();
-// console.log(route);
-// watch(route, () => console.log(route.query));
 const noticeList = ref();
-// const noticeCount = ref(0);
 const cPage = ref(1);
 const modalState = useModalStore();
 const noticeIdx = ref(0);
