@@ -8,6 +8,7 @@ import Applicant from "../views/Manage-user/Applicant.vue";
 import Biz from "../views/Manage-user/Biz.vue"
 import Resume from "../views/Apply/Resume.vue";
 import Faq from "../views/Board/Faq.vue";
+import History from "../views/Apply/History.vue";
 
 const routes = [
   {
@@ -72,6 +73,11 @@ const routes = [
             path: "resume.do",
             name: "resume",
             component: Resume,
+          },
+          {
+            path: "history.do",
+            name: "history",
+            component: History,
           },
         ],
       },
