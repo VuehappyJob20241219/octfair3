@@ -1,12 +1,13 @@
 <template>
-  <NoticeModal
-    v-if="modalState.modalState"
-    @postSuccess="searchList"
-    @modalClose="() => (noticeIdx = 0)"
-    :idx="noticeIdx"
-  />
   <div class="divNoticeList">
-    현재 페이지:{{ cPage }} 총 개수: {{ noticeList?.noticeCnt }}
+    현재 페이지: {{ cPage }}, 총 개수: {{ noticeList?.noticeCnt }}
+    <NoticeModal
+      v-if="modalState.modalState"
+      @postSuccess="searchList"
+      @modalClose="() => (noticeIdx = 0)"
+      :idx="noticeIdx"
+    />
+    <!-- <NoticeModal v-show="modalValue"/> -->
     <table>
       <colgroup>
         <col width="10%" />
@@ -63,7 +64,10 @@ import { useRoute } from "vue-router";
 import Pagination from "../../../common/Pagination.vue";
 
 const route = useRoute();
+// console.log(route);
+// watch(route, () => console.log(route.query));
 const noticeList = ref();
+// const noticeCount = ref(0);
 const cPage = ref(1);
 const modalState = useModalStore();
 const noticeIdx = ref(0);
@@ -92,6 +96,10 @@ watch(route, searchList);
 onMounted(() => {
   searchList();
 });
+
+// onBeforeMounted(()=>{
+//     searchList();
+// })
 </script>
 
 <style lang="scss" scoped>
