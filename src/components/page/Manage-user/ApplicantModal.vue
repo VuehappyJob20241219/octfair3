@@ -47,11 +47,11 @@
                             </tr>
                             <tr>
                                 <th>이메일</th>
-                                <td><input type="email" v-model="applicantDetail.email"/></td>
+                                <td><input type="email" v-model="applicantDetail.email" /></td>
                             </tr>
                             <tr>
                                 <th>가입일자</th>
-                                <td><input type="date" v-model="applicantDetail.regdate" /></td>
+                                <td><input type="date" v-model="applicantDetail.regdate"/></td>
                             </tr>
                             <tr>
                                 <th>활성화</th>
@@ -62,7 +62,7 @@
                             </tr>
                             <tr>
                                 <th>우편변호</th>
-                                <td><input type="text" v-model="applicantDetail.zipCode" /></td>
+                                <td><input type="text" v-model="applicantDetail.zipCode"/></td>
                                 <button @click="openDaumPostcode">우편번호 찾기</button>
                             </tr>
                             <tr>
@@ -116,6 +116,10 @@ const openDaumPostcode = () => { //카카오API사용
 
 const handlerSaveBtn = () => {
     //유효성 검사
+    if(!checkForm()){
+        console.log("수정에 실패하였습니다.");
+        return;
+    }
 
     const param = new URLSearchParams({
         ... applicantDetail.value
@@ -127,13 +131,65 @@ const handlerSaveBtn = () => {
             emit('postSuccess');
         };
     })
-
 }
 
 const checkForm = () => {
-    //유효성검사 함수
-    
+    let inputName = applicantDetail.value.name;
+    let inputSex = applicantDetail.value.sex;
+    let inputBirthday = applicantDetail.value.birthday;
+    let inputPhone = applicantDetail.value.phone;
+    let inputEmail = applicantDetail.value.email;
+    let inputRegDate = applicantDetail.value.regdate;
+    let inputZipCode = applicantDetail.value.zipCode;
+
+    let emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+    let phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
+    let ZipCodeRules = /[0-9\-]{5}/;
+
+    if(inputName.length<1){
+        alert("이름을 입력하세요.");
+        return false;
+    }
+    if(inputSex.length<1){
+        alert("성별을 선택해주세요.");
+        return false;
+    }
+    if(inputBirthday.length<1){
+        alert("생일을 입력해주세요.");
+        return false;
+    }
+    if(inputPhone.length<1){
+        alert("전화번호를 선택해주세요.");
+        return false;
+    }
+    if(!phoneRules.test(inputPhone)){
+        alert("전화번호 형식을 확인해주세요.");
+        return false;
+    }
+    if(inputEmail.length<1){
+        alert("이메일을 선택해주세요.");
+        return false;
+    }
+    if(!emailRules.test(inputEmail)){
+        alert("이메일 형식을 확인해주세요.");
+        return false;
+    }
+    if(inputRegDate.length<1){
+        alert("가입일자를 입력해주세요.");
+        return false;
+    }
+    if(inputZipCode.length<1){
+        alert("우편번호(주소)를 입력해주세요.");
+        return false;
+    }
+    if(!ZipCodeRules.test(inputZipCode)){
+        alert("우편번호를 확인해주세요.");
+        return false;
+    }
+    return true;
 }
+
+
 
 const handlerModal = () => {
     modalStateApplicant.setModalState();
@@ -144,7 +200,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  emit("modalClose");
+    emit("modalClose");
 });
 
 </script>
