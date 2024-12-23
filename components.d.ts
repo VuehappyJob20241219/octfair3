@@ -10,6 +10,8 @@ declare module 'vue' {
     ApplicantMain: typeof import('./src/components/page/Manage-user/ApplicantMain.vue')['default']
     ApplicantModal: typeof import('./src/components/page/Manage-user/ApplicantModal.vue')['default']
     ApplicantSearch: typeof import('./src/components/page/Manage-user/ApplicantSearch.vue')['default']
+    BizMain: typeof import('./src/components/page/Manage-user/BizMain.vue')['default']
+    BizSearch: typeof import('./src/components/page/Manage-user/BizSearch.vue')['default']
     BizPostDetail: typeof import('./src/components/page/ManageHire/BizPost/BizPostDetail.vue')['default']
     BizPostInsert: typeof import('./src/components/page/ManageHire/BizPost/BizPostInsert.vue')['default']
     BizPostMain: typeof import('./src/components/page/ManageHire/BizPost/BizPostMain.vue')['default']
