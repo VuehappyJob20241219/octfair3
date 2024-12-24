@@ -1,7 +1,7 @@
 <template>
   <button class="newResumeCreateMove" @click="newResumeCreate">안녕</button>
   <div class="divResumeList">
-    현재 페이지:{{ cPage }} 총 개수: {{ resumeList?.resumeCnt }}
+    현재 페이지:{{ cPage }} 총 개수: {{ resumeInfoArray?.resumeCnt }}
     <table>
       <colgroup>
         <col width="50%" />
@@ -16,20 +16,18 @@
         </tr>
       </thead>
       <tbody>
-        <template v-if="resumeList">
-          <template v-if="resumeList.resumeCnt > 0">
-            <tr v-for="resume in resumeList.resumeList" :key="resume.resIdx">
-              <td>{{ resume.resTitle }}</td>
+        <template v-if="resumeInfoArray">
+          <template v-if="resumeInfoArray.resumeCnt > 0">
+            <tr v-for="resume in resumeInfoArray.resumeList" :key="resume.resIdx">
+              <td class="resumeTitle">
+                {{ resume.resTitle }}
+                <div class="resumeFile" @click="fileDownload(resume.resIdx)">
+                  <label> {{ resume.fileName }}</label>
+                </div>
+              </td>
               <td>
-                <button class="copy-button" @click="resumeCopy(resume.resIdx)">
-                  복사하기
-                </button>
-                <button
-                  class="delete-button"
-                  @click="resumeDelete(resume.resIdx)"
-                >
-                  삭제하기
-                </button>
+                <button class="copy-button" @click="resumeCopy(resume.resIdx)">복사하기</button>
+                <button class="delete-button" @click="resumeDelete(resume.resIdx)">삭제하기</button>
               </td>
               <td>{{ resume.updatedDate }}</td>
             </tr>
@@ -43,7 +41,7 @@
       </tbody>
     </table>
     <Pagination
-      :totalItems="resumeList?.resumeCnt || 0"
+      :totalItems="resumeInfoArray?.resumeCnt || 0"
       :items-per-page="5"
       :max-pages-shown="5"
       :onClick="resumeSearchList"
@@ -54,19 +52,20 @@
 
 <script setup>
 import axios from "axios";
-import { useUserInfo } from "../../../../stores/userInfo";
-import { onMounted, ref, watch } from "vue";
-import Pagination from "../../../common/Pagination.vue";
-import { Resume } from "../../../../api/axiosApi/resumeApi";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { Resume } from "../../../../api/axiosApi/resumeApi";
+import { useUserInfo } from "../../../../stores/userInfo";
+import Pagination from "../../../common/Pagination.vue";
 
 const userInfo = useUserInfo();
 const { user } = userInfo;
-const resumeList = ref([]);
+const resumeInfoArray = ref([]);
 const cPage = ref(1);
 const resumeCopyResult = ref();
 const resumeDeleteResult = ref();
 const router = useRouter();
+const imageUrl = ref("");
 
 const resumeSearchList = async () => {
   const param = {
@@ -79,8 +78,7 @@ const resumeSearchList = async () => {
   await axios
     .post(Resume.ListResume, param)
     .then((res) => {
-      resumeList.value = res.data;
-      console.log(resumeList.value.resumeList);
+      resumeInfoArray.value = res.data;
     })
     .catch((error) => {
       console.error("데이터 로드 중 오류 발생:", error);
@@ -111,6 +109,28 @@ const resumeDelete = async (idx) => {
     if (resumeDeleteResult.value.result === "success") {
       resumeSearchList();
     }
+  });
+};
+
+const fileDownload = (idx) => {
+  let param = new URLSearchParams();
+  param.append("resIdx", idx);
+
+  const postAtion = {
+    url: "/api/apply/resumeFileDownload.do",
+    method: "POST",
+    data: param,
+    responseType: "blob",
+  };
+  axios(postAtion).then((res) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const resumeItem = resumeInfoArray.value.resumeList.find((item) => item.resIdx === idx);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", resumeItem.fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   });
 };
 
@@ -162,7 +182,17 @@ table {
     opacity: 0.9;
     cursor: pointer;
   }
-
+  .resumeTitle {
+    font-size: 25px;
+  }
+  .resumeFile {
+    font-size: 15px;
+    color: blue;
+    text-decoration: underline;
+  }
+  .resumeFile label:hover {
+    cursor: pointer;
+  }
   .copy-button {
     background-color: #39b0e8; /* 초록색 */
     color: white;

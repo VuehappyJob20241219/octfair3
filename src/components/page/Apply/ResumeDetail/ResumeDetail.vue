@@ -1,10 +1,24 @@
 <template>
   <div class="resumeDetail_body_wrap">
-    <div class="resumeDetail_body_basicInfo">
-      <div>타이틀{{}}</div>
-      <div>이름{{}}</div>
-      <div>이메일{{}}</div>
-      <div>연락처{{}}</div>
+    <div v-if="basicinformation" class="resumeDetail_body_basicInfo">
+      <div class="inputRow"> <label for="resTitle">제목:</label> <input type="text" v-model="basicinformation.resTitle" />
+      </div>
+      <div class="inputRow">
+        <label for="resTitle">이름:</label>
+        <input type="text" v-model="basicinformation.userNm" />
+      </div>
+      <div class="inputRow">
+        <label for="resTitle">이메일: </label>
+        <input type="text" v-model="basicinformation.email" />
+      </div>
+      <div class="inputRow">
+        <label for="resTitle">전화번호: </label>
+        <input type="text" v-model="basicinformation.phone " />
+      </div>
+    </div>
+    <div v-else>
+      <div>기본 정보를 불러오는 중입니다....
+      </div>
     </div>
     <div class="resumeDetail_body">
       <div class="resumeDetail_body_haeder">간단소개글</div>
@@ -356,8 +370,6 @@ const basicInfo = async() => {
   }
   await axios.post(Resume.BasicInfoResume, param).then((res)=> { 
     basicinformation.value = res.data.result
-    console.log('기본값', basicinformation.value);
-    console.log('기본값2',basicinformation.value.resIdx);
   }
   )
 }
@@ -389,6 +401,32 @@ onMounted(() => {
   background-color: #eaf2fe;
   border-radius: 5px;
   color: gray;
+}
+
+.inputRow {
+  display: flex;
+  width: 100%;
+  align-items: center; /* 세로 정렬 */
+  gap: 10px; /* label과 input 사이 간격 */
+}
+
+.inputRow label {
+  width: 100px; /* 제목 영역 확보 */
+  text-align: left; /* 라벨 텍스트 오른쪽 정렬 */
+}
+
+.inputRow input {
+  flex-grow: 1; /* 입력 필드가 넓이를 차지하도록 설정 */
+  padding: 5px;
+  border: none; /* 기본 상태에서 테두리를 없앰 */
+  outline: none; /* 포커스 상태에서 기본 outline 제거 */
+  background-color: transparent; /* 배경색 투명 */
+  transition: all 0.2s ease; /* 스타일 전환 애니메이션 */
+}
+.inputRow input:focus {
+  border: 1px solid #007bff; /* 포커스 시 테두리 추가 */
+  background-color: #f9f9f9; /* 포커스 시 배경색 변경 */
+  border-radius: 4px; /* 테두리 모서리 둥글게 */
 }
 
 input,
