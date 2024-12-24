@@ -92,14 +92,14 @@ const {
 });
 
 const handleNewInsert = () => {
-  router.push("post.do/insert");
+  router.push("bizPostInsert.do");
 };
 
 const handlerDetail = (param) => {
   // queryClient.removeQueries({
   //   queryKey: ["HirePost"],
   // });
-  router.push({ name: "BizPostDetail", params: { idx: param } });
+  router.push({ name: "bizPostDetail", params: { idx: param } });
 };
 </script>
 
