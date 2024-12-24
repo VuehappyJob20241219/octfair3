@@ -176,6 +176,7 @@ import axios from 'axios';
 import { ref } from 'vue';
 const postInput = ref({});
 const years = ["1년 이상", "2년 이상", "3년 이상", "4년 이상"];
+postInput.value.expYears= years[0];
 const checkBox = reactive([
       { id: 1, label: "신입", checked: false },
       { id: 2, label: "경력", checked: false },
@@ -223,8 +224,53 @@ const handleClickRefresh = () => {
   recruitProcessList.splice(0, checkBox.length);
   postInput.value.recruitProcess=""; // recruitProcess 상태를 초기화
 };
+const handlerInsertBtn = () => {
+  const reqiredFields = {
+      title: "채용제목을", 
+      expRequired: "경력 여부를",
+      salary: "급여를", 
+      openings: "모집인원을", 
+      workLocation: "근무지역을", 
+      posDescription: "포지션 설명을", 
+      startDate: "시작 날짜를",
+      endDate: "종료 날짜를",
+      hirProcess: "채용 절차를",
+      reqQualifications: "자격조건을"      
+  };
 
-const handlerInsertBtn = async () => {
+  for (const [key, Value] of Object.entries(reqiredFields)) {
+  // console.log(`Key: ${key}, Value: ${value}`);
+  let numberRules = /[0-9]/;
+  if (!postInput.value[key]) {
+    // 해당 필드가 비어있을 때만 알림을 띄움
+    alert(`${Value} 입력해 주세요`);
+    return;  // 반복문 종료
+  }
+
+  if (!numberRules.test(postInput.value.salary)) {
+        alert("급여는 숫자만 입력됩니다.");
+        return;
+  }
+
+  if (!numberRules.test(postInput.value.openings)) {
+        alert("모집인원은 숫자만 입력됩니다.");
+        return;
+  }
+}
+
+  for (const input in postInput.value) {
+    console.log(`${input}`);
+    if (reqiredFields[input.name] && !input) {
+      // 해당 필드가 비어있을 때만 알림을 띄움
+      alert(`"${reqiredFields[input.name]}" 입력해 주세요`);
+      return;  // 알림을 띄운 후, 즉시 종료하여 다른 필드는 검사하지 않음
+    }
+  }
+
+  handlerInsert();
+}
+
+const handlerInsert = async () => {
   const textData = {
     ...postInput.value,
   };
@@ -270,6 +316,11 @@ label {
   flex-direction: column;
 }
 
+select {
+  font-size: 13px;
+  width: 100px;
+  height: 30px;
+}
 input[type="text"] {
   padding: 8px;
   margin-top: 5px;
