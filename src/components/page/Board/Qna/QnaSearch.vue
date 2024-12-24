@@ -10,18 +10,13 @@
 
 <script setup>
 import router from "@/router";
-import { useModalStore } from "../../../../stores/modalState";
 import { useUserInfo } from "../../../../stores/userInfo";
-import { useQnaLogState } from "../../../../stores/useQnaLogState";
 
 const searchTitle = ref("");
 const searchStartDate = ref("");
 const searchEndDate = ref("");
-const modalStore = useModalStore();
 const userInfo = useUserInfo();
 const userType = userInfo.user.userType;
-const qnaStore = useQnaLogState();
-const injectedSearchValue = inject("providedSearchValue");
 const injectedhRequestType = inject("providedRequestType");
 
 const handlerSearch = () => {

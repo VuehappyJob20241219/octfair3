@@ -37,7 +37,7 @@ import { useModalStore } from "../../../../stores/modalState";
 
 const emits = defineEmits(["postSuccess", "modalClose"]);
 const props = defineProps(["idx"]);
-const modalStore = useModalStore();
+const modal = useModalStore();
 const userInfo = useUserInfo();
 const qnaDetail = ref({});
 const imageUrl = ref("");
@@ -63,8 +63,8 @@ const handlerGetModalDetail = () => {
 };
 
 const handlerModal = () => {
-  modalStore.setModalState(!modalStore.modalState);
-  console.log("여기는 detail modalStore", modalStore);
+  modal.setModalState();
+  console.log(modal.modalState);
 };
 
 const handlerSaveBtn = () => {

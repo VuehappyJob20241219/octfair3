@@ -5,23 +5,22 @@
         <div class="modal-content">
           <div class="password">
             <strong>비밀번호 입력</strong>
-            <div class="modal-overlay" @Click="handlerModal">X</div>
+            <div class="modal-overlay" @click="handlerModal">X</div>
           </div>
           <div class="passinput">
             <input
               type="text"
               id="passwordInput"
               name="passwordInput"
-              v-bind="password"
-              @Change="handlePasswordChange"
+              @change="handlePasswordChange"
               placeholder="비밀번호"
-              className="inputTxt password"
+              class="inputTxt password"
             />
             <div class="btn_areaC mt30">
-              <button @Click="submitPassword;" className="btn blue">
+              <button @click="handlerPassWord" class="btn blue">
                 <span>확인</span>
               </button>
-              <button @Click="handlerModal" className="btn gray">
+              <button @click="handlerModal" class="btn gray">
                 <span>취소</span>
               </button>
             </div>
@@ -41,109 +40,33 @@ import { useRouter } from "vue-router";
 import { useModalStore } from "../../../../stores/modalState";
 
 const emits = defineEmits(["postSuccess", "modalClose"]);
+const modal = useModalStore();
 const props = defineProps(["idx"]);
-const modalStore = useModalStore();
-const userInfo = useUserInfo();
-const qnaDetail = ref({});
-const imageUrl = ref("");
-const fileData = ref("");
-const queryClient = useQueryClient();
-const router = useRouter();
+const password = ref("");
 
 const handlerModal = () => {
-  modalStore.setModalState(!modalStore.modalState);
-  console.log("여기는 detail modalStore", modalStore);
+  modal.setModalState();
+  console.log(modal.modalState);
 };
-
-const handlerSaveBtn = () => {
-  const textData = {
-    ...qnaDetail.value, // title, context
-    loginId: userInfo.user.loginId,
+const handlerPassWord = () => {
+  const param = {
+    qnaSeq: props.idx, // 프로바이더 값 사용
+    password: password.value,
   };
-  const formData = new FormData();
-  if (fileData.value) formData.append("file", fileData.value);
-  formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
-  axios.post("/api/board/qnaFileSaveRe.do", formData).then((res) => {
-    if (res.data.result.toUpperCase() === "SUCCESS") {
-      handlerModal();
-      emits("postSuccess");
+  axios.post("/api/board/checkPassword.do", param).then((res) => {
+    console.log(res);
+    if (res.data.result === "success") {
+      alert("비밀번호가 일치 합니다.");
+    } else {
+      alert("비밀번호가 일치하지 않습니다.");
     }
   });
 };
-
-const handlerUpdateBtn = () => {
-  const textData = {
-    ...qnaDetail.value, // title, context
-    loginId: userInfo.user.loginId,
-    qnaSeq: qnaDetail.value.qnaIdx,
-  };
-  const formData = new FormData();
-  if (fileData.value) formData.append("file", fileData.value);
-  formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
-  axios.post("/api/board/qnaFileUpdateRe.do", formData).then((res) => {
-    if (res.data.result.toUpperCase() === "SUCCESS") {
-      handlerModal();
-      emits("postSuccess");
-    }
-  });
+const handlePasswordChange = (event) => {
+  password.value = event.target.value;
+  console.log(password.value); // 예시 동작
 };
 
-const handlerDeleteBtn = () => {
-  axios.post("/api/board/qnaFileDeleteRe.do", { qnaSeq: props.idx }).then((res) => {
-    handlerModal();
-    emits("postSuccess");
-  });
-};
-
-const handlerSelectFile = (e) => {
-  const fileInfo = e.target.files;
-  const fileInfoSplit = fileInfo[0].name.split(".");
-  const fileExtension = fileInfoSplit[1].toLowerCase();
-
-  if (["jpg", "gif", "png", "webp"].includes(fileExtension)) imageUrl.value = URL.createObjectURL(fileInfo[0]);
-  fileData.value = fileInfo[0];
-};
-
-const handlerGetImage = () => {
-  let param = new URLSearchParams();
-  param.append("qnaSeq", props.idx);
-  const postAction = {
-    url: "/api/board/qnaDownload.do",
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-
-  axios(postAction).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    imageUrl.value = url;
-  });
-};
-
-const handlerDownloadFile = () => {
-  let param = new URLSearchParams();
-  param.append("qnaSeq", props.idx);
-  const postAction = {
-    url: "/api/board/qnaDownload.do",
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-
-  axios(postAction).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", qnaDetail.value.fileName);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  });
-};
-
-onMounted(() => {
-  props.idx && handlerGetModalDetail();
-});
 onUnmounted(() => {
   emits("modalClose");
 });
