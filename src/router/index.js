@@ -11,6 +11,8 @@ import CompanyEdit from '../views/Company/CompanyEdit.vue';
 import CompanyInfo from '../views/Company/CompanyInfo.vue';
 import Post from "../views/ManageHire/Post.vue";
 import History from "../views/Apply/History.vue";
+import BizPostInsert from '../components/page/ManageHire/BizPost/BizPostInsert.vue';
+import BizPostDetail from '../components/page/ManageHire/BizPost/BizPostDetail.vue';
 
 const routes = [
   {
@@ -91,6 +93,16 @@ const routes = [
             path: 'post.do',
             name: 'post',
             component: Post,
+          },
+          {
+            path: 'bizPostInsert.do',
+            name: 'bizPostInsert',
+            component: BizPostInsert,
+          },
+          {
+            path: 'bizPostDetail.do/:idx',
+            name: 'bizPostDetail',
+            component: BizPostDetail,
           },
         ],
       },
