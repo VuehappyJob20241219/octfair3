@@ -65,19 +65,21 @@ import { useRoute } from "vue-router";
 import axios from "axios";
 import Pagination from "../../../common/Pagination.vue";
 import QnaDetail from "./QnaDetail.vue";
-import { useModalStore } from "@/stores/modalState";
 import { useUserInfo } from "../../../../stores/userInfo";
-import { useQnaLogState } from "../../../../stores/qnaLogState";
+import { useQnaLogState } from "../../../../stores/useQnaLogState";
+import { inject } from "vue";
+import { useModalStore } from "../../../../stores/modalState";
 
 // 상태 값 설정
 const route = useRoute();
-const qnaList = ref();
 const itemPerPage = ref(10);
+const qnaList = ref();
 const cPage = ref(1);
 const qnaIdx = ref(0);
 const modalStore = useModalStore();
 const userInfo = useUserInfo();
 const qnaLogState = useQnaLogState();
+const injectedhRequestType = inject("providedRequestType");
 
 // 활성 버튼 상태 (디폴트: 일반회원)
 const activeButton = ref("A");
@@ -98,7 +100,7 @@ const searchList = () => {
     currentPage: cPage.value.toString(),
     pageSize: itemPerPage.value.toString(),
     loginId: userInfo.user.loginId,
-    requestType: qnaLogState.loginState,
+    requestType: injectedhRequestType.requestType || "all", // 프로바이더 값 사용
   };
   axios.post("/api/board/qnaListRe.do", param).then((res) => {
     qnaList.value = res.data;
@@ -120,7 +122,11 @@ const closeModal = () => {
 onMounted(() => {
   searchList();
 });
-watch(route, qnaLogState, searchList);
+watch(route, qnaLogState, searchList, injectedhRequestType.requestType);
+
+watchEffect(() => {
+  searchList();
+});
 </script>
 
 <style lang="scss" scoped>

@@ -12,7 +12,7 @@
 import router from "@/router";
 import { useModalStore } from "../../../../stores/modalState";
 import { useUserInfo } from "../../../../stores/userInfo";
-import { useQnaLogState } from "../../../../stores/qnaLogState";
+import { useQnaLogState } from "../../../../stores/useQnaLogState";
 
 const searchTitle = ref("");
 const searchStartDate = ref("");
@@ -21,6 +21,8 @@ const modalStore = useModalStore();
 const userInfo = useUserInfo();
 const userType = userInfo.user.userType;
 const qnaStore = useQnaLogState();
+const injectedSearchValue = inject("providedSearchValue");
+const injectedhRequestType = inject("providedRequestType");
 
 const handlerSearch = () => {
   const query = [];
@@ -32,8 +34,12 @@ const handlerSearch = () => {
   router.push(queryString);
 };
 
+const handlerSearchKewordBtn = () => {
+  injectedSearchValue.value = { ...searchKey.value };
+};
+
 const handlerLogState = () => {
-  qnaStore.setQnaLogState("my"); // 상태 변경
+  injectedhRequestType.requestType = "my";
 };
 
 watchEffect(() => window.location.search && router.push()); // URL이 변경되면 리셋

@@ -17,15 +17,10 @@
         </div>
       </div>
       <div class="button-box">
-        <button
-          
-          @click="detailValue.qnaIdx ? handlerUpdateNoticeBtn() : handlerSaveNoticeBtn()"
-        >
+        <button @click="detailValue.qnaIdx ? handlerUpdateNoticeBtn() : handlerSaveNoticeBtn()">
           {{ detailValue.qnaIdx ? "수정" : "저장" }}
         </button>
-        <button @click="handlerDeleteQnaBtn" v-if= "detailValue.qnaIdx">
-          삭제
-        </button>
+        <button @click="handlerDeleteQnaBtn" v-if="detailValue.qnaIdx">삭제</button>
         <button @click="router.go(-1)">뒤로가기</button>
       </div>
     </div>
@@ -55,12 +50,7 @@ const imageUrl = ref("");
 const queryClient = useQueryClient();
 const modalStore = useModalStore();
 
-const {
-  data: noticeDetail,
-  isLoading,
-  isSuccess,
-  isError,
-} = useQnaDetailGetQuery(detailValue, params.idx, fileData);
+const { data: qnaDetail, isLoading, isSuccess, isError } = useQnaDetailGetQuery(detailValue, params.idx, fileData);
 const { mutate: handlerSaveQnaBtn } = useQnaDetailSaveMutation(detailValue, params.idx, fileData);
 const { mutate: handlerUpdateQnaBtn } = useQnaDetailUpdateMutation(detailValue, params.idx, fileData);
 const { mutate: handlerDeleteQnaBtn } = useQnaDetailDeleteMutation(detailValue, params.idx, fileData);
