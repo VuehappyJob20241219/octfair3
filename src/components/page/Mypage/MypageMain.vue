@@ -16,7 +16,7 @@
                 </tr>
                 <tr>
                     <th>비밀번호</th>
-                    <td><button @click="pwModal">수정</button></td>
+                    <td><button @click="handlerPwModal">수정</button></td>
                 </tr>
                 <tr>
                     <th>이름</th>
@@ -47,7 +47,7 @@
                 </tr>
                 <tr>
                     <th>우편변호</th>
-                    <td><input type="text" v-model="bizDetail.zipCode" /></td>
+                    <td><input type="text" v-model="bizDetail.zipCode" readonly /></td>
                     <button @click="openDaumPostcode">우편번호 찾기</button>
                 </tr>
                 <tr>
@@ -61,7 +61,7 @@
             </tbody>
         </table>
     </div>
-    <button>수정</button>
+    <button @click="handlerUpdateBtn">수정</button>
     <button>취소</button>
 </template>
 
@@ -71,6 +71,7 @@ import { useModalStore } from "../../../stores/modalState";
 import { useUserInfo } from '../../../stores/userInfo';
 
 const props = defineProps(["loginId"]);
+
 const userInfo = useUserInfo();
 const bizDetail = ref({});
 const modalStatePw = useModalStore();
@@ -95,13 +96,81 @@ const openDaumPostcode = () => { //카카오API사용
     }).open();
 }
 
+const handlerUpdateBtn = () => {
+    //유효성 검사
+    if (!checkForm()) {
+        return;
+    }
+
+    const param = new URLSearchParams({
+        ...bizDetail.value
+    });
+
+    axios.post("/api/mypage/updateUserInfo.do", param).then((res) => {
+        if (res.data.result === 'success') {
+            alert("정보를 수정하였습니다.")
+        };
+    })
+}
+
+const checkForm = () => {
+    let inputName = bizDetail.value.name;
+    let inputSex = bizDetail.value.sex;
+    let inputBirthday = bizDetail.value.birthday;
+    let inputPhone = bizDetail.value.phone;
+    let inputEmail = bizDetail.value.email;
+    let inputZipCode = bizDetail.value.zipCode;
+
+    let emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+    let phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
+    let ZipCodeRules = /[0-9\-]{5}/;
+
+    if (inputName.length < 1) {
+        alert("이름을 입력하세요.");
+        return false;
+    }
+    if (inputSex.length < 1) {
+        alert("성별을 선택해주세요.");
+        return false;
+    }
+    if (inputBirthday.length < 1) {
+        alert("생일을 입력해주세요.");
+        return false;
+    }
+    if (inputPhone.length < 1) {
+        alert("전화번호를 선택해주세요.");
+        return false;
+    }
+    if (!phoneRules.test(inputPhone)) {
+        alert("전화번호 형식을 확인해주세요.");
+        return false;
+    }
+    if (inputEmail.length < 1) {
+        alert("이메일을 선택해주세요.");
+        return false;
+    }
+    if (!emailRules.test(inputEmail)) {
+        alert("이메일 형식을 확인해주세요.");
+        return false;
+    }
+    if (inputZipCode.length < 1) {
+        alert("우편번호(주소)를 입력해주세요.");
+        return false;
+    }
+    if (!ZipCodeRules.test(inputZipCode)) {
+        alert("우편번호를 확인해주세요.");
+        return false;
+    }
+    return true;
+}
+
+const handlerPwModal = () => {
+    modalStatePw.setModalState();
+};
+
 onMounted(() => {
     userInfo.user.loginId && searchDetail();
 });
-
-const pwModal = () => {
-    modalStatePw.setModalState();
-};
 
 </script>
 
