@@ -2,12 +2,32 @@
     <teleport to="body">
         <div class="backdrop">
             <div class="container">
-                <label class="title">개인 회원 정보</label>
-
+                <label class="title">비밀번호 수정</label>
                 <div class="content">
-                    <!-- <button @click="pwReset">초기화</button> -->
+                    <table>
+                        <colgroup>
+                            <col width="200px">
+                            <col width="*">
+                            <col width="120px">
+                            <col width="*">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>현재 비밀번호</th>
+                                <td><input id="passwd" type="text" /></td>
+                            </tr>
+                            <tr>
+                                <th>새 비밀번호</th>
+                                <td><input id="newPasswd" type="text" /></td>
+                            </tr>
+                            <tr>
+                                <th>새 비밀번호 확인</th>
+                                <td><input id="newPasswdConfirm" type="text" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-
+                <br />
                 <button @click="handlerUpdateBtn">수정</button>
                 <button @click="handlerPwModal">취소</button>
             </div>
@@ -17,17 +37,36 @@
 
 
 <script setup>
-// import axios from "axios";
+import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
+import { useUserInfo } from '../../../stores/userInfo';
 
 const emit = defineEmits(["postSuccess", "modalClose"]);
 
+const userInfo = useUserInfo();
 const modalStatePw = useModalStore();
 
 
 const handlerUpdateBtn = () => {
-    //update 만들어야함
+    const param = new URLSearchParams({
+        loginId: userInfo.user.loginId,
+        passwd: document.getElementById("passwd").value,
+        newPasswd: document.getElementById("newPasswd").value,
+        newPasswdConfirm: document.getElementById("newPasswdConfirm").value,
+    });
 
+    axios.post('/api/mypage/updatePw.do', param)
+        .then((res) => {
+            if (res.data.result === 'fail1') {
+                alert("입력하신 현재 비밀번호가 올바르지 않습니다. 다시 확인해주세요.")
+            } else if (res.data.result === 'fail2') {
+                alert("새 비밀번호와 확인용 비밀번호가 일치하지 않습니다. 다시 입력해주세요.")
+            }
+
+            if (res.data.result === 'success') {
+                alert("비밀번호를 변경하였습니다.")
+            }
+        })
 
     handlerPwModal();
 }
@@ -68,12 +107,15 @@ onUnmounted(() => {
     width: 400px;
 }
 
+label.title {
+    font-size: 18px;
+}
 
 table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0px 0px 0px;
-    font-size: 18px;
+    font-size: 14px;
     text-align: left;
 
     th,
