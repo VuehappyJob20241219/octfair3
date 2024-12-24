@@ -1,20 +1,20 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Login from "../views/Login/Login.vue";
-import DashBoard from "../views/DashBoard/DashBoard.vue";
-import Notice from "../views/Board/Notice.vue";
-import FirstNoticeDetail from "../components/page/Board/Notice/FirstNoticeDetail.vue";
-import Applicant from "../views/Manage-user/Applicant.vue";
-import Biz from "../views/Manage-user/Biz.vue";
+import ResumeDetail from "../components/page/Apply/ResumeDetail/ResumeDetail.vue";
+import QnaDetail from "../components/page/Board/Qna/QnaDetail.vue";
+import BizPostDetail from "../components/page/ManageHire/BizPost/BizPostDetail.vue";
+import BizPostInsert from "../components/page/ManageHire/BizPost/BizPostInsert.vue";
+import History from "../views/Apply/History.vue";
 import Resume from "../views/Apply/Resume.vue";
 import Faq from "../views/Board/Faq.vue";
+import Notice from "../views/Board/Notice.vue";
+import Qna from "../views/Board/Qna.vue";
 import CompanyEdit from "../views/Company/CompanyEdit.vue";
 import CompanyInfo from "../views/Company/CompanyInfo.vue";
+import DashBoard from "../views/DashBoard/DashBoard.vue";
+import Login from "../views/Login/Login.vue";
+import Applicant from "../views/Manage-user/Applicant.vue";
+import Biz from "../views/Manage-user/Biz.vue";
 import Post from "../views/ManageHire/Post.vue";
-import History from "../views/Apply/History.vue";
-import BizPostInsert from "../components/page/ManageHire/BizPost/BizPostInsert.vue";
-import BizPostDetail from "../components/page/ManageHire/BizPost/BizPostDetail.vue";
-import Qna from "../views/Board/Qna.vue";
-import QnaDetail from "../components/page/Board/Qna/QnaDetail.vue";
 
 const routes = [
   {
@@ -95,6 +95,11 @@ const routes = [
             path: "resume.do",
             name: "resume",
             component: Resume,
+          },
+          {
+            path: "resume-new.do",
+            name: "resume-new",
+            component: ResumeDetail,
           },
           {
             path: "history.do",
