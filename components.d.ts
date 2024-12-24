@@ -32,6 +32,8 @@ declare module 'vue' {
     HistorySearch: typeof import('./src/components/page/Apply/History/HistorySearch.vue')['default']
     LeftManuBar: typeof import('./src/components/layout/LeftManuBar.vue')['default']
     LoginMain: typeof import('./src/components/page/Login/LoginMain.vue')['default']
+    MypageMain: typeof import('./src/components/page/Mypage/MypageMain.vue')['default']
+    MypageModal: typeof import('./src/components/page/Mypage/MypageModal.vue')['default']
     NoticeMain: typeof import('./src/components/page/Board/Notice/NoticeMain.vue')['default']
     NoticeModal: typeof import('./src/components/page/Board/Notice/NoticeModal.vue')['default']
     NoticeSearch: typeof import('./src/components/page/Board/Notice/NoticeSearch.vue')['default']
