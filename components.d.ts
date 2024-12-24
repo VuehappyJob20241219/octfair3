@@ -11,6 +11,7 @@ declare module 'vue' {
     ApplicantModal: typeof import('./src/components/page/Manage-user/ApplicantModal.vue')['default']
     ApplicantSearch: typeof import('./src/components/page/Manage-user/ApplicantSearch.vue')['default']
     BizMain: typeof import('./src/components/page/Manage-user/BizMain.vue')['default']
+    BizModal: typeof import('./src/components/page/Manage-user/BizModal.vue')['default']
     BizPostDetail: typeof import('./src/components/page/ManageHire/BizPost/BizPostDetail.vue')['default']
     BizPostInsert: typeof import('./src/components/page/ManageHire/BizPost/BizPostInsert.vue')['default']
     BizPostMain: typeof import('./src/components/page/ManageHire/BizPost/BizPostMain.vue')['default']
@@ -43,7 +44,10 @@ declare module 'vue' {
     QnaDetailTanstack: typeof import('./src/components/page/Board/Qna/QnaDetailTanstack.vue')['default']
     QnaMain: typeof import('./src/components/page/Board/Qna/QnaMain.vue')['default']
     QnaMainTanstack: typeof import('./src/components/page/Board/Qna/QnaMainTanstack.vue')['default']
+<<<<<<< HEAD
     QnaPassword: typeof import('./src/components/page/Board/Qna/QnaPassword.vue')['default']
+=======
+>>>>>>> d02b938bb90ea564213dc85fc725ab6dd4a7c30b
     QnaSearch: typeof import('./src/components/page/Board/Qna/QnaSearch.vue')['default']
     QnaSearchTanstack: typeof import('./src/components/page/Board/Qna/QnaSearchTanstack.vue')['default']
     ResumeDetail: typeof import('./src/components/page/Apply/ResumeDetail/ResumeDetail.vue')['default']
