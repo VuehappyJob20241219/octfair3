@@ -1,4 +1,10 @@
 <template>
+    <ApplicantModal
+        v-if="modalStateApplicant.modalState"
+        @postSuccess="searchList"
+        @modalClose="() => (loginId = 0)"
+        :loginId="loginId"
+    />
     <div class="divManage-applicantList">
         <table>
             <colgroup>
@@ -28,7 +34,9 @@
                             <td>{{ applicant.name }}</td>
                             <td>{{ applicant.email }}</td>
                             <td>{{ applicant.regdate }}</td>
-                            <td>{{ }}</td>
+                            <td><div class="button-box">
+                                <button @click="handlerModal(applicant.loginId)">수정</button>
+                            </div></td>
                         </tr>
                     </template>
                 </template>
@@ -40,18 +48,21 @@
             :onClick="applicantList" v-model="cPage" />
     </div>
 
-
-
 </template>
+
 
 <script setup>
 import axios from "axios";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
+import Pagination from "../../common/Pagination.vue";
+import { useModalStore } from "../../../stores/modalState";
 
 const route = useRoute();
 const applicantList = ref();
 const cPage = ref(1);
+const modalStateApplicant = useModalStore();
+const loginId = ref("");
 
 const searchList = async () => {
     // const param = new URLSearchParams({
@@ -72,6 +83,20 @@ const searchList = async () => {
         })
         .catch(() => { });
 }
+
+const handlerModal = (id) => {
+    loginId.value = id;
+    modalStateApplicant.setModalState();
+};
+
+// const execDaumPostcode = () => {
+//     new daum.Postcode({
+//         oncomplete: function(data) {
+            
+
+//         }
+//     }).open();
+// }
 
 watch(route, searchList);
 
@@ -108,5 +133,35 @@ table {
         opacity: 0.9;
         cursor: pointer;
     }
+}
+
+.button-box {
+  text-align: middle;
+  margin-top: 0px;
+}
+button {
+  background-color: #3bb2ea;
+  border: none;
+  color: white;
+  padding: 5px 5px;
+  text-align: right;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 1px 1px;
+  cursor: pointer;
+  border-radius: 12px;
+  box-shadow: 0 4px #999;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: #45a049;
+  }
+
+  &:active {
+    background-color: #3e8e41;
+    box-shadow: 0 2px #666;
+    transform: translateY(2px);
+  }
 }
 </style>

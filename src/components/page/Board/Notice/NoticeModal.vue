@@ -19,10 +19,10 @@
           </div>
         </div>
         <div class="button-box">
+          <button v-if="props.idx" @click="handlerDeleteBtn">삭제</button>
           <button @click="props.idx ? handlerUpdateBtn() : handlerSaveBtn()">
             {{ props.idx ? "수정" : "저장" }}
           </button>
-          <button @click="handlerDelteBtn()">삭제</button>
           <button @click="handlerModal">나가기</button>
         </div>
       </div>
@@ -31,22 +31,21 @@
 </template>
 
 <script setup>
+import { useModalStore } from "@/stores/modalState";
 import axios from "axios";
 import { onMounted, onUnmounted } from "vue";
-import { useModalStore } from "../../../../stores/modalState";
 import { useUserInfo } from "../../../../stores/userInfo";
 
-const emit = defineEmits(["postSuccess", "modalClose"]);
-const props = defineProps(["idx"]);
-
-const modalStateNotice = useModalStore();
+const modalState = useModalStore();
 const noticeDetail = ref({});
 const userInfo = useUserInfo();
+const emit = defineEmits(["postSuccess", "modalClose"]);
+const props = defineProps(["idx"]);
 const imageUrl = ref("");
 const fileData = ref("");
 
 const handlerModal = () => {
-  modalStateNotice.setModalState();
+  modalState.setModalState();
 };
 
 const handlerSaveBtn = () => {
@@ -55,10 +54,9 @@ const handlerSaveBtn = () => {
     loginId: userInfo.user.loginId,
     context: noticeDetail.value.content,
   };
+
   const formData = new FormData();
-  if (fileData.value) {
-    formData.append("file", fileData.value);
-  }
+  if (fileData.value) formData.append("file", fileData.value);
   formData.append(
     "text",
     new Blob([JSON.stringify(textData)], {
@@ -66,26 +64,16 @@ const handlerSaveBtn = () => {
     })
   );
 
-  axios.post(`/api/board/noticeFileSaveForm.do`, formData).then((res) => {
+  axios.post("/api/board/noticeFileSaveForm.do", formData).then((res) => {
     if (res.data.result === "success") {
-      modalStateNotice.setModalState();
+      modalState.setModalState();
       emit("postSuccess");
     }
   });
 };
 
-const handlerFile = (e) => {
-  const fileinfo = e.target.files;
-  const fileinfoSplit = fileinfo[0].name.split(".");
-  const fileExtension = fileinfoSplit[1].toLowerCase();
-  if (fileExtension === "jpg" || fileExtension === "gif" || fileExtension === "png" || fileExtension === "webp") {
-    imageUrl.value = URL.createObjectURL(fileinfo[0]);
-  }
-  fileData.value = fileinfo[0];
-};
-
 const searchDetail = () => {
-  axios.post(`/api/board/noticeDetailBody.do`, { noticeSeq: props.idx }).then((res) => {
+  axios.post("/api/board/noticeDetailBody.do", { noticeSeq: props.idx }).then((res) => {
     noticeDetail.value = res.data.detail;
     if (
       noticeDetail.value.fileExt === "jpg" ||
@@ -95,21 +83,7 @@ const searchDetail = () => {
     ) {
       getFileImage();
     }
-  });
-};
-
-const getFileImage = () => {
-  let param = new URLSearchParams();
-  param.append("noticeSeq", props.idx);
-  const postAtion = {
-    url: "/api/board/noticeDownload.do",
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-  axios(postAtion).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    imageUrl.value = url;
+    console.log(noticeDetail.value);
   });
 };
 
@@ -120,9 +94,7 @@ const handlerUpdateBtn = () => {
     noticeSeq: props.idx,
   };
   const formData = new FormData();
-  if (fileData.value) {
-    formData.append("file", fileData.value);
-  }
+  if (fileData.value) formData.append("file", fileData.value);
   formData.append(
     "text",
     new Blob([JSON.stringify(textData)], {
@@ -130,33 +102,59 @@ const handlerUpdateBtn = () => {
     })
   );
 
-  axios.post(`/api/board/noticeUpdateFileForm.do`, formData).then((res) => {
+  axios.post("/api/board/noticeUpdateFileForm.do", formData).then((res) => {
     if (res.data.result === "success") {
-      modalStateNotice.setModalState();
+      modalState.setModalState();
       emit("postSuccess");
     }
   });
 };
 
-const handlerDelteBtn = () => {
-  axios.post(`/api/board/noticeDeleteBody.do`, { noticeSeq: props.idx }).then((res) => {
+const handlerDeleteBtn = () => {
+  axios.post("/api/board/noticeDeleteBody.do", { noticeSeq: props.idx }).then((res) => {
     if (res.data.result === "success") {
-      modalStateNotice.setModalState();
+      modalState.setModalState();
       emit("postSuccess");
     }
+  });
+};
+
+const handlerFile = (e) => {
+  const fileInfo = e.target.files;
+  const fileInfoSplit = fileInfo[0].name.split(".");
+  const fileExtension = fileInfoSplit[1].toLowerCase();
+  if (fileExtension === "jpg" || fileExtension === "gif" || fileExtension === "png") {
+    imageUrl.value = URL.createObjectURL(fileInfo[0]);
+  }
+  fileData.value = fileInfo[0];
+};
+
+const getFileImage = () => {
+  let param = new URLSearchParams();
+  param.append("noticeSeq", props.idx);
+  const postAction = {
+    url: "/api/board/noticeDownload.do",
+    method: "POST",
+    data: param,
+    responseType: "blob",
+  };
+  axios(postAction).then((res) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    imageUrl.value = url;
+    console.log(res);
   });
 };
 
 const fileDownload = () => {
   let param = new URLSearchParams();
   param.append("noticeSeq", props.idx);
-  const postAtion = {
+  const postAction = {
     url: "/api/board/noticeDownload.do",
     method: "POST",
     data: param,
     responseType: "blob",
   };
-  axios(postAtion).then((res) => {
+  axios(postAction).then((res) => {
     const url = window.URL.createObjectURL(new Blob([res.data]));
     const link = document.createElement("a");
     link.href = url;

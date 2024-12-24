@@ -1,4 +1,10 @@
 <template>
+  <FaqModal
+    v-if="faqModalState.modalState"
+    @postSuccess="searchList"
+    @modalClose="() => (faqSeq = 0)"
+    :idx="faq_idx"
+  />
   <div class="divFaqList">
     <table>
       <colgroup>
@@ -17,17 +23,16 @@
         </tr>
       </thead>
       <tbody>
-        <template>...로딩중</template>
         <template v-if="faqList">
           <template v-if="faqList.faqCnt > 0">
-            <tr v-for="faq in faqList.faq" :key="faq.faqInx" @click="handlerModal(faq.faqInx)">
-              <td>{{ faq.faqIdx }}</td>
-              <td>{{ faq.title }}</td>
-              <td>{{ faq.createdDate.substr(0, 10) }}</td>
+            <tr v-for="faq in faqList.faq" :key="faq.faq_idx">
+              <td>{{ faq.faq_idx }}</td>
+              <td @click="handlerModal(faq.faq_idx)">{{ faq.title }}</td>
+              <td>{{ faq.created_date.substr(0, 10) }}</td>
               <td>{{ faq.author }}</td>
             </tr>
           </template>
-          <template>
+          <template v-else>
             <tr>
               <td colspan="7">일치하는 검색 결과가 없습니다</td>
             </tr>
@@ -48,23 +53,19 @@
 import axios from "axios";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
-import Pagination from "../../../common/Pagination.vue";
 import { useModalStore } from "../../../../stores/modalState";
 import { useUserInfo } from "../../../../stores/userInfo";
+import Pagination from "../../../common/Pagination.vue";
+import FaqModal from "./FaqModal.vue";
 
 const route = useRoute();
 const faqList = ref();
 const cPage = ref(1);
-const faqIdx = ref(0);
-const modalState = useModalStore();
+const faq_idx = ref(0);
+const faqModalState = useModalStore();
 const userInfo = useUserInfo();
 
-if (userInfo.user.userType === "M" || userInfo.user.userType === "A") {
-  userInfo.user.userType = "2";
-} else if (userInfo.user.userType === "B") {
-  userInfo.user.userType = "1";
-}
-console.log("유저 정보", userInfo.user.userType);
+const faq_fype = userInfo.user.userType === "B" ? 1 : 2;
 
 const searchList = async () => {
   const param = new URLSearchParams({
@@ -73,23 +74,21 @@ const searchList = async () => {
     searchEdDate: route.query.searchEdDate || "",
     currentPage: cPage.value,
     pageSize: 5,
-    faq_type: userInfo.user.userType,
+    faq_type: faq_fype,
   });
-  console.log("넘겨주는 데이터", param);
   await axios.post("/api/board/faqListRe.do", param).then((res) => {
-    console.log(res.data);
     faqList.value = res.data;
-    console.log(res.data);
   });
 };
 
 const handlerModal = (idx) => {
-  console.log(idx);
-  modalState.setModalState();
-  faqIdx.value = idx;
+  faqModalState.setModalState();
+  axios.post("/api/board/faqDetail.do", { faqSeq: idx }).then((res) => {
+    faqList.value = res.data;
+  });
 };
 
-//watch(route, searchList);
+watch(route, searchList);
 
 onMounted(() => {
   searchList();
