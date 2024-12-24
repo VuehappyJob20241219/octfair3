@@ -56,7 +56,7 @@
                         </tbody>
                     </table>
                 </div>
-                <button>수정</button>
+                <button @click="handlerSaveBtn">수정</button>
             <button @click="handlerModal">취소</button>
             </div>
         </div>
@@ -85,6 +85,49 @@ const searchDetail = () => {
             bizManageDetail.value = res.data.detail;
         });
 };
+
+const handlerSaveBtn = () => {
+    //유효성 검사
+    if (!checkForm()) {
+        console.log("수정에 실패하였습니다.");
+        return;
+    }
+
+    const param = new URLSearchParams({
+        ...bizManageDetail.value
+    });
+
+    axios.post("/api/manage-user/bizInfoUpdate.do", param).then((res) => {
+        if (res.data.result === 'success') {
+            handlerModal();
+            emit('postSuccess');
+        };
+    })
+}
+
+const checkForm = () => {
+    let inputBizName = bizManageDetail.value.bizName;
+    let inputContact = bizManageDetail.value.bizContact;
+
+    let phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
+
+    if (inputBizName.length < 1) {
+        alert("사업자명을 입력하세요.");
+        return false;
+    }
+
+    if(!inputContact){
+        //공백인 경우 저장 가능
+    }else if(!phoneRules.test(inputContact)){
+        alert("전화번호 형식을 확인해주세요.");
+        return false;
+    }
+    console.log(inputContact);
+    
+    return true;
+}
+
+
 
 const handlerModal = () => {
     modalStateBiz.setModalState();
