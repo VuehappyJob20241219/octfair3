@@ -40,13 +40,13 @@
             </tbody>
     </table>
 
-    <!-- <Pagination
-      :totalItems="noticeList?.noticeCnt || 0"
+    <Pagination
+      :totalItems="historyList?.historyCnt || 0"
       :items-per-page="5"
       :max-pages-shown="5"
       :onClick="searchList"
       v-model="cPage"
-    /> -->
+    />
 </div>
 </template>
 
@@ -60,20 +60,7 @@ const router = useRouter();
 const cPage = ref(1);
 const injectedValue = inject("provideValue");
 const { data: historyList, isLoading, refetch, isSuccess, isError }
-  = useHistoryListSearchQuery(injectedValue, cPage)
-
-// const searchList = () => {
-//   const param = new URLSearchParams({
-//     searchTitle: route.query.searchTitle || "",
-//     searchKeyword: route.query.searchKeyword || "",
-//     searchStartDate: route.query.searchStartDate || "",
-//     currentPage: cPage.value,
-//     pageSize: 5,
-//     //keyWord, viewStatus, startDate
-//   });
-
-//   axios.post()
-// }
+  = useHistoryListSearchQuery( cPage)
 
 </script>
 
