@@ -1,7 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
+import History from "../views/Apply/History.vue";
 import Resume from "../views/Apply/Resume.vue";
 import Faq from "../views/Board/Faq.vue";
 import Notice from "../views/Board/Notice.vue";
+import CompanyEdit from "../views/Company/CompanyEdit.vue";
+import CompanyInfo from "../views/Company/CompanyInfo.vue";
 import DashBoard from "../views/DashBoard/DashBoard.vue";
 import Login from "../views/Login/Login.vue";
 import Applicant from "../views/Manage-user/Applicant.vue";
@@ -73,6 +76,11 @@ const routes = [
             name: "resume",
             component: Resume,
           },
+          {
+            path: "history.do",
+            name: "history",
+            component: History,
+          },
         ],
       },
       {
@@ -83,6 +91,22 @@ const routes = [
             path: "post.do",
             name: "post",
             component: Post,
+          },
+        ],
+      },
+      {
+        path: "company",
+        name: "company",
+        children: [
+          {
+            path: "companyUpdatePage.do",
+            name: "companyUpdate",
+            component: CompanyEdit,
+          },
+          {
+            path: "companyDetailPage.do",
+            name: "companyDetailPage",
+            component: CompanyInfo,
           },
         ],
       },
