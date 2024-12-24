@@ -55,7 +55,7 @@
     />
 
     <!-- 모달 -->
-    <QnaPassword v-if="modalStore.modalState" :idx="qnaIdx" @postSuccess="searchList" @modalClose="closeModal" />
+    <QnaPassword v-if="modal.modalState" :idx="qnaIdx" @postSuccess="searchList" @modalClose="() => (qnaIdx = 0)" />
   </div>
 </template>
 
@@ -77,7 +77,7 @@ const itemPerPage = ref(10);
 const qnaList = ref();
 const cPage = ref(1);
 const qnaIdx = ref(0);
-const modalStore = useModalStore();
+const modal = useModalStore();
 const userInfo = useUserInfo();
 const qnaLogState = useQnaLogState();
 const injectedhRequestType = inject("providedRequestType");
@@ -105,7 +105,6 @@ const searchList = () => {
     loginId: userInfo.user.loginId,
     requestType: injectedhRequestType.requestType || "all", // 프로바이더 값 사용
   };
-  console.log(modalStore.modalState);
   axios.post("/api/board/qnaListRe.do", param).then((res) => {
     qnaList.value = res.data;
   });
@@ -113,13 +112,19 @@ const searchList = () => {
 
 // 모달 처리
 const handlerModal = (idx) => {
-  modalStore.setModalState(!modalStore.modalState);
+  setModalState();
+  console.log("modalState", modal.modalState);
   qnaIdx.value = idx;
 };
 
 const closeModal = () => {
   qnaIdx.value = 0;
-  modalStore.setModalState(false);
+  modal.setModalState(false);
+};
+
+const setModalState = () => {
+  console.log("여기는 타나?");
+  modal.setModalState(); // 현재 값을 반대로 토글
 };
 
 // 초기화

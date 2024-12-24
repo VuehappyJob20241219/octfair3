@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
-export const useModalStore = defineStore('modalState', () => {
+export const useModalStore = defineStore("modalState", () => {
     const modalState = ref(false);
 
     const setModalState = () => {
