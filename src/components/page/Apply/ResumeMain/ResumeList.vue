@@ -1,5 +1,5 @@
 <template>
-  <button class="newResumeCreateMove" @click="newResumeCreate">안녕</button>
+  <button class="newResumeCreateMove" @click="newResumeCreate">새 이력서 작성</button>
   <div class="divResumeList">
     현재 페이지:{{ cPage }} 총 개수: {{ resumeInfoArray?.resumeCnt }}
     <table>
