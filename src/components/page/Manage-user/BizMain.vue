@@ -1,4 +1,7 @@
 <template>
+  <BizModal v-if="modalStateBiz.modalState"
+  :bizIdx="bizIdx"
+  />
   <div class="divManage-bizList">
     <table>
       <colgroup>
@@ -30,7 +33,7 @@
               <td>{{ biz.bizWebUrl }}</td>
               <td>
                 <div class="button-box">
-                  <!-- <button @click="handlerModal()">수정</button> -->
+                  <button @click="handlerModal(biz.bizIdx)">수정</button>
                 </div>
               </td>
             </tr>
@@ -53,8 +56,8 @@ import Pagination from "../../common/Pagination.vue";
 const route = useRoute();
 const bizList = ref();
 const cPage = ref(1);
-const modalStateApplicant = useModalStore();
-const loginId = ref("");
+const modalStateBiz = useModalStore();
+const bizIdx = ref("");
 
 const searchList = async () => {
   const data = {
@@ -70,11 +73,17 @@ const searchList = async () => {
     .catch(() => { });
 };
 
+const handlerModal = (idx) => {
+  bizIdx.value = idx;
+  modalStateBiz.setModalState();
+};
+
 watch(route, searchList);
 
 onMounted(() => {
   searchList();
 });
+
 </script>
 
 <style lang="scss" scoped>
