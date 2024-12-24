@@ -3,7 +3,13 @@
         <div class="backdrop">
             <div class="container">
                 <label class="title">개인 회원 정보</label>
-                <!-- <button @click="pwReset">초기화</button> -->
+
+                <div class="content">
+                    <!-- <button @click="pwReset">초기화</button> -->
+                </div>
+
+                <button @click="handlerUpdateBtn">수정</button>
+                <button @click="handlerPwModal">취소</button>
             </div>
         </div>
     </teleport>
@@ -19,25 +25,20 @@ const emit = defineEmits(["postSuccess", "modalClose"]);
 const modalStatePw = useModalStore();
 
 
-// const pwReset = () => {
-//     const param = new URLSearchParams({
-//         loginId: applicantDetail.value.loginId
-//     });
+const handlerUpdateBtn = () => {
+    //update 만들어야함
 
-//     axios.post("/api/manage-user/applicantPwReset.do", param)
-//         .then((res) => {
-//             console.log(res.data.result);
-//             if (res.data.result === "success") {
-//                 alert("비밀번호가 초기화되었습니다.");
-//             }
-//         })
-// }
 
-const handlerModal = () => {
+    handlerPwModal();
+}
+
+const handlerPwModal = () => {
     modalStatePw.setModalState();
 };
 
-
+onUnmounted(() => {
+    emit("modalClose");
+});
 
 </script>
 
