@@ -61,6 +61,7 @@
                 </tbody>
             </table>
         </div>
+        <button @click="handlerSaveBtn">회원가입</button>
     </div>
 </template>
 
@@ -87,10 +88,11 @@ const handlerSaveBtn = () => {
         return;
     }
 
+    console.log("테스트 등록 완료!!")
+
 }
 
 const checkForm = () => {
-    let inputId = register.value.registerId;
     let inputPwd = register.value.registerPwd;
     let inputPwdOk = register.value.registerPwdOk;
 
@@ -101,51 +103,60 @@ const checkForm = () => {
     let inputEmail = register.value.registerEmail;
     let inputZipCode = register.value.registerZipCode;
 
-    let passwordRules = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
-    let emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-    let phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
+    const passwordRules = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+    const emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+    const phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
 
 
 
-    if (!ipasswordRules.test(passwordRules)) {
+    if (!passwordRules.test(inputPwd)) {
         alert("비밀 번호는 숫자,영문자,특수문자 조합으로 8~15자리를 사용해야 합니다.");
         return false;
     }
+    if (!inputPwdOk) {
+        alert("비밀번호 확인란을 입력해주세요.");
+        return false;
+    }
 
-    if (inputName.length < 1) {
+    if (!(inputPwd === inputPwdOk)) {
+        alert("비밀번호와 확인용 비밀번호가 일치하지 않습니다.");
+        return false;
+    }
+
+    if (!inputName || inputName < 1) {
         alert("이름을 입력하세요.");
         return false;
     }
-    if (inputSex.length < 1) {
+    if (!inputSex) {
         alert("성별을 선택해주세요.");
         return false;
     }
-    if (inputBirthday.length < 1) {
+    if (!inputBirthday) {
         alert("생일을 입력해주세요.");
         return false;
     }
-    if (inputPhone.length < 1) {
-        alert("전화번호를 선택해주세요.");
+    if (!inputPhone) {
+        alert("전화번호를 입력해주세요.");
         return false;
     }
     if (!phoneRules.test(inputPhone)) {
         alert("전화번호 형식을 확인해주세요.");
         return false;
     }
-    if (inputEmail.length < 1) {
-        alert("이메일을 선택해주세요.");
+    if (!inputPhone) {
+        alert("이메일을 입력해주세요.");
         return false;
     }
     if (!emailRules.test(inputEmail)) {
         alert("이메일 형식을 확인해주세요.");
         return false;
     }
-    if (inputZipCode.length < 1) {
+    if (!inputZipCode) {
         alert("우편번호(주소)를 입력해주세요.");
         return false;
     }
 
-
+    return true;
 }
 
 const loginIdCheck = () => {
@@ -164,5 +175,7 @@ const loginIdCheck = () => {
         }
     }).catch(() => { });
 }
+
+
 
 </script>
