@@ -4,8 +4,8 @@ import { Notice } from "../axiosApi/noticeApi";
 export const noticeDetailUpdateApi = async (detailValue, fileData, idx) => {
   const textData = {
     ...detailValue,
-    noticeSeq: idx,
     context: detailValue.context,
+    noticeSeq: idx,    
   };
   const formData = new FormData();
   if (fileData) {

@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <teleport to="body">
+    <div class="backdrop">
+  <div class="container">
     <div v-if="isLoading">기다려주세요</div>
     <div v-else>
       <ContextBox>공지사항 상세조회</ContextBox>
@@ -28,6 +30,8 @@
       </div>
     </div>
   </div>
+</div>
+</teleport>
 </template>
 
 <script setup>

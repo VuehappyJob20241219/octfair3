@@ -30,13 +30,7 @@ const handlerModal = () => {
   modalState.setModalState();
 };
 
-// 인자로 받는 함수안에 반응형 객체 (ref같은거)가 있으면, 객체가 변경될 때 마다, 해당 변수를 실행 시켜줌
-// 근데, 밑에 watchEffect는 ref같은거 없어요. 그래서 그냥 새로고침 누르면 최초에 한 번 실행되는 거입니다.
-watchEffect(
-  () =>
-    window.location.search &&
-    router.push(window.location.pathname, { replace: true })
-);
+watchEffect(() => window.location.search && router.push(window.location.pathname, { replace: true }));
 </script>
 
 <style lang="scss" scoped>
