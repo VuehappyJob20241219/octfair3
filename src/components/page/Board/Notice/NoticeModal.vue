@@ -32,9 +32,9 @@
 
 <script setup>
 import axios from "axios";
+import { onMounted, onUnmounted } from "vue";
 import { useModalStore } from "../../../../stores/modalState";
 import { useUserInfo } from "../../../../stores/userInfo";
-import { onMounted, onUnmounted } from "vue";
 
 const emit = defineEmits(["postSuccess", "modalClose"]);
 const props = defineProps(["idx"]);
