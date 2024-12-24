@@ -3,4 +3,5 @@ export const Resume = {
   CopyResume: "/api/apply/resumeCopyBody.do",
   DeleteResume: "/api/apply/resumeDeleteBody.do",
   BasicInfoResume: "/api/apply/resumeNew.do",
+  SaveResume: "/api/apply/resumeSaveBody.do",
 };
