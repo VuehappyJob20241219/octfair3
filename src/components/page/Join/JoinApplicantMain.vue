@@ -67,7 +67,7 @@
 
 <script setup>
 import axios from 'axios';
-
+import { ref, watch } from 'vue';
 
 const register = ref({});
 const checkId = ref(false);
@@ -86,6 +86,11 @@ const handlerSaveBtn = () => {
     if (!checkForm()) {
         console.log("등록에 실패하였습니다.");
         return;
+
+    }
+    if (!checkId) {
+        alert("ID 중복 확인을 해주세요.");
+        return false;
     }
 
     console.log("테스트 등록 완료!!")
@@ -93,6 +98,7 @@ const handlerSaveBtn = () => {
 }
 
 const checkForm = () => {
+    let inputId = register.value.registerId;
     let inputPwd = register.value.registerPwd;
     let inputPwdOk = register.value.registerPwdOk;
 
@@ -107,7 +113,10 @@ const checkForm = () => {
     const emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
     const phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
 
-
+    if (!inputId) {
+        alert("아이디를 입력해주세요.");
+        return false;
+    }
 
     if (!passwordRules.test(inputPwd)) {
         alert("비밀 번호는 숫자,영문자,특수문자 조합으로 8~15자리를 사용해야 합니다.");
@@ -169,6 +178,7 @@ const loginIdCheck = () => {
     axios.post("/api/check_loginId.do", param).then((res) => {
 
         if (res.data === 0) {
+            checkId.value = true;
             alert("사용할 수 있는 아이디 입니다.");
         } else {
             alert("중복된 아이디가 존재합니다.");
@@ -176,6 +186,9 @@ const loginIdCheck = () => {
     }).catch(() => { });
 }
 
-
+watch(() => register.value.registerId, () => {
+    checkId.value = false;
+    console.log(checkId.value);
+})
 
 </script>
