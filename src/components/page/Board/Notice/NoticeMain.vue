@@ -1,12 +1,13 @@
 <template>
-  <NoticeModal
-    v-if="modalStateNotice.modalState"
-    @postSuccess="searchList"
-    @modalClose="() => (noticeIdx = 0)"
-    :idx="noticeIdx"
-  />
   <div class="divNoticeList">
-    현재 페이지:{{ cPage }} 총 개수: {{ noticeList?.noticeCnt }}
+    현재 페이지: {{ cPage }}, 총 개수: {{ noticeList?.noticeCnt }}
+    <NoticeModal
+      v-if="modalState.modalState"
+      @postSuccess="searchList"
+      @modalClose="() => (noticeIdx = 0)"
+      :idx="noticeIdx"
+    />
+    <!-- <NoticeModal v-show="modalValue"/> -->
     <table>
       <colgroup>
         <col width="10%" />
@@ -24,20 +25,22 @@
         </tr>
       </thead>
       <tbody>
-        <template v-if="isLoading">...로딩중</template>
-        <template v-if="isSuccess">
-          <template v-if="noticeList.noticeCnt > 0">
-            <tr v-for="notice in noticeList.notice" v-bind:key="notice.noticeIdx">
+        <template v-if="noticeList">
+          <template v-if="noticeList.noticeCnt">
+            <tr
+              v-for="notice in noticeList.notice"
+              :key="notice.noticeIdx"
+              @click="handlerModal(notice.noticeIdx)"
+            >
               <td>{{ notice.noticeIdx }}</td>
-              <td @click="handlerModal(notice.noticeIdx)">{{ notice.title }}</td>
-              <td>{{ notice.createdDate.split(" ")[0] }}</td>
+              <td>{{ notice.title }}</td>
+              <td>{{ notice.createdDate.substr(0, 10) }}</td>
               <td>{{ notice.author }}</td>
             </tr>
           </template>
           <template v-else>
             <tr>
-              <td colspan="7">등록된 이력서가 없습니다.</td>
-              <td colspan="7">등록된 이력서가 없습니다.</td>
+              <td colspan="7">일치하는 검색 결과가 없습니다</td>
             </tr>
           </template>
         </template>
@@ -54,25 +57,49 @@
 </template>
 
 <script setup>
-import { useRouter } from "vue-router";
+import { useModalStore } from "@/stores/modalState";
+import axios from "axios";
+import { onMounted } from "vue";
+import { useRoute } from "vue-router";
 import Pagination from "../../../common/Pagination.vue";
-import { useModalStore } from "../../../../stores/modalState";
-import { useNoticeListSearchQuery } from "../../../hook/notice/useNoticeListSearchQuery";
 
-const modalStateNotice = useModalStore();
-const router = useRouter();
+const route = useRoute();
+// console.log(route);
+// watch(route, () => console.log(route.query));
+const noticeList = ref();
+// const noticeCount = ref(0);
 const cPage = ref(1);
-const injectedValue = inject("provideValue");
+const modalState = useModalStore();
+const noticeIdx = ref(0);
 
-const { data: noticeList, isLoading, refetch, isSuccess } = useNoticeListSearchQuery(injectedValue, cPage);
-
-const handlerModal = (param) => {
-  router.push({
-    name: "noticeDetail",
-    params: { idx: param },
+const searchList = () => {
+  const param = new URLSearchParams({
+    searchTitle: route.query.searchTitle || "",
+    searchStDate: route.query.searchStDate || "",
+    searchEdDate: route.query.searchEdDate || "",
+    currentPage: cPage.value,
+    pageSize: 5,
   });
-  //url 스트링이여야 한다. 인덱스가 넘버엿어서 스트링으로 변환
+  axios.post("/api/board/noticeListJson.do", param).then((res) => {
+    noticeList.value = res.data;
+  });
 };
+
+const handlerModal = (idx) => {
+  console.log(idx);
+  modalState.setModalState();
+  noticeIdx.value = idx;
+};
+
+watch(route, searchList);
+
+onMounted(() => {
+  searchList();
+});
+
+// onBeforeMounted(()=>{
+//     searchList();
+// })
 </script>
 
 <style lang="scss" scoped>
