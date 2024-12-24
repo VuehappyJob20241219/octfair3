@@ -29,7 +29,7 @@
             <input required type="password" v-model="loginInfo.pwd" />
           </div>
           <div class="joinDiv">
-            <strong class="strong">[일반회원가입]</strong>
+            <strong class="strong" @click="$router.push('/join')">[일반회원가입]</strong>
             <strong class="strong">[기업회원가입]</strong>
           </div>
           <div>
@@ -66,6 +66,7 @@ const handlerLogin = async () => {
     return;
   }
 };
+
 </script>
 
 <style scoped>
