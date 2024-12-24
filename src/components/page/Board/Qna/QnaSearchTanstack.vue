@@ -9,6 +9,7 @@
 </template>
 
 <script setup>
+import { inject } from "vue";
 import { qnaLogState } from "../../../../stores/qnaLogState";
 import { useUserInfo } from "../../../../stores/userInfo";
 
@@ -22,8 +23,6 @@ const userInfo = useUserInfo();
 const handlerSearchKewordBtn = () => {
   injectedSearchValue.value = { ...searchKey.value };
 };
-
-
 </script>
 
 <style lang="scss" scoped>
