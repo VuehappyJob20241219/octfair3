@@ -1,4 +1,5 @@
 <template>
+  <ResumePreview v-if="ResumePreviewModalState.modalState" :idx="resumePreviewIdx" />
   <div class="resumeDetail_body_wrap">
     <div v-if="basicinformation" class="resumeDetail_body_basicInfo">
       <div class="inputRow">
@@ -367,13 +368,14 @@
       <div class="btnGroup">
         <button class="btnType gray">목록으로</button>
         <button class="btnType blue" @click="handlerSaveBtn()">저장하기</button>
-        <button class="btnType blue">미리보기</button>
+        <button class="btnType blue" @click="handerResumePreview(basicinformation.resIdx)">미리보기</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useModalStore } from "@/stores/modalState";
 import axios from "axios";
 import { Resume } from "../../../../api/axiosApi/resumeApi";
 import { useUserInfo } from "../../../../stores/userInfo";
@@ -382,6 +384,8 @@ const basicinformation = ref();
 const userInfo = useUserInfo();
 const { user } = userInfo;
 const fileData = ref("");
+const ResumePreviewModalState = useModalStore();
+const resumePreviewIdx = ref(0);
 
 const basicInfo = async () => {
   const param = {
@@ -428,6 +432,12 @@ const handlerFile = (e) => {
   //const fileinfoSplit = fileinfo[0].name.split(".");
   //const fileExtension = fileinfoSplit[1].toLowerCase();
   fileData.value = fileinfo[0];
+};
+
+const handerResumePreview = (idx) => {
+  console.log("글번호", idx);
+  ResumePreviewModalState.setModalState();
+  resumePreviewIdx.value = idx;
 };
 
 onMounted(() => {
