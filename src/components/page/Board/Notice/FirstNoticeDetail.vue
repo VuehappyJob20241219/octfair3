@@ -1,37 +1,37 @@
 <template>
   <teleport to="body">
     <div class="backdrop">
-  <div class="container">
-    <div v-if="isLoading">기다려주세요</div>
-    <div v-else>
-      <ContextBox>공지사항 상세조회</ContextBox>
-      <label> 제목 :<input type="text" v-model="detailValue.title" /> </label>
-      <label>
-        내용 :
-        <input type="text" v-model="detailValue.content" />
-      </label>
-      파일 :<input type="file" style="display: none" id="fileInput" @change="handlerFile" />
-      <label class="img-label" htmlFor="fileInput"> 파일 첨부하기 </label>
-      <div>
-        <div v-if="imageUrl">
-          <label>미리보기</label>
-          <img :src="imageUrl" />
-        </div>
+      <div class="container">
+        <div v-if="isLoading">기다려주세요</div>
         <div v-else>
-          <label>파일명</label>
+          <ContextBox>공지사항 상세조회</ContextBox>
+          <label> 제목 :<input type="text" v-model="detailValue.title" /> </label>
+          <label>
+            내용 :
+            <input type="text" v-model="detailValue.content" />
+          </label>
+          파일 :<input type="file" style="display: none" id="fileInput" @change="handlerFile" />
+          <label class="img-label" htmlFor="fileInput"> 파일 첨부하기 </label>
+          <div>
+            <div v-if="imageUrl">
+              <label>미리보기</label>
+              <img :src="imageUrl" />
+            </div>
+            <div v-else>
+              <label>파일명</label>
+            </div>
+          </div>
+          <div class="button-box">
+            <button @click="params.idx ? handlerUpdateBtn() : handlerInsertBtn()">
+              {{ params.idx ? "수정" : "저장" }}
+            </button>
+            <button v-if="params.idx" @click="handlerDeleteBtn">삭제</button>
+            <button @click="$router.go(-1)">뒤로가기</button>
+          </div>
         </div>
-      </div>
-      <div class="button-box">
-        <button @click="params.idx ? handlerUpdateBtn() : handlerInsertBtn()">
-          {{ params.idx ? "수정" : "저장" }}
-        </button>
-        <button v-if="params.idx" @click="handlerDeleteBtn">삭제</button>
-        <button @click="$router.go(-1)">뒤로가기</button>
       </div>
     </div>
-  </div>
-</div>
-</teleport>
+  </teleport>
 </template>
 
 <script setup>
