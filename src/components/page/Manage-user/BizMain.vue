@@ -1,5 +1,6 @@
 <template>
   <BizModal v-if="modalStateBiz.modalState"
+  @postSuccess="searchList"
   :bizIdx="bizIdx"
   />
   <div class="divManage-bizList">
