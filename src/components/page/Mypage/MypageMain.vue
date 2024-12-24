@@ -41,7 +41,7 @@
                     <th>이메일</th>
                     <td><input type="email" v-model="bizDetail.email" /></td>
                 </tr>
-                <tr v-if="bizDetail.userType == B">
+                <tr v-if="bizDetail.userType == 'B'">
                     <th>기업정보</th>
                     <td><button>수정</button></td>
                 </tr>
