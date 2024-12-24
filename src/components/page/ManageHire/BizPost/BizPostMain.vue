@@ -1,11 +1,9 @@
 <template>
-<div>
   <div>
-    <button @click="handleNewInsert">
-      공고 등록
-    </button>
-  </div>
-  <table>
+    <div>
+      <button @click="handleNewInsert">공고 등록</button>
+    </div>
+    <table>
       <colgroup>
         <col width="30%" />
         <col width="10%" />
@@ -29,7 +27,7 @@
         <template v-if="isLoading">...로딩중</template>
         <template v-if="isSuccess">
           <template v-if="HirePost.MCount > 0">
-            <tr v-for="MList in HirePost.MList" v-bind:key="MList.postIdx">              
+            <tr v-for="MList in HirePost.MList" v-bind:key="MList.postIdx">
               <td @click="handlerDetail(MList.postIdx)">{{ MList.title }}</td>
               <td>{{ MList.expRequired }}</td>
               <td>{{ MList.postDate.split(" ")[0] }}</td>
@@ -54,7 +52,7 @@
       :onClick="searchList"
       v-model="cPage"
     />
-</div>
+  </div>
 </template>
 
 <script setup>
@@ -74,8 +72,11 @@ const searchList = async () => {
     currentPage: cPage.value,
     pageSize: 5,
   });
-  const result = await axios.post("/api/manage-hire/managehireListBody.do", param);
-  return result.data;   
+  const result = await axios.post(
+    "/api/manage-hire/managehireListBody.do",
+    param,
+  );
+  return result.data;
 };
 
 const {
@@ -91,27 +92,31 @@ const {
 });
 
 const handleNewInsert = () => {
-  queryClient.removeQueries({
-    queryKey: ["HirePost"],
-  });
-  router.push("bizPost.do/insert");
+  router.push("bizPostInsert.do");
+};
+
+const handlerDetail = (param) => {
+  // queryClient.removeQueries({
+  //   queryKey: ["HirePost"],
+  // });
+  router.push({ name: "bizPostDetail", params: { idx: param } });
 };
 </script>
 
 <style lang="scss" scoped>
 button {
   display: inline-block;
-    padding-right: 10px;
-    min-width: 80px;
-    height: 31px;
-    line-height: 31px;
-    font-family: '나눔바른고딕', NanumBarunGothic;
-    font-size: 15px;
-    color: #fff;
-    text-align: center;
-    font-weight: 400;
-    background-color: gray;
-    margin: 10px;
+  padding-right: 10px;
+  min-width: 80px;
+  height: 31px;
+  line-height: 31px;
+  font-family: "나눔바른고딕", NanumBarunGothic;
+  font-size: 15px;
+  color: #fff;
+  text-align: center;
+  font-weight: 400;
+  background-color: gray;
+  margin: 10px;
 }
 table {
   width: 100%;
