@@ -1,26 +1,31 @@
 <template>
   <teleport to="body">
-    <div class="backdrop">
-      <div class="container">
-        <label> 제목 :<input type="text" v-model="qnaDetail.title" /> </label>
-        <label> 내용 :<input type="text" v-model="qnaDetail.context" /> </label>
-        <label> 파일 :<input type="file" id="fileInput" style="display: none" @change="handlerSelectFile" /> </label>
-        <label class="img-label" htmlFor="fileInput"> 파일 첨부하기 </label>
-        <div @click="handlerDownloadFile">
-          <div v-if="!imageUrl">
-            <label> 파일명 :</label>
+    <div id="backdrop">
+      <div id="passwordModal" class="modal-container">
+        <div class="modal-content">
+          <div class="password">
+            <strong>비밀번호 입력</strong>
+            <div class="modal-overlay" @Click="handlerModal">X</div>
           </div>
-          <div v-else>
-            <label> 미리보기 : </label>
-            <img :src="imageUrl" />
+          <div class="passinput">
+            <input
+              type="text"
+              id="passwordInput"
+              name="passwordInput"
+              v-bind="password"
+              @Change="handlePasswordChange"
+              placeholder="비밀번호"
+              className="inputTxt password"
+            />
+            <div class="btn_areaC mt30">
+              <button @Click="submitPassword;" className="btn blue">
+                <span>확인</span>
+              </button>
+              <button @Click="handlerModal" className="btn gray">
+                <span>취소</span>
+              </button>
+            </div>
           </div>
-        </div>
-        <div class="button-box">
-          <button v-on:click="qnaDetail.qnaIdx ? handlerUpdateBtn() : handlerSaveBtn()">
-            {{ qnaDetail.qnaIdx ? "수정" : "저장" }}
-          </button>
-          <button v-on:click="handlerDeleteBtn" v-if="props.idx">삭제</button>
-          <button v-on:click="handlerModal">나가기</button>
         </div>
       </div>
     </div>
@@ -44,23 +49,6 @@ const imageUrl = ref("");
 const fileData = ref("");
 const queryClient = useQueryClient();
 const router = useRouter();
-
-const handlerGetModalDetail = () => {
-  axios.post("/api/board/qnaDetailFileRe.do", { qnaSeq: props.idx }).then((res) => {
-    // qnaDetail.value = res.data.detail;
-    // qnaDetail.value.context = res.data.detail.content; // 변수명 오타 차이
-    console.log("qnaDetail", qnaDetail);
-    console.log("res", res);
-    if (["jpg", "gif", "png", "webp"].includes(qnaDetail.value.fileExt)) {
-      handlerGetImage();
-      // 1. 위와 같은 Blob방식URL을 줄 시 사용자의 다운로드 의사와 상관없이 사용자의 브라우저 캐시에 이미 저장되며
-      // 사용자가 조회/다운로드 원할 시 브라우저 캐시에서 받아오게 됨
-      // 2. 아래와 같은 방식으로 URL을 줄 시 physicalPath라면 운영서버에 직접접근이 가능해져버리고
-      // logicalPath라면 파일서버에 직접접근이 가능해져버림
-      // imageUrl.value = '/api'+noticeDetail.value.logicalPath;
-    }
-  });
-};
 
 const handlerModal = () => {
   modalStore.setModalState(!modalStore.modalState);
@@ -162,7 +150,7 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.backdrop {
+#backdrop {
   top: 0%;
   left: 0%;
   width: 100%;
@@ -176,81 +164,152 @@ onUnmounted(() => {
   z-index: 1;
   font-weight: bold;
 }
-
-label {
-  display: flex;
-  flex-direction: column;
+#passwordModal {
+  width: 300px;
+}
+.qna {
+  background-color: #3e4463;
+  padding: 10px; /* 패딩을 추가하여 내용과 배경이 붙지 않도록 함 */
+  color: white; /* 텍스트 색상도 흰색으로 설정 */
+  text-align: left;
+  margin-top: 20px; /* 원하는 만큼 아래로 띄워줄 여백 추가 */
 }
 
-input[type="text"] {
-  padding: 8px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+.password {
+  background-color: #3e4463;
+  padding: 10px; /* 패딩을 추가하여 내용과 배경이 붙지 않도록 함 */
+  color: white; /* 텍스트 색상도 흰색으로 설정 */
+  text-align: left;
+  margin-bottom: 20px; /* .passinput와의 간격을 띄우기 위해 margin-bottom 추가 */
 }
 
-.container {
-  background: white;
+.passinput input {
+  width: 100%;
+  background-color: #f9f9f9;
+  color: black; /* 텍스트 색상도 흰색으로 설정 */
+  height: 35px; /* 원하는 높이로 설정 */
+  font-size: 14px; /* 폰트 크기 조정 */
+  padding: 5px; /* 패딩 조정 (너비에 영향을 미침) */
+  border-radius: 4px; /* 테두리 반경 (옵션) */
+  -webkit-text-security: disc; /* 입력된 텍스트를 점으로 보이게 함 (Webkit 기반 브라우저에서 작동) */
+}
+
+.modal-container {
+  position: relative;
+  width: 600px;
+  background: #f3f3f3; /* 배경색 */
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
-  position: relative;
-  width: 400px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  font-family: "Arial", sans-serif;
 }
 
-img {
-  width: 100px;
+.modal-content {
+  position: relative;
+  width: 100%;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 10px;
+  right: 15px; /* 오른쪽 상단으로 이동 */
+  color: black;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  margin-bottom: 10px; /* 아래 여백 추가 */
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  color: white; /* 제목 색상 */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+th {
+  text-align: center; /* 수평 중앙 정렬 */
+  vertical-align: middle; /* 수직 중앙 정렬 */
+  padding: 10px;
+  font-size: 14px;
+  color: #333;
+  width: 120px;
+  background: #bbc2cd; /* 배경색 */
+}
+
+td {
+  padding: 10px;
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: none;
   height: 100px;
 }
 
-.img-label {
-  margin-top: 10px;
-  padding: 6px 25px;
-  background-color: #ccc;
-  border-radius: 4px;
-  color: rgba(0, 0, 0, 0.9);
-  cursor: pointer;
-
-  &:hover {
-    background-color: #45a049;
-    color: white;
-  }
-
-  &:active {
-    background-color: #3e8e41;
-    box-shadow: 0 2px #666;
-    transform: translateY(2px);
-  }
+.required {
+  color: red;
 }
 
-.button-box {
-  text-align: right;
-  margin-top: 10px;
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
 }
+
 button {
-  background-color: #3bb2ea;
+  background-color: #87ceeb;
   border: none;
   color: white;
   padding: 10px 22px;
-  text-align: right;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
+  text-align: center;
+  font-size: 14px;
   cursor: pointer;
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: 0 4px #999;
   transition: 0.3s;
 
   &:hover {
-    background-color: #45a049;
+    background-color: #d6effc;
   }
 
   &:active {
     background-color: #3e8e41;
     box-shadow: 0 2px #666;
     transform: translateY(2px);
+  }
+}
+
+.btn.gray {
+  background-color: #6c757d;
+
+  &:hover {
+    background-color: #5a6268;
+  }
+
+  &:active {
+    background-color: #545b62;
   }
 }
 </style>
