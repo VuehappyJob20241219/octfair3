@@ -1,0 +1,275 @@
+<template>
+    <teleport to="body">
+        <div class="backdrop">
+            <div class="container">
+                <label class="title">회사 정보</label>
+                <div class="content">
+                    <table>
+                        <colgroup>
+                            <col width="120px">
+                            <col width="*">
+                            <col width="120px">
+                            <col width="*">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>사업자번호</th>
+                                <td><input type="text" v-model="bizManageDetail.bizIdx" readonly /></td>
+                            </tr>
+                            <tr>
+                                <th>사업자명</th>
+                                <td><input type="text" v-model="bizManageDetail.bizName" /></td>
+                            </tr>
+                            <tr>
+                                <th>대표자</th>
+                                <td><input type="text" v-model="bizManageDetail.bizCeoName" /></td>
+                            </tr>
+                            <tr>
+                                <th>사원수</th>
+                                <td><input type="text" v-model="bizManageDetail.bizEmpCount" /></td>
+                            </tr>
+                            <tr>
+                                <th>매출액</th>
+                                <td><input type="text" v-model="bizManageDetail.bizRevenue" /></td>
+                            </tr>
+                            <tr>
+                                <th>연락처</th>
+                                <td><input type="text" v-model="bizManageDetail.bizContact" /></td>
+                            </tr>
+                            <tr>
+                                <th>사업자주소</th>
+                                <td><input type="text" v-model="bizManageDetail.bizAddr" /></td>
+                            </tr>
+                            <tr>
+                                <th>홈페이지주소</th>
+                                <td><input type="text" v-model="bizManageDetail.bizWebUrl" /></td>
+                            </tr>
+                            <tr>
+                                <th>설립일</th>
+                                <td><input type="date" v-model="bizManageDetail.bizFoundDate" /></td>
+                            </tr>
+                            <tr>
+                                <th>회사소개</th>
+                                <td><input type="text" v-model="bizManageDetail.bizIntro" /></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                <button @click="handlerSaveBtn">수정</button>
+            <button @click="handlerModal">취소</button>
+            </div>
+        </div>
+    </teleport>
+</template>
+
+
+<script setup>
+import axios from "axios";
+import { useModalStore } from "../../../stores/modalState";
+
+const emit = defineEmits(["postSuccess", "modalClose"]);
+const props = defineProps(["bizIdx"]);
+
+const bizManageDetail = ref({});
+const modalStateBiz = useModalStore();
+
+
+const searchDetail = () => {
+    const param = new URLSearchParams({
+        bizIdx: props.bizIdx
+    });
+
+    axios.post('/api/manage-user/bizManageDetail.do', param)
+        .then((res) => {
+            bizManageDetail.value = res.data.detail;
+        });
+};
+
+const handlerSaveBtn = () => {
+    //유효성 검사
+    if (!checkForm()) {
+        console.log("수정에 실패하였습니다.");
+        return;
+    }
+
+    const param = new URLSearchParams({
+        ...bizManageDetail.value
+    });
+
+    axios.post("/api/manage-user/bizInfoUpdate.do", param).then((res) => {
+        if (res.data.result === 'success') {
+            handlerModal();
+            emit('postSuccess');
+        };
+    })
+}
+
+const checkForm = () => {
+    let inputBizName = bizManageDetail.value.bizName;
+    let inputContact = bizManageDetail.value.bizContact;
+
+    let phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
+
+    if (inputBizName.length < 1) {
+        alert("사업자명을 입력하세요.");
+        return false;
+    }
+
+    if(!inputContact){
+        //공백인 경우 저장 가능
+    }else if(!phoneRules.test(inputContact)){
+        alert("전화번호 형식을 확인해주세요.");
+        return false;
+    }
+    console.log(inputContact);
+    
+    return true;
+}
+
+
+
+const handlerModal = () => {
+    modalStateBiz.setModalState();
+};
+
+onMounted(() => {
+    props.bizIdx && searchDetail();
+});
+
+onUnmounted(() => {
+    emit("modalClose");
+});
+
+</script>
+
+
+<style lang="scss" scoped>
+.backdrop {
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    display: flex;
+    flex-flow: row wrep;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    font-weight: bold;
+    overflow: hidden;
+    /* 모달 영역을 벗어나는 내용 숨김 */
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+}
+
+label.title {
+    font-size: 18px;
+}
+
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+    position: relative;
+    max-width: 60%;
+    max-height: 90%;
+    /* 모달 높이를 화면에 맞게 제한 */
+    overflow-y: auto;
+    /* 내부 스크롤 가능하게 설정 */
+}
+
+// .content {
+//     display: inline-block;
+// }
+
+input[type="text"],
+input[type="date"],
+input[type="email"],
+input[type="tel"] {
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    // font-size: 13px;
+    width: 200px;
+}
+
+select {
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.button-box {
+    text-align: right;
+    margin-top: 0px;
+}
+
+button {
+    white-space: nowrap;
+    /* 줄 바꿈 방지 */
+    background-color: #3bb2ea;
+    border: none;
+    color: white;
+    padding: 10px 22px;
+    text-align: right;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+    box-shadow: 0 4px #999;
+    transition: 0.3s;
+
+    &:hover {
+        background-color: #45a049;
+    }
+
+    &:active {
+        background-color: #3e8e41;
+        box-shadow: 0 2px #666;
+        transform: translateY(2px);
+    }
+}
+
+table {
+    border-collapse: collapse;
+    margin: 20px 0px 0px 0px;
+    font-size: 14px;
+    text-align: left;
+
+    th {
+        white-space: nowrap;
+        /* 줄 바꿈 방지 */
+        width: 100px;
+        background-color: #2676bf;
+        color: #ddd;
+        display: block;
+        height: 60px;
+        line-height: 60px;
+        padding-left: 10px;
+    }
+
+    td {
+        // padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        width: 100px;
+        height: 60px;
+    }
+
+    tbody {
+        width: 500px;
+    }
+}
+</style>
