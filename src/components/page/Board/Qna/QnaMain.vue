@@ -55,7 +55,7 @@
     />
 
     <!-- 모달 -->
-    <QnaDetail v-if="modalStore.modalState" :idx="qnaIdx" @postSuccess="searchList" @modalClose="closeModal" />
+    <QnaPassword v-if="modalStore.modalState" :idx="qnaIdx" @postSuccess="searchList" @modalClose="closeModal" />
   </div>
 </template>
 
@@ -69,6 +69,7 @@ import { useUserInfo } from "../../../../stores/userInfo";
 import { useQnaLogState } from "../../../../stores/useQnaLogState";
 import { inject } from "vue";
 import { useModalStore } from "../../../../stores/modalState";
+import QnaPassword from "./QnaPassword.vue";
 
 // 상태 값 설정
 const route = useRoute();
@@ -86,7 +87,9 @@ const activeButton = ref("A");
 
 // 버튼 활성화 함수
 const setActive = (type) => {
+  injectedhRequestType.requestType = "all";
   activeButton.value = type; // 클릭된 버튼 활성화
+
   searchList(); // 상태 변경 시 API 호출
 };
 
@@ -102,6 +105,7 @@ const searchList = () => {
     loginId: userInfo.user.loginId,
     requestType: injectedhRequestType.requestType || "all", // 프로바이더 값 사용
   };
+  console.log(modalStore.modalState);
   axios.post("/api/board/qnaListRe.do", param).then((res) => {
     qnaList.value = res.data;
   });
@@ -109,7 +113,7 @@ const searchList = () => {
 
 // 모달 처리
 const handlerModal = (idx) => {
-  modalStore.setModalState();
+  modalStore.setModalState(!modalStore.modalState);
   qnaIdx.value = idx;
 };
 
