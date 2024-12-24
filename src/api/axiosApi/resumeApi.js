@@ -4,4 +4,5 @@ export const Resume = {
   DeleteResume: "/api/apply/resumeDeleteBody.do",
   BasicInfoResume: "/api/apply/resumeNew.do",
   SaveResume: "/api/apply/resumeSaveBody.do",
+  PreviewResume: "/api/apply/previewResumeBody.do",
 };

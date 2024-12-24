@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import ResumeDetail from "../components/page/Apply/ResumeDetail/ResumeDetail.vue";
 import QnaDetail from "../components/page/Board/Qna/QnaDetail.vue";
 import BizPostDetail from "../components/page/ManageHire/BizPost/BizPostDetail.vue";
 import BizPostInsert from "../components/page/ManageHire/BizPost/BizPostInsert.vue";
 import History from "../views/Apply/History.vue";
 import Resume from "../views/Apply/Resume.vue";
+import ResumePost from "../views/Apply/ResumePost.vue";
 import Faq from "../views/Board/Faq.vue";
 import Notice from "../views/Board/Notice.vue";
 import Qna from "../views/Board/Qna.vue";
@@ -99,7 +99,7 @@ const routes = [
           {
             path: "resume-new.do",
             name: "resume-new",
-            component: ResumeDetail,
+            component: ResumePost,
           },
           {
             path: "history.do",

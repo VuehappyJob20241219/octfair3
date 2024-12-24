@@ -48,6 +48,7 @@ declare module 'vue' {
     QnaSearchTanstack: typeof import('./src/components/page/Board/Qna/QnaSearchTanstack.vue')['default']
     ResumeDetail: typeof import('./src/components/page/Apply/ResumeDetail/ResumeDetail.vue')['default']
     ResumeList: typeof import('./src/components/page/Apply/ResumeMain/ResumeList.vue')['default']
+    ResumePreview: typeof import('./src/components/page/Apply/ResumeDetail/ResumePreview.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
