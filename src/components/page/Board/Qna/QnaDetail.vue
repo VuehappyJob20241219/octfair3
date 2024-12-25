@@ -32,7 +32,8 @@ import { onMounted, onUnmounted } from "vue";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { useUserInfo } from "@/stores/userInfo";
 import axios from "axios";
-import { useRouter } from "vue-router";
+import { useRouter }
+ from "vue-router";
 import { useModalStore } from "../../../../stores/modalState";
 
 const emits = defineEmits(["postSuccess", "modalClose"]);
@@ -46,7 +47,11 @@ const queryClient = useQueryClient();
 const router = useRouter();
 
 const handlerGetModalDetail = () => {
-  axios.post("/api/board/qnaDetailFileRe.do", { qnaSeq: props.idx }).then((res) => {
+  param={
+    qnaSeq: props.idx 
+  }
+  //password
+  axios.post("/api/board/qnaDetailFileRe.do", ).then((res) => {
     // qnaDetail.value = res.data.detail;
     // qnaDetail.value.context = res.data.detail.content; // 변수명 오타 차이
     console.log("qnaDetail", qnaDetail);

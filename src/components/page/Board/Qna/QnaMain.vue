@@ -113,7 +113,6 @@ const searchList = () => {
 // 모달 처리
 const handlerModal = (idx) => {
   setModalState();
-  console.log("modalState", modal.modalState);
   qnaIdx.value = idx;
 };
 
@@ -123,7 +122,6 @@ const closeModal = () => {
 };
 
 const setModalState = () => {
-  console.log("여기는 타나?");
   modal.setModalState(); // 현재 값을 반대로 토글
 };
 
