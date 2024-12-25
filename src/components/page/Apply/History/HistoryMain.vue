@@ -11,28 +11,56 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>ㅇㅇ</td>
-                    <td>ㅇㅇ</td>
-                    <td>ㅇㅇ</td>
-                    <td>ㅇㅇ</td>
-                    <td>ㅇㅇ</td>
-                </tr>
+              <template v-if="isLoading">...로딩중</template>
+              <template v-if="isSuccess">
+                <template v-if="historyList.historyCnt > 0">
+                  <tr v-for="list in historyList.history" :key="list.appId">
+                      <td>
+                        <p>지원완료</p>
+                        <p>{{ list.applyDate }}</p>
+                      </td>
+                      <td>
+                        <p>{{ list.bizName }}</p>
+                        <p>{{ list.postTitle }}</p>
+                        <p>지원이력서</p>
+                      </td>
+                      <td>
+                        <p>{{ list.status }}</p>
+                      </td>
+                      <td>
+                        <p>{{ list.viewed }}</p>
+                      </td>
+                      <td>
+                        <p>지원취소</p>
+                      </td>
+                      
+                  </tr>
+                </template>
+              </template>
             </tbody>
     </table>
 
-    <!-- <Pagination
-      :totalItems="noticeList?.noticeCnt || 0"
+    <Pagination
+      :totalItems="historyList?.historyCnt || 0"
       :items-per-page="5"
       :max-pages-shown="5"
       :onClick="searchList"
       v-model="cPage"
-    /> -->
+    />
 </div>
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router';
 import Pagination from '../../../common/Pagination.vue';
+import axios from 'axios';
+import { inject } from 'vue';
+import { useHistoryListSearchQuery } from '../../../hook/history/useHistoryListSearchQuery';
+const router = useRouter();
+const cPage = ref(1);
+const injectedValue = inject("provideValue");
+const { data: historyList, isLoading, refetch, isSuccess, isError }
+  = useHistoryListSearchQuery( cPage)
 
 </script>
 
