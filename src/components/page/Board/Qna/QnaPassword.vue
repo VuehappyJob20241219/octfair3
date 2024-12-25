@@ -28,7 +28,9 @@
         </div>
       </div>
     </div>
+    <QnaDetail v-if="modalState" :idx="qnaIdx" :pass="pass"  @postSuccess="searchList" @modalClose="() => (qnaIdx = 0)" />
   </teleport>
+
 </template>
 
 <script setup>
@@ -38,11 +40,13 @@ import { useUserInfo } from "@/stores/userInfo";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { useModalStore } from "../../../../stores/modalState";
+import QnaDetail from "./QnaDetail.vue";
 
 const emits = defineEmits(["postSuccess", "modalClose"]);
 const modal = useModalStore();
-const props = defineProps(["idx"]);
-const password = ref("");
+const props = defineProps(["idx","pass"]);
+const pass = ref("");
+const modalState = ref(false);
 
 const handlerModal = () => {
   modal.setModalState();
@@ -51,20 +55,23 @@ const handlerModal = () => {
 const handlerPassWord = () => {
   const param = {
     qnaSeq: props.idx, // 프로바이더 값 사용
-    password: password.value,
+    password: pass.value,
   };
   axios.post("/api/board/checkPassword.do", param).then((res) => {
     console.log(res);
     if (res.data.result === "success") {
       alert("비밀번호가 일치 합니다.");
+      console.log(res.data)
+      emits("postSuccess", { password: res.data.password, idx: res.data.qnaSeq }); // ✅ emit 이벤트로 전달
+      modalState.value = true; // 상태 변경
     } else {
       alert("비밀번호가 일치하지 않습니다.");
     }
   });
 };
 const handlePasswordChange = (event) => {
-  password.value = event.target.value;
-  console.log(password.value); // 예시 동작
+  pass.value = event.target.value;
+  console.log(pass.value); // 예시 동작
 };
 
 onUnmounted(() => {

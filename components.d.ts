@@ -19,6 +19,7 @@ declare module 'vue' {
     CompanyDetail: typeof import('./src/components/page/Company/CompanyDetail.vue')['default']
     CompanyUpdate: typeof import('./src/components/page/Company/CompanyUpdate.vue')['default']
     ContextBox: typeof import('./src/components/common/ContextBox.vue')['default']
+    copy: typeof import('./src/components/page/Board/Notice/FirstNoticeMain copy.vue')['default']
     FaqMain: typeof import('./src/components/page/Board/Faq/FaqMain.vue')['default']
     FaqModal: typeof import('./src/components/page/Board/Faq/FaqModal.vue')['default']
     FaqSearch: typeof import('./src/components/page/Board/Faq/FaqSearch.vue')['default']
@@ -30,7 +31,6 @@ declare module 'vue' {
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     HistoryMain: typeof import('./src/components/page/Apply/History/HistoryMain.vue')['default']
     HistorySearch: typeof import('./src/components/page/Apply/History/HistorySearch.vue')['default']
-    ImageQnaMain: typeof import('./src/components/page/Board/Qna/ImageQnaMain.vue')['default']
     LeftManuBar: typeof import('./src/components/layout/LeftManuBar.vue')['default']
     LoginMain: typeof import('./src/components/page/Login/LoginMain.vue')['default']
     MypageMain: typeof import('./src/components/page/Mypage/MypageMain.vue')['default']
@@ -40,15 +40,9 @@ declare module 'vue' {
     NoticeSearch: typeof import('./src/components/page/Board/Notice/NoticeSearch.vue')['default']
     Pagination: typeof import('./src/components/common/Pagination.vue')['default']
     QnaDetail: typeof import('./src/components/page/Board/Qna/QnaDetail.vue')['default']
-    QnaDetailTanstack: typeof import('./src/components/page/Board/Qna/QnaDetailTanstack.vue')['default']
     QnaMain: typeof import('./src/components/page/Board/Qna/QnaMain.vue')['default']
-    QnaMainTanstack: typeof import('./src/components/page/Board/Qna/QnaMainTanstack.vue')['default']
-<<<<<<< HEAD
     QnaPassword: typeof import('./src/components/page/Board/Qna/QnaPassword.vue')['default']
-=======
->>>>>>> d02b938bb90ea564213dc85fc725ab6dd4a7c30b
     QnaSearch: typeof import('./src/components/page/Board/Qna/QnaSearch.vue')['default']
-    QnaSearchTanstack: typeof import('./src/components/page/Board/Qna/QnaSearchTanstack.vue')['default']
     ResumeDetail: typeof import('./src/components/page/Apply/ResumeDetail/ResumeDetail.vue')['default']
     ResumeList: typeof import('./src/components/page/Apply/ResumeMain/ResumeList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
