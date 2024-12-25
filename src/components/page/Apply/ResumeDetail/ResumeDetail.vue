@@ -47,69 +47,79 @@
           </p>
         </div>
         <div class="listDiv">
-          <button type="button" class="showTableBtn" id="career">+ 추가</button>
+          <button type="button" class="showTableBtn" id="career" @click="showAddCareer">+ 추가</button>
           <ul>
             <li class="list" id="careerList">
               <!-- 조회값 여기에 추가 -->
             </li>
-            <li id="careerInputTable" style="display: none">
+            <li id="careerInputTable" v-show="careerAddState">
               <table class="col">
                 <tbody>
                   <tr>
                     <td>
+                      회사명:
                       <input
                         type="text"
                         id="company"
                         style="padding: 5px; width: 80%; margin: 0px"
                         placeholder="회사명"
                         required="required"
+                        v-model="careerInfo.company"
                       />
                     </td>
                     <td>
                       입사일 :
                       <input
-                        type="month"
+                        type="date"
                         id="startDate"
                         style="padding: 5px; width: 80%; margin: 0px"
                         required="required"
+                        v-model="careerInfo.start_date"
                       />
                     </td>
                     <td>
                       퇴사일 :
                       <input
-                        type="month"
+                        type="date"
                         id="endDate"
                         style="padding: 5px; width: 80%; margin: 0px"
                         required="required"
+                        v-model="careerInfo.end_date"
                       />
                     </td>
                   </tr>
                   <tr>
                     <td>
+                      근무부서:
                       <input
                         type="text"
                         id="dept"
                         style="padding: 5px; width: 80%; margin: 0px"
                         placeholder="근무부서"
                         required="required"
+                        v-model="careerInfo.dept"
                       />
                     </td>
                     <td>
+                      직책/직급:
                       <input
                         type="text"
                         id="position"
                         style="padding: 5px; width: 80%; margin: 0px"
                         placeholder="직책/직급"
                         required="required"
+                        v-model="careerInfo.position"
                       />
                     </td>
                     <td>
+                      퇴사사유:
                       <input
                         type="text"
                         id="reason"
                         style="padding: 5px; width: 80%; margin: 0px"
                         placeholder="퇴사사유"
                         required="required"
+                        v-model="careerInfo.reason"
                       />
                     </td>
                   </tr>
@@ -120,14 +130,15 @@
                         id="crrDesc"
                         required="required"
                         placeholder="  담당업무를 입력해주세요. - 진행한 업무를 다 적기 보다는 경력사항 별로 중요한 내용만 엄선해서 작성하는 것이 중요합니다! - 경력별 프로젝트 내용을 적을 경우, 역할/팀구성/기여도/성과를 기준으로 요약해서 작성해보세요!"
+                        v-model="careerInfo.crr_desc"
                       ></textarea>
                     </td>
                   </tr>
                 </tbody>
               </table>
               <div class="inputBtnGroup">
-                <a class="btnType gray cancleBtn" id="career" href="#"><span>취소</span></a>
-                <a class="btnType blue" href="javascript:insertCareer()"><span>저장</span></a>
+                <a class="btnType gray cancleBtn" id="career" @click="showAddCareer"><span>취소</span></a>
+                <a class="btnType blue" @click="addCareer"><span>저장</span></a>
               </div>
             </li>
           </ul>
@@ -139,17 +150,18 @@
           <p class="resumeDetail_body_guide_text">• 최신순으로 작성해주세요.</p>
         </div>
         <div class="listDiv">
-          <button type="button" class="showTableBtn" id="education">+ 추가</button>
+          <button type="button" class="showTableBtn" id="education" @click="showAddEdu">+ 추가</button>
           <ul>
             <li class="list" id="educationList">
               <!-- 조회값 여기에 추가 -->
             </li>
-            <li id="educationInputTable" style="display: none">
+            <li id="educationInputTable" v-show="eduAddState">
               <table class="col">
                 <tbody>
                   <tr>
                     <td>
-                      <select style="width: 80%" id="eduLevel">
+                      학력구분:
+                      <select style="width: 80%" id="eduLevel" v-model="educationInfo.eduLevel">
                         <option value="none" selected="selected">학력구분</option>
                         <option value="고등학교">고등학교</option>
                         <option value="대학교">대학교</option>
@@ -158,33 +170,42 @@
                       </select>
                     </td>
                     <td>
+                      학교명:
                       <input
                         type="text"
                         id="schoolName"
                         style="padding: 5px; width: 80%; margin: 0px"
                         placeholder="학교명"
+                        v-model="educationInfo.schoolName"
                       />
                     </td>
                     <td>
+                      전공명:
                       <input
                         type="text"
                         id="major"
                         style="padding: 5px; width: 80%; margin: 0px"
                         placeholder="전공명"
+                        v-model="educationInfo.major"
                       />
                     </td>
                   </tr>
                   <tr>
                     <td>
                       입학일 :
-                      <input type="month" id="admDate" style="padding: 5px; width: 80%; margin: 0px" />
+                      <input type="date" id="admDate" style="padding: 5px; width: 80%; margin: 0px" 
+                      v-model="educationInfo.admDate"
+                      />
                     </td>
                     <td>
                       졸업일 :
-                      <input type="month" id="grdDate" style="padding: 5px; width: 80%; margin: 0px" />
+                      <input type="date" id="grdDate" style="padding: 5px; width: 80%; margin: 0px" 
+                      v-model="educationInfo.grdDate"
+                      />
                     </td>
                     <td>
-                      <select style="width: 80%" id="grdStatus">
+                      졸업여부:
+                      <select style="width: 80%" id="grdStatus" v-model="educationInfo.grdStatus">
                         <option value="none" selected="selected">졸업여부</option>
                         <option value="졸업">졸업</option>
                         <option value="재학">재학</option>
@@ -196,8 +217,8 @@
                 </tbody>
               </table>
               <div class="inputBtnGroup">
-                <a class="btnType gray cancleBtn" id="education" href="#"><span>취소</span></a>
-                <a class="btnType blue" href="javascript:insertEdu()"><span>저장</span></a>
+                <a class="btnType gray cancleBtn" id="education" @click="showAddEdu"><span>취소</span></a>
+                <a class="btnType blue" @click="addEdu"><span>저장</span></a>
               </div>
             </li>
           </ul>
@@ -212,13 +233,13 @@
           </p>
         </div>
         <div class="listDiv">
-          <button type="button" class="showTableBtn" id="skill">+ 추가</button>
+          <button type="button" class="showTableBtn" id="skill" @click="showAddSkill" >+ 추가</button>
         </div>
         <ul>
           <li class="list" id="skillList">
             <!-- 조회값 여기에 추가 -->
           </li>
-          <li id="skillInputTable" style="display: none">
+          <li id="skillInputTable" v-show="skillAddState">
             <table class="row">
               <colgroup>
                 <col width="30%" />
@@ -227,26 +248,32 @@
               <tbody>
                 <tr>
                   <td>
+                    스킬명:
                     <input
                       type="text"
                       id="skillName"
                       style="padding: 5px; width: 80%; margin: 0px"
                       placeholder="스킬명"
+                      v-model="skillInfo.skillName"
                     />
                   </td>
                   <td>
-                    <textarea style="height: auto" id="skillDetail" placeholder="스킬상세기재"></textarea>
+                    스킬상세기재:
+                    <textarea style="height: auto" id="skillDetail" placeholder="스킬상세기재"
+                    v-model="skillInfo.skillDetail"
+                    ></textarea>
                   </td>
                 </tr>
               </tbody>
             </table>
             <div class="inputBtnGroup">
-              <a class="btnType gray cancleBtn" id="skill" href="#"><span>취소</span></a>
-              <a class="btnType blue" href="javascript:insertSkill()"><span>저장</span></a>
+              <a class="btnType gray cancleBtn" id="skill" @click="showAddSkill"><span>취소</span></a>
+              <a class="btnType blue" @click="addSkill"><span>저장</span></a>
             </div>
           </li>
         </ul>
       </div>
+                                  <!-- 자격증 작업 중 -->
       <div class="resumeDetail_body">
         <div class="resumeDetail_body_haeder">자격증 및 외국어</div>
         <div class="resumeDetail_body_guide">
@@ -256,13 +283,13 @@
           </p>
         </div>
         <div class="listDiv">
-          <button type="button" class="showTableBtn" id="certification">+ 추가</button>
+          <button type="button" class="showTableBtn" id="certification" @click="showAddCert">+ 추가</button>
         </div>
         <ul>
           <li class="list" id="certificationList">
             <!-- 조회값 여기에 추가 -->
           </li>
-          <li id="certificationInputTable" style="display: none">
+          <li id="certificationInputTable" v-show="certAddState">
             <table class="col">
               <colgroup>
                 <col width="20%" />
@@ -273,29 +300,39 @@
               <tbody>
                 <tr>
                   <td>
+                    자격증명:
                     <input
                       type="text"
                       id="certName"
                       style="padding: 5px; width: 80%; margin: 0px"
                       placeholder="자격증명"
+                      v-model="certificationInfo.certName"
                     />
                   </td>
                   <td>
-                    <input type="text" id="grade" style="padding: 5px; width: 80%; margin: 0px" placeholder="등급" />
+                    등급:
+                    <input type="text" id="grade" style="padding: 5px; width: 80%; margin: 0px" placeholder="등급" 
+                      v-model="certificationInfo.grade"
+                    />
                   </td>
                   <td>
-                    <input type="text" id="issuer" style="padding: 5px; width: 80%; margin: 0px" placeholder="발행처" />
+                    발행처:
+                    <input type="text" id="issuer" style="padding: 5px; width: 80%; margin: 0px" placeholder="발행처" 
+                    v-model="certificationInfo.issuer"
+                    />
                   </td>
                   <td>
                     취득일자 :
-                    <input type="month" id="acqDate" style="padding: 5px; width: 80%; margin: 0px" />
+                    <input type="date" id="acqDate" style="padding: 5px; width: 80%; margin: 0px" 
+                     v-model="certificationInfo.acqDate"
+                    />
                   </td>
                 </tr>
               </tbody>
             </table>
             <div class="inputBtnGroup">
-              <a class="btnType gray cancleBtn" id="certification" href="#"><span>취소</span></a>
-              <a class="btnType blue" href="javascript:insertCert()"><span>저장</span></a>
+              <a class="btnType gray cancleBtn" id="certification" @click="showAddCert"><span>취소</span></a>
+              <a class="btnType blue" @click="addCert"><span>저장</span></a>
             </div>
           </li>
         </ul>
@@ -386,6 +423,16 @@ const { user } = userInfo;
 const fileData = ref("");
 const ResumePreviewModalState = useModalStore();
 const resumePreviewIdx = ref(0);
+const careerAddState = ref(false);
+const eduAddState = ref(false);
+const skillAddState = ref(false);
+const certAddState = ref(false);
+const careerInfo = ref({});
+const educationInfo = ref({});
+const skillInfo =ref({});
+const certificationInfo =ref({});
+
+
 
 const basicInfo = async () => {
   const param = {
@@ -439,6 +486,98 @@ const handerResumePreview = (idx) => {
   ResumePreviewModalState.setModalState();
   resumePreviewIdx.value = idx;
 };
+
+const showAddCareer= () => {
+  careerAddState.value = !careerAddState.value;
+  careerInfo.value = {};
+}
+
+const showAddEdu= () => {
+  eduAddState.value = !eduAddState.value;
+  educationInfo.value = {};
+}
+
+const showAddSkill= () => {
+  skillAddState.value = !skillAddState.value;
+  skillInfo.value = {};
+}
+
+const showAddCert= () => {
+  certAddState.value = !certAddState.value;
+  certificationInfo.value = {};
+}
+
+const addCareer = async() =>{
+  const text = {
+    resIdx: basicinformation.value.resIdx,
+    company:careerInfo.value.company,
+    startDate:careerInfo.value.start_date,
+    endDate:careerInfo.value.end_date,
+    dept:careerInfo.value.dept,
+    position:careerInfo.value.position,
+    reason:careerInfo.value.reason,
+    crrDesc:careerInfo.value.crr_desc,
+  };
+  await axios.post(Resume.InsertCareer, text).then((res) => {
+    if(res.data.result === "success") {
+      careerAddState.value = !careerAddState.value;
+      careerInfo.value = {};
+      alert("경력 추가 완")
+    }
+  });
+}
+
+const addEdu = async() =>{
+  const text = {
+    resIdx: basicinformation.value.resIdx,
+    eduLevel : educationInfo.value.eduLevel ,
+    schoolName: educationInfo.value.schoolName ,
+    major: educationInfo.value.major ,
+    admDate: educationInfo.value.admDate ,
+    grdDate: educationInfo.value.grdDate ,
+    grdStatus: educationInfo.value.grdStatus ,
+  };
+  await axios.post(Resume.InsertEducation, text).then((res) => {
+    if(res.data.result === "success") {
+      eduAddState.value = !eduAddState.value;
+      educationInfo.value = {};
+      alert("학력 추가 완")
+    }
+  });
+}
+
+const addSkill = async() =>{
+  const text = {
+    resIdx: basicinformation.value.resIdx,
+    skillName:skillInfo.value.skillName,
+    skillDetail:skillInfo.value.skillDetail,
+  };
+  await axios.post(Resume.InsertSkill, text).then((res) => {
+    if(res.data.result === "success") {
+      skillAddState.value = !skillAddState.value;
+      skillInfo.value = {};
+      alert("스킬 추가 완")
+    }
+  });
+}
+
+const addCert = async() =>{
+  const text = {
+    resIdx: basicinformation.value.resIdx,
+    certName:certificationInfo.value.certName,
+    grade:certificationInfo.value.grade,
+    issuer:certificationInfo.value.issuer,
+    acqDate:certificationInfo.value.acqDate,
+  };
+  await axios.post(Resume.InsertCertification, text).then((res) => {
+    if(res.data.result === "success") {
+      certAddState.value = !certAddState.value;
+      certificationInfo.value = {};
+      alert("자격 추가 완")
+    }
+  });
+}
+
 
 onMounted(() => {
   basicInfo();

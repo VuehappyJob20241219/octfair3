@@ -2,22 +2,51 @@
   <teleport to="body">
     <div class="backdrop" @click.self="closeModal">
       <div class="container">
+        <div id="printArea">
         <template v-if="resumeDetailinformation">
           <template v-if="resumeDetailinformation.resIdx > 0">
             <div v-for="[key, value] in Object.entries(resumeProperties)" :key="key">
-              <!-- value가 존재할 때만 출력 -->
               <div v-if="value">
-                <span v-if="labels[key]">{{ labels[key] }}: {{ value }}</span>
+                <span v-if="resumeBasicLabels[key]">{{ resumeBasicLabels[key] }}: {{ value }}</span>
               </div>
             </div>
-            <div>{{}}경력</div>
-            <div>{{}}학력</div>
-            <div>{{}}스킬</div>
-            <div>{{}}외국어</div>
-
-            <button class="btnType blue" @click="closeModal">나가기</button>
+              <!-- 경력 -->
+              <div v-for="(career, index) in careerProperties" :key="index">
+                <div v-for="[key, value] in Object.entries(career)" :key="key">
+                  <div v-if="value">
+                    <span v-if="careerLabels[key]">{{ careerLabels[key] }} {{ value }}</span>
+                  </div>
+                </div>
+              </div>
+            <!-- 학력 -->
+              <div v-for="(edu, index) in eduProperties" :key="index">
+                <div v-for="[key, value] in Object.entries(edu)" :key="key">
+                  <div v-if="value">
+                    <span v-if="eduLabels[key]">{{ eduLabels[key] }} {{ value }}</span>
+                  </div>
+                </div>
+              </div>
+                <!-- 스킬 -->
+              <div v-for="(skill, index) in skillProperties" :key="index">
+                <div v-for="[key, value] in Object.entries(skill)" :key="key">
+                  <div v-if="value">
+                    <span v-if="skillLabels[key]">{{ skillLabels[key] }} {{ value }}</span>
+                  </div>
+                </div>
+              </div>
+             <!-- 외국어 -->
+              <div v-for="(certification, index) in certProperties" :key="index">
+                <div v-for="[key, value] in Object.entries(certification)" :key="key">
+                  <div v-if="value">
+                    <span v-if="certLabels[key]">{{ certLabels[key] }} {{ value }}</span>
+                  </div>
+                </div>
+              </div>
           </template>
         </template>
+      </div>
+        <button class="btnType blue" @click="closeModal">닫기</button>
+        <button class="btnType gray" @click="printJS('printArea', 'html')">인쇄</button>
       </div>
     </div>
   </teleport>
@@ -28,6 +57,7 @@ import { useModalStore } from "@/stores/modalState";
 import axios from "axios";
 import { Resume } from "../../../../api/axiosApi/resumeApi";
 import { computed } from "vue";
+import printJS from 'print-js'
 
 const modalState = useModalStore();
 const props = defineProps(["idx"]);
@@ -36,8 +66,8 @@ const resumeDetailinformation = ref({
   resumeInfo: {},
 });
 
-const labels = {
-  resTitle: "타이틀",
+const resumeBasicLabels = {
+  resTitle: "제목",
   userNm: "이름",
   email: "이메일",
   phone: "핸드폰",
@@ -45,16 +75,57 @@ const labels = {
   perStatement: "자기소개",
   proLink: "링크",
   fileName: "첨부파일",
-  updatedDate: "업데이트 날짜",
-  empStatus: "고용 상태", // 필요한 라벨 추가
-  phsycalPath: "물리적 경로", // 필요한 라벨 추가
-  logicalPath: "논리적 경로", // 필요한 라벨 추가
-  fileSize: "파일 크기", // 필요한 라벨 추가
-  fileExt: "파일 형식", // 필요한 라벨 추가
+};
+
+const careerLabels = {
+  company: "회사명:",
+  dept:"근무부서:",
+  position: "직책/직급:",
+  startDate:"근무기간:",
+  endDate:"~",
+  reason: "퇴사사유:",
+  crrDesc: "담당업무:",
+};
+
+const eduLabels = {
+  eduLevel: "학력구분:",
+  schoolName:"학교명:",
+  major: "전공명",
+  admDate:"재학기간:",
+  grdDate:"~",
+  grdStatus: "졸업여부:",
+};
+
+const skillLabels = {
+  skillName: "스킬명:",
+  skillDetail: "스킬상세기재:",
+};
+
+const certLabels = {
+  certName: "자격증명:",
+  grade: "등급:",
+  issuer: "발행처:",
+  acqDate: "취득일:",
 };
 
 const resumeProperties = computed(() => {
   return resumeDetailinformation.value.resumeInfo || {}; // resumeInfo가 없을 경우 빈 객체 반환
+});
+
+const careerProperties = computed(() => {
+  return resumeDetailinformation.value.careerInfo || [];
+});
+
+const eduProperties = computed(() => {
+  return resumeDetailinformation.value.eduInfo || []; // resumeInfo가 없을 경우 빈 객체 반환
+});
+
+const skillProperties = computed(() => {
+  return resumeDetailinformation.value.skillInfo || []; // resumeInfo가 없을 경우 빈 객체 반환
+});
+
+const certProperties = computed(() => {
+  return resumeDetailinformation.value.certInfo || []; // resumeInfo가 없을 경우 빈 객체 반환
 });
 
 const closeModal = () => {
@@ -64,12 +135,10 @@ const closeModal = () => {
 const resumeDetail = async () => {
   await axios.post(Resume.PreviewResume, { resIdx: props.idx }).then((res) => {
     resumeDetailinformation.value = res.data;
-    console.log("resumeDetail 리턴값", resumeDetailinformation.value);
   });
 };
 
 onMounted(() => {
-  console.log("메인에서 보낸 인덱스 값", props.idx);
   resumeDetail();
 });
 </script>
