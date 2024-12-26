@@ -32,6 +32,7 @@ declare module 'vue' {
     HistoryMain: typeof import('./src/components/page/Apply/History/HistoryMain.vue')['default']
     HistorySearch: typeof import('./src/components/page/Apply/History/HistorySearch.vue')['default']
     ImageQnaMain: typeof import('./src/components/page/Board/Qna/ImageQnaMain.vue')['default']
+    JoinApplicantMain: typeof import('./src/components/page/Join/JoinApplicantMain.vue')['default']
     LeftManuBar: typeof import('./src/components/layout/LeftManuBar.vue')['default']
     LoginMain: typeof import('./src/components/page/Login/LoginMain.vue')['default']
     MypageMain: typeof import('./src/components/page/Mypage/MypageMain.vue')['default']
@@ -46,9 +47,13 @@ declare module 'vue' {
     QnaMainTanstack: typeof import('./src/components/page/Board/Qna/QnaMainTanstack.vue')['default']
     QnaSearch: typeof import('./src/components/page/Board/Qna/QnaSearch.vue')['default']
     QnaSearchTanstack: typeof import('./src/components/page/Board/Qna/QnaSearchTanstack.vue')['default']
+    ResumeCareerView: typeof import('./src/components/page/Apply/ResumeDetail/ResumeCareerView.vue')['default']
     ResumeDetail: typeof import('./src/components/page/Apply/ResumeDetail/ResumeDetail.vue')['default']
     ResumeList: typeof import('./src/components/page/Apply/ResumeMain/ResumeList.vue')['default']
+    ResumePreview: typeof import('./src/components/page/Apply/ResumeDetail/ResumePreview.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    WithdrawMain: typeof import('./src/components/page/Mypage/WithdrawMain.vue')['default']
+    WithdrawModal: typeof import('./src/components/page/Mypage/WithdrawModal.vue')['default']
   }
 }
