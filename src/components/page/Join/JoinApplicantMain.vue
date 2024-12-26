@@ -9,6 +9,12 @@
                     <col width="*">
                 </colgroup>
                 <tbody>
+                    <th>회원유형</th>
+                    <td><select v-model="register.userType">
+                            <option disabled value="">선택</option>
+                            <option value="A">개인회원</option>
+                            <option value="B">기업회원</option>
+                        </select></td>
                     <tr>
                         <th>아이디</th>
                         <td><input v-model.lazy="register.loginId" type="text" /></td>
@@ -73,6 +79,7 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const register = ref({
+    userType: "",
     sex: ""
 });
 const checkId = ref(false);
@@ -104,7 +111,6 @@ const handlerSaveBtn = () => {
         action: 'I',//필요없지만 BE와 맞추려고 사용
         ckIdcheckreg: '1',//필요없지만 BE와 맞추려고 사용
         ckEmailcheckreg: '0',//필요없지만 BE와 맞추려고 사용
-        userType: 'A',
         statusYn: 1
     });
 
@@ -119,6 +125,7 @@ const handlerSaveBtn = () => {
 }
 
 const checkForm = () => {
+    let inputUserType = register.value.userType;
     let inputId = register.value.loginId;
     let inputPwd = register.value.password;
     let inputPwdOk = register.value.password1;
@@ -134,11 +141,15 @@ const checkForm = () => {
     const emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
     const phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
 
+
+    if (!inputUserType) {
+        alert("회원 유형을 선택해주세요.");
+        return false;
+    }
     if (!inputId) {
         alert("아이디를 입력해주세요.");
         return false;
     }
-
     if (!passwordRules.test(inputPwd)) {
         alert("비밀 번호는 숫자,영문자,특수문자 조합으로 8~15자리를 사용해야 합니다.");
         return false;
@@ -147,12 +158,10 @@ const checkForm = () => {
         alert("비밀번호 확인란을 입력해주세요.");
         return false;
     }
-
     if (!(inputPwd === inputPwdOk)) {
         alert("비밀번호와 확인용 비밀번호가 일치하지 않습니다.");
         return false;
     }
-
     if (!inputName || inputName < 1) {
         alert("이름을 입력하세요.");
         return false;
