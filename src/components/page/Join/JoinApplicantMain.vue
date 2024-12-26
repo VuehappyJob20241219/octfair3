@@ -69,9 +69,9 @@
 <script setup>
 import axios from 'axios';
 import { ref, watch } from 'vue';
-import { useRoute } from "vue-router";
+import { useRouter } from 'vue-router';
 
-const route = useRoute();
+const router = useRouter();
 const register = ref({
     sex: ""
 });
@@ -110,11 +110,9 @@ const handlerSaveBtn = () => {
 
     console.log(register.value)
     axios.post("/api/register.do", param).then((res) => {
-        if (res.data.result === 'success') {
+        if (res.data.result === 'SUCCESS') {
             alert("회원 가입에 성공했습니다.")
-            route.push({
-                name: "login"
-            })
+            router.push('/');
         }
     })
 
