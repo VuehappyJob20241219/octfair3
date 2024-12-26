@@ -3,7 +3,7 @@
     <input v-model.lazy="searchTitle" />
     <input type="date" v-model="searchStartDate" />
     <input type="date" v-model="searchEndDate" />
-    <button v-on:click="handlerSearch">검색</button>
+    <button v-if="userType === 'A' || userType === 'B'" @click="saveState">등록하기</button>
     <button v-if="userType === 'A' || userType === 'B'" @click="handlerLogState">내가 쓴 글</button>
   </div>
 </template>
@@ -11,13 +11,21 @@
 <script setup>
 import router from "@/router";
 import { useUserInfo } from "../../../../stores/userInfo";
+import { useModalStore } from "../../../../stores/modalState";
 
+const emits = defineEmits(["saveBtn"]);
 const searchTitle = ref("");
 const searchStartDate = ref("");
 const searchEndDate = ref("");
 const userInfo = useUserInfo();
+const modal = useModalStore();
+const idx = ref(0);
 const userType = userInfo.user.userType;
 const injectedhRequestType = inject("providedRequestType");
+
+const saveState = () => {
+  emits("saveBtn", true);
+};
 
 const handlerSearch = () => {
   const query = [];
@@ -38,7 +46,7 @@ watchEffect(() => window.location.search && router.push()); // URL이 변경되�
 
 <style lang="scss" scoped>
 .search-box {
-  margin-bottom: 10px;
+  margin-top: 8px;
   display: block;
   float: inline-end;
 }

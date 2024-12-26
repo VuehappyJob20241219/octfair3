@@ -28,9 +28,7 @@
         </div>
       </div>
     </div>
-    <QnaDetail v-if="modalState" :idx="qnaIdx" :pass="pass"  @postSuccess="searchList" @modalClose="() => (qnaIdx = 0)" />
   </teleport>
-
 </template>
 
 <script setup>
@@ -42,10 +40,11 @@ import { useRouter } from "vue-router";
 import { useModalStore } from "../../../../stores/modalState";
 import QnaDetail from "./QnaDetail.vue";
 
-const emits = defineEmits(["postSuccess", "modalClose"]);
+const emits = defineEmits(["postSuccess", "modalClose", "passwordValue"]);
 const modal = useModalStore();
-const props = defineProps(["idx","pass"]);
+const props = defineProps(["idx"]); //부모에게 데이터를 전달받을때 사용
 const pass = ref("");
+const qnaIdxValue = ref(0);
 const modalState = ref(false);
 
 const handlerModal = () => {
@@ -57,12 +56,16 @@ const handlerPassWord = () => {
     qnaSeq: props.idx, // 프로바이더 값 사용
     password: pass.value,
   };
+  console.log("qna패스워드", pass.value);
   axios.post("/api/board/checkPassword.do", param).then((res) => {
     console.log(res);
     if (res.data.result === "success") {
       alert("비밀번호가 일치 합니다.");
-      console.log(res.data)
-      emits("postSuccess", { password: res.data.password, idx: res.data.qnaSeq }); // ✅ emit 이벤트로 전달
+      console.log(res.data);
+      pass.value = res.data.password;
+      qnaIdxValue.value = res.data.qnaSeq;
+      emits("passwordValue", { password: pass, idx: qnaIdxValue });
+      emits("postSuccess", "modalClose");
       modalState.value = true; // 상태 변경
     } else {
       alert("비밀번호가 일치하지 않습니다.");
@@ -75,8 +78,17 @@ const handlePasswordChange = (event) => {
 };
 
 onUnmounted(() => {
-  emits("modalClose");
+  emits(["postSuccess", "modalClose", "passwordValue"]);
 });
+
+const closeModal = () => {
+  qnaIdx.value = 0;
+  modal.setModalState(false);
+};
+
+const handlerList = () => {
+  emits("postSuccess");
+};
 </script>
 
 <style lang="scss" scoped>
@@ -110,7 +122,7 @@ onUnmounted(() => {
   padding: 10px; /* 패딩을 추가하여 내용과 배경이 붙지 않도록 함 */
   color: white; /* 텍스트 색상도 흰색으로 설정 */
   text-align: left;
-  margin-bottom: 20px; /* .passinput와의 간격을 띄우기 위해 margin-bottom 추가 */
+  margin-bottom: 10px; /* .passinput와의 간격을 띄우기 위해 margin-bottom 추가 */
 }
 
 .passinput input {
@@ -219,6 +231,7 @@ button {
   border-radius: 8px;
   box-shadow: 0 4px #999;
   transition: 0.3s;
+  margin-right: 10px;
 
   &:hover {
     background-color: #d6effc;
