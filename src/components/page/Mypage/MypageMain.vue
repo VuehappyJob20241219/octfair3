@@ -78,8 +78,6 @@ const userInfo = useUserInfo();
 const userDetail = ref({});
 const chkRegBiz = ref({});
 const modalStatePw = useModalStore();
-const modalStateBiz = useModalStore();
-const bizIdx = ref("");
 
 const searchDetail = () => {
     const param = new URLSearchParams({
@@ -103,20 +101,21 @@ const openDaumPostcode = () => { //카카오API사용
 }
 
 const handlerSaveBiz = () => {
-    this.$route.push({
+    route.push({
         name: "CompanyWrite",
         params: { bizIdx: userDetail.value.bizIdx },
     });
 }
 
 const handlerUpdateBiz = () => {
-    this.$route.push({
+    route.push({
         name: "CompanyUpdate",
         params: { bizIdx: userDetail.value.bizIdx },
     });
 }
 
 const handlerUpdateBtn = () => {
+
     //유효성 검사
     if (!checkForm()) {
         return;
