@@ -1,5 +1,5 @@
 <template>
-  <button class="newResumeCreateMove" @click="newResumeCreate">안녕</button>
+  <button class="newResumeCreateMove" @click="newResumeCreate">새 이력서 작성</button>
   <div class="divResumeList">
     현재 페이지:{{ cPage }} 총 개수: {{ resumeInfoArray?.resumeCnt }}
     <table>
@@ -65,7 +65,6 @@ const cPage = ref(1);
 const resumeCopyResult = ref();
 const resumeDeleteResult = ref();
 const router = useRouter();
-const imageUrl = ref("");
 
 const resumeSearchList = async () => {
   const param = {
@@ -135,7 +134,7 @@ const fileDownload = (idx) => {
 };
 
 const newResumeCreate = () => {
-  router.push("resume-new.do");
+  router.push({ name: "resume-new" });
 };
 
 onMounted(() => {

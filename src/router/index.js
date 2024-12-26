@@ -4,6 +4,7 @@ import BizPostDetail from "../components/page/ManageHire/BizPost/BizPostDetail.v
 import BizPostInsert from "../components/page/ManageHire/BizPost/BizPostInsert.vue";
 import History from "../views/Apply/History.vue";
 import Resume from "../views/Apply/Resume.vue";
+import ResumePost from "../views/Apply/ResumePost.vue";
 import Faq from "../views/Board/Faq.vue";
 import Notice from "../views/Board/Notice.vue";
 import Qna from "../views/Board/Qna.vue";
@@ -15,6 +16,7 @@ import Login from "../views/Login/Login.vue";
 import Applicant from "../views/Manage-user/Applicant.vue";
 import Biz from "../views/Manage-user/Biz.vue";
 import Post from "../views/ManageHire/Post.vue";
+import Mypage from "../views/Mypage/Mypage.vue";
 
 const routes = [
   {
@@ -102,6 +104,11 @@ const routes = [
             component: Resume,
           },
           {
+            path: "resume-new.do",
+            name: "resume-new",
+            component: ResumePost,
+          },
+          {
             path: "history.do",
             name: "history",
             component: History,
@@ -142,6 +149,17 @@ const routes = [
             path: "companyDetailPage.do",
             name: "companyDetailPage",
             component: CompanyInfo,
+          },
+        ],
+      },
+      {
+        path: "mypage",
+        name: "mypage",
+        children: [
+          {
+            path: "update.do",
+            name: "update",
+            component: Mypage,
           },
         ],
       },
