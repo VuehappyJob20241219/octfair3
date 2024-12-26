@@ -20,7 +20,7 @@
       <tr>
         <th>연락처</th>
         <td>
-          <input type="text" @change="companyPhoneNumChange" v-model="companyDetail.bizContact" />
+          <input type="text" v-model="companyDetail.bizContact" />
         </td>
         <th>사업자 주소</th>
         <td>
@@ -79,82 +79,77 @@
     </tbody>
   </table>
   <div class="button-box">
-    <button @click="props.idx ? companyUpdate(update) : companyUpdate(insert)">
-      {{ props.idx ? '수정' : '등록' }}
+    <button @click="companyDetail.bizIdx ? handlerCompanyUpdate() : handlerCompanyInsert()">
+      {{ companyDetail.bizIdx ? "수정" : "등록" }}
     </button>
-    <button>삭제</button>
+    <button @click="handlerCompanyDelete()">삭제</button>
     <button @click="$router.go(-1)">돌아가기</button>
   </div>
 </template>
 
 <script setup>
-import axios from 'axios';
-import { useUserInfo } from '../../../stores/userInfo';
+import axios from "axios";
+import { useUserInfo } from "../../../stores/userInfo";
+import { useRouter } from "vue-router";
 
 const userInfo = useUserInfo();
-const props = defineProps(['idx']);
 const companyDetail = ref({});
-const imageUrl = ref('');
-const phoneNum = ref('');
-const fileData = ref('');
+const imageUrl = ref("");
+const phoneNum = ref("");
+const fileData = ref("");
+const router = useRouter();
 
 const apiSuccess = () => {
   router.go(-1);
 };
 
-const searchDetail = (bizIdx) => {
-  const detailList = axios.post('/api/company/companyUpdatePageRe.do', {
-    bizIdx,
+const searchDetail = () => {
+  axios.post("/api/company/companyUpdatePageRe.do", { loginId: userInfo.user.loginId }).then((res) => {
+    companyDetail.value = res.data.detail || {};
   });
-
-  if (detailList) {
-    companyDetail.value = detailList.payload;
-    const { fileExt, logicalPath } = detailList.payload;
-
-    if (fileExtension === 'jpg' || fileExtension === 'gif' || fileExtension === 'png') {
-      imageUrl.value = logicalPath;
-    } else {
-      imageUrl.value = '';
-    }
-  }
 };
 
-const companyUpdate = async (path) => {
-  const params = handlerValidation();
-  if (!params) return;
-
+const handlerCompanyInsert = async () => {
   const textData = {
-    bizName: companyDetail.value.bizName,
-    bizCeoName: companyDetail.value.bizCeoName,
-    bizContact: companyDetail.value.bizContact,
-    bizAddr: companyDetail.value.bizAddr,
-    bizEmpCount: companyDetail.value.bizEmpCount,
-    bizWebUrl: companyDetail.value.bizWebUrl,
-    bizFoundDate: companyDetail.value.bizFoundDate,
-    bizRevenue: companyDetail.value.bizRevenue,
-    bizIntro: companyDetail.value.bizIntro,
+    ...companyDetail.value,
     loginId: userInfo.user.loginId,
   };
   const formData = new FormData();
-  if (fileData.value) formData.append('file', fileData.value);
-  formData.append('text', new Blob([JSON.stringify(textData)], { type: 'application/json' }));
+  if (fileData.value) formData.append("file", fileData.value);
+  formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
 
-  axios
-    .post(path === 'insert' ? '/api/company/companySaveBody.do' : '/api/company/companyUpdateBody.do', formData)
-    .then((res) => {
-      if (res.data.result === 'success') {
-        alert('회사가 등록되었습니다.');
-      } else {
-        alert('공부하세요!');
-      }
-    });
+  await axios.post("/api/company/companySaveBody.do", formData).then((res) => {
+    if (res.data.result === "success") {
+      alert("회사가 등록되었습니다.");
+    } else {
+      alert("공부하세요!");
+    }
+  });
+};
+
+const handlerCompanyUpdate = async () => {
+  const textData = {
+    ...companyDetail.value,
+    loginId: userInfo.user.loginId,
+  };
+  const formData = new FormData();
+  if (fileData.value) formData.append("file", fileData.value);
+  formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
+
+  await axios.post("/api/company/companyUpdateBody.do", formData).then((res) => {
+    if (res.data.result === "success") {
+      alert("회사가 수정되었습니다.");
+    } else {
+      alert("공부하세요!");
+    }
+  });
 };
 
 const handlerFile = (e) => {
   const fileInfo = e.target.files;
-  const fileInfoSplit = fileInfo[0].name.split('.');
+  const fileInfoSplit = fileInfo[0].name.split(".");
   const fileExtension = fileInfoSplit[1].toLowerCase();
-  if (fileExtension === 'jpg' || fileExtension === 'gif' || fileExtension === 'png') {
+  if (fileExtension === "jpg" || fileExtension === "gif" || fileExtension === "png") {
     imageUrl.value = URL.createObjectURL(fileInfo[0]);
   }
   fileData.value = fileInfo[0];
@@ -173,19 +168,19 @@ const handlerFile = (e) => {
 
 const companyPhoneNumChange = (e) => {
   const inputNum = e.target.value;
-  var phone = inputNum.replace(/[^0-9]/g, '');
+  var phone = inputNum.replace(/[^0-9]/g, "");
 
   if (phone.length >= 3) {
     var prefix = phone.substring(0, 3);
-    if (['010', '011', '016', '017', '019'].indexOf(prefix) === -1) {
-      alert('정확한 전화번호를 입력해주세요.');
+    if (["010", "011", "016", "017", "019"].indexOf(prefix) === -1) {
+      alert("정확한 전화번호를 입력해주세요.");
       return;
     }
   }
   if (phone.length > 3 && phone.length <= 7) {
-    phone = phone.replace(/(\d{3})(\d{1,4})/, '$1-$2');
+    phone = phone.replace(/(\d{3})(\d{1,4})/, "$1-$2");
   } else if (phone.length >= 8) {
-    phone = phone.replace(/(\d{3})(\d{3,4})(\d{0,4})/, '$1-$2-$3');
+    phone = phone.replace(/(\d{3})(\d{3,4})(\d{0,4})/, "$1-$2-$3");
   }
   if (phone.length > 13) {
     phone = phone.substring(0, 13);
@@ -193,87 +188,94 @@ const companyPhoneNumChange = (e) => {
   phoneNum.value = phone;
 };
 
-const handlerValidation = () => {
-  const today = new Date();
-  const addressPattern = /^[\w\s가-힣]+$/;
-  const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}([\/?%&=.#]*)?$/;
+// const handlerValidation = () => {
+//   const today = new Date();
+//   const addressPattern = /^[\w\s가-힣]+$/;
+//   const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}([\/?%&=.#]*)?$/;
 
-  const inputs = companyDetail.value;
+//   const inputs = companyDetail.value;
+//   console.log("companyDetail: " + inputs);
 
-  if (!inputs.bizName) {
-    alert('사업자 이름을 입력해 주세요.');
-    return;
-  } else if (!inputs.bizCeoName) {
-    alert('사업자 이름을 입력해 주세요.');
-    return;
-  } else if (!inputs.bizContact) {
-    alert('연락처를 입력해 주세요.');
-    return;
-  } else if (!inputs.bizAddr) {
-    alert('주소를 입력해 주세요.');
-    return;
-  } else if (!inputs.bizFoundDate) {
-    alert('설립일을 입력해 주세요.');
-    return;
-  } else if (!inputs.bizWebUrl) {
-    alert('홈페이지 주소를 입력해 주세요.');
-    return;
-  } else if (!inputs.bizEmpCount) {
-    alert('사원수를 입력해 주세요.');
-    return;
-  } else if (!inputs.bizRevenue) {
-    alert('매출액을 입력해 주세요.');
-    return;
-    // } else if (!inputs.fileData) {
-    //   alert('로고를 등록해 주세요.');
-    //   return;
-  }
+//   if (!inputs.bizName) {
+//     alert("사업자 이름을 입력해 주세요.");
+//     return;
+//   } else if (!inputs.bizCeoName) {
+//     alert("사업자 이름을 입력해 주세요.");
+//     return;
+//   } else if (!inputs.bizContact) {
+//     alert("연락처를 입력해 주세요.");
+//     return;
+//   } else if (!inputs.bizAddr) {
+//     alert("주소를 입력해 주세요.");
+//     return;
+//   } else if (!inputs.bizFoundDate) {
+//     alert("설립일을 입력해 주세요.");
+//     return;
+//   } else if (!inputs.bizWebUrl) {
+//     alert("홈페이지 주소를 입력해 주세요.");
+//     return;
+//   } else if (!inputs.bizEmpCount) {
+//     alert("사원수를 입력해 주세요.");
+//     return;
+//   } else if (!inputs.bizRevenue) {
+//     alert("매출액을 입력해 주세요.");
+//     return;
+//     // } else if (!inputs.fileData) {
+//     //   alert('로고를 등록해 주세요.');
+//     //   return;
+//   }
 
-  if (today < new Date(inputs.bizFoundDate)) {
-    alert('설립일은 오늘보다 이전이어야 합니다.');
-    return false;
-  }
+//   if (today < new Date(inputs.bizFoundDate)) {
+//     alert("설립일은 오늘보다 이전이어야 합니다.");
+//     return false;
+//   }
 
-  if (!addressPattern.test(inputs.bizAddr)) {
-    alert('주소는 특수 문자를 포함하지 않는 형식으로 입력해 주세요.');
-    return false;
-  }
+//   if (!addressPattern.test(inputs.bizAddr)) {
+//     alert("주소는 특수 문자를 포함하지 않는 형식으로 입력해 주세요.");
+//     return false;
+//   }
 
-  if (!urlPattern.test(inputs.bizWebUrl)) {
-    alert('홈페이지 주소는 올바른 URL 형식으로 입력해 주세요.');
-    return false;
-  }
+//   if (!urlPattern.test(inputs.bizWebUrl)) {
+//     alert("홈페이지 주소는 올바른 URL 형식으로 입력해 주세요.");
+//     return false;
+//   }
 
-  return inputs;
-};
+//   return inputs;
+// };
 
 const fileDownload = () => {
   let param = new URLSearchParams();
-  param.append('bizIdx', props.idx);
+  param.append("bizIdx", props.idx);
   const postAction = {
-    url: 'api/',
-    method: 'POST',
+    url: "api/",
+    method: "POST",
     data: param,
-    responseType: 'blob',
+    responseType: "blob",
   };
   axios(postAction).then((res) => {
     const url = window.URL.createObjectURL(new Blob([res.data]));
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.setAttribute('download', companyDetail.value.fileName);
+    link.setAttribute("download", companyDetail.value.fileName);
     document.body.appendChild(link);
     link.click();
     link.remove();
   });
 };
 
-const companyDeleteDetail = async () => {
-  await axios.post('/api/company/companyDeleteRe.do', { bizIdx: props.idx });
+const handlerCompanyDelete = async () => {
+  await axios.post("/api/company/companyDeleteRe.do", { loginId: userInfo.user.loginId }).then((res) => {
+    if (res.data.result === "success") {
+      alert("회사가 삭제되었습니다.");
+      router.go(-1);
+    } else {
+      alert("공부하세요!");
+    }
+  });
 };
 
 onMounted(() => {
-  props.idx && searchDetail();
-  console.log('bizIdx: ' + bizIdx);
+  searchDetail();
 });
 </script>
 
