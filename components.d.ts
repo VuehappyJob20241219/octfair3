@@ -32,6 +32,7 @@ declare module 'vue' {
     HistoryMain: typeof import('./src/components/page/Apply/History/HistoryMain.vue')['default']
     HistorySearch: typeof import('./src/components/page/Apply/History/HistorySearch.vue')['default']
     ImageQnaMain: typeof import('./src/components/page/Board/Qna/ImageQnaMain.vue')['default']
+    JoinApplicantMain: typeof import('./src/components/page/Join/JoinApplicantMain.vue')['default']
     LeftManuBar: typeof import('./src/components/layout/LeftManuBar.vue')['default']
     LoginMain: typeof import('./src/components/page/Login/LoginMain.vue')['default']
     MypageMain: typeof import('./src/components/page/Mypage/MypageMain.vue')['default']
