@@ -23,14 +23,22 @@ declare module 'vue' {
     FaqMain: typeof import('./src/components/page/Board/Faq/FaqMain.vue')['default']
     FaqModal: typeof import('./src/components/page/Board/Faq/FaqModal.vue')['default']
     FaqSearch: typeof import('./src/components/page/Board/Faq/FaqSearch.vue')['default']
+    FirstMypageMain: typeof import('./src/components/page/Mypage/FirstMypageMain.vue')['default']
     FirstNoticeDetail: typeof import('./src/components/page/Board/Notice/FirstNoticeDetail.vue')['default']
     'FirstNoticeDetail copy': typeof import('./src/components/page/Board/Notice/FirstNoticeDetail copy.vue')['default']
     FirstNoticeMain: typeof import('./src/components/page/Board/Notice/FirstNoticeMain.vue')['default']
     'FirstNoticeMain copy': typeof import('./src/components/page/Board/Notice/FirstNoticeMain copy.vue')['default']
     FirstNoticeSearch: typeof import('./src/components/page/Board/Notice/FirstNoticeSearch.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    HireApplicantMain: typeof import('./src/components/page/ManageHire/ManageApplicant/HireApplicantMain.vue')['default']
+    HireApplicantSearch: typeof import('./src/components/page/ManageHire/ManageApplicant/HireApplicantSearch.vue')['default']
     HistoryMain: typeof import('./src/components/page/Apply/History/HistoryMain.vue')['default']
     HistorySearch: typeof import('./src/components/page/Apply/History/HistorySearch.vue')['default']
+<<<<<<< HEAD
+=======
+    ImageQnaMain: typeof import('./src/components/page/Board/Qna/ImageQnaMain.vue')['default']
+    JoinApplicantMain: typeof import('./src/components/page/Join/JoinApplicantMain.vue')['default']
+>>>>>>> ae94c1ed9e58ca70f5fe35ddb16c9e0df3222b90
     LeftManuBar: typeof import('./src/components/layout/LeftManuBar.vue')['default']
     LoginMain: typeof import('./src/components/page/Login/LoginMain.vue')['default']
     MypageMain: typeof import('./src/components/page/Mypage/MypageMain.vue')['default']
@@ -43,9 +51,17 @@ declare module 'vue' {
     QnaMain: typeof import('./src/components/page/Board/Qna/QnaMain.vue')['default']
     QnaPassword: typeof import('./src/components/page/Board/Qna/QnaPassword.vue')['default']
     QnaSearch: typeof import('./src/components/page/Board/Qna/QnaSearch.vue')['default']
+<<<<<<< HEAD
+=======
+    QnaSearchTanstack: typeof import('./src/components/page/Board/Qna/QnaSearchTanstack.vue')['default']
+    ResumeCareerView: typeof import('./src/components/page/Apply/ResumeDetail/ResumeCareerView.vue')['default']
+>>>>>>> ae94c1ed9e58ca70f5fe35ddb16c9e0df3222b90
     ResumeDetail: typeof import('./src/components/page/Apply/ResumeDetail/ResumeDetail.vue')['default']
     ResumeList: typeof import('./src/components/page/Apply/ResumeMain/ResumeList.vue')['default']
+    ResumePreview: typeof import('./src/components/page/Apply/ResumeDetail/ResumePreview.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    WithdrawMain: typeof import('./src/components/page/Mypage/WithdrawMain.vue')['default']
+    WithdrawModal: typeof import('./src/components/page/Mypage/WithdrawModal.vue')['default']
   }
 }

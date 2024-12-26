@@ -30,8 +30,8 @@
             <tr v-for="MList in HirePost.MList" v-bind:key="MList.postIdx">
               <td @click="handlerDetail(MList.postIdx)">{{ MList.title }}</td>
               <td>{{ MList.expRequired }}</td>
-              <td>{{ MList.postDate.split(" ")[0] }}</td>
-              <td>{{ MList.endDate.split(" ")[0] }}</td>
+              <td>{{ MList.postDate }}</td>
+              <td>{{ MList.endDate }}</td>
               <td>{{ MList.appStatus }}</td>
               <td>{{ MList.workLocation }}</td>
             </tr>
@@ -96,10 +96,10 @@ const handleNewInsert = () => {
 };
 
 const handlerDetail = (param) => {
-  // queryClient.removeQueries({
-  //   queryKey: ["HirePost"],
-  // });
-  router.push({ name: "bizPostDetail", params: { idx: param } });
+  queryClient.removeQueries({
+    queryKey: ["bizPostDetail"],
+  });
+  router.push({ name: "bizPostDetail", params: { postIdx: param } });
 };
 </script>
 

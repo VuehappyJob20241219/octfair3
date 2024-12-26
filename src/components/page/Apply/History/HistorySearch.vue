@@ -1,29 +1,40 @@
 <template>
   <div class="search-box">
-    <select>
-        <option>조회기간전체</option>
-        <option>지난 1주일</option>
-        <option>지난 1개월</option>
-        <option>지난 3개월</option>
-        <option>지난 6개월</option>
-        <option>지난 1년</option>
+    <select v-model="searchKey.startDate">
+        <option value="all">조회기간전체</option>
+        <option value="1week">지난 1주일</option>
+        <option value="1month">지난 1개월</option>
+        <option value="3month">지난 3개월</option>
+        <option value="6month">지난 6개월</option>
+        <option value="1year">지난 1년</option>
     </select>
-    <select>
-        <option>열람여부전체</option>
-        <option>열람</option>
-        <option>미열람</option>
+    <select v-model="searchKey.viewStatus">
+        <option value="all">열람여부전체</option>
+        <option value="1">열람</option>
+        <option value="0">미열람</option>
     </select>
-    <select>
-        <option>최근지원순</option>
-        <option>과거지원순</option>
+    <select v-model="searchKey.sortOrder">
+        <option value="desc">최근지원순</option>
+        <option value="asc">과거지원순</option>
     </select>
-    <input v-model.lazy="keyword" />
+    <input v-model="searchKey.keyWord"/>
 
-    <button >검색</button>
+    <button @click="handlerSearch">검색</button>
     <button >초기화</button>
   </div>
 </template>
 <script setup>
+import { inject } from 'vue';
+
+const injectValue = inject("provideValue");
+const cPage = inject("cPage");
+const searchKey = ref({ ...injectValue.value });
+
+const handlerSearch = () => {
+  injectValue.value = { ...searchKey.value };
+  // 페이지 초기화 (검색 결과를 첫 페이지부터 보기 위해)
+  cPage.value = 1;
+}
 
 </script>
 
