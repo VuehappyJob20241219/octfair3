@@ -71,18 +71,18 @@
     <!-- 모달 -->
     <!-- userType이 "M"인 경우 QnaPassword, 그렇지 않으면 QnaDetail -->
     <QnaDetail
-      v-if="(userInfo.user.userType === 'M' && modal.modalState) || saveState"
+      v-if="(userInfo.user.userType === 'M' && modal.modalState) || injectedSaveState.saveState || passModalState"
       :idx="qnaIdx"
       :password="pass"
-      @passwordValue="handlePasswordValue"
-      @postSuccess="handlerList"
-      @modalClose="() => (qnaIdx = 0)"
+      @close="closeModal"
+      @postSuccess="success"
     />
     <QnaPassword
-      v-else-if="modal.modalState"
+      v-else-if="qnaIdx>0 && modal.modalState"
       :idx="qnaIdx"
-      @postSuccess="searchList"
-      @modalClose="() => (qnaIdx = 0)"
+      @passwordValue="handlePasswordValue"
+      @passwordModalState="hanlerPassState"
+      @close="closeModal"
     />
   </div>
 </template>
@@ -101,7 +101,6 @@ import QnaPassword from "./QnaPassword.vue";
 
 // 상태 값 설정
 const route = useRoute();
-const emits = defineEmits(["postSuccess", "modalClose", "passwordValue", "saveBtn"]);
 const itemPerPage = ref(10);
 const qnaList = ref();
 const cPage = ref(1);
@@ -111,7 +110,8 @@ const modal = useModalStore();
 const userInfo = useUserInfo();
 const qnaLogState = useQnaLogState();
 const injectedhRequestType = inject("providedRequestType");
-const saveState = ref(false);
+const injectedSaveState = inject("providedSaveState");
+const passModalState= ref(false);
 
 // 활성 버튼 상태 (디폴트: 일반회원)
 const activeButton = ref("A");
@@ -140,6 +140,17 @@ const searchList = () => {
     qnaList.value = res.data;
   });
 };
+// pass컴포넌트에서 받은 값 저장하기
+const handlePasswordValue =(data)=>{
+  console.log("main입니다",data)
+  if(data!=null){
+    qnaIdx.value=data.idx
+    pass.value =data.password
+  }
+}
+const hanlerPassState=(date)=>{
+  passModalState.value=date
+}
 
 // 모달 처리
 const handlerModal = (idx) => {
@@ -148,10 +159,22 @@ const handlerModal = (idx) => {
 };
 
 const closeModal = () => {
-  qnaIdx.value = 0;
-  modal.setModalState(false);
+  if(passModalState.value){ 
+    passModalState.value=false;
+    qnaIdx.value=0;
+    pass.value=''
+  }
+  if(modal.modalState){
+    modal.setModalState(false);
+    qnaIdx.value=0;
+  }
+  if(injectedSaveState.saveState){
+    injectedSaveState.saveState =false
+    qnaIdx.value=0;
+  }
 };
-const postSuccess = () => {
+
+const success = () => {
   searchList();
 };
 
@@ -163,11 +186,11 @@ const setModalState = () => {
 onMounted(() => {
   searchList();
 });
-watch(route, qnaLogState, searchList, injectedhRequestType.requestType);
+watch(route, qnaLogState, searchList, injectedhRequestType.requestType, injectedSaveState.saveState);
 
 watchEffect(() => {
   searchList();
-  saveState = emits("saveBtn");
+  
 });
 </script>
 

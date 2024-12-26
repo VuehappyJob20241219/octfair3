@@ -14,5 +14,6 @@ const providedSearchValue = ref({});
 
 provide("providedSearchValue", providedSearchValue);
 
+provide("providedSaveState", reactive({ saveState: false }));
 provide("providedRequestType", reactive({ requestType: "" }));
 </script>
