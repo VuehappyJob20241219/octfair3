@@ -16,6 +16,7 @@ import Login from "../views/Login/Login.vue";
 import Applicant from "../views/Manage-user/Applicant.vue";
 import Biz from "../views/Manage-user/Biz.vue";
 import Post from "../views/ManageHire/Post.vue";
+import ManageHireApplicant from "../views/ManageHire/ManageHireApplicant.vue";
 import Mypage from "../views/Mypage/Mypage.vue";
 import Withdraw from "../views/Mypage/Withdraw.vue";
 
@@ -131,9 +132,14 @@ const routes = [
             component: BizPostInsert,
           },
           {
-            path: "bizPostDetail.do/:idx",
+            path: "bizPostDetail.do/:postIdx",
             name: "bizPostDetail",
             component: BizPostDetail,
+          },
+          {
+            path: "applicant.do",
+            name: "hireApplicant",
+            component: ManageHireApplicant,
           },
         ],
       },
