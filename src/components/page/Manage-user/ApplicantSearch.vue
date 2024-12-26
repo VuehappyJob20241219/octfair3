@@ -7,8 +7,8 @@
 </template>
 
 <script setup>
-import { ref, watchEffect } from "vue";
-import router from "../../../router"
+import { ref } from "vue";
+import router from "../../../router";
 
 const keyword = ref("");
 
