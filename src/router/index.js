@@ -132,7 +132,7 @@ const routes = [
             component: BizPostInsert,
           },
           {
-            path: "bizPostDetail.do/:idx",
+            path: "bizPostDetail.do/:postIdx",
             name: "bizPostDetail",
             component: BizPostDetail,
           },
