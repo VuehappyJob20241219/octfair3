@@ -44,9 +44,8 @@
         </tr>
         <tr v-if="userDetail.userType == 'B'">
           <th>기업정보</th>
-          <td>
-            <button @click="handlerUpdateBiz()">{{ chkRegBiz.bizIdx ? "수정" : "등록" }}</button>
-          </td>
+          <td v-if="chkRegBiz.bizIdx == 0"><button @click="handlerSaveBiz()">등록</button></td>
+          <td v-else><button @click="handlerUpdateBiz(userDetail.bi)">수정</button></td>
         </tr>
         <tr>
           <th>우편변호</th>
@@ -70,13 +69,13 @@
 
 <script setup>
 import axios from "axios";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useModalStore } from "../../../stores/modalState";
 import { useUserInfo } from "../../../stores/userInfo";
 
 const props = defineProps(["loginId"]);
 
-const router = useRouter();
+const route = useRoute();
 const userInfo = useUserInfo();
 const userDetail = ref({});
 const chkRegBiz = ref({});
@@ -103,9 +102,17 @@ const openDaumPostcode = () => {
   }).open();
 };
 
+const handlerSaveBiz = () => {
+  route.push({
+    name: "CompanyWrite",
+    params: { bizIdx: userDetail.value.bizIdx },
+  });
+};
+
 const handlerUpdateBiz = () => {
-  router.push({
-    path: "/vue/company/companyUpdatePage.do",
+  route.push({
+    name: "CompanyUpdate",
+    params: { bizIdx: userDetail.value.bizIdx },
   });
 };
 
