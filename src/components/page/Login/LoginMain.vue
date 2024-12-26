@@ -28,12 +28,13 @@
             <label> 비밀번호 </label>
             <input required type="password" v-model="loginInfo.pwd" />
           </div>
-          <div class="joinDiv">
-            <strong class="strong" @click="$router.push('/join')">[일반회원가입]</strong>
-            <strong class="strong">[기업회원가입]</strong>
-          </div>
+          <br>
           <div>
             <button class="login-button" @click="handlerLogin">Login</button>
+          </div>
+          <div class="joinDiv">
+            <strong class="strong" @click="$router.push('/join')">[일반회원가입]</strong>
+            <strong class="strong">[아이디/비밀번호 찾기]</strong>
           </div>
         </div>
       </div>
@@ -90,6 +91,7 @@ const handlerLogin = async () => {
   align-items: center;
   color: white;
 }
+
 .login-box {
   background-color: white;
 }
@@ -131,6 +133,7 @@ button {
   padding-bottom: 30px;
   color: #ffffff;
 }
+
 .login-button {
   background-color: #2676bf;
   color: #ffffff;
@@ -144,12 +147,15 @@ button {
 button:hover {
   opacity: 0.9;
 }
+
 .joinDiv {
   font-size: small;
 }
+
 .findDiv {
   font-size: small;
 }
+
 .strong {
   cursor: pointer;
 }
