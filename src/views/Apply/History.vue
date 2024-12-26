@@ -6,10 +6,26 @@
 </template>
 
 <script setup>
-import HistoryMain from '../../components/page/Apply/History/HistoryMain.vue';
-import HistorySearch from '../../components/page/Apply/History/HistorySearch.vue';
 
-const provideValue = ref();
 
+//초기 검색 조건 설정
+const defaultSearchKey = {
+  keyWord: "",
+  startDate: "all",
+  viewStatus: "all",
+  sortOrder: "desc",
+};
+
+const provideValue = ref({ ...defaultSearchKey });
+const cPage = ref(1); // 현재 페이지
 provide("provideValue", provideValue);
+provide("cPage", cPage);
 </script>
+
+
+
+
+<!-- // 검색 조건 초기화 함수
+const resetSearchKey = () => {
+  Object.assign(searchKey, defaultSearchKey); // 상태 초기화
+}; -->
