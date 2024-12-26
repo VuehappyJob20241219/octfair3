@@ -1,8 +1,8 @@
 <template>
-    <ContextBox>FAQ</ContextBox>
-    <FaqSearch></FaqSearch>
-    <FaqMain></FaqMain>    
-  </template>
+  <ContextBox>FAQ</ContextBox>
+  <FaqSearch></FaqSearch>
+  <FaqMain></FaqMain>    
+</template>
   
  <script setup>
 

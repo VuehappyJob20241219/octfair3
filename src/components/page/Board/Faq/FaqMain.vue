@@ -12,7 +12,8 @@
       <colgroup>
         <col width="10%" />
         <col width="50%" />
-        <col width="30%" />
+        <col width="20%" />
+        <col width="10%" />
         <col width="10%" />
       </colgroup> 
 
@@ -22,27 +23,40 @@
           <th scope="col">제목</th>
           <th scope="col">작성일</th>
           <th scope="col">작성자</th>
+          <th scope="col">관리</th>
         </tr>
       </thead>
       
       <tbody>
-        <template v-if="faqList">
-          <template v-if="faqList.faqCnt > 0">
-            <tr v-for="faq in faqList.faq"
-             :key="faq.faq_idx"
-             @click="handlerModal(faq.faq_idx)"
-             >
-              <td>{{ faq.faq_idx }}</td>
-              <td>{{ faq.title }}</td>
-              <td>{{ faq.created_date.substr(0, 10) }}</td>
-              <td>{{ faq.author }}</td>
-            </tr>
-          </template>
-          <template v-else>
-            <tr>
-              <td colspan="7">일치하는 검색 결과가 없습니다</td>
-            </tr>
-          </template>
+        
+        <template v-if="faqList" class="accordion">
+        <template v-if="faqList.faqCnt > 0">
+          <tr
+            v-for="faq in faqList.faq" 
+            :key="faq.faq_idx" 
+            class="accordion-item">
+            <!-- 제목 -->
+            <td>{{ faq.faq_idx }}</td>
+            <td class="accordion-header" 
+                @click="toggleAccordion(faq.faq_idx)">{{ faq.title }}</td>
+            <td>{{ faq.created_date.substr(0, 10) }}</td>
+            <td>{{ faq.author }}</td>
+            <td> </td>
+            <!-- 내용 -->
+            <transition 
+              @before-enter="beforeEnter" 
+              @enter="enter" 
+              @before-leave="beforeLeave" 
+              @leave="leave">
+              <td v-if="activeAccordion === faq.faq_idx" class="accordion-content" >
+                {{ faq.content }}
+              </td>
+            </transition>
+          </tr>
+        </template>
+        <template v-else>
+          <div>일치하는 검색 결과가 없습니다.</div>
+        </template>
         </template>
       </tbody>
     </table>
@@ -70,6 +84,7 @@ const cPage = ref(1);
 const faq_idx = ref(0);
 const faqModalState = useModalStore();
 const userInfo = useUserInfo();
+const activeAccordion = ref(null);
 
 const faq_fype = ref(userInfo.user.userType === "B" ? "1" : "2");
 
@@ -81,10 +96,10 @@ const searchList = async () => {
     currentPage: cPage.value,
     pageSize: 5,
     faq_type: faq_fype.value,
-  });
-  await axios.post("/api/board/faqListRe.do", param).then((res) => {
-    faqList.value = res.data;
-  });
+  }); 
+  const response = await axios.post("/api/board/faqListRe.do", param);
+  faqList.value = response.data;
+  console.log(faqList.value);
 };
 
 const personalFaq = () => {
@@ -97,17 +112,40 @@ const companyFaq = () => {
   searchList();
 }
 
+const toggleAccordion = (faq_idx) => {
+  console.log(faq_idx);
+  activeAccordion.value = activeAccordion.value === faq_idx ? null : faq_idx;  
+};
+
 const handlerModal = (idx) => {
   console.log(idx);
   faqModalState.setModalState();
   faq_idx.value = idx;
 };
 
-watch(route, searchList);
+const beforeEnter = (el) => {
+  el.style.maxHeight = '0';  
+};
+
+const enter = (el) => {
+  el.style.maxHeight = el.scrollHeight + 'px'; // 내용에 맞게 max-height 설정
+};
+
+const beforeLeave = (el) => {
+  el.style.maxHeight = el.scrollHeight + 'px'; // leave 전에는 펼쳐진 상태로 유지
+};
+
+const leave = (el) => {
+  el.style.maxHeight = '0';
+  el.style.overflow = 'hidden';
+};
 
 onMounted(() => {
   searchList();
 });
+
+watch(route, searchList);
+
 </script>
 
 <style lang="scss" scoped>
@@ -117,6 +155,7 @@ table {
   margin: 20px 0px 0px 0px;
   font-size: 18px;
   text-align: left;
+  table-layout: auto;  /* 수정: table-layout을 auto로 설정하여 셀 크기를 내용에 맞게 조정 */
 
   th,
   td {
@@ -124,6 +163,7 @@ table {
     text-align: left;
     border-bottom: 1px solid #ddd;
     text-align: center;
+    word-wrap: break-word;
   }
 
   th {
@@ -137,5 +177,41 @@ table {
     opacity: 0.9;
     cursor: pointer;
   }
+
+  .accordion {
+  margin: 20px 0;
+  }
+
+  .accordion-item {
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .accordion-header {
+    background: #f5f5f5;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .accordion-header:hover {
+    background: #e0e0e0;
+  }
+
+  .accordion-content {
+  padding: 10px;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  overflow: hidden;
+  word-break: break-word;
+  max-width: 100%;
+  max-height: 0; /* 기본 상태에서 높이를 0으로 설정 */
+  transition: max-height 0.3s ease-out; /* max-height에 대한 애니메이션 */
+  }
 }
+
+
 </style>
