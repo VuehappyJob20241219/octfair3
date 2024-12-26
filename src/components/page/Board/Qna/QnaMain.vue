@@ -31,7 +31,21 @@
           <template v-if="qnaList.qnaCnt > 0">
             <tr v-for="qna in qnaList.qna" :key="qna.qnaIdx" @click="handlerModal(qna.qnaIdx)">
               <td>{{ qna.qnaIdx }}</td>
-              <td>{{ qna.title }}</td>
+              <td>
+                {{ qna.title }}
+                <span
+                  v-if="qna?.ans_content"
+                  :style="{
+                    marginLeft: '8px',
+                    display: 'inline-block',
+                    padding: '4px 8px',
+                    backgroundColor: '#e6f7ff',
+                    borderRadius: '4px',
+                  }"
+                >
+                  답변 완료
+                </span>
+              </td>
               <td>{{ qna.createdDate.substr(0, 10) }}</td>
               <td>{{ qna.author }}</td>
             </tr>
@@ -55,7 +69,21 @@
     />
 
     <!-- 모달 -->
-    <QnaPassword v-if="modal.modalState" :idx="qnaIdx" @postSuccess="searchList" @modalClose="() => (qnaIdx = 0)" />
+    <!-- userType이 "M"인 경우 QnaPassword, 그렇지 않으면 QnaDetail -->
+    <QnaDetail
+      v-if="(userInfo.user.userType === 'M' && modal.modalState) || saveState"
+      :idx="qnaIdx"
+      :password="pass"
+      @passwordValue="handlePasswordValue"
+      @postSuccess="handlerList"
+      @modalClose="() => (qnaIdx = 0)"
+    />
+    <QnaPassword
+      v-else-if="modal.modalState"
+      :idx="qnaIdx"
+      @postSuccess="searchList"
+      @modalClose="() => (qnaIdx = 0)"
+    />
   </div>
 </template>
 
@@ -73,14 +101,17 @@ import QnaPassword from "./QnaPassword.vue";
 
 // 상태 값 설정
 const route = useRoute();
+const emits = defineEmits(["postSuccess", "modalClose", "passwordValue", "saveBtn"]);
 const itemPerPage = ref(10);
 const qnaList = ref();
 const cPage = ref(1);
 const qnaIdx = ref(0);
+const pass = ref("");
 const modal = useModalStore();
 const userInfo = useUserInfo();
 const qnaLogState = useQnaLogState();
 const injectedhRequestType = inject("providedRequestType");
+const saveState = ref(false);
 
 // 활성 버튼 상태 (디폴트: 일반회원)
 const activeButton = ref("A");
@@ -120,6 +151,9 @@ const closeModal = () => {
   qnaIdx.value = 0;
   modal.setModalState(false);
 };
+const postSuccess = () => {
+  searchList();
+};
 
 const setModalState = () => {
   modal.setModalState(); // 현재 값을 반대로 토글
@@ -133,6 +167,7 @@ watch(route, qnaLogState, searchList, injectedhRequestType.requestType);
 
 watchEffect(() => {
   searchList();
+  saveState = emits("saveBtn");
 });
 </script>
 
