@@ -109,7 +109,7 @@ const handlerSaveBtn = () => {
     });
 
     console.log(register.value)
-    axios.post("/api/register.do", param).then((res) => {
+    axios.post("/api/registerBCrypt.do", param).then((res) => {
         if (res.data.result === 'SUCCESS') {
             alert("회원 가입에 성공했습니다.")
             router.push('/');
