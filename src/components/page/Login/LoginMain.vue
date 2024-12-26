@@ -54,8 +54,8 @@ const router = useRouter();
 
 const handlerLogin = async () => {
   const isNull = nullCheck([
-    { inval: loginInfo.value.lgn_Id, msg: "id 입력 좀" },
-    { inval: loginInfo.value.pwd, msg: "비밀번호 입력 좀" },
+    { inval: loginInfo.value.lgn_Id, msg: "ID를 입력해주세요." },
+    { inval: loginInfo.value.pwd, msg: "비밀번호를 입력해주세요." },
   ]);
   if (!isNull) return;
   const param = new URLSearchParams(loginInfo.value);
@@ -63,7 +63,7 @@ const handlerLogin = async () => {
   if (result === "SUCCESS") {
     router.push("/vue");
   } else {
-    alert("아이디 혹은 비밀번호가 일치하지 않아요");
+    alert("아이디 혹은 비밀번호가 일치하지 않습니다.");
     return;
   }
 };
