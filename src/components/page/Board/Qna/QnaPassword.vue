@@ -40,17 +40,20 @@ import { useRouter } from "vue-router";
 import { useModalStore } from "../../../../stores/modalState";
 import QnaDetail from "./QnaDetail.vue";
 
-const emits = defineEmits(["postSuccess", "modalClose", "passwordValue"]);
-const modal = useModalStore();
+const emits = defineEmits(["passwordModalState", "passwordValue","close"]);
+const modal = ref(false);
 const props = defineProps(["idx"]); //부모에게 데이터를 전달받을때 사용
 const pass = ref("");
 const qnaIdxValue = ref(0);
-const modalState = ref(false);
+
+// 마지막 emit한 데이터를 저장
+const lastPasswordValue = ref(null);
+
 
 const handlerModal = () => {
-  modal.setModalState();
-  console.log(modal.modalState);
+  emits("close");
 };
+
 const handlerPassWord = () => {
   const param = {
     qnaSeq: props.idx, // 프로바이더 값 사용
@@ -62,11 +65,10 @@ const handlerPassWord = () => {
     if (res.data.result === "success") {
       alert("비밀번호가 일치 합니다.");
       console.log(res.data);
-      pass.value = res.data.password;
-      qnaIdxValue.value = res.data.qnaSeq;
-      emits("passwordValue", { password: pass, idx: qnaIdxValue });
-      emits("postSuccess", "modalClose");
-      modalState.value = true; // 상태 변경
+      lastPasswordValue.value = { password: res.data.password, idx: res.data.qnaSeq };
+      emits("passwordValue", lastPasswordValue.value);
+      modal.value=true;
+      emits("passwordModalState", modal.value)
     } else {
       alert("비밀번호가 일치하지 않습니다.");
     }
@@ -78,17 +80,12 @@ const handlePasswordChange = (event) => {
 };
 
 onUnmounted(() => {
-  emits(["postSuccess", "modalClose", "passwordValue"]);
+  emits("passwordValue", lastPasswordValue.value);
+  emits("passwordModalState", modal.value)
+  
 });
 
-const closeModal = () => {
-  qnaIdx.value = 0;
-  modal.setModalState(false);
-};
 
-const handlerList = () => {
-  emits("postSuccess");
-};
 </script>
 
 <style lang="scss" scoped>

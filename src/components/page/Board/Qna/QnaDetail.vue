@@ -68,7 +68,7 @@
                   class="inputTxt p100"
                   name="password"
                   id="password"
-                  v-model="props.password"
+                  v-model="passwordValue" 
                   @focus="
                     (e) => {
                       e.target.type = 'text';
@@ -79,7 +79,7 @@
                       e.target.type = 'password';
                     }
                   "
-                  readonly
+                  :readonly="props.password!==''"
                 />
               </td>
             </tr>
@@ -142,7 +142,8 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import { useModalStore } from "../../../../stores/modalState";
 
-const emits = defineEmits(["postSuccess", "modalClose", "passwordValue"]);
+
+const emits = defineEmits(["postSuccess","close"])
 const props = defineProps(["idx", "password"]);
 const modal = useModalStore();
 const userInfo = useUserInfo();
@@ -151,7 +152,18 @@ const imageUrl = ref("");
 const fileData = ref("");
 const queryClient = useQueryClient();
 const router = useRouter();
+const injectedSaveState = inject("providedSaveState");
 
+const passwordValue = computed({
+  get() {
+    // props.password가 빈 문자열일 때 qnaDetail.password를 반환
+    return props.password === '' ? qnaDetail.value.password : props.password;
+  },
+  set(value) {
+    // 값을 설정할 때 qnaDetail.password에 반영
+    qnaDetail.value.password = value;
+  }
+});
 const handlerGetModalDetail = () => {
   console.log("여기는 detail props에용", props);
   const param = {
@@ -170,23 +182,25 @@ const handlerGetModalDetail = () => {
 };
 
 const handlerModal = () => {
-  modal.setModalState();
+  emits("close");
 };
 
 const handlerSaveBtn = () => {
   const textData = {
     qnaTit: qnaDetail.value.title,
     qnaCon: qnaDetail.value.content,
-    password: props.password,
+    password: qnaDetail.value.password,
     loginId: userInfo.user.loginId,
+    qna_type: userInfo.user.userType,
   };
+  console.log(textData)
   const formData = new FormData();
-  if (fileData.value) formData.append("file", fileData.value);
+  if (formData.value) formData.append("file", formData.value);
   formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
   axios.post("/api/board/qnaFileSaveRe.do", formData).then((res) => {
     if (res.data.result.toUpperCase() === "SUCCESS") {
       emits("postSuccess");
-      handlerModal();
+      emits("close");
       alert("등록 성공했습니다.");
     } else {
       alert("등록 실패했습니다.");
@@ -203,6 +217,7 @@ const handlerUpdateBtn = () => {
     password: props.password,
     ans_content: qnaDetail.value.ans_content,
   };
+  
   const formData = new FormData();
   if (fileData.value) formData.append("file", fileData.value);
   formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
@@ -287,7 +302,8 @@ watch(
   }
 );
 onUnmounted(() => {
-  emits("modalClose");
+  emits("close");
+  emits("postSuccess");
 });
 </script>
 
