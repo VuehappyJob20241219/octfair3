@@ -11,52 +11,52 @@
                 <tbody>
                     <tr>
                         <th>아이디</th>
-                        <td><input v-model="register.registerId" type="text" /></td>
+                        <td><input v-model.lazy="register.loginId" type="text" /></td>
                         <td><button @click="loginIdCheck">중복확인</button></td>
                     </tr>
                     <tr>
                         <th>비밀번호</th>
-                        <td><input v-model="register.registerPwd" type="text" /></td>
+                        <td><input v-model="register.password" type="text" /></td>
                     </tr>
                     <tr>
                         <th>비밀번호 확인</th>
-                        <td><input v-model="register.registerPwdOk" type="text" /></td>
+                        <td><input v-model="register.password1" type="text" /></td>
                     </tr>
                     <tr>
                         <th>이름</th>
-                        <td><input v-model="register.registerName" type="text" /></td>
+                        <td><input v-model="register.name" type="text" /></td>
                     </tr>
                     <tr>
                         <th>성별</th>
-                        <td><select v-model="register.registerSex">
+                        <td><select v-model="register.sex">
                                 <option value="1">남자</option>
                                 <option value="2">여자</option>
                             </select></td>
                     </tr>
                     <tr>
                         <th>생년월일</th>
-                        <td><input v-model="register.registerBirthday" type="date" /></td>
+                        <td><input v-model="register.birthday" type="date" /></td>
                     </tr>
                     <tr>
                         <th>전화번호</th>
-                        <td><input v-model="register.registerPhone" type="tel" /></td>
+                        <td><input v-model="register.phone" type="tel" /></td>
                     </tr>
                     <tr>
                         <th>이메일</th>
-                        <td><input v-model="register.registerEmail" type="email" /></td>
+                        <td><input v-model="register.email" type="email" /></td>
                     </tr>
                     <tr>
                         <th>우편번호</th>
-                        <td><input v-model="register.registerZipCode" type="text" readonly /></td>
+                        <td><input v-model="register.zipCode" type="text" readonly /></td>
                         <td><button @click="openDaumPostcode">우편번호 찾기</button></td>
                     </tr>
                     <tr>
                         <th>주소</th>
-                        <td><input v-model="register.registerAddress" type="text" /></td>
+                        <td><input v-model="register.address" type="text" /></td>
                     </tr>
                     <tr>
                         <th>상세주소</th>
-                        <td><input id:registerDetailAddress type="text" /></td>
+                        <td><input id:detailAddress type="text" /></td>
                     </tr>
                 </tbody>
             </table>
@@ -68,15 +68,18 @@
 <script setup>
 import axios from 'axios';
 import { ref, watch } from 'vue';
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const register = ref({});
 const checkId = ref(false);
+
 
 const openDaumPostcode = () => { //카카오API사용
     new daum.Postcode({
         oncomplete: (data) => {
-            register.value.registerZipCode = data.zonecode;
-            register.value.registerAddress = data.roadAddress;
+            register.value.zipCode = data.zonecode;
+            register.value.address = data.roadAddress;
         },
     }).open();
 }
@@ -88,26 +91,43 @@ const handlerSaveBtn = () => {
         return;
 
     }
-    if (!checkId) {
+    if (!checkId.value) {
         alert("ID 중복 확인을 해주세요.");
         return false;
     }
 
-    console.log("테스트 등록 완료!!")
+    const param = new URLSearchParams({
+        ...register.value,
+        action: 'I',//필요없지만 BE와 맞추려고 사용
+        ckIdcheckreg: '1',//필요없지만 BE와 맞추려고 사용
+        ckEmailcheckreg: '0',//필요없지만 BE와 맞추려고 사용
+        userType: 'A',
+        statusYn: 1
+    });
+
+    console.log(register.value)
+    axios.post("/api/register.do", param).then((res) => {
+        if (res.data.result === 'success') {
+            alert("회원 가입에 성공했습니다.")
+            route.push({
+                name: "login"
+            })
+        }
+    })
 
 }
 
 const checkForm = () => {
-    let inputId = register.value.registerId;
-    let inputPwd = register.value.registerPwd;
-    let inputPwdOk = register.value.registerPwdOk;
+    let inputId = register.value.loginId;
+    let inputPwd = register.value.password;
+    let inputPwdOk = register.value.password1;
 
-    let inputName = register.value.registerName;
-    let inputSex = register.value.registerSex;
-    let inputBirthday = register.value.registerBirthday;
-    let inputPhone = register.value.registerPhone;
-    let inputEmail = register.value.registerEmail;
-    let inputZipCode = register.value.registerZipCode;
+    let inputName = register.value.name;
+    let inputSex = register.value.sex;
+    let inputBirthday = register.value.birthday;
+    let inputPhone = register.value.phone;
+    let inputEmail = register.value.email;
+    let inputZipCode = register.value.zipCode;
 
     const passwordRules = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
     const emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
@@ -169,7 +189,7 @@ const checkForm = () => {
 }
 
 const loginIdCheck = () => {
-    let inputId = register.value.registerId;
+    let inputId = register.value.loginId;
 
     const param = new URLSearchParams({
         loginId: inputId
@@ -186,7 +206,7 @@ const loginIdCheck = () => {
     }).catch(() => { });
 }
 
-watch(() => register.value.registerId, () => {
+watch(() => register.value.loginId, () => {
     checkId.value = false;
     console.log(checkId.value);
 })
