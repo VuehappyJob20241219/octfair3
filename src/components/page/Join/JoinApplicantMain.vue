@@ -69,6 +69,7 @@
             </table>
         </div>
         <button @click="handlerSaveBtn">회원가입</button>
+        <button @click="$router.go(-1)">취소</button>
     </div>
 </template>
 
@@ -224,21 +225,6 @@ watch(() => register.value.loginId, () => {
 </script>
 
 <style lang="scss" scoped>
-.backdrop {
-    top: 0%;
-    left: 0%;
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    display: flex;
-    flex-flow: row wrep;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    font-weight: bold;
-}
-
 label {
     display: flex;
     flex-direction: column;
@@ -246,15 +232,6 @@ label {
 
 label.title {
     font-size: 18px;
-}
-
-.container {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
-    position: relative;
-    max-width: 60%;
 }
 
 input[type="text"],
