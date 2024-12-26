@@ -16,6 +16,7 @@ import Applicant from "../views/Manage-user/Applicant.vue";
 import Biz from "../views/Manage-user/Biz.vue";
 import Post from "../views/ManageHire/Post.vue";
 import ManageHireApplicant from "../views/ManageHire/ManageHireApplicant.vue";
+import Mypage from "../views/Mypage/Mypage.vue";
 
 const routes = [
   {
@@ -148,6 +149,17 @@ const routes = [
             path: "companyDetailPage.do",
             name: "companyDetailPage",
             component: CompanyInfo,
+          },
+        ],
+      },
+      {
+        path: "mypage",
+        name: "mypage",
+        children: [
+          {
+            path: "update.do",
+            name: "update",
+            component: Mypage,
           },
         ],
       },
