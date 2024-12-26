@@ -35,8 +35,12 @@ declare module 'vue' {
     HistoryMain: typeof import('./src/components/page/Apply/History/HistoryMain.vue')['default']
     HistorySearch: typeof import('./src/components/page/Apply/History/HistorySearch.vue')['default']
     ImageQnaMain: typeof import('./src/components/page/Board/Qna/ImageQnaMain.vue')['default']
+    JoinApplicantMain: typeof import('./src/components/page/Join/JoinApplicantMain.vue')['default']
+    LeaveMain: typeof import('./src/components/page/Mypage/LeaveMain.vue')['default']
     LeftManuBar: typeof import('./src/components/layout/LeftManuBar.vue')['default']
     LoginMain: typeof import('./src/components/page/Login/LoginMain.vue')['default']
+    LogoutMain: typeof import('./src/components/page/Mypage/LogoutMain.vue')['default']
+    LogOutMain: typeof import('./src/components/page/Mypage/LogOutMain.vue')['default']
     MypageMain: typeof import('./src/components/page/Mypage/MypageMain.vue')['default']
     MypageModal: typeof import('./src/components/page/Mypage/MypageModal.vue')['default']
     NoticeMain: typeof import('./src/components/page/Board/Notice/NoticeMain.vue')['default']
@@ -55,5 +59,7 @@ declare module 'vue' {
     ResumePreview: typeof import('./src/components/page/Apply/ResumeDetail/ResumePreview.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    WithdrawMain: typeof import('./src/components/page/Mypage/WithdrawMain.vue')['default']
+    WithdrawModal: typeof import('./src/components/page/Mypage/WithdrawModal.vue')['default']
   }
 }
