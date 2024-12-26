@@ -2,15 +2,9 @@
     <teleport to="body">
         <div class="backdrop">
             <div class="container">
-                <label class = "title">개인 회원 정보</label>
+                <label class="title">개인 회원 정보</label>
                 <div class="content">
                     <table>
-                        <!-- <colgroup>
-                            <col width="25%">
-                            <col width="25%">
-                            <col width="25%">
-                            <col width="25%">
-                        </colgroup> -->
                         <colgroup>
                             <col width="120px">
                             <col width="*">
@@ -62,7 +56,7 @@
                             </tr>
                             <tr>
                                 <th>우편변호</th>
-                                <td><input type="text" v-model="applicantDetail.zipCode"/></td>
+                                <td><input type="text" v-model="applicantDetail.zipCode" /></td>
                                 <button @click="openDaumPostcode">우편번호 찾기</button>
                             </tr>
                             <tr>
@@ -76,7 +70,7 @@
                         </tbody>
                     </table>
                 </div>
-                <button @click="handlerSaveBtn">수정</button>
+                <button @click="handlerUpdateBtn">수정</button>
                 <button @click="handlerModal">취소</button>
             </div>
         </div>
@@ -114,7 +108,7 @@ const openDaumPostcode = () => { //카카오API사용
     }).open();
 }
 
-const handlerSaveBtn = () => {
+const handlerUpdateBtn = () => {
     //유효성 검사
     if (!checkForm()) {
         console.log("수정에 실패하였습니다.");
@@ -233,14 +227,16 @@ onUnmounted(() => {
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
     font-weight: bold;
-    overflow: hidden; /* 모달 영역을 벗어나는 내용 숨김 */
+    overflow: hidden;
+    /* 모달 영역을 벗어나는 내용 숨김 */
 }
 
 label {
     display: flex;
     flex-direction: column;
 }
-label.title{
+
+label.title {
     font-size: 18px;
 }
 
@@ -251,8 +247,10 @@ label.title{
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
     position: relative;
     max-width: 60%;
-    max-height: 90%; /* 모달 높이를 화면에 맞게 제한 */
-    overflow-y: auto; /* 내부 스크롤 가능하게 설정 */
+    max-height: 90%;
+    /* 모달 높이를 화면에 맞게 제한 */
+    overflow-y: auto;
+    /* 내부 스크롤 가능하게 설정 */
 }
 
 input[type="text"],
