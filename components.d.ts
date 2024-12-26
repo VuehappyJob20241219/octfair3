@@ -29,6 +29,8 @@ declare module 'vue' {
     'FirstNoticeMain copy': typeof import('./src/components/page/Board/Notice/FirstNoticeMain copy.vue')['default']
     FirstNoticeSearch: typeof import('./src/components/page/Board/Notice/FirstNoticeSearch.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    HireApplicantMain: typeof import('./src/components/page/ManageHire/ManageApplicant/HireApplicantMain.vue')['default']
+    HireApplicantSearch: typeof import('./src/components/page/ManageHire/ManageApplicant/HireApplicantSearch.vue')['default']
     HistoryMain: typeof import('./src/components/page/Apply/History/HistoryMain.vue')['default']
     HistorySearch: typeof import('./src/components/page/Apply/History/HistorySearch.vue')['default']
     ImageQnaMain: typeof import('./src/components/page/Board/Qna/ImageQnaMain.vue')['default']
