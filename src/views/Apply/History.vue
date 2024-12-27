@@ -20,6 +20,7 @@ const provideValue = ref({ ...defaultSearchKey });
 const cPage = ref(1); // 현재 페이지
 provide("provideValue", provideValue);
 provide("cPage", cPage);
+provide("defaultSearchKey", defaultSearchKey);
 </script>
 
 
