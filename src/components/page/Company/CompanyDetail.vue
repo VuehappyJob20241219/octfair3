@@ -15,7 +15,7 @@
       <tbody>
         <tr>
           <td colSpan="4">
-            <span id="preview"> </span>
+            <img :src="imageUrl" />
           </td>
         </tr>
       </tbody>
@@ -29,10 +29,10 @@
       </thead>
       <tbody>
         <tr>
-          <td>{{ companyDetail?.bizName }}</td>
-          <td>{{ companyDetail?.bizCeoName }}</td>
-          <td>{{ companyDetail?.bizContact }}</td>
-          <td>{{ companyDetail?.bizAddr }}</td>
+          <td>{{ companyDetail.bizName }}</td>
+          <td>{{ companyDetail.bizCeoName }}</td>
+          <td>{{ companyDetail.bizContact }}</td>
+          <td>{{ companyDetail.bizAddr }}</td>
         </tr>
       </tbody>
       <thead>
@@ -45,10 +45,10 @@
       </thead>
       <tbody>
         <tr>
-          <td>{{ companyDetail?.bizEmpCount }}</td>
-          <td>{{ companyDetail?.bizWebUrl }}</td>
-          <td>{{ companyDetail?.bizFoundDate }}</td>
-          <td>{{ companyDetail?.bizRevenue }}</td>
+          <td>{{ companyDetail.bizEmpCount }}</td>
+          <td>{{ companyDetail.bizWebUrl }}</td>
+          <td>{{ companyDetail.bizFoundDate }}</td>
+          <td>{{ companyDetail.bizRevenue }}</td>
         </tr>
       </tbody>
       <thead>
@@ -58,17 +58,60 @@
       </thead>
       <tbody>
         <tr>
-          <td colSpan="4">{{ companyDetail?.bizIntro }}</td>
+          <td colSpan="4">{{ companyDetail.bizIntro }}</td>
         </tr>
       </tbody>
     </table>
   </div>
   <div style="text-align: right">
-    <button>기업 지원 공고 확인하기</button>
+    <button @click="$router.go(-1)">기업 지원 공고 확인하기</button>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import axios from "axios";
+import { useUserInfo } from "../../../stores/userInfo";
+import { useRouter } from "vue-router";
+
+const userInfo = useUserInfo();
+const companyDetail = ref({});
+const imageUrl = ref("");
+const router = useRouter();
+
+const searchDetail = () => {
+  axios.post("/api/company/companyUpdatePageRe.do", { loginId: userInfo.user.loginId }).then((res) => {
+    companyDetail.value = res.data.detail || {};
+    if (
+      companyDetail.value.fileExt === "jpg" ||
+      companyDetail.value.fileExt === "gif" ||
+      companyDetail.value.fileExt === "png" ||
+      companyDetail.value.fileExt === "webp"
+    ) {
+      getFileImage(6);
+    }
+  });
+};
+
+const getFileImage = (idx) => {
+  let param = new URLSearchParams();
+  param.append("bizIdx", idx);
+  const postAction = {
+    url: "/api/company/companyImageDownload.do",
+    method: "POST",
+    data: param,
+    responseType: "blob",
+  };
+
+  axios(postAction).then((res) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    imageUrl.value = url;
+  });
+};
+
+onMounted(() => {
+  searchDetail();
+});
+</script>
 
 <style lang="scss" scoped>
 table {
@@ -76,7 +119,7 @@ table {
   border-collapse: collapse;
   margin: 20px 0px 0px 0px;
   font-size: 13px;
-  text-align: left;
+  text-align: center;
 
   th {
     text-align: center;
@@ -89,6 +132,7 @@ table {
     border-bottom: 1px solid #ddd;
     text-align: left;
     height: 30px;
+    text-align: center;
   }
 }
 input,
@@ -126,5 +170,10 @@ button {
     box-shadow: 0 2px #666;
     transform: translateY(2px);
   }
+}
+
+img {
+  width: 100px;
+  height: 100px;
 }
 </style>
