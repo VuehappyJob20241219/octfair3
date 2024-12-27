@@ -22,7 +22,7 @@
                       <td>
                         <p>{{ list.bizName }}</p>
                         <p>{{ list.postTitle }}</p>
-                        <p>지원이력서</p>
+                        <p @click="handlerResume">지원이력서</p>
                       </td>
                       <td>
                         <p>{{ list.status }}</p>
@@ -61,6 +61,13 @@ const cPage = inject("cPage"); // Provide에서 받아온 현재 페이지 상�
 const injectedValue = inject("provideValue");
 const { data: historyList, isLoading, refetch, isSuccess, isError }
   = useHistoryListQuery(injectedValue, cPage);
+
+const handlerResume = (param) => {
+  router.push({
+    name: "",
+    params: { idx: param },
+  });
+  }
 
 </script>
 
