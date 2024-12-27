@@ -20,20 +20,26 @@
     <input v-model="searchKey.keyWord"/>
 
     <button @click="handlerSearch">검색</button>
-    <button >초기화</button>
+    <button @click="handlerReset">초기화</button>
   </div>
 </template>
 <script setup>
 import { inject } from 'vue';
 
 const injectValue = inject("provideValue");
-const cPage = inject("cPage");
+// 부모 컴포넌트에서 제공한 defaultSearchKey를 inject()로 받아옴
+const defaultSearchKey = inject("defaultSearchKey");
+// searchKey는 기본값으로 초기화
 const searchKey = ref({ ...injectValue.value });
 
 const handlerSearch = () => {
   injectValue.value = { ...searchKey.value };
-  // 페이지 초기화 (검색 결과를 첫 페이지부터 보기 위해)
-  cPage.value = 1;
+}
+
+//검색어, 검색결과 초기화화
+const handlerReset = () => {
+  searchKey.value = { ...defaultSearchKey };
+  injectValue.value = { ...searchKey.value };
 }
 
 </script>
