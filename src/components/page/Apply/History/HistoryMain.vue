@@ -62,11 +62,6 @@ const injectedValue = inject("provideValue");
 const { data: historyList, isLoading, refetch, isSuccess, isError }
   = useHistoryListQuery(injectedValue, cPage);
 
-const changePage = (page) => {
-  cPage.value = page;
-  refetch();
-};
-
 </script>
 
 
