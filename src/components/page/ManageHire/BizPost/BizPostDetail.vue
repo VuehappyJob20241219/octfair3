@@ -21,7 +21,7 @@
                 <b-row>
                   <b-col class="d-flex align-items-center">
                     <span>
-                      {{postDetail.workLocation}} | {{postDetail?.expRequired}}{{" "}}
+                      {{postDetail.workLocation}} | {{postDetail?.expRequired}}{{" "}}{{postDetail?.expYears}}
                     </span>
                   </b-col>
                 </b-row>
@@ -128,7 +128,7 @@
                 variant="primary"
                 size="lg"
                 class="mx-1"
-                @click="navigatePost(`/vue/manage-hire/update-post.do/${postDetail.postIdx}`)"              
+                @click="navigatePost(`${postDetail.postIdx}`)"              
               >
                 수정하기
               </b-button>
@@ -213,15 +213,14 @@ const {
 } = useQuery({
   queryKey: ["bizPostDetail"],
   queryFn: searchList,
-  // staleTime: 1000 * 60,
 });
 // const { postDetail, bizDetail, isClicked } = data || {};
 
-const navigatePost= (url) => {
-  if (url === 'back') {
+const navigatePost= (param) => {
+  if (param === 'back') {
       router.go(-1);  // 뒤로가기
     } else {
-      router.push(url);  // 지정된 URL로 이동
+      router.push({ name: "bizPostModify", params: { postIdx: param } });  // 지정된 URL로 이동
     }
 }
 
