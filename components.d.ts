@@ -19,7 +19,6 @@ declare module 'vue' {
     CompanyDetail: typeof import('./src/components/page/Company/CompanyDetail.vue')['default']
     CompanyUpdate: typeof import('./src/components/page/Company/CompanyUpdate.vue')['default']
     ContextBox: typeof import('./src/components/common/ContextBox.vue')['default']
-    copy: typeof import('./src/components/page/Board/Notice/FirstNoticeMain copy.vue')['default']
     FaqMain: typeof import('./src/components/page/Board/Faq/FaqMain.vue')['default']
     FaqModal: typeof import('./src/components/page/Board/Faq/FaqModal.vue')['default']
     FaqSearch: typeof import('./src/components/page/Board/Faq/FaqSearch.vue')['default']
