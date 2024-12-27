@@ -2,11 +2,13 @@
     <teleport to="body">
         <div class="backdrop">
             <div class="container">
-                <label class="title">아이디/비밀번호 찾기</label>
+                <ContextBox class="context-box">아이디/비밀번호 찾기</ContextBox>
+
                 <div class="content">
                     <button @click="idBtn">아이디 찾기</button>
                     <button @click="pwBtn">비밀번호 찾기</button>
 
+                    <!-- 아이디 찾기 -->
                     <div v-show="findId">
                         <table>
                             <colgroup>
@@ -26,12 +28,12 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <button @click="findIdBtn">확인</button>
-                    </div>
-                    <context-box v-show="myId.state">
+                    </div><br>
+                    <ContextBox class="context-box" v-show="myId.state">
                         찾으시는 ID는 "{{ myId.id }}" 입니다.
-                    </context-box>
+                    </ContextBox>
 
+                    <!-- 비밀번호 찾기 1단계 -->
                     <div v-show="findPw">
                         <table>
                             <colgroup>
@@ -51,9 +53,9 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <button @click="findPwBtn">확인</button>
                     </div>
 
+                    <!-- 비밀번호 찾기 2단계 -->
                     <div v-show="setPw.state">
                         <table>
                             <colgroup>
@@ -73,11 +75,14 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <button @click="handlerUpdateBtn">확인</button>
                     </div>
-
                 </div>
-                <button @click="handlerModal">취소</button>
+                <div class="checkbutton">
+                    <button v-show="findId" @click="findIdBtn">확인</button>
+                    <button v-show="findPw" @click="findPwBtn">확인</button>
+                    <button v-show="setPw.state" @click="handlerUpdateBtn">확인</button>
+                    <button @click="handlerModal">취소</button>
+                </div>
             </div>
         </div>
     </teleport>
@@ -89,6 +94,7 @@ import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
 
 const modalState = useModalStore();
+
 const findId = ref(false);
 const findPw = ref(false);
 
@@ -251,8 +257,26 @@ const handlerModal = () => {
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
     position: relative;
-    width: 400px;
+    width: 500px;
 }
+
+.context-box {
+    background-color: #E0E0E0;
+    padding: 10px;
+}
+
+.content {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.content .context-box {
+    background-color: #2676BF;
+    color: white;
+    margin-top: 20px;
+}
+
+
 
 input[type="text"] {
     padding: 8px;
