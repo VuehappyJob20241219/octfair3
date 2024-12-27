@@ -121,7 +121,7 @@ const routes = [{
               children: [{
                       path: "post.do",
                       name: "post",
-                      component: Post,
+                      component: BizPost,
                   },
                   {
                       path: "bizPostInsert.do",
