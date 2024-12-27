@@ -29,17 +29,20 @@
               </div>
               <div style="" v-if="resumeProperties.proLink">
                 <p style="white-space: pre-line">
-                  링크 : <a style="color: #36f" href="{{resumeProperties.proLink}}"></a>
+                  링크 :
+                  <a style="color: #36f" :href="resumeProperties.proLink">{{ resumeProperties.proLink }}</a>
                 </p>
               </div>
-              <div style="" v-if="resumeProperties.fileName">
-                <p style="white-space: pre-line">첨부파일 :{{ resumeProperties.fileName }}</p>
-                파일다운로드 추가
+              <div v-if="resumeProperties.fileName" @click="ResumeFileDownload" class="file-download">
+                <p style="white-space: pre-line">
+                  첨부파일 :
+                  <span class="file-link">{{ resumeProperties.fileName }}</span>
+                </p>
               </div>
             </div>
           </template>
           <!-- 경력 -->
-          <template v-if="careerProperties.length < 0">
+          <template v-if="careerProperties.length > 0">
             <div style="padding: 15px">
               <div
                 style="
@@ -94,7 +97,7 @@
             </div>
           </template>
           <!-- 학력 -->
-          <template v-if="eduProperties.length < 0">
+          <template v-if="eduProperties.length > 0">
             <div style="margin-top: 20px; padding: 15px">
               <div
                 style="
@@ -147,7 +150,7 @@
             </div>
           </template>
           <!-- 스킬 -->
-          <template v-if="skillProperties.length < 0">
+          <template v-if="skillProperties.length > 0">
             <div style="margin-top: 20px; padding: 15px">
               <div
                 style="
@@ -191,7 +194,7 @@
             </div>
           </template>
           <!-- 외국어 -->
-          <template v-if="certProperties.length < 0">
+          <template v-if="certProperties.length > 0">
             <div style="margin-top: 20px; padding: 15px">
               <div
                 style="
@@ -244,7 +247,7 @@
         </div>
         <div class="button-container">
           <button class="btnType blue" @click="closeModal">닫기</button>
-          <button class="btnType gray" @click="printJS('printArea', 'html')">인쇄</button>
+          <button class="btnType gray" @click="printPage">인쇄</button>
         </div>
       </div>
     </div>
@@ -264,12 +267,6 @@ const resumeDetailinformation = ref({
   resIdx: 0,
   resumeInfo: {},
 });
-const certLabels = {
-  certName: "자격증명:",
-  grade: "등급:",
-  issuer: "발행처:",
-  acqDate: "취득일:",
-};
 
 const resumeProperties = computed(() => {
   return resumeDetailinformation.value.resumeInfo || {}; // resumeInfo가 없을 경우 빈 객체 반환
@@ -298,6 +295,35 @@ const closeModal = () => {
 const resumeDetail = async () => {
   await axios.post(Resume.PreviewResume, { resIdx: props.idx }).then((res) => {
     resumeDetailinformation.value = res.data;
+  });
+};
+
+const printPage = () => {
+  printJS({
+    printable: "printArea", //영역 id 값
+    type: "html",
+    targetStyles: ["*"],
+    maxWidth: "100%",
+  });
+};
+
+const ResumeFileDownload = () => {
+  let param = new URLSearchParams();
+  param.append("resIdx", props.idx);
+  const postAction = {
+    url: "/api/apply/resumeFileDownload.do",
+    method: "POST",
+    data: param,
+    responseType: "blob",
+  };
+  axios(postAction).then((res) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", resumeProperties.value.fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   });
 };
 
@@ -348,7 +374,9 @@ input[type="text"] {
   border-radius: 8px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
   position: relative;
-  width: 600px;
+  width: 800px;
+  height: 800px;
+  overflow: auto;
 }
 
 img {
@@ -386,6 +414,20 @@ img {
 .button-box {
   text-align: right;
   margin-top: 10px;
+}
+
+.file-download {
+  cursor: pointer; /* 커서를 포인터로 변경 */
+}
+
+.file-link {
+  color: #36f; /* 파란색 글씨 */
+  transition: background-color 0.3s ease; /* 부드러운 배경색 변화 */
+}
+
+.file-link:hover {
+  background-color: rgba(54, 114, 255, 0.1); /* 호버 시 배경색 변화 */
+  text-decoration: underline; /* 호버 시 밑줄 효과 */
 }
 button {
   background-color: #3bb2ea;

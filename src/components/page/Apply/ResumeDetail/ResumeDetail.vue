@@ -457,9 +457,9 @@
         </div>
       </div>
       <div class="btnGroup">
-        <button class="btnType gray">목록으로</button>
-        <button class="btnType blue" @click="handlerSaveBtn()">저장하기</button>
-        <button class="btnType blue" @click="handerResumePreview(basicinformation.resIdx)">미리보기</button>
+        <button class="btnType gray list" @click="$router.go(-1)">목록으로</button>
+        <button class="btnType blue button" @click="handlerSaveBtn()">저장하기</button>
+        <button class="btnType gray list" @click="handerResumePreview(basicinformation.resIdx)">미리보기</button>
       </div>
     </div>
   </div>
@@ -712,6 +712,43 @@ textarea {
   min-height: 100px; /* 최소 높이를 설정 */
 }
 
+.btnType {
+  display: inline-block;
+  padding: 10px 15px; /* 버튼 크기 줄이기 */
+  font-size: 14px; /* 글자 크기 줄이기 */
+  border-radius: 4px; /* 둥근 모서리 */
+  text-decoration: none;
+  color: white;
+}
+
+.btnType.gray {
+  text-align: center;
+  margin: 5px;
+  background-color: #6c757d; /* 회색 버튼 */
+}
+
+.btnType.gray.list {
+ width: 20%;
+}
+
+.btnType.blue {
+  text-align: center;
+  margin: 5px;
+  background-color: #36ADE4; /* 파란색 버튼 */
+}
+
+.btnType.blue.button {
+  width: 20%;
+}
+
+.btnType.gray:hover {
+  background-color: #5a6268; /* 회색 버튼 호버 색상 */
+}
+
+.btnType.blue:hover {
+  background-color: #0056b3; /* 파란색 버튼 호버 색상 */
+}
+
 button {
   width: 100%;
   padding: 10px 0;
@@ -728,10 +765,6 @@ button {
 
 button:hover {
   cursor: pointer;
-}
-
-button:active {
-  color: red;
 }
 
 table {
@@ -754,10 +787,10 @@ table td {
 }
 
 .btnGroup {
-  border-top: 3px solid black;
-  margin: 20px 0 50px 0;
-  padding-top: 15px;
-  text-align: center;
+  display: flex; /* 버튼을 가로로 배치 */
+  justify-content: center; /* 버튼 그룹을 가운데 정렬 */
+  gap: 10px; /* 버튼 간 간격 추가 */
+  margin-top: 20px; /* 버튼 그룹 상단 여백 */
 }
 .res-comment {
   padding: 10px 0px;
@@ -793,32 +826,4 @@ table td {
   height: 100%;
 }
 
-.btnGroup {
-  display: flex; /* 버튼을 수평으로 나열 */
-  justify-content: space-between; /* 버튼 간 간격 */
-  margin-top: 10px; /* 버튼과 테이블 간 간격 */
-}
-
-.btnType {
-  display: inline-block; /* 버튼을 inline-block으로 설정 */
-  padding: 10px 15px; /* 버튼 패딩 */
-  border-radius: 5px; /* 둥글게 */
-  text-decoration: none; /* 밑줄 제거 */
-  color: white; /* 텍스트 색상 */
-}
-
-.btnType.gray {
-  background-color: #6c757d; /* 회색 버튼 */
-}
-
-.btnType.blue {
-  background-color: #007bff; /* 파란색 버튼 */
-}
-.btnType.gray:hover {
-  background-color: #5a6268; /* 회색 버튼 호버 색상 */
-}
-
-.btnType.blue:hover {
-  background-color: #0056b3; /* 파란색 버튼 호버 색상 */
-}
 </style>
