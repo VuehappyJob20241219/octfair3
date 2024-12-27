@@ -18,7 +18,7 @@ import Login from "../views/Login/Login.vue";
 import Applicant from "../views/Manage-user/Applicant.vue";
 import Biz from "../views/Manage-user/Biz.vue";
 import ManageHireApplicant from "../views/ManageHire/ManageHireApplicant.vue";
-import Post from "../views/ManageHire/Post.vue";
+import BizPost from "../views/ManageHire/BizPost.vue";
 import Mypage from "../views/Mypage/Mypage.vue";
 import Withdraw from "../views/Mypage/Withdraw.vue";
 import NotFound from "../views/NotFound.vue";
@@ -116,29 +116,29 @@ const routes = [{
                 ],
             },
             {
-                path: "manage-hire",
-                name: "manage-hire",
-                children: [{
-                        path: "post.do",
-                        name: "post",
-                        component: Post,
-                    },
-                    {
-                        path: "bizPostInsert.do",
-                        name: "bizPostInsert",
-                        component: BizPostInsert,
-                    },
-                    {
-                        path: "bizPostDetail.do/:postIdx",
-                        name: "bizPostDetail",
-                        component: BizPostDetail,
-                    },
-                    {
-                        path: "applicant.do",
-                        name: "hireApplicant",
-                        component: ManageHireApplicant,
-                    },
-                ],
+              path: "manage-hire",
+              name: "manage-hire",
+              children: [{
+                      path: "post.do",
+                      name: "post",
+                      component: Post,
+                  },
+                  {
+                      path: "bizPostInsert.do",
+                      name: "bizPostInsert",
+                      component: BizPostInsert,
+                  },
+                  {
+                      path: "bizPostDetail.do/:postIdx",
+                      name: "bizPostDetail",
+                      component: BizPostDetail,
+                  },
+                  {
+                      path: "applicant.do",
+                      name: "hireApplicant",
+                      component: ManageHireApplicant,
+                  },
+              ],
             },
             {
                 path: "company",
