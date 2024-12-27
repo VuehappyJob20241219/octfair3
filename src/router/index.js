@@ -194,7 +194,6 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   const userInfo = useUserInfo();
-  console.log("userInfo.isAuthenticated: " + userInfo.isAuthenticated);
 
   if (!userInfo.isAuthenticated && !(to.name == "login")) {
     alert("로그인이 필요합니다.");
