@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useUserInfo } from "../stores/userInfo";
+
 import QnaDetail from "../components/page/Board/Qna/QnaDetail.vue";
 import BizPostDetail from "../components/page/ManageHire/BizPost/BizPostDetail.vue";
 import BizPostInsert from "../components/page/ManageHire/BizPost/BizPostInsert.vue";
@@ -188,6 +190,15 @@ const routes = [
 const router = createRouter({
   history: createWebHistory("/"),
   routes,
+});
+
+router.beforeEach(async (to, from) => {
+  const userInfo = useUserInfo();
+
+  if (!userInfo.isAuthenticated && !(to.name == "login")) {
+    alert("로그인이 필요합니다.");
+    return { name: "login" };
+  }
 });
 
 export default router;
