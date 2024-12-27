@@ -61,7 +61,7 @@ const searchList = () => {
   });
 };
 
-onBeforeMount(() => {
+onMount(() => {
   searchList();
 });
 </script>

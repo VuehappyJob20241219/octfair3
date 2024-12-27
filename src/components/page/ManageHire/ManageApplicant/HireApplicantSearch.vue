@@ -1,25 +1,31 @@
 <template>
   <div class="search-box">
     <span>공고제목</span>
-    <select>
-      <option>사무직 공고</option>
-      <option>기술직 공고</option>
-      <option>경비원 공고</option>
+    <select v-for="post in postList.post" :key="post.postIdx">
+      <option>{{ post.title }}</option>
     </select>
-    <select>
-      <option>서류심사</option>
-      <option>인적성</option>
-      <option>면접</option>
+    <select v-for="process in processList.process" :key="process.processIdx">
+      <option>{{ process.processName }}</option>
     </select>
   </div>
 </template>
 <script setup>
-const injectedValue = inject("providedValue");
-const searchKey = ref({});
+import axios from "axios";
+const postList = ref();
 
-const handlerSearch = () => {
-  injectedValue.value = { ...searchKey.value };
+const searchMenu = () => {
+  axios.post("/api/manage-hire/applicant.do").then((res) => {
+    // console.log("콘솔:" + res.data);
+    postList.value = res.data;
+    // processList.value = res.data;
+  });
 };
+
+// watch(route, searchMenu);
+
+onBeforeMount(() => {
+  searchMenu();
+});
 </script>
 
 <style lang="scss" scoped>
