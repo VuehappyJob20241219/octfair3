@@ -29,9 +29,13 @@
 
 <script setup>
 import axios from "axios";
+import { useRouter } from "vue-router";
 import { useModalStore } from "../../../stores/modalState";
+import { useUserInfo } from "../../../stores/userInfo";
 
+const userInfo = useUserInfo();
 const modalState = useModalStore();
+const router = useRouter();
 
 const handlerBtn = () => {
     const param = new URLSearchParams({
@@ -41,6 +45,7 @@ const handlerBtn = () => {
         .then((res) => {
             if (res.data.result === 'success') {
                 alert("탈퇴 되었습니다.\n지금까지 서비스를 이용해주셔서 감사합니다.")
+                userInfo.setAuthenticated();
                 router.push('/');
             } else {
                 alert("비밀번호를 확인해주세요.")
