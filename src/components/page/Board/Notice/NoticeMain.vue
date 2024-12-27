@@ -27,11 +27,7 @@
       <tbody>
         <template v-if="noticeList">
           <template v-if="noticeList.noticeCnt">
-            <tr
-              v-for="notice in noticeList.notice"
-              :key="notice.noticeIdx"
-              @click="handlerModal(notice.noticeIdx)"
-            >
+            <tr v-for="notice in noticeList.notice" :key="notice.noticeIdx" @click="handlerModal(notice.noticeIdx)">
               <td>{{ notice.noticeIdx }}</td>
               <td>{{ notice.title }}</td>
               <td>{{ notice.createdDate.substr(0, 10) }}</td>
@@ -86,7 +82,6 @@ const searchList = () => {
 };
 
 const handlerModal = (idx) => {
-  console.log(idx);
   modalState.setModalState();
   noticeIdx.value = idx;
 };

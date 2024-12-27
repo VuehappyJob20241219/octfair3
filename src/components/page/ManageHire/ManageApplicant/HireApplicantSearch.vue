@@ -1,10 +1,16 @@
 <template>
   <div class="search-box">
-    <input v-model="searchKey.searchTitle" />
-    <input type="date" v-model="searchKey.searchStartDate" />
-    <input type="date" v-model="searchKey.searchEndDate" />
-    <button @click="handlerSearch">검색</button>
-    <button @click="() => $router.push('notice.do/insert')">신규등록</button>
+    <span>공고제목</span>
+    <select>
+      <option>사무직 공고</option>
+      <option>기술직 공고</option>
+      <option>경비원 공고</option>
+    </select>
+    <select>
+      <option>서류심사</option>
+      <option>인적성</option>
+      <option>면접</option>
+    </select>
   </div>
 </template>
 <script setup>
@@ -23,7 +29,8 @@ const handlerSearch = () => {
   float: inline-end;
 }
 
-input {
+input,
+select {
   padding: 8px;
   margin-top: 5px;
   margin-bottom: 5px;
