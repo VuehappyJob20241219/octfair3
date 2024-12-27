@@ -1,4 +1,5 @@
 <template>
+  <FindIdPwModal v-if="modalState.modalState" />
   <div class="login-container">
     <div>
       <div class="login-text">
@@ -28,12 +29,13 @@
             <label> 비밀번호 </label>
             <input required type="password" v-model="loginInfo.pwd" />
           </div>
-          <div class="joinDiv">
-            <strong class="strong">[일반회원가입]</strong>
-            <strong class="strong">[기업회원가입]</strong>
-          </div>
+          <br>
           <div>
             <button class="login-button" @click="handlerLogin">Login</button>
+          </div>
+          <div class="joinDiv">
+            <strong class="strong" @click="$router.push('/join')">[일반회원가입]</strong>
+            <strong class="strong" @click="handlerModal">[아이디/비밀번호 찾기]</strong>
           </div>
         </div>
       </div>
@@ -45,16 +47,18 @@
 import { useRouter } from "vue-router";
 import logo from "../../../assets/logo.png";
 import { nullCheck } from "../../../common/nullCheck";
+import { useModalStore } from "../../../stores/modalState";
 import { useUserInfo } from "../../../stores/userInfo";
 
 const loginInfo = ref({});
 const userInfo = useUserInfo();
 const router = useRouter();
+const modalState = useModalStore();
 
 const handlerLogin = async () => {
   const isNull = nullCheck([
-    { inval: loginInfo.value.lgn_Id, msg: "id 입력 좀" },
-    { inval: loginInfo.value.pwd, msg: "비밀번호 입력 좀" },
+    { inval: loginInfo.value.lgn_Id, msg: "ID를 입력해주세요." },
+    { inval: loginInfo.value.pwd, msg: "비밀번호를 입력해주세요." },
   ]);
   if (!isNull) return;
   const param = new URLSearchParams(loginInfo.value);
@@ -62,10 +66,15 @@ const handlerLogin = async () => {
   if (result === "SUCCESS") {
     router.push("/vue");
   } else {
-    alert("아이디 혹은 비밀번호가 일치하지 않아요");
+    alert("아이디 혹은 비밀번호가 일치하지 않습니다.");
     return;
   }
 };
+
+const handlerModal = () => {
+  modalState.setModalState();
+};
+
 </script>
 
 <style scoped>
@@ -89,6 +98,7 @@ const handlerLogin = async () => {
   align-items: center;
   color: white;
 }
+
 .login-box {
   background-color: white;
 }
@@ -130,6 +140,7 @@ button {
   padding-bottom: 30px;
   color: #ffffff;
 }
+
 .login-button {
   background-color: #2676bf;
   color: #ffffff;
@@ -143,12 +154,15 @@ button {
 button:hover {
   opacity: 0.9;
 }
+
 .joinDiv {
   font-size: small;
 }
+
 .findDiv {
   font-size: small;
 }
+
 .strong {
   cursor: pointer;
 }
