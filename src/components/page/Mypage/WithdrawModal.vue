@@ -46,6 +46,8 @@ const handlerBtn = () => {
             if (res.data.result === 'success') {
                 alert("탈퇴 되었습니다.\n지금까지 서비스를 이용해주셔서 감사합니다.")
                 userInfo.setAuthenticated();
+                handlerModal();
+                sessionStorage.setItem("userInfo", "");
                 router.push('/');
             } else {
                 alert("비밀번호를 확인해주세요.")
@@ -82,7 +84,7 @@ const handlerModal = () => {
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
     position: relative;
-    width: 400px;
+    width: 500px;
 }
 
 input[type="text"] {
