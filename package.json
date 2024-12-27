@@ -13,6 +13,7 @@
     "dependencies": {
         "@tanstack/vue-query": "^5.51.21",
         "axios": "^1.7.3",
+        "bootstrap-vue-3": "^0.5.1",
         "date-fns": "^4.1.0",
         "http-proxy-middleware": "^3.0.0",
         "pinia": "^2.1.7",
