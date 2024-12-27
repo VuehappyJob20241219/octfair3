@@ -6,6 +6,8 @@ export const useUserInfo = defineStore(
   "userInfo",
   () => {
     const user = ref();
+    const isAuthenticated = ref(false);
+
     async function setUserData(loginInfo) {
       const param = new URLSearchParams(loginInfo);
       const result = await axios.post("/api/loginProc.do", param);
@@ -13,7 +15,11 @@ export const useUserInfo = defineStore(
       return result.data.result;
     }
 
-    return { user, setUserData };
+    async function setAuthenticated() {
+      isAuthenticated.value = !isAuthenticated.value;
+    }
+
+    return { user, setUserData, isAuthenticated, setAuthenticated };
   },
   { persist: { storage: sessionStorage } }
 );
