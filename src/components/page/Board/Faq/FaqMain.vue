@@ -23,7 +23,7 @@
           <th scope="col">제목</th>
           <th scope="col">작성일</th>
           <th scope="col">작성자</th>
-          <th scope="col">관리</th>
+          <th scope="col" v-if="userInfo.user.userType==='M'">관리</th>
         </tr>
       </thead>
       
@@ -41,14 +41,15 @@
                 @click="toggleAccordion(faq.faq_idx)">{{ faq.title }}</td>
             <td>{{ faq.created_date.substr(0, 10) }}</td>
             <td>{{ faq.author }}</td>
-            <td> </td>
+            <td v-if="userInfo.user.userType==='M'">
+              <button @click="handlerModal(faq.faq_idx)">관리</button> </td>
             <!-- 내용 -->
             <transition 
               @before-enter="beforeEnter" 
               @enter="enter" 
               @before-leave="beforeLeave" 
               @leave="leave">
-              <td v-if="activeAccordion === faq.faq_idx" class="accordion-content" >
+              <td v-if="activeAccordion === faq.faq_idx" class="accordion-content">
                 {{ faq.content }}
               </td>
             </transition>
@@ -99,7 +100,6 @@ const searchList = async () => {
   }); 
   const response = await axios.post("/api/board/faqListRe.do", param);
   faqList.value = response.data;
-  console.log(faqList.value);
 };
 
 const personalFaq = () => {
@@ -113,12 +113,10 @@ const companyFaq = () => {
 }
 
 const toggleAccordion = (faq_idx) => {
-  console.log(faq_idx);
   activeAccordion.value = activeAccordion.value === faq_idx ? null : faq_idx;  
 };
 
 const handlerModal = (idx) => {
-  console.log(idx);
   faqModalState.setModalState();
   faq_idx.value = idx;
 };
@@ -208,8 +206,6 @@ table {
   overflow: hidden;
   word-break: break-word;
   max-width: 100%;
-  max-height: 0; /* 기본 상태에서 높이를 0으로 설정 */
-  transition: max-height 0.3s ease-out; /* max-height에 대한 애니메이션 */
   }
 }
 

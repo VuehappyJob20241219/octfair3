@@ -1,28 +1,92 @@
 <template>
   <teleport to="body">
-    <label> 제목 :<input type="text" v-model="faqDetail.title" /> </label>
-    <label> 내용 :<input type="text" v-model="faqDetail.content" /> </label>
+      <div class="backdrop">
+          <div class="container">
+              <tbody>
+                <tr>
+                  <td><input type="radio" value="1" v-model="faqDetail.faq_type">개인회원</td>
+                  <td><input type="radio" value="2" v-model="faqDetail.faq_type">기업회원</td>
+                </tr>  
+              </tbody>              
+              <label> 제목 : <input type="text" v-model="faqDetail.title"/> </label>
+              <label>
+                  내용 :
+                  <input type="text" v-model="faqDetail.content"/>
+              </label>
+              <div class="button-box">                  
+                  <button v-if="props.idx" @click="handlerDeleteBtn">삭제</button>
+                  <button @click="props.idx ? handlerUpdateBtn() : handlerSaveBtn() ">
+                      {{ props.idx ? '수정' : '등록'}}</button>
+                  <button @click="handlerModal">닫기</button>                    
+              </div>
+          </div>
+      </div>
   </teleport>
 </template>
 
 <script setup>
-import axios from "axios";
-import { onMounted } from "vue";
+import { useModalStore } from '@/stores/modalState';
+import { useUserInfo } from '../../../../stores/userInfo';
+import axios from 'axios';
 
+const userInfo = useUserInfo();
+const modalState = useModalStore();
+const faqDetail = ref({
+  faq_type: null,
+  title: '',
+  content: ''
+});
+const props = defineProps(['idx']);
 
-const faqDetail = ref({});
-const props = defineProps(["idx"]);
+const handlerModal = () => {
+  modalState.setModalState();
+};
 
-const searchDetail = () => {
-  axios.post("/api/board/faqDetailRe.do", { faqSeq: props.idx }).then((res) => {
-    faqDetail.value = res.data.detail;
+const handlerSaveBtn = () => {
+  const textData = {
+      ...faqDetail.value,
+      loginId: userInfo.user.loginId,
+      context: faqDetail.value.content,
+  };
+
+  axios.post('/api/board/faqSaveRe.do', textData).then((res)=>{
+      if(res.data.result === 'success'){
+          modalState.setModalState();
+      }
   });
 };
 
-onMounted(() => {
+const handlerDeleteBtn = () => {
+  axios.post('/api/board/faqDeleteRe.do', { faqSeq : props.idx })
+  .then((res)=>{
+      if(res.data.result === 'success'){
+          modalState.setModalState();
+      }
+  });
+};
+
+const handlerUpdateBtn = () =>{
+  const textData = {
+      ...faqDetail.value,
+      faqSeq: props.idx,
+      context: faqDetail.value.content,
+  };
+  axios.post('/api/board/faqUpdateRe.do', textData).then((res) => {
+      if(res.data.result === 'success'){
+          modalState.setModalState();
+      }
+  });
+};
+
+const searchDetail = () =>{
+  axios.post('/api/board/faqDetailRe.do', { faqSeq : props.idx }).then((res)=> {
+      faqDetail.value=res.data.detail;      
+  });
+};
+
+onMounted(()=>{
   props.idx && searchDetail();
 });
-
 
 </script>
 
