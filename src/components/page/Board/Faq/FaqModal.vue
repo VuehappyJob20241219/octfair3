@@ -3,9 +3,9 @@
       <div class="backdrop">
           <div class="container">
               <tbody>
-                <tr>
-                  <td><input type="radio" value="1" v-model="faqDetail.faq_type">개인회원</td>
-                  <td><input type="radio" value="2" v-model="faqDetail.faq_type">기업회원</td>
+                <tr> 유형 :  &nbsp;
+                  <td> <input type="radio" value="1" v-model="faqDetail.faq_type">개인회원</td> &nbsp; &nbsp;
+                  <td>  <input type="radio" value="2" v-model="faqDetail.faq_type">기업회원</td>
                 </tr>  
               </tbody>              
               <label> 제목 : <input type="text" v-model="faqDetail.title"/> </label>
@@ -16,7 +16,7 @@
               <div class="button-box">                  
                   <button v-if="props.idx" @click="handlerDeleteBtn">삭제</button>
                   <button @click="props.idx ? handlerUpdateBtn() : handlerSaveBtn() ">
-                      {{ props.idx ? '수정' : '등록'}}</button>
+                      {{ props.idx ? "수정" : "등록"}}</button>
                   <button @click="handlerModal">닫기</button>                    
               </div>
           </div>
@@ -128,35 +128,11 @@ input[type="text"] {
   width: 400px;
 }
 
-img {
-  width: 100px;
-  height: 100px;
-}
-
-.img-label {
-  margin-top: 10px;
-  padding: 6px 25px;
-  background-color: #ccc;
-  border-radius: 4px;
-  color: rgba(0, 0, 0, 0.9);
-  cursor: pointer;
-
-  &:hover {
-    background-color: #45a049;
-    color: white;
-  }
-
-  &:active {
-    background-color: #3e8e41;
-    box-shadow: 0 2px #666;
-    transform: translateY(2px);
-  }
-}
-
 .button-box {
   text-align: right;
   margin-top: 10px;
 }
+
 button {
   background-color: #3bb2ea;
   border: none;
