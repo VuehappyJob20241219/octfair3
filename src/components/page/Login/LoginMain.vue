@@ -1,4 +1,5 @@
 <template>
+  <FindIdPwModal v-if="modalState.modalState" />
   <div class="login-container">
     <div>
       <div class="login-text">
@@ -34,7 +35,7 @@
           </div>
           <div class="joinDiv">
             <strong class="strong" @click="$router.push('/join')">[일반회원가입]</strong>
-            <strong class="strong">[아이디/비밀번호 찾기]</strong>
+            <strong class="strong" @click="handlerModal">[아이디/비밀번호 찾기]</strong>
           </div>
         </div>
       </div>
@@ -46,11 +47,13 @@
 import { useRouter } from "vue-router";
 import logo from "../../../assets/logo.png";
 import { nullCheck } from "../../../common/nullCheck";
+import { useModalStore } from "../../../stores/modalState";
 import { useUserInfo } from "../../../stores/userInfo";
 
 const loginInfo = ref({});
 const userInfo = useUserInfo();
 const router = useRouter();
+const modalState = useModalStore();
 
 const handlerLogin = async () => {
   const isNull = nullCheck([
@@ -66,6 +69,10 @@ const handlerLogin = async () => {
     alert("아이디 혹은 비밀번호가 일치하지 않습니다.");
     return;
   }
+};
+
+const handlerModal = () => {
+  modalState.setModalState();
 };
 
 </script>
