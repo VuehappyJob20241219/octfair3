@@ -11,16 +11,26 @@ import Qna from "../views/Board/Qna.vue";
 import CompanyEdit from "../views/Company/CompanyEdit.vue";
 import CompanyInfo from "../views/Company/CompanyInfo.vue";
 import DashBoard from "../views/DashBoard/DashBoard.vue";
+import Join from "../views/Join/JoinApplicant.vue";
 import Login from "../views/Login/Login.vue";
 import Applicant from "../views/Manage-user/Applicant.vue";
 import Biz from "../views/Manage-user/Biz.vue";
+import ManageHireApplicant from "../views/ManageHire/ManageHireApplicant.vue";
 import Post from "../views/ManageHire/Post.vue";
+import Mypage from "../views/Mypage/Mypage.vue";
+import Withdraw from "../views/Mypage/Withdraw.vue";
+import NotFound from "../views/NotFound.vue";
 
 const routes = [
   {
     path: "/",
     name: "login",
     component: Login,
+  },
+  {
+    path: "/join",
+    name: "join",
+    component: Join,
   },
   {
     path: "/vue",
@@ -123,9 +133,14 @@ const routes = [
             component: BizPostInsert,
           },
           {
-            path: "bizPostDetail.do/:idx",
+            path: "bizPostDetail.do/:postIdx",
             name: "bizPostDetail",
             component: BizPostDetail,
+          },
+          {
+            path: "applicant.do",
+            name: "hireApplicant",
+            component: ManageHireApplicant,
           },
         ],
       },
@@ -145,7 +160,28 @@ const routes = [
           },
         ],
       },
+      {
+        path: "mypage",
+        name: "mypage",
+        children: [
+          {
+            path: "update.do",
+            name: "update",
+            component: Mypage,
+          },
+          {
+            path: "withdraw.do",
+            name: "withdraw",
+            component: Withdraw,
+          },
+        ],
+      },
     ],
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "notfound",
+    component: NotFound,
   },
 ];
 
