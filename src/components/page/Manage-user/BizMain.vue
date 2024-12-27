@@ -1,8 +1,5 @@
 <template>
-  <BizModal v-if="modalStateBiz.modalState"
-  @postSuccess="searchList"
-  :bizIdx="bizIdx"
-  />
+  <BizModal v-if="modalStateBiz.modalState" @postSuccess="searchList" :bizIdx="bizIdx" />
   <div class="divManage-bizList">
     <table>
       <colgroup>
@@ -42,7 +39,7 @@
         </template>
       </tbody>
     </table>
-    <Pagination :totalItems="bizList?.bizCnt || 0" :items-per-page="5" :max-pages-shown="5" :onClick="bizList"
+    <Pagination :totalItems="bizList?.bizCnt || 0" :items-per-page="5" :max-pages-shown="5" :onClick="searchList"
       v-model="cPage" />
   </div>
 </template>
