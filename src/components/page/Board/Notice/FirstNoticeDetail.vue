@@ -7,7 +7,7 @@
           <ContextBox>공지사항 상세조회</ContextBox>
           <label> 제목 :<input type="text" v-model="detailValue.title" /> </label>
           <label>
-            내용 :
+            내용 :{{ imageUrl }}
             <input type="text" v-model="detailValue.content" />
           </label>
           파일 :<input type="file" style="display: none" id="fileInput" @change="handlerFile" />

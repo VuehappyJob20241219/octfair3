@@ -78,7 +78,7 @@
       @postSuccess="success"
     />
     <QnaPassword
-      v-else-if="qnaIdx>0 && modal.modalState"
+      v-else-if="qnaIdx > 0 && modal.modalState"
       :idx="qnaIdx"
       @passwordValue="handlePasswordValue"
       @passwordModalState="hanlerPassState"
@@ -111,7 +111,7 @@ const userInfo = useUserInfo();
 const qnaLogState = useQnaLogState();
 const injectedhRequestType = inject("providedRequestType");
 const injectedSaveState = inject("providedSaveState");
-const passModalState= ref(false);
+const passModalState = ref(false);
 
 // 활성 버튼 상태 (디폴트: 일반회원)
 const activeButton = ref("A");
@@ -141,16 +141,15 @@ const searchList = () => {
   });
 };
 // pass컴포넌트에서 받은 값 저장하기
-const handlePasswordValue =(data)=>{
-  console.log("main입니다",data)
-  if(data!=null){
-    qnaIdx.value=data.idx
-    pass.value =data.password
+const handlePasswordValue = (data) => {
+  if (data != null) {
+    qnaIdx.value = data.idx;
+    pass.value = data.password;
   }
-}
-const hanlerPassState=(date)=>{
-  passModalState.value=date
-}
+};
+const hanlerPassState = (date) => {
+  passModalState.value = date;
+};
 
 // 모달 처리
 const handlerModal = (idx) => {
@@ -159,18 +158,18 @@ const handlerModal = (idx) => {
 };
 
 const closeModal = () => {
-  if(passModalState.value){ 
-    passModalState.value=false;
-    qnaIdx.value=0;
-    pass.value=''
+  if (passModalState.value) {
+    passModalState.value = false;
+    qnaIdx.value = 0;
+    pass.value = "";
   }
-  if(modal.modalState){
+  if (modal.modalState) {
     modal.setModalState(false);
-    qnaIdx.value=0;
+    qnaIdx.value = 0;
   }
-  if(injectedSaveState.saveState){
-    injectedSaveState.saveState =false
-    qnaIdx.value=0;
+  if (injectedSaveState.saveState) {
+    injectedSaveState.saveState = false;
+    qnaIdx.value = 0;
   }
 };
 
@@ -190,7 +189,6 @@ watch(route, qnaLogState, searchList, injectedhRequestType.requestType, injected
 
 watchEffect(() => {
   searchList();
-  
 });
 </script>
 
