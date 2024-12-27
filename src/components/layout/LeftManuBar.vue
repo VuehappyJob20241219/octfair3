@@ -65,6 +65,7 @@ const handlerMenuLinkClick = (menuId, e) => {
 
 const handlerLogout = () => {
   sessionStorage.setItem("userInfo", "");
+  userInfo.setAuthenticated();
   router.push("/");
 };
 </script>
@@ -87,10 +88,12 @@ button {
     background-color 0.3s,
     transform 0.2s;
 }
+
 button:hover {
   background-color: #ffffff;
   transform: translateY(-2px);
 }
+
 button:active {
   background-color: ivory;
   transform: translateY(0);
@@ -132,6 +135,7 @@ ul {
 
   &:hover {
     transition: 1s;
+
     .child-menu-box {
       opacity: 1;
       display: block;
@@ -157,6 +161,7 @@ ul {
 
     div {
       margin: 10px 0 10px 0;
+
       &:hover {
         text-decoration: underline;
         color: white;
