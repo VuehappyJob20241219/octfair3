@@ -31,7 +31,21 @@
           <template v-if="qnaList.qnaCnt > 0">
             <tr v-for="qna in qnaList.qna" :key="qna.qnaIdx" @click="handlerModal(qna.qnaIdx)">
               <td>{{ qna.qnaIdx }}</td>
-              <td>{{ qna.title }}</td>
+              <td>
+                {{ qna.title }}
+                <span
+                  v-if="qna?.ans_content"
+                  :style="{
+                    marginLeft: '8px',
+                    display: 'inline-block',
+                    padding: '4px 8px',
+                    backgroundColor: '#e6f7ff',
+                    borderRadius: '4px',
+                  }"
+                >
+                  답변 완료
+                </span>
+              </td>
               <td>{{ qna.createdDate.substr(0, 10) }}</td>
               <td>{{ qna.author }}</td>
             </tr>
@@ -55,7 +69,21 @@
     />
 
     <!-- 모달 -->
-    <QnaDetail v-if="modalStore.modalState" :idx="qnaIdx" @postSuccess="searchList" @modalClose="closeModal" />
+    <!-- userType이 "M"인 경우 QnaPassword, 그렇지 않으면 QnaDetail -->
+    <QnaDetail
+      v-if="(userInfo.user.userType === 'M' && modal.modalState) || injectedSaveState.saveState || passModalState"
+      :idx="qnaIdx"
+      :password="pass"
+      @close="closeModal"
+      @postSuccess="success"
+    />
+    <QnaPassword
+      v-else-if="qnaIdx > 0 && modal.modalState"
+      :idx="qnaIdx"
+      @passwordValue="handlePasswordValue"
+      @passwordModalState="hanlerPassState"
+      @close="closeModal"
+    />
   </div>
 </template>
 
@@ -69,6 +97,7 @@ import { useUserInfo } from "../../../../stores/userInfo";
 import { useQnaLogState } from "../../../../stores/useQnaLogState";
 import { inject } from "vue";
 import { useModalStore } from "../../../../stores/modalState";
+import QnaPassword from "./QnaPassword.vue";
 
 // 상태 값 설정
 const route = useRoute();
@@ -76,17 +105,22 @@ const itemPerPage = ref(10);
 const qnaList = ref();
 const cPage = ref(1);
 const qnaIdx = ref(0);
-const modalStore = useModalStore();
+const pass = ref("");
+const modal = useModalStore();
 const userInfo = useUserInfo();
 const qnaLogState = useQnaLogState();
 const injectedhRequestType = inject("providedRequestType");
+const injectedSaveState = inject("providedSaveState");
+const passModalState = ref(false);
 
 // 활성 버튼 상태 (디폴트: 일반회원)
 const activeButton = ref("A");
 
 // 버튼 활성화 함수
 const setActive = (type) => {
+  injectedhRequestType.requestType = "all";
   activeButton.value = type; // 클릭된 버튼 활성화
+
   searchList(); // 상태 변경 시 API 호출
 };
 
@@ -106,23 +140,52 @@ const searchList = () => {
     qnaList.value = res.data;
   });
 };
+// pass컴포넌트에서 받은 값 저장하기
+const handlePasswordValue = (data) => {
+  if (data != null) {
+    qnaIdx.value = data.idx;
+    pass.value = data.password;
+  }
+};
+const hanlerPassState = (date) => {
+  passModalState.value = date;
+};
 
 // 모달 처리
 const handlerModal = (idx) => {
-  modalStore.setModalState();
+  setModalState();
   qnaIdx.value = idx;
 };
 
 const closeModal = () => {
-  qnaIdx.value = 0;
-  modalStore.setModalState(false);
+  if (passModalState.value) {
+    passModalState.value = false;
+    qnaIdx.value = 0;
+    pass.value = "";
+  }
+  if (modal.modalState) {
+    modal.setModalState(false);
+    qnaIdx.value = 0;
+  }
+  if (injectedSaveState.saveState) {
+    injectedSaveState.saveState = false;
+    qnaIdx.value = 0;
+  }
+};
+
+const success = () => {
+  searchList();
+};
+
+const setModalState = () => {
+  modal.setModalState(); // 현재 값을 반대로 토글
 };
 
 // 초기화
 onMounted(() => {
   searchList();
 });
-watch(route, qnaLogState, searchList, injectedhRequestType.requestType);
+watch(route, qnaLogState, searchList, injectedhRequestType.requestType, injectedSaveState.saveState);
 
 watchEffect(() => {
   searchList();
