@@ -48,6 +48,7 @@ const { params } = useRoute();
 const detailValue = ref({});
 const userInfo = useUserInfo();
 const userid = userInfo.user.loginId;
+const props = defineProps(["idx"]);
 const notiseIdx = params.idx;
 const fileData = ref("");
 const imageUrl = ref("");
