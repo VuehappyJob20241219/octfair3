@@ -68,7 +68,7 @@
                   class="inputTxt p100"
                   name="password"
                   id="password"
-                  v-model="passwordValue" 
+                  v-model="passwordValue"
                   @focus="
                     (e) => {
                       e.target.type = 'text';
@@ -79,7 +79,7 @@
                       e.target.type = 'password';
                     }
                   "
-                  :readonly="props.password!==''"
+                  :readonly="props.password !== ''"
                 />
               </td>
             </tr>
@@ -142,8 +142,7 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import { useModalStore } from "../../../../stores/modalState";
 
-
-const emits = defineEmits(["postSuccess","close"])
+const emits = defineEmits(["postSuccess", "close"]);
 const props = defineProps(["idx", "password"]);
 const modal = useModalStore();
 const userInfo = useUserInfo();
@@ -157,12 +156,12 @@ const injectedSaveState = inject("providedSaveState");
 const passwordValue = computed({
   get() {
     // props.password가 빈 문자열일 때 qnaDetail.password를 반환
-    return props.password === '' ? qnaDetail.value.password : props.password;
+    return props.password === "" ? qnaDetail.value.password : props.password;
   },
   set(value) {
     // 값을 설정할 때 qnaDetail.password에 반영
     qnaDetail.value.password = value;
-  }
+  },
 });
 const handlerGetModalDetail = () => {
   console.log("여기는 detail props에용", props);
@@ -185,6 +184,25 @@ const handlerModal = () => {
   emits("close");
 };
 
+const passwordReset = () => {
+  console.log("초기화버튼은 일단클릭", qnaDetail.value.qnaIdx);
+  console.log("초기화버튼은 일단클릭", qnaDetail.value.author);
+
+  const param = {
+    qnaSeq: qnaDetail.value.qnaIdx,
+    author: qnaDetail.value.author,
+  };
+  axios.post("/api/board/passwordReset.do", param).then((res) => {
+    if (res.data.result.toUpperCase() === "SUCCESS") {
+      emits("postSuccess");
+      handlerModal();
+      alert("비밀번호 초기화 했습니다.");
+    } else {
+      alert("수정 실패했습니다.");
+    }
+  });
+};
+
 const handlerSaveBtn = () => {
   const textData = {
     qnaTit: qnaDetail.value.title,
@@ -193,9 +211,9 @@ const handlerSaveBtn = () => {
     loginId: userInfo.user.loginId,
     qna_type: userInfo.user.userType,
   };
-  console.log(textData)
+  console.log(textData);
   const formData = new FormData();
-  if (formData.value) formData.append("file", formData.value);
+  if (fileData.value) formData.append("file", fileData.value);
   formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
   axios.post("/api/board/qnaFileSaveRe.do", formData).then((res) => {
     if (res.data.result.toUpperCase() === "SUCCESS") {
@@ -217,7 +235,7 @@ const handlerUpdateBtn = () => {
     password: props.password,
     ans_content: qnaDetail.value.ans_content,
   };
-  
+
   const formData = new FormData();
   if (fileData.value) formData.append("file", fileData.value);
   formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
@@ -321,8 +339,6 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   position: fixed; // modal을 부모범위가 아니라 전체창범위에 소환하게 해주는 코드
-  display: flex;
-  flex-flow: row wrep;
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.5);
@@ -396,7 +412,11 @@ th {
 }
 
 td {
+  width: 350px;
   padding: 10px;
+}
+tr {
+  width: 100%;
 }
 
 img {
