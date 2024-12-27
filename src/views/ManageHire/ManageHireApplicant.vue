@@ -1,6 +1,6 @@
 <template>
   <ContextBox>지원자 관리</ContextBox>
-  <HireApplicantSeach></HireApplicantSeach>
+  <HireApplicantSearch></HireApplicantSearch>
   <HireApplicantMain></HireApplicantMain>
 </template>
 

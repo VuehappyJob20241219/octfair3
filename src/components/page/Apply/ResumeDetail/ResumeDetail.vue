@@ -52,86 +52,102 @@
             <li class="list" id="careerList">
               <!-- 조회값 여기에 추가 -->
             </li>
-            <li id="careerInputTable" v-show="careerAddState">
+            <li id="careerInputTable" class="inputTable" v-show="careerAddState">
               <table class="col">
                 <tbody>
                   <tr>
                     <td>
-                      회사명:
-                      <input
-                        type="text"
-                        id="company"
-                        style="padding: 5px; width: 80%; margin: 0px"
-                        placeholder="회사명"
-                        required="required"
-                        v-model="careerInfo.company"
-                      />
+                      <div class="inputRow">
+                        <label style="padding: 5px">회사명:</label>
+                        <input
+                          type="text"
+                          id="company"
+                          placeholder="회사명"
+                          required
+                          v-model="careerInfo.company"
+                          style="padding: 5px; width: 60%; margin: 5px"
+                        />
+                      </div>
                     </td>
                     <td>
-                      입사일 :
-                      <input
-                        type="date"
-                        id="startDate"
-                        style="padding: 5px; width: 80%; margin: 0px"
-                        required="required"
-                        v-model="careerInfo.start_date"
-                      />
+                      <div class="inputRow">
+                        <label style="padding: 5px">입사일:</label>
+                        <input
+                          type="date"
+                          id="startDate"
+                          required
+                          v-model="careerInfo.start_date"
+                          style="padding: 5px; width: 60%; margin: 5px"
+                        />
+                      </div>
                     </td>
                     <td>
-                      퇴사일 :
-                      <input
-                        type="date"
-                        id="endDate"
-                        style="padding: 5px; width: 80%; margin: 0px"
-                        required="required"
-                        v-model="careerInfo.end_date"
-                      />
+                      <div class="inputRow">
+                        <label style="padding: 5px">퇴사일:</label>
+                        <input
+                          type="date"
+                          id="endDate"
+                          required
+                          v-model="careerInfo.end_date"
+                          style="padding: 5px; width: 60%; margin: 5px"
+                        />
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      근무부서:
-                      <input
-                        type="text"
-                        id="dept"
-                        style="padding: 5px; width: 80%; margin: 0px"
-                        placeholder="근무부서"
-                        required="required"
-                        v-model="careerInfo.dept"
-                      />
+                      <div class="inputRow">
+                        <label style="padding: 5px">근무부서:</label>
+                        <input
+                          type="text"
+                          id="dept"
+                          placeholder="근무부서"
+                          required
+                          v-model="careerInfo.dept"
+                          style="padding: 5px; width: 60%; margin: 5px"
+                        />
+                      </div>
                     </td>
                     <td>
-                      직책/직급:
-                      <input
-                        type="text"
-                        id="position"
-                        style="padding: 5px; width: 80%; margin: 0px"
-                        placeholder="직책/직급"
-                        required="required"
-                        v-model="careerInfo.position"
-                      />
+                      <div class="inputRow">
+                        <label style="padding: 5px">직책/직급:</label>
+                        <input
+                          type="text"
+                          id="position"
+                          placeholder="직책/직급"
+                          required
+                          v-model="careerInfo.position"
+                          style="padding: 5px; width: 60%; margin: 5px"
+                        />
+                      </div>
                     </td>
                     <td>
-                      퇴사사유:
-                      <input
-                        type="text"
-                        id="reason"
-                        style="padding: 5px; width: 80%; margin: 0px"
-                        placeholder="퇴사사유"
-                        required="required"
-                        v-model="careerInfo.reason"
-                      />
+                      <div class="inputRow">
+                        <label style="padding: 5px">퇴사사유:</label>
+                        <input
+                          type="text"
+                          id="reason"
+                          placeholder="퇴사사유"
+                          required
+                          v-model="careerInfo.reason"
+                          style="padding: 5px; width: 60%; margin: 5px"
+                        />
+                      </div>
                     </td>
                   </tr>
                   <tr>
-                    <td colspan="3" style="padding: 5px; width: 80%; margin: 0px">
+                    <td colspan="3">
                       <textarea
-                        style="height: 100px"
                         id="crrDesc"
-                        required="required"
-                        placeholder="  담당업무를 입력해주세요. - 진행한 업무를 다 적기 보다는 경력사항 별로 중요한 내용만 엄선해서 작성하는 것이 중요합니다! - 경력별 프로젝트 내용을 적을 경우, 역할/팀구성/기여도/성과를 기준으로 요약해서 작성해보세요!"
+                        required
+                        placeholder="담당업무를 입력해주세요."
                         v-model="careerInfo.crr_desc"
+                        style="padding: 5px; width: 97%; margin: 5px"
                       ></textarea>
+                      <div style="font-size: 12px; color: gray; margin: 5px 0; padding-left: 10px">
+                        - 진행한 업무를 다 적기 보다는 경력사항 별로 중요한 내용만 엄선해서 작성하는 것이 중요합니다!<br />
+                        - 경력별 프로젝트 내용을 적을 경우, 역할/팀구성/기여도/성과를 기준으로 요약해서 작성해보세요!
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -155,63 +171,81 @@
             <li class="list" id="educationList">
               <!-- 조회값 여기에 추가 -->
             </li>
-            <li id="educationInputTable" v-show="eduAddState">
+            <li id="educationInputTable" class="inputTable" v-show="eduAddState">
               <table class="col">
                 <tbody>
                   <tr>
                     <td>
-                      학력구분:
-                      <select style="width: 80%" id="eduLevel" v-model="educationInfo.eduLevel">
-                        <option value="none" selected="selected">학력구분</option>
-                        <option value="고등학교">고등학교</option>
-                        <option value="대학교">대학교</option>
-                        <option value="대학원(석사)">대학원(석사)</option>
-                        <option value="대학원(박사)">대학원(박사)</option>
-                      </select>
+                      <div class="inputRow">
+                        <label style="padding: 5px">학력구분:</label>
+                        <select style="width: 80%" id="eduLevel" v-model="educationInfo.eduLevel">
+                          <option value="none" selected>학력구분</option>
+                          <option value="고등학교">고등학교</option>
+                          <option value="대학교">대학교</option>
+                          <option value="대학원(석사)">대학원(석사)</option>
+                          <option value="대학원(박사)">대학원(박사)</option>
+                        </select>
+                      </div>
                     </td>
                     <td>
-                      학교명:
-                      <input
-                        type="text"
-                        id="schoolName"
-                        style="padding: 5px; width: 80%; margin: 0px"
-                        placeholder="학교명"
-                        v-model="educationInfo.schoolName"
-                      />
+                      <div class="inputRow">
+                        <label style="padding: 5px">학교명:</label>
+                        <input
+                          type="text"
+                          id="schoolName"
+                          style="padding: 5px; width: 80%; margin: 0px"
+                          placeholder="학교명"
+                          v-model="educationInfo.schoolName"
+                        />
+                      </div>
                     </td>
                     <td>
-                      전공명:
-                      <input
-                        type="text"
-                        id="major"
-                        style="padding: 5px; width: 80%; margin: 0px"
-                        placeholder="전공명"
-                        v-model="educationInfo.major"
-                      />
+                      <div class="inputRow">
+                        <label style="padding: 5px">전공명:</label>
+                        <input
+                          type="text"
+                          id="major"
+                          style="padding: 5px; width: 80%; margin: 0px"
+                          placeholder="전공명"
+                          v-model="educationInfo.major"
+                        />
+                      </div>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      입학일 :
-                      <input type="date" id="admDate" style="padding: 5px; width: 80%; margin: 0px" 
-                      v-model="educationInfo.admDate"
-                      />
+                      <div class="inputRow">
+                        <label style="padding: 5px">입학일:</label>
+                        <input
+                          type="date"
+                          id="admDate"
+                          style="padding: 5px; width: 80%; margin: 0px"
+                          v-model="educationInfo.admDate"
+                        />
+                      </div>
                     </td>
                     <td>
-                      졸업일 :
-                      <input type="date" id="grdDate" style="padding: 5px; width: 80%; margin: 0px" 
-                      v-model="educationInfo.grdDate"
-                      />
+                      <div class="inputRow">
+                        <label style="padding: 5px">졸업일:</label>
+                        <input
+                          type="date"
+                          id="grdDate"
+                          style="padding: 5px; width: 80%; margin: 0px"
+                          v-model="educationInfo.grdDate"
+                        />
+                      </div>
                     </td>
                     <td>
-                      졸업여부:
-                      <select style="width: 80%" id="grdStatus" v-model="educationInfo.grdStatus">
-                        <option value="none" selected="selected">졸업여부</option>
-                        <option value="졸업">졸업</option>
-                        <option value="재학">재학</option>
-                        <option value="중퇴">중퇴</option>
-                        <option value="휴학">휴학</option>
-                      </select>
+                      <div class="inputRow">
+                        <label style="padding: 5px">졸업여부:</label>
+                        <select style="width: 80%" id="grdStatus" v-model="educationInfo.grdStatus">
+                          <option value="none" selected>졸업여부</option>
+                          <option value="졸업">졸업</option>
+                          <option value="재학">재학</option>
+                          <option value="중퇴">중퇴</option>
+                          <option value="휴학">휴학</option>
+                        </select>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -233,13 +267,13 @@
           </p>
         </div>
         <div class="listDiv">
-          <button type="button" class="showTableBtn" id="skill" @click="showAddSkill" >+ 추가</button>
+          <button type="button" class="showTableBtn" id="skill" @click="showAddSkill">+ 추가</button>
         </div>
         <ul>
           <li class="list" id="skillList">
             <!-- 조회값 여기에 추가 -->
           </li>
-          <li id="skillInputTable" v-show="skillAddState">
+          <li id="skillInputTable" class="inputTable" v-show="skillAddState">
             <table class="row">
               <colgroup>
                 <col width="30%" />
@@ -248,19 +282,22 @@
               <tbody>
                 <tr>
                   <td>
-                    스킬명:
+                    <label style="margin: 10px">스킬명:</label>
                     <input
                       type="text"
                       id="skillName"
-                      style="padding: 5px; width: 80%; margin: 0px"
+                      style="padding: 5px; width: 80%; margin: 10px"
                       placeholder="스킬명"
                       v-model="skillInfo.skillName"
                     />
                   </td>
                   <td>
-                    스킬상세기재:
-                    <textarea style="height: auto" id="skillDetail" placeholder="스킬상세기재"
-                    v-model="skillInfo.skillDetail"
+                    <label style="margin: 20px"> 스킬상세기재:</label>
+                    <textarea
+                      style="height: auto; margin: 10px; width: 95%"
+                      id="skillDetail"
+                      placeholder="  스킬 상세 기재"
+                      v-model="skillInfo.skillDetail"
                     ></textarea>
                   </td>
                 </tr>
@@ -273,7 +310,7 @@
           </li>
         </ul>
       </div>
-                                  <!-- 자격증 작업 중 -->
+      <!-- 자격증 작업 중 -->
       <div class="resumeDetail_body">
         <div class="resumeDetail_body_haeder">자격증 및 외국어</div>
         <div class="resumeDetail_body_guide">
@@ -289,43 +326,62 @@
           <li class="list" id="certificationList">
             <!-- 조회값 여기에 추가 -->
           </li>
-          <li id="certificationInputTable" v-show="certAddState">
+          <li id="certificationInputTable" class="inputTable" v-show="certAddState">
             <table class="col">
               <colgroup>
-                <col width="20%" />
-                <col width="20%" />
-                <col width="20%" />
-                <col width="40%" />
+                <col width="30%" />
+                <col width="25%" />
+                <col width="30%" />
+                <col width="15%" />
               </colgroup>
               <tbody>
                 <tr>
                   <td>
-                    자격증명:
-                    <input
-                      type="text"
-                      id="certName"
-                      style="padding: 5px; width: 80%; margin: 0px"
-                      placeholder="자격증명"
-                      v-model="certificationInfo.certName"
-                    />
+                    <div class="inputRow">
+                      <label style="padding: 2px">자격증명:</label>
+                      <input
+                        type="text"
+                        id="certName"
+                        style="padding: 5px; width: 70%; margin: 0px"
+                        placeholder="자격증명"
+                        v-model="certificationInfo.certName"
+                      />
+                    </div>
                   </td>
                   <td>
-                    등급:
-                    <input type="text" id="grade" style="padding: 5px; width: 80%; margin: 0px" placeholder="등급" 
-                      v-model="certificationInfo.grade"
-                    />
+                    <div class="inputRow">
+                      <label style="padding: 2px">등급:</label>
+                      <input
+                        type="text"
+                        id="grade"
+                        style="padding: 5px; width: 80%; margin: 0px"
+                        placeholder="등급"
+                        v-model="certificationInfo.grade"
+                      />
+                    </div>
                   </td>
                   <td>
-                    발행처:
-                    <input type="text" id="issuer" style="padding: 5px; width: 80%; margin: 0px" placeholder="발행처" 
-                    v-model="certificationInfo.issuer"
-                    />
+                    <div class="inputRow">
+                      <label style="padding: 2px">발행처:</label>
+                      <input
+                        type="text"
+                        id="issuer"
+                        style="padding: 5px; width: 85%; margin: 0px"
+                        placeholder="발행처"
+                        v-model="certificationInfo.issuer"
+                      />
+                    </div>
                   </td>
                   <td>
-                    취득일자 :
-                    <input type="date" id="acqDate" style="padding: 5px; width: 80%; margin: 0px" 
-                     v-model="certificationInfo.acqDate"
-                    />
+                    <div class="inputRow">
+                      <label style="padding: 2px">취득일자:</label>
+                      <input
+                        type="date"
+                        id="acqDate"
+                        style="padding: 5px; width: 70%; margin: 5px 0"
+                        v-model="certificationInfo.acqDate"
+                      />
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -381,31 +437,29 @@
           <p class="resumeDetail_body_guide_text">• 포트폴리오, 경력기술서 등 첨부파일이 있다면 등록해주세요.</p>
         </div>
         <div>
-          <input id="resumeAttach" type="file" @change="handlerFile" />
-          <c:if test="${not empty result.fileName}">
-            <div class="attach-container">
-              <a href=""><span class="attach-fileName"></span></a>
-              <button class="attach-delete" id="attach-delete" onclick="deleteAttach()">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="25px"
-                  viewBox="0 -960 960 960"
-                  width="25px"
-                  fill="#5f6368"
-                >
-                  <path
-                    d="M312-144q-29.7 0-50.85-21.15Q240-186.3 240-216v-480h-48v-72h192v-48h192v48h192v72h-48v479.57Q720-186 698.85-165T648-144H312Zm336-552H312v480h336v-480ZM384-288h72v-336h-72v336Zm120 0h72v-336h-72v336ZM312-696v480-480Z"
-                  />
-                </svg>
-              </button>
-            </div>
-          </c:if>
+          <input id="resumeAttach" type="file" @change="handlerFile" :name="fileInputName" />
+          <div class="attach-container" v-if="fileData.name">
+            <span class="attach-fileName"></span>
+            <button class="attach-delete" id="attach-delete" @click="deleteAttach">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="50px"
+                viewBox="0 -960 960 960"
+                width="50px"
+                fill="#5f6368"
+              >
+                <path
+                  d="M312-144q-29.7 0-50.85-21.15Q240-186.3 240-216v-480h-48v-72h192v-48h192v48h192v72h-48v479.57Q720-186 698.85-165T648-144H312Zm336-552H312v480h336v-480ZM384-288h72v-336h-72v336Zm120 0h72v-336h-72v336ZM312-696v480-480Z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
       <div class="btnGroup">
-        <button class="btnType gray">목록으로</button>
-        <button class="btnType blue" @click="handlerSaveBtn()">저장하기</button>
-        <button class="btnType blue" @click="handerResumePreview(basicinformation.resIdx)">미리보기</button>
+        <button class="btnType gray list" @click="$router.go(-1)">목록으로</button>
+        <button class="btnType blue button" @click="handlerSaveBtn()">저장하기</button>
+        <button class="btnType gray list" @click="handerResumePreview(basicinformation.resIdx)">미리보기</button>
       </div>
     </div>
   </div>
@@ -420,7 +474,7 @@ import { useUserInfo } from "../../../../stores/userInfo";
 const basicinformation = ref();
 const userInfo = useUserInfo();
 const { user } = userInfo;
-const fileData = ref("");
+const fileData = ref({});
 const ResumePreviewModalState = useModalStore();
 const resumePreviewIdx = ref(0);
 const careerAddState = ref(false);
@@ -429,10 +483,8 @@ const skillAddState = ref(false);
 const certAddState = ref(false);
 const careerInfo = ref({});
 const educationInfo = ref({});
-const skillInfo =ref({});
-const certificationInfo =ref({});
-
-
+const skillInfo = ref({});
+const certificationInfo = ref({});
 
 const basicInfo = async () => {
   const param = {
@@ -476,9 +528,11 @@ const handlerSaveBtn = async () => {
 
 const handlerFile = (e) => {
   const fileinfo = e.target.files;
-  //const fileinfoSplit = fileinfo[0].name.split(".");
-  //const fileExtension = fileinfoSplit[1].toLowerCase();
-  fileData.value = fileinfo[0];
+  if (fileinfo) {
+    fileData.value = fileinfo[0];
+  } else {
+    fileData.value = {};
+  }
 };
 
 const handerResumePreview = (idx) => {
@@ -487,97 +541,103 @@ const handerResumePreview = (idx) => {
   resumePreviewIdx.value = idx;
 };
 
-const showAddCareer= () => {
+const showAddCareer = () => {
   careerAddState.value = !careerAddState.value;
   careerInfo.value = {};
-}
+};
 
-const showAddEdu= () => {
+const showAddEdu = () => {
   eduAddState.value = !eduAddState.value;
   educationInfo.value = {};
-}
+  educationInfo.value.eduLevel = "none";
+  educationInfo.value.grdStatus = "none";
+};
 
-const showAddSkill= () => {
+const showAddSkill = () => {
   skillAddState.value = !skillAddState.value;
   skillInfo.value = {};
-}
+};
 
-const showAddCert= () => {
+const showAddCert = () => {
   certAddState.value = !certAddState.value;
   certificationInfo.value = {};
-}
+};
 
-const addCareer = async() =>{
+const addCareer = async () => {
   const text = {
     resIdx: basicinformation.value.resIdx,
-    company:careerInfo.value.company,
-    startDate:careerInfo.value.start_date,
-    endDate:careerInfo.value.end_date,
-    dept:careerInfo.value.dept,
-    position:careerInfo.value.position,
-    reason:careerInfo.value.reason,
-    crrDesc:careerInfo.value.crr_desc,
+    company: careerInfo.value.company,
+    startDate: careerInfo.value.start_date,
+    endDate: careerInfo.value.end_date,
+    dept: careerInfo.value.dept,
+    position: careerInfo.value.position,
+    reason: careerInfo.value.reason,
+    crrDesc: careerInfo.value.crr_desc,
   };
   await axios.post(Resume.InsertCareer, text).then((res) => {
-    if(res.data.result === "success") {
+    if (res.data.result === "success") {
       careerAddState.value = !careerAddState.value;
       careerInfo.value = {};
-      alert("경력 추가 완")
+      alert("경력 추가 완");
     }
   });
-}
+};
 
-const addEdu = async() =>{
+const addEdu = async () => {
   const text = {
     resIdx: basicinformation.value.resIdx,
-    eduLevel : educationInfo.value.eduLevel ,
-    schoolName: educationInfo.value.schoolName ,
-    major: educationInfo.value.major ,
-    admDate: educationInfo.value.admDate ,
-    grdDate: educationInfo.value.grdDate ,
-    grdStatus: educationInfo.value.grdStatus ,
+    eduLevel: educationInfo.value.eduLevel,
+    schoolName: educationInfo.value.schoolName,
+    major: educationInfo.value.major,
+    admDate: educationInfo.value.admDate,
+    grdDate: educationInfo.value.grdDate,
+    grdStatus: educationInfo.value.grdStatus,
   };
   await axios.post(Resume.InsertEducation, text).then((res) => {
-    if(res.data.result === "success") {
+    if (res.data.result === "success") {
       eduAddState.value = !eduAddState.value;
       educationInfo.value = {};
-      alert("학력 추가 완")
+      alert("학력 추가 완");
     }
   });
-}
+};
 
-const addSkill = async() =>{
+const addSkill = async () => {
   const text = {
     resIdx: basicinformation.value.resIdx,
-    skillName:skillInfo.value.skillName,
-    skillDetail:skillInfo.value.skillDetail,
+    skillName: skillInfo.value.skillName,
+    skillDetail: skillInfo.value.skillDetail,
   };
   await axios.post(Resume.InsertSkill, text).then((res) => {
-    if(res.data.result === "success") {
+    if (res.data.result === "success") {
       skillAddState.value = !skillAddState.value;
       skillInfo.value = {};
-      alert("스킬 추가 완")
+      alert("스킬 추가 완");
     }
   });
-}
+};
 
-const addCert = async() =>{
+const addCert = async () => {
   const text = {
     resIdx: basicinformation.value.resIdx,
-    certName:certificationInfo.value.certName,
-    grade:certificationInfo.value.grade,
-    issuer:certificationInfo.value.issuer,
-    acqDate:certificationInfo.value.acqDate,
+    certName: certificationInfo.value.certName,
+    grade: certificationInfo.value.grade,
+    issuer: certificationInfo.value.issuer,
+    acqDate: certificationInfo.value.acqDate,
   };
   await axios.post(Resume.InsertCertification, text).then((res) => {
-    if(res.data.result === "success") {
+    if (res.data.result === "success") {
       certAddState.value = !certAddState.value;
       certificationInfo.value = {};
-      alert("자격 추가 완")
+      alert("자격 추가 완");
     }
   });
-}
+};
 
+const deleteAttach = () => {
+  fileData.value = {};
+  document.getElementById("resumeAttach").value = ""; // 파일 입력 초기화
+};
 
 onMounted(() => {
   basicInfo();
@@ -607,7 +667,12 @@ onMounted(() => {
   border-radius: 5px;
   color: gray;
 }
-
+.list {
+  list-style-type: none;
+}
+.inputTable {
+  list-style-type: none;
+}
 .inputRow {
   display: flex;
   width: 100%;
@@ -625,7 +690,7 @@ onMounted(() => {
   padding: 5px;
   border: none; /* 기본 상태에서 테두리를 없앰 */
   outline: none; /* 포커스 상태에서 기본 outline 제거 */
-  background-color: transparent; /* 배경색 투명 */
+  background-color: white; /* 배경색 투명 */
   transition: all 0.2s ease; /* 스타일 전환 애니메이션 */
 }
 .inputRow input:focus {
@@ -647,6 +712,43 @@ textarea {
   min-height: 100px; /* 최소 높이를 설정 */
 }
 
+.btnType {
+  display: inline-block;
+  padding: 10px 15px; /* 버튼 크기 줄이기 */
+  font-size: 14px; /* 글자 크기 줄이기 */
+  border-radius: 4px; /* 둥근 모서리 */
+  text-decoration: none;
+  color: white;
+}
+
+.btnType.gray {
+  text-align: center;
+  margin: 5px;
+  background-color: #6c757d; /* 회색 버튼 */
+}
+
+.btnType.gray.list {
+ width: 20%;
+}
+
+.btnType.blue {
+  text-align: center;
+  margin: 5px;
+  background-color: #36ADE4; /* 파란색 버튼 */
+}
+
+.btnType.blue.button {
+  width: 20%;
+}
+
+.btnType.gray:hover {
+  background-color: #5a6268; /* 회색 버튼 호버 색상 */
+}
+
+.btnType.blue:hover {
+  background-color: #0056b3; /* 파란색 버튼 호버 색상 */
+}
+
 button {
   width: 100%;
   padding: 10px 0;
@@ -665,12 +767,9 @@ button:hover {
   cursor: pointer;
 }
 
-button:active {
-  color: red;
-}
-
 table {
   margin-top: 10px;
+  width: 100%;
 }
 
 table td {
@@ -688,10 +787,10 @@ table td {
 }
 
 .btnGroup {
-  border-top: 3px solid black;
-  margin: 20px 0 50px 0;
-  padding-top: 15px;
-  text-align: center;
+  display: flex; /* 버튼을 가로로 배치 */
+  justify-content: center; /* 버튼 그룹을 가운데 정렬 */
+  gap: 10px; /* 버튼 간 간격 추가 */
+  margin-top: 20px; /* 버튼 그룹 상단 여백 */
 }
 .res-comment {
   padding: 10px 0px;
@@ -727,32 +826,4 @@ table td {
   height: 100%;
 }
 
-.btnGroup {
-  display: flex; /* 버튼을 수평으로 나열 */
-  justify-content: space-between; /* 버튼 간 간격 */
-  margin-top: 10px; /* 버튼과 테이블 간 간격 */
-}
-
-.btnType {
-  display: inline-block; /* 버튼을 inline-block으로 설정 */
-  padding: 10px 15px; /* 버튼 패딩 */
-  border-radius: 5px; /* 둥글게 */
-  text-decoration: none; /* 밑줄 제거 */
-  color: white; /* 텍스트 색상 */
-}
-
-.btnType.gray {
-  background-color: #6c757d; /* 회색 버튼 */
-}
-
-.btnType.blue {
-  background-color: #007bff; /* 파란색 버튼 */
-}
-.btnType.gray:hover {
-  background-color: #5a6268; /* 회색 버튼 호버 색상 */
-}
-
-.btnType.blue:hover {
-  background-color: #0056b3; /* 파란색 버튼 호버 색상 */
-}
 </style>
