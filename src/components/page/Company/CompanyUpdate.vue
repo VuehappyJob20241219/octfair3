@@ -91,6 +91,7 @@
 import axios from "axios";
 import { useUserInfo } from "../../../stores/userInfo";
 import { useRouter } from "vue-router";
+import { ref } from "vue";
 
 const userInfo = useUserInfo();
 const companyDetail = ref({});
@@ -99,13 +100,17 @@ const phoneNum = ref("");
 const fileData = ref("");
 const router = useRouter();
 
-const apiSuccess = () => {
-  router.go(-1);
-};
-
 const searchDetail = () => {
   axios.post("/api/company/companyUpdatePageRe.do", { loginId: userInfo.user.loginId }).then((res) => {
     companyDetail.value = res.data.detail || {};
+    if (
+      companyDetail.value.fileExt === "jpg" ||
+      companyDetail.value.fileExt === "gif" ||
+      companyDetail.value.fileExt === "png" ||
+      companyDetail.value.fileExt === "webp"
+    ) {
+      getFileImage(companyDetail.value.bizIdx);
+    }
   });
 };
 
@@ -120,9 +125,10 @@ const handlerCompanyInsert = async () => {
 
   await axios.post("/api/company/companySaveBody.do", formData).then((res) => {
     if (res.data.result === "success") {
-      alert("회사가 등록되었습니다.");
+      alert("기업이 등록되었습니다.");
+      router.go(-1);
     } else {
-      alert("공부하세요!");
+      alert("기업등록이 실패하였습니다.");
     }
   });
 };
@@ -138,9 +144,12 @@ const handlerCompanyUpdate = async () => {
 
   await axios.post("/api/company/companyUpdateBody.do", formData).then((res) => {
     if (res.data.result === "success") {
-      alert("회사가 수정되었습니다.");
+      alert("기업정보가 수정되었습니다.");
+      router.push({
+        path: "/vue/mypage/update.do",
+      });
     } else {
-      alert("공부하세요!");
+      alert("기업정보 수정이 실패하였습니다.");
     }
   });
 };
@@ -155,16 +164,21 @@ const handlerFile = (e) => {
   fileData.value = fileInfo[0];
 };
 
-// const getFileImage = () => {
-//   let param = new URLSearchParams();
-//   param.append('bizIdx', props.idx);
-//   const postAction = {
-//     url: '',
-//     method: 'POST',
-//     data: param,
-//     responseType: 'blob',
-//   };
-// };
+const getFileImage = (idx) => {
+  let param = new URLSearchParams();
+  param.append("bizIdx", idx);
+  const postAction = {
+    url: "/api/company/companyImageDownload.do",
+    method: "POST",
+    data: param,
+    responseType: "blob",
+  };
+
+  axios(postAction).then((res) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    imageUrl.value = url;
+  });
+};
 
 const companyPhoneNumChange = (e) => {
   const inputNum = e.target.value;
@@ -243,33 +257,33 @@ const companyPhoneNumChange = (e) => {
 //   return inputs;
 // };
 
-const fileDownload = () => {
-  let param = new URLSearchParams();
-  param.append("bizIdx", props.idx);
-  const postAction = {
-    url: "api/",
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-  axios(postAction).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", companyDetail.value.fileName);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  });
-};
+// const fileDownload = () => {
+//   let param = new URLSearchParams();
+//   param.append("bizIdx", companyDetail.value.bizIdx);
+//   const postAction = {
+//     url: "/api/company/companyImageDownload.do",
+//     method: "POST",
+//     data: param,
+//     responseType: "blob",
+//   };
+//   axios(postAction).then((res) => {
+//     const url = window.URL.createObjectURL(new Blob([res.data]));
+//     const link = document.createElement("a");
+//     link.href = url;
+//     link.setAttribute("download", companyDetail.value.bizLogo);
+//     document.body.appendChild(link);
+//     link.click();
+//     link.remove();
+//   });
+// };
 
 const handlerCompanyDelete = async () => {
   await axios.post("/api/company/companyDeleteRe.do", { loginId: userInfo.user.loginId }).then((res) => {
     if (res.data.result === "success") {
-      alert("회사가 삭제되었습니다.");
+      alert("기업이 삭제되었습니다.");
       router.go(-1);
     } else {
-      alert("공부하세요!");
+      alert("기업삭제가 실패하였습니다.");
     }
   });
 };
@@ -283,6 +297,7 @@ onMounted(() => {
 table {
   width: 100%;
   border-collapse: collapse;
+  border: black;
   margin: 20px 0px 0px 0px;
   font-size: 13px;
   text-align: left;
@@ -290,21 +305,23 @@ table {
   th {
     text-align: center;
     background-color: #ccc;
-    color: black;
+    // color: black;
   }
 
   td {
-    padding: 8px;
     border-bottom: 1px solid #ddd;
     text-align: left;
     height: 30px;
+    text-align: center;
   }
 }
 input,
 select,
 textarea {
-  width: 95%;
-  height: 90%;
+  width: 98%;
+  height: 95%;
+  border: none;
+  vertical-align: middle;
 }
 
 .button-box {
