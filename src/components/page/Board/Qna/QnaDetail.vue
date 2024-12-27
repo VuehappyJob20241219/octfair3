@@ -44,7 +44,7 @@
                   @change="handlerSelectFile"
                   :disabled="!!qnaDetail?.ans_content"
                 />
-                <label class="img-label" for="fileInput">파일 첨부하기</label>
+                <label class="img-label" for="fileInput">파일 첨부하기 </label>
 
                 <!-- 파일 미리보기 -->
                 <div @click="handlerDownloadFile">
@@ -136,23 +136,18 @@
 
 <script setup>
 import { onMounted, onUnmounted } from "vue";
-import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { useUserInfo } from "@/stores/userInfo";
 import axios from "axios";
-import { useRouter } from "vue-router";
-import { useModalStore } from "../../../../stores/modalState";
 
 const emits = defineEmits(["postSuccess", "close"]);
 const props = defineProps(["idx", "password"]);
-const modal = useModalStore();
 const userInfo = useUserInfo();
 const qnaDetail = ref({});
 const imageUrl = ref("");
 const fileData = ref("");
-const queryClient = useQueryClient();
-const router = useRouter();
-const injectedSaveState = inject("providedSaveState");
 
+// 일반유저가 비번을 치고 갔을 때 props.password 값을 넣고
+// 등록하기를 눌럿을때는 바인딩을 위해 qnaDetail.value.password를 넣는다
 const passwordValue = computed({
   get() {
     // props.password가 빈 문자열일 때 qnaDetail.password를 반환
@@ -164,7 +159,6 @@ const passwordValue = computed({
   },
 });
 const handlerGetModalDetail = () => {
-  console.log("여기는 detail props에용", props);
   const param = {
     qnaSeq: props.idx,
     password: props.password,
@@ -173,10 +167,30 @@ const handlerGetModalDetail = () => {
   //password
   axios.post("/api/board/qnaDetailFileRe.do", param).then((res) => {
     qnaDetail.value = res.data.detail;
-    console.log("res", res);
-    // if (["jpg", "gif", "png", "webp"].includes(qnaDetail.value.fileExt)) {
-    //   handlerGetImage();
-    // }
+    if (
+      qnaDetail.value.fileExt === "jpg" ||
+      qnaDetail.value.fileExt === "gif" ||
+      qnaDetail.value.fileExt === "png" ||
+      qnaDetail.value.fileExt === "webp"
+    ) {
+      getFileImage();
+    }
+  });
+};
+
+const getFileImage = () => {
+  let param = new URLSearchParams();
+  param.append("qnaSeq", props.idx);
+  const postAction = {
+    url: "/api/board/qnaDownload.do",
+    method: "POST",
+    data: param,
+    responseType: "blob",
+  };
+  axios(postAction).then((res) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    imageUrl.value = url;
+    console.log(res);
   });
 };
 
@@ -185,9 +199,6 @@ const handlerModal = () => {
 };
 
 const passwordReset = () => {
-  console.log("초기화버튼은 일단클릭", qnaDetail.value.qnaIdx);
-  console.log("초기화버튼은 일단클릭", qnaDetail.value.author);
-
   const param = {
     qnaSeq: qnaDetail.value.qnaIdx,
     author: qnaDetail.value.author,
@@ -211,7 +222,6 @@ const handlerSaveBtn = () => {
     loginId: userInfo.user.loginId,
     qna_type: userInfo.user.userType,
   };
-  console.log(textData);
   const formData = new FormData();
   if (fileData.value) formData.append("file", fileData.value);
   formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
@@ -270,22 +280,6 @@ const handlerSelectFile = (e) => {
   fileData.value = fileInfo[0];
 };
 
-const handlerGetImage = () => {
-  let param = new URLSearchParams();
-  param.append("qnaSeq", props.idx);
-  const postAction = {
-    url: "/api/board/qnaDownload.do",
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-
-  axios(postAction).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    imageUrl.value = url;
-  });
-};
-
 const handlerDownloadFile = () => {
   let param = new URLSearchParams();
   param.append("qnaSeq", props.idx);
@@ -308,7 +302,6 @@ const handlerDownloadFile = () => {
 };
 
 onMounted(() => {
-  console.log("여기는 detail", props);
   props.idx && handlerGetModalDetail();
 });
 watch(

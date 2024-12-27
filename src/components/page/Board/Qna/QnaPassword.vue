@@ -32,23 +32,16 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from "vue";
-import { useMutation, useQueryClient } from "@tanstack/vue-query";
-import { useUserInfo } from "@/stores/userInfo";
+import { onUnmounted } from "vue";
 import axios from "axios";
-import { useRouter } from "vue-router";
-import { useModalStore } from "../../../../stores/modalState";
-import QnaDetail from "./QnaDetail.vue";
 
-const emits = defineEmits(["passwordModalState", "passwordValue","close"]);
+const emits = defineEmits(["passwordModalState", "passwordValue", "close"]);
 const modal = ref(false);
 const props = defineProps(["idx"]); //부모에게 데이터를 전달받을때 사용
 const pass = ref("");
-const qnaIdxValue = ref(0);
 
 // 마지막 emit한 데이터를 저장
 const lastPasswordValue = ref(null);
-
 
 const handlerModal = () => {
   emits("close");
@@ -59,16 +52,13 @@ const handlerPassWord = () => {
     qnaSeq: props.idx, // 프로바이더 값 사용
     password: pass.value,
   };
-  console.log("qna패스워드", pass.value);
   axios.post("/api/board/checkPassword.do", param).then((res) => {
-    console.log(res);
     if (res.data.result === "success") {
       alert("비밀번호가 일치 합니다.");
-      console.log(res.data);
       lastPasswordValue.value = { password: res.data.password, idx: res.data.qnaSeq };
       emits("passwordValue", lastPasswordValue.value);
-      modal.value=true;
-      emits("passwordModalState", modal.value)
+      modal.value = true;
+      emits("passwordModalState", modal.value);
     } else {
       alert("비밀번호가 일치하지 않습니다.");
     }
@@ -76,16 +66,12 @@ const handlerPassWord = () => {
 };
 const handlePasswordChange = (event) => {
   pass.value = event.target.value;
-  console.log(pass.value); // 예시 동작
 };
 
 onUnmounted(() => {
   emits("passwordValue", lastPasswordValue.value);
-  emits("passwordModalState", modal.value)
-  
+  emits("passwordModalState", modal.value);
 });
-
-
 </script>
 
 <style lang="scss" scoped>

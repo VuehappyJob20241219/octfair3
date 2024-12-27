@@ -17,12 +17,10 @@ const emits = defineEmits(["saveBtn"]);
 const searchTitle = ref("");
 const searchStartDate = ref("");
 const searchEndDate = ref("");
-const modalState = useModalStore();
 const userInfo = useUserInfo();
 const userType = userInfo.user.userType;
 const injectedhRequestType = inject("providedRequestType");
 const injectedSaveState = inject("providedSaveState");
-
 
 const handlerSearch = () => {
   const query = [];
