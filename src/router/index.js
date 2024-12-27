@@ -15,10 +15,11 @@ import Join from "../views/Join/JoinApplicant.vue";
 import Login from "../views/Login/Login.vue";
 import Applicant from "../views/Manage-user/Applicant.vue";
 import Biz from "../views/Manage-user/Biz.vue";
-import Post from "../views/ManageHire/Post.vue";
 import ManageHireApplicant from "../views/ManageHire/ManageHireApplicant.vue";
+import Post from "../views/ManageHire/Post.vue";
 import Mypage from "../views/Mypage/Mypage.vue";
 import Withdraw from "../views/Mypage/Withdraw.vue";
+import NotFound from "../views/NotFound.vue";
 
 const routes = [
   {
@@ -176,6 +177,11 @@ const routes = [
         ],
       },
     ],
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "notfound",
+    component: NotFound,
   },
 ];
 
