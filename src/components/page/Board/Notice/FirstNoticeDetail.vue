@@ -35,14 +35,14 @@
 </template>
 
 <script setup>
-import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
-import { useRoute, useRouter } from "vue-router";
+import { useQuery } from "@tanstack/vue-query";
 import axios from "axios";
-import { computed, watchEffect } from "vue";
+import { watchEffect } from "vue";
+import { useRoute } from "vue-router";
 import { useUserInfo } from "../../../../stores/userInfo";
-import { useNoticeDetailUpdateMutation } from "../../../hook/notice/useNoticeDetailUpdateMutation";
-import { useNoticeDetailInsertMutation } from "../../../hook/notice/useNoticeDetailInsertMutation";
 import { useNoticeDetailDeleteMutation } from "../../../hook/notice/useNoticeDetailDeleteMutation";
+import { useNoticeDetailInsertMutation } from "../../../hook/notice/useNoticeDetailInsertMutation";
+import { useNoticeDetailUpdateMutation } from "../../../hook/notice/useNoticeDetailUpdateMutation";
 
 const { params } = useRoute();
 const detailValue = ref({});
@@ -53,7 +53,9 @@ const fileData = ref("");
 const imageUrl = ref("");
 
 const searchDetail = async () => {
-  const result = await axios.post(`/api/board/noticeDetailBody.do`, { noticeSeq: params.idx });
+  const result = await axios.post(`/api/board/noticeDetailBody.do`, {
+    noticeSeq: params.idx,
+  });
 
   return result.data;
 };

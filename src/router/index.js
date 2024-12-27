@@ -1,26 +1,34 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Login from "../views/Login/Login.vue";
-import DashBoard from "../views/DashBoard/DashBoard.vue";
-import Notice from "../views/Board/Notice.vue";
-import FirstNoticeDetail from "../components/page/Board/Notice/FirstNoticeDetail.vue";
-import Applicant from "../views/Manage-user/Applicant.vue";
-import Biz from "../views/Manage-user/Biz.vue";
+import QnaDetail from "../components/page/Board/Qna/QnaDetail.vue";
+import BizPostDetail from "../components/page/ManageHire/BizPost/BizPostDetail.vue";
+import BizPostInsert from "../components/page/ManageHire/BizPost/BizPostInsert.vue";
+import History from "../views/Apply/History.vue";
 import Resume from "../views/Apply/Resume.vue";
+import ResumePost from "../views/Apply/ResumePost.vue";
 import Faq from "../views/Board/Faq.vue";
+import Notice from "../views/Board/Notice.vue";
+import Qna from "../views/Board/Qna.vue";
 import CompanyEdit from "../views/Company/CompanyEdit.vue";
 import CompanyInfo from "../views/Company/CompanyInfo.vue";
+import DashBoard from "../views/DashBoard/DashBoard.vue";
+import Join from "../views/Join/JoinApplicant.vue";
+import Login from "../views/Login/Login.vue";
+import Applicant from "../views/Manage-user/Applicant.vue";
+import Biz from "../views/Manage-user/Biz.vue";
 import Post from "../views/ManageHire/Post.vue";
-import History from "../views/Apply/History.vue";
-import BizPostInsert from "../components/page/ManageHire/BizPost/BizPostInsert.vue";
-import BizPostDetail from "../components/page/ManageHire/BizPost/BizPostDetail.vue";
-import Qna from "../views/Board/Qna.vue";
-import QnaDetail from "../components/page/Board/Qna/QnaDetail.vue";
+import Mypage from "../views/Mypage/Mypage.vue";
+import Withdraw from "../views/Mypage/Withdraw.vue";
 
 const routes = [
   {
     path: "/",
     name: "login",
     component: Login,
+  },
+  {
+    path: "/join",
+    name: "join",
+    component: Join,
   },
   {
     path: "/vue",
@@ -97,6 +105,11 @@ const routes = [
             component: Resume,
           },
           {
+            path: "resume-new.do",
+            name: "resume-new",
+            component: ResumePost,
+          },
+          {
             path: "history.do",
             name: "history",
             component: History,
@@ -137,6 +150,22 @@ const routes = [
             path: "companyDetailPage.do",
             name: "companyDetailPage",
             component: CompanyInfo,
+          },
+        ],
+      },
+      {
+        path: "mypage",
+        name: "mypage",
+        children: [
+          {
+            path: "update.do",
+            name: "update",
+            component: Mypage,
+          },
+          {
+            path: "withdraw.do",
+            name: "withdraw",
+            component: Withdraw,
           },
         ],
       },

@@ -1,11 +1,7 @@
 <template>
-    <ApplicantModal
-        v-if="modalStateApplicant.modalState"
-        @postSuccess="searchList"
-        @modalClose="() => (loginId = 0)"
-        :loginId="loginId"
-    />
-    <div class="divManage-applicantList">
+    <ApplicantModal v-if="modalStateApplicant.modalState" @postSuccess="searchList" @modalClose="() => (loginId = 0)"
+        :loginId="loginId" />
+    <div class="applicantList">
         <table>
             <colgroup>
                 <col width="15%" />
@@ -34,18 +30,18 @@
                             <td>{{ applicant.name }}</td>
                             <td>{{ applicant.email }}</td>
                             <td>{{ applicant.regdate }}</td>
-                            <td><div class="button-box">
-                                <button @click="handlerModal(applicant.loginId)">수정</button>
-                            </div></td>
+                            <td>
+                                <div class="button-box">
+                                    <button @click="handlerModal(applicant.loginId)">수정</button>
+                                </div>
+                            </td>
                         </tr>
                     </template>
                 </template>
             </tbody>
         </table>
-        <Pagination 
-            :totalItems="applicantList?.applicantCnt || 0" 
-            :items-per-page="5" :max-pages-shown="5"
-            :onClick="applicantList" v-model="cPage" />
+        <Pagination :totalItems="applicantList?.applicantCnt || 0" :items-per-page="5" :max-pages-shown="5"
+            :onClick="searchList" v-model="cPage" />
     </div>
 
 </template>
@@ -55,8 +51,8 @@
 import axios from "axios";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
-import Pagination from "../../common/Pagination.vue";
 import { useModalStore } from "../../../stores/modalState";
+import Pagination from "../../common/Pagination.vue";
 
 const route = useRoute();
 const applicantList = ref();
@@ -65,16 +61,12 @@ const modalStateApplicant = useModalStore();
 const loginId = ref("");
 
 const searchList = async () => {
-    // const param = new URLSearchParams({
-    //     searchName: route.query.searchName || "",
-    //     currentPage: cPage.value,
-    //     pageSize: 5,
-    // });
     const data = {
         searchName: route.query.searchName || "",
         currentPage: (cPage.value).toString(),
         pageSize: (5).toString(),
     };
+
     console.log(data);
     await axios
         .post("/api/manage-user/applicantListBody.do", data)
@@ -89,16 +81,7 @@ const handlerModal = (id) => {
     modalStateApplicant.setModalState();
 };
 
-// const execDaumPostcode = () => {
-//     new daum.Postcode({
-//         oncomplete: function(data) {
-            
-
-//         }
-//     }).open();
-// }
-
-watch(route, searchList);
+watch(route, () => searchList());
 
 onMounted(() => {
     searchList();
@@ -136,32 +119,33 @@ table {
 }
 
 .button-box {
-  text-align: middle;
-  margin-top: 0px;
+    text-align: middle;
+    margin-top: 0px;
 }
+
 button {
-  background-color: #3bb2ea;
-  border: none;
-  color: white;
-  padding: 5px 5px;
-  text-align: right;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 1px 1px;
-  cursor: pointer;
-  border-radius: 12px;
-  box-shadow: 0 4px #999;
-  transition: 0.3s;
+    background-color: #3bb2ea;
+    border: none;
+    color: white;
+    padding: 5px 5px;
+    text-align: right;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 1px 1px;
+    cursor: pointer;
+    border-radius: 12px;
+    box-shadow: 0 4px #999;
+    transition: 0.3s;
 
-  &:hover {
-    background-color: #45a049;
-  }
+    &:hover {
+        background-color: #45a049;
+    }
 
-  &:active {
-    background-color: #3e8e41;
-    box-shadow: 0 2px #666;
-    transform: translateY(2px);
-  }
+    &:active {
+        background-color: #3e8e41;
+        box-shadow: 0 2px #666;
+        transform: translateY(2px);
+    }
 }
 </style>
