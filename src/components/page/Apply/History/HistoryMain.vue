@@ -22,7 +22,7 @@
                       <td>
                         <p>{{ list.bizName }}</p>
                         <p>{{ list.postTitle }}</p>
-                        <p @click="handlerResume">지원이력서</p>
+                        <p @click="handlerResume(list.resIdx)">지원이력서</p>
                       </td>
                       <td>
                         <p>{{ list.status }}</p>
@@ -47,6 +47,11 @@
       :onClick="searchList"
       v-model="cPage"
     />
+
+    <ResumePreview
+      v-if ="modalStore.modalState"
+      :idx = "selectedResumeIdx"
+      ></ResumePreview>
 </div>
 </template>
 
@@ -55,6 +60,8 @@ import { useRouter } from 'vue-router';
 import Pagination from '../../../common/Pagination.vue';
 import { useHistoryListQuery } from '../../../hook/history/useHistoryListQuery';
 import { inject } from 'vue';
+import ResumePreview from '../ResumeDetail/ResumePreview.vue';
+import { useModalStore } from "@/stores/modalState";
 
 const router = useRouter();
 const cPage = inject("cPage"); // Provide에서 받아온 현재 페이지 상태
@@ -62,12 +69,15 @@ const injectedValue = inject("provideValue");
 const { data: historyList, isLoading, refetch, isSuccess, isError }
   = useHistoryListQuery(injectedValue, cPage);
 
+const modalStore = useModalStore();
+const selectedResumeIdx = ref(null);
+
 const handlerResume = (param) => {
-  router.push({
-    name: "",
-    params: { idx: param },
-  });
-  }
+  selectedResumeIdx.value = param;
+  modalStore.setModalState(); //모달 열기
+
+}
+
 
 </script>
 
