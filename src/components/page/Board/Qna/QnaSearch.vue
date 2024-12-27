@@ -32,6 +32,10 @@ const handlerSearch = () => {
   router.push(queryString);
 };
 
+const handlerSearchKewordBtn = () => {
+  injectedSearchValue.value = { ...searchKey.value };
+};
+
 const handlerLogState = () => {
   injectedhRequestType.requestType = "my";
 };

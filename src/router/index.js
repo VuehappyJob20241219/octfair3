@@ -23,182 +23,174 @@ import Mypage from "../views/Mypage/Mypage.vue";
 import Withdraw from "../views/Mypage/Withdraw.vue";
 import NotFound from "../views/NotFound.vue";
 
-const routes = [
-  {
-    path: "/",
-    name: "login",
-    component: Login,
-  },
-  {
-    path: "/join",
-    name: "join",
-    component: Join,
-  },
-  {
-    path: "/vue",
-    name: "vue",
-    component: DashBoard,
-    children: [
-      {
-        path: "board",
-        name: "board",
-        children: [
-          {
-            path: "notice.do",
-            name: "notice",
-            component: Notice,
-          },
-          // qna 경로
-          {
-            path: "qna.do",
-            name: "qna",
-            component: Qna,
-          },
-          {
-            path: "qna.do/insert",
-            name: "qnaInsert",
-            component: QnaDetail,
-          },
-          {
-            path: "qna.do/:idx",
-            name: "qnaDetail",
-            component: QnaDetail,
-          },
-          // {
-          //   //단일 라우터
-          //   path: "notice.do/:idx",
-          //   name: "noticeDetail",
-          //   component: FirstNoticeDetail,
-          // },
-          // {
-          //   //단일 라우터
-          //   path: "notice.do/insert",
-          //   name: "noticeInsert",
-          //   component: FirstNoticeDetail,
-          // },
-          {
-            path: "faq.do",
-            name: "faq",
-            component: Faq,
-          },
+const routes = [{
+        path: "/",
+        name: "login",
+        component: Login,
+    },
+    {
+        path: "/join",
+        name: "join",
+        component: Join,
+    },
+    {
+        path: "/vue",
+        name: "vue",
+        component: DashBoard,
+        children: [{
+                path: "board",
+                name: "board",
+                children: [{
+                        path: "notice.do",
+                        name: "notice",
+                        component: Notice,
+                    },
+                    // qna 경로
+                    {
+                        path: "qna.do",
+                        name: "qna",
+                        component: Qna,
+                    },
+                    {
+                        path: "qna.do/insert",
+                        name: "qnaInsert",
+                        component: QnaDetail,
+                    },
+                    {
+                        path: "qna.do/:idx",
+                        name: "qnaDetail",
+                        component: QnaDetail,
+                    },
+                    // {
+                    //   //단일 라우터
+                    //   path: "notice.do/:idx",
+                    //   name: "noticeDetail",
+                    //   component: FirstNoticeDetail,
+                    // },
+                    // {
+                    //   //단일 라우터
+                    //   path: "notice.do/insert",
+                    //   name: "noticeInsert",
+                    //   component: FirstNoticeDetail,
+                    // },
+                    {
+                        path: "faq.do",
+                        name: "faq",
+                        component: Faq,
+                    },
+                ],
+            },
+            {
+                path: "manage-user",
+                name: "manage-user",
+                children: [{
+                        path: "applicant.do",
+                        name: "applicant",
+                        component: Applicant,
+                    },
+                    {
+                        path: "biz.do",
+                        name: "biz",
+                        component: Biz,
+                    },
+                ],
+            },
+            {
+                path: "apply",
+                name: "apply",
+                children: [{
+                        path: "resume.do",
+                        name: "resume",
+                        component: Resume,
+                    },
+                    {
+                        path: "resume-new.do",
+                        name: "resume-new",
+                        component: ResumePost,
+                    },
+                    {
+                        path: "history.do",
+                        name: "history",
+                        component: History,
+                    },
+                ],
+            },
+            {
+                path: "manage-hire",
+                name: "manage-hire",
+                children: [{
+                        path: "post.do",
+                        name: "post",
+                        component: Post,
+                    },
+                    {
+                        path: "bizPostInsert.do",
+                        name: "bizPostInsert",
+                        component: BizPostInsert,
+                    },
+                    {
+                        path: "bizPostDetail.do/:postIdx",
+                        name: "bizPostDetail",
+                        component: BizPostDetail,
+                    },
+                    {
+                        path: "applicant.do",
+                        name: "hireApplicant",
+                        component: ManageHireApplicant,
+                    },
+                ],
+            },
+            {
+                path: "company",
+                name: "company",
+                children: [{
+                        path: "companyUpdatePage.do",
+                        name: "companyUpdate",
+                        component: CompanyEdit,
+                    },
+                    {
+                        path: "companyDetailPage.do",
+                        name: "companyDetailPage",
+                        component: CompanyInfo,
+                    },
+                ],
+            },
+            {
+                path: "mypage",
+                name: "mypage",
+                children: [{
+                        path: "update.do",
+                        name: "update",
+                        component: Mypage,
+                    },
+                    {
+                        path: "withdraw.do",
+                        name: "withdraw",
+                        component: Withdraw,
+                    },
+                ],
+            },
         ],
-      },
-      {
-        path: "manage-user",
-        name: "manage-user",
-        children: [
-          {
-            path: "applicant.do",
-            name: "applicant",
-            component: Applicant,
-          },
-          {
-            path: "biz.do",
-            name: "biz",
-            component: Biz,
-          },
-        ],
-      },
-      {
-        path: "apply",
-        name: "apply",
-        children: [
-          {
-            path: "resume.do",
-            name: "resume",
-            component: Resume,
-          },
-          {
-            path: "resume-new.do",
-            name: "resume-new",
-            component: ResumePost,
-          },
-          {
-            path: "history.do",
-            name: "history",
-            component: History,
-          },
-        ],
-      },
-      {
-        path: "manage-hire",
-        name: "manage-hire",
-        children: [
-          {
-            path: "post.do",
-            name: "post",
-            component: Post,
-          },
-          {
-            path: "bizPostInsert.do",
-            name: "bizPostInsert",
-            component: BizPostInsert,
-          },
-          {
-            path: "bizPostDetail.do/:postIdx",
-            name: "bizPostDetail",
-            component: BizPostDetail,
-          },
-          {
-            path: "applicant.do",
-            name: "hireApplicant",
-            component: ManageHireApplicant,
-          },
-        ],
-      },
-      {
-        path: "company",
-        name: "company",
-        children: [
-          {
-            path: "companyUpdatePage.do",
-            name: "companyUpdate",
-            component: CompanyEdit,
-          },
-          {
-            path: "companyDetailPage.do",
-            name: "companyDetailPage",
-            component: CompanyInfo,
-          },
-        ],
-      },
-      {
-        path: "mypage",
-        name: "mypage",
-        children: [
-          {
-            path: "update.do",
-            name: "update",
-            component: Mypage,
-          },
-          {
-            path: "withdraw.do",
-            name: "withdraw",
-            component: Withdraw,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    path: "/:pathMatch(.*)*",
-    name: "notfound",
-    component: NotFound,
-  },
+    },
+    {
+        path: "/:pathMatch(.*)*",
+        name: "notfound",
+        component: NotFound,
+    },
 ];
 
 const router = createRouter({
-  history: createWebHistory("/"),
-  routes,
+    history: createWebHistory("/"),
+    routes,
 });
 
-router.beforeEach(async (to, from) => {
-  const userInfo = useUserInfo();
+router.beforeEach(async(to, from) => {
+    const userInfo = useUserInfo();
 
-  if (!userInfo.isAuthenticated && !(to.name == "login")) {
-    alert("로그인이 필요합니다.");
-    return { name: "login" };
-  }
+    if (!userInfo.isAuthenticated && !(to.name == "login")) {
+        alert("로그인이 필요합니다.");
+        return { name: "login" };
+    }
 });
 
 export default router;
