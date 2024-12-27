@@ -42,7 +42,7 @@
 
     <Pagination
       :totalItems="historyList?.historyCnt || 0"
-      :items-per-page="5"
+      :items-per-page="4"
       :max-pages-shown="5"
       :onClick="searchList"
       v-model="cPage"
@@ -53,14 +53,14 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import Pagination from '../../../common/Pagination.vue';
-import axios from 'axios';
+import { useHistoryListQuery } from '../../../hook/history/useHistoryListQuery';
 import { inject } from 'vue';
-import { useHistoryListSearchQuery } from '../../../hook/history/useHistoryListSearchQuery';
+
 const router = useRouter();
-const cPage = ref(1);
+const cPage = inject("cPage"); // Provide에서 받아온 현재 페이지 상태
 const injectedValue = inject("provideValue");
 const { data: historyList, isLoading, refetch, isSuccess, isError }
-  = useHistoryListSearchQuery( cPage)
+  = useHistoryListQuery(injectedValue, cPage);
 
 </script>
 
