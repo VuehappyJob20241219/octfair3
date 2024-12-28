@@ -57,6 +57,7 @@ declare module 'vue' {
     'ResumePreview copy': typeof import('./src/components/page/Apply/ResumeDetail/ResumePreview copy.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    VideoYoutube: typeof import('./src/components/layout/Youtube/VideoYoutube.vue')['default']
     WithdrawMain: typeof import('./src/components/page/Mypage/WithdrawMain.vue')['default']
     WithdrawModal: typeof import('./src/components/page/Mypage/WithdrawModal.vue')['default']
   }
