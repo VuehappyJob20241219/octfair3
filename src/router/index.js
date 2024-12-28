@@ -37,10 +37,18 @@ const routes = [{
         path: "/vue",
         name: "vue",
         component: DashBoard,
-        children: [{
+        children: [
+            {
+                path:"video",
+                name:"video",
+                component: Notice,
+            },
+            {
                 path: "board",
                 name: "board",
-                children: [{
+                children: [
+                    
+                    {
                         path: "notice.do",
                         name: "notice",
                         component: Notice,
