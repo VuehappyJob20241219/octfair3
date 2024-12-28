@@ -4,6 +4,8 @@
           <LeftManuBar></LeftManuBar>
       </li>
       <li class="content">
+        <butten>자료검색</butten> 
+        <butten>오늘의 매뉴</butten> 
         <Youtube v-if="isHomePage"/>
           <keep-alive><router-view></router-view></keep-alive>
       </li>
