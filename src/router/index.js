@@ -39,11 +39,6 @@ const routes = [{
         component: DashBoard,
         children: [
             {
-                path:"video",
-                name:"video",
-                component: Notice,
-            },
-            {
                 path: "board",
                 name: "board",
                 children: [

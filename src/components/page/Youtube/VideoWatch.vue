@@ -1,6 +1,6 @@
 <template>
-    <!-- :src="videoUrl.url+playUrl" -->
     <iframe
+        :src="videoUrl.url"
         allow="autoplay; encrypted-media" 
         allowfullscreen
     />
@@ -9,7 +9,6 @@
 
 <script setup>
 const videoUrl = inject("provideUrl");
-const playUrl = ref( "?start=12&autoplay=1&mute=0");
 
 </script>
 

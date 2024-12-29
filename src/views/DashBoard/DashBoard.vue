@@ -4,9 +4,7 @@
           <LeftManuBar></LeftManuBar>
       </li>
       <li class="content">
-        <butten>자료검색</butten> 
-        <butten>오늘의 매뉴</butten> 
-        <Youtube v-if="isHomePage"/>
+        <Youtube v-if="isHomePage"></Youtube>
           <keep-alive><router-view></router-view></keep-alive>
       </li>
   </ul>
@@ -21,8 +19,10 @@ import Youtube from "./Youtube.vue";
 // 현재 경로를 가져오기
 const route = useRoute();
 
+
 // '/vue' 경로일 때만 YouTube 비디오를 보이도록
 const isHomePage = computed(() => route.path === "/vue");
+
 </script>
 
 <style scoped>

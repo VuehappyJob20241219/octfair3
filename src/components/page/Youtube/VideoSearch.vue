@@ -1,5 +1,7 @@
 <template>
   <div class="search-box">
+    <button @click="btnHendler('search')">자료검색</button> 
+    <button @click="btnHendler('Lunch')">오늘의 매뉴</button> 
     <input v-model.lazy="keyword" />
     <button @click="handlerSearch">검색</button>
   </div>
@@ -8,12 +10,16 @@
 
 const keyword = ref("");
 const keywordValue = inject("provideValue");
+const stateValue = inject("stateValue");
 
 const handlerSearch = () => {
   keywordValue.keyword=keyword.value;
 };
 
-
+const btnHendler = (e) => {
+  console.log(e)
+  stateValue.state = e;
+}
 
 </script>
 
@@ -39,7 +45,7 @@ button {
   display: inline-block;
   border: none;
   color: white;
-  width: 70px;
+  width: 80px;
   padding-top: 8px;
   padding-bottom: 8px;
   font-size: 12px;

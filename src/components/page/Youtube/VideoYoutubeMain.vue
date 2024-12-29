@@ -19,7 +19,6 @@
 <script setup>
 import { ref, onMounted, inject, watchEffect } from "vue";
 import axios from "axios";
-import VideoWatch from "./VideoWatch.vue";
 
 const data = ref([]); // 동영상 데이터 저장
 const loading = ref(true); // 로딩 상태
@@ -33,16 +32,17 @@ const setActive = (newKeyword) => {
   fetchPopularVideos(newKeyword.keyword); // API 호출
 };
 
-// const handlerPlay = (videoId) => {
+const handlerPlay = (videoId) => {
 
-//   const url = `https://www.youtube.com/watch?v=${videoId}`;
-//   console.log(url)
-//   videoUrl.url =url
-// }
+  const url = `https://www.youtube.com/embed/${videoId}?start=12&autoplay=1&mute=0`;
+  console.log(url)
+  videoUrl.url =url
+}
 
 
 // API 요청 함수
 const fetchPopularVideos = async (finalKeyword) => {
+  console.log("여기탐?")
   const defaultKeyword = "개발자"; // 기본 검색어
   const keyword = finalKeyword || defaultKeyword; // 검색어가 없으면 기본값 사용
   try {
@@ -67,11 +67,10 @@ const fetchPopularVideos = async (finalKeyword) => {
       channelTitle: item.snippet.channelTitle,
     }));
     //디비에 임시로 저장 (완성후 삭제)
-    const dataPara={
-      data
-    }
-    console.log(dataPara);
-    const dbsave = await axios.get(디비url,dataPara)
+    // const dataPara={
+    //   data
+    // }
+    //const dbsave = await axios.get(디비url,dataPara)
     loading.value = false; // 로딩 완료
   } catch (error) {
     console.error("Error fetching videos:", error);
