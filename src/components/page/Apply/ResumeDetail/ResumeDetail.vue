@@ -444,7 +444,26 @@
         <div class="resumeDetail_body_guide">
           <p class="resumeDetail_body_guide_text">• 포트폴리오, 경력기술서 등 첨부파일이 있다면 등록해주세요.</p>
         </div>
-        <div>
+        <!-- 첨부파일 -->
+        <div v-if="basicinformation.fileName">
+          <div class="file-container">
+          <span class="file-link"  @click="ResumeFileDownload">{{basicinformation.fileName}}</span>
+          <button class="attach-delete" id="attach-delete" @click="deleteFile(basicinformation.resIdx)">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="50px"
+                viewBox="0 -960 960 960"
+                width="50px"
+                fill="#5f6368"
+              >
+                <path
+                  d="M312-144q-29.7 0-50.85-21.15Q240-186.3 240-216v-480h-48v-72h192v-48h192v48h192v72h-48v479.57Q720-186 698.85-165T648-144H312Zm336-552H312v480h336v-480ZM384-288h72v-336h-72v336Zm120 0h72v-336h-72v336ZM312-696v480-480Z"
+                />
+              </svg>
+            </button>
+        </div>
+      </div>
+        <div v-else>
           <input id="resumeAttach" type="file" @change="handlerFile"/>
           <div class="attach-container" v-if="fileData.name">
             <span class="attach-fileName"></span>
@@ -551,8 +570,9 @@ const handlerSaveBtn = async () => {
       alert("이력서가 등록되었습니다.");
       router.push({
       name: "MyResumes",
-      params: { idx: basicinformation.value.resIdx },
+      query: { resumeNum: basicinformation.value.resIdx }, // query로 전달
     });
+    MyResumes(parseInt(basicinformation.value.resIdx, 10));
     }
   });
 };
@@ -668,6 +688,38 @@ const deleteAttach = () => {
   fileData.value = {};
   document.getElementById("resumeAttach").value = ""; // 파일 입력 초기화
 };
+
+const ResumeFileDownload = () => {
+  let param = new URLSearchParams();
+  param.append("resIdx", basicinformation.value.resIdx);
+  const postAction = {
+    url: "/api/apply/resumeFileDownload.do",
+    method: "POST",
+    data: param,
+    responseType: "blob",
+  };
+  axios(postAction).then((res) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", basicinformation.value.fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  });
+};
+
+const deleteFile =async (idx)=> {
+console.log('파일 삭제 인덱스',idx)
+const param = {
+  resIdx: idx
+}
+await axios.post(ResumeAddTable.DeleteAttachFile, param).then((res)=>{
+  if(res.data.result ==='success'){
+    MyResumes(idx)
+  }
+})
+}
 
 onMounted(() => {
   const params = new URLSearchParams(window.location.search); // URL의 쿼리 파라미터 추출
@@ -851,8 +903,8 @@ table td {
 }
 
 .attach-delete {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   background: none;
   border: none;
   cursor: pointer;
@@ -864,4 +916,24 @@ table td {
   width: 100%;
   height: 100%;
 }
+.file-download {
+  cursor: pointer; /* 커서를 포인터로 변경 */
+}
+.file-container {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 이름과 삭제 버튼 사이 간격 */
+}
+
+.file-link {
+  cursor: pointer; /* 커서를 포인터로 변경 */
+  color: #36f; /* 파란색 글씨 */
+  transition: background-color 0.3s ease; /* 부드러운 배경색 변화 */
+}
+
+.file-link:hover {
+  background-color: rgba(54, 114, 255, 0.1); /* 호버 시 배경색 변화 */
+  text-decoration: underline; /* 호버 시 밑줄 효과 */
+}
+
 </style>

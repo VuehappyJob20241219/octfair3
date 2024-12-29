@@ -21,4 +21,5 @@ export const ResumeAddTable = {
   InsertCertification: "/api/apply/insertCertBody.do",
   ListCertification: "/api/apply/certListBody.do",
   DeleteCertification: "/api/apply/deleteCertBody.do",
+  DeleteAttachFile: "/api/apply/deleteAttachFile.do",
 };
