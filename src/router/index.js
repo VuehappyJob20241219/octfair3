@@ -108,6 +108,11 @@ const routes = [{
                         name: "resume-new",
                         component: ResumePost,
                     },
+                     {
+                      path: "resume-detail.do?resumeNum=:idx",
+                      name: "MyResumes",
+                      component: ResumePost,
+                    },
                     {
                         path: "history.do",
                         name: "history",

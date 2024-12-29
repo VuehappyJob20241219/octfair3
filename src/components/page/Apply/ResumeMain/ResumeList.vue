@@ -20,7 +20,7 @@
           <template v-if="resumeInfoArray.resumeCnt > 0">
             <tr v-for="resume in resumeInfoArray.resumeList" :key="resume.resIdx">
               <td class="resumeTitle">
-                {{ resume.resTitle }}
+               <span @click="resumeIdxAdd(resume.resIdx)"> {{ resume.resTitle }}</span>
                 <div class="resumeFile" @click="fileDownload(resume.resIdx)">
                   <label> {{ resume.fileName }}</label>
                 </div>
@@ -136,6 +136,13 @@ const fileDownload = (idx) => {
 const newResumeCreate = () => {
   router.push({ name: "resume-new" });
 };
+
+const resumeIdxAdd =(resumeidx)=>{
+  router.push({
+    name: "MyResumes",
+    params: { idx: resumeidx },
+  });
+}
 
 onMounted(() => {
   resumeSearchList();

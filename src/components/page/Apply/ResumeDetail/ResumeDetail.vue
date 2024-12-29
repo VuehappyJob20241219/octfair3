@@ -50,8 +50,9 @@
           <button type="button" class="showTableBtn" id="career" @click="showAddCareer">+ 추가</button>
           <ul>
             <li class="list" id="careerList">
-              <!-- 작업 중 -->
-              <ResumeCareerView :idx="basicinformation.resIdx" />
+              <ResumeCareerView 
+              ref="resumeCareerView"
+      :idx="basicinformation.resIdx" />
             </li>
             <li id="careerInputTable" class="inputTable" v-show="careerAddState">
               <table class="col">
@@ -170,7 +171,9 @@
           <button type="button" class="showTableBtn" id="education" @click="showAddEdu">+ 추가</button>
           <ul>
             <li class="list" id="educationList">
-              <!-- 조회값 여기에 추가 -->
+               <ResumeEducationView 
+                ref="resumeEducationView"
+               :idx="basicinformation.resIdx"/>
             </li>
             <li id="educationInputTable" class="inputTable" v-show="eduAddState">
               <table class="col">
@@ -260,7 +263,7 @@
         </div>
       </div>
       <div class="resumeDetail_body">
-        <div class="resumeDetail_body_haeder">스킬</div>
+        <div class="resumeDetail_body_haeder">보유기술 및 능력</div>
         <div class="resumeDetail_body_guide">
           <p class="resumeDetail_body_guide_text">
             • 개발 스택, 디자인 툴, 마케팅 툴 등 가지고 있는 직무와 관련된 스킬을 추가해보세요. <br />
@@ -272,10 +275,12 @@
         </div>
         <ul>
           <li class="list" id="skillList">
-            <!-- 조회값 여기에 추가 -->
+             <ResumeSkillView 
+             ref="resumeSkillView"
+             :idx="basicinformation.resIdx"/>
           </li>
           <li id="skillInputTable" class="inputTable" v-show="skillAddState">
-            <table class="row">
+            <table class="col">
               <colgroup>
                 <col width="30%" />
                 <col width="70%" />
@@ -283,21 +288,21 @@
               <tbody>
                 <tr>
                   <td>
-                    <label style="margin: 10px">스킬명:</label>
+                    <label style="margin: 10px">보유기술 및 능력:</label>
                     <input
                       type="text"
                       id="skillName"
                       style="padding: 5px; width: 80%; margin: 10px"
-                      placeholder="스킬명"
+                      placeholder="보유기술 및 능력"
                       v-model="skillInfo.skillName"
                     />
                   </td>
                   <td>
-                    <label style="margin: 20px"> 스킬상세기재:</label>
+                    <label style="margin: 20px"> 상세내용:</label>
                     <textarea
                       style="height: auto; margin: 10px; width: 95%"
                       id="skillDetail"
-                      placeholder="  스킬 상세 기재"
+                      placeholder=" 상세내용"
                       v-model="skillInfo.skillDetail"
                     ></textarea>
                   </td>
@@ -311,7 +316,7 @@
           </li>
         </ul>
       </div>
-      <!-- 자격증 작업 중 -->
+      <!-- 자격증  -->
       <div class="resumeDetail_body">
         <div class="resumeDetail_body_haeder">자격증 및 외국어</div>
         <div class="resumeDetail_body_guide">
@@ -325,7 +330,9 @@
         </div>
         <ul>
           <li class="list" id="certificationList">
-            <!-- 조회값 여기에 추가 -->
+             <ResumeCertificationView 
+              ref="resumeCertificationView"
+             :idx="basicinformation.resIdx"/>
           </li>
           <li id="certificationInputTable" class="inputTable" v-show="certAddState">
             <table class="col">
@@ -438,7 +445,7 @@
           <p class="resumeDetail_body_guide_text">• 포트폴리오, 경력기술서 등 첨부파일이 있다면 등록해주세요.</p>
         </div>
         <div>
-          <input id="resumeAttach" type="file" @change="handlerFile" :name="fileInputName" />
+          <input id="resumeAttach" type="file" @change="handlerFile"/>
           <div class="attach-container" v-if="fileData.name">
             <span class="attach-fileName"></span>
             <button class="attach-delete" id="attach-delete" @click="deleteAttach">
@@ -469,9 +476,14 @@
 <script setup>
 import { useModalStore } from "@/stores/modalState";
 import axios from "axios";
-import { Resume } from "../../../../api/axiosApi/resumeApi";
+import { Resume , ResumeAddTable } from "../../../../api/axiosApi/resumeApi";
 import { useUserInfo } from "../../../../stores/userInfo";
 import ResumeCareerView from "../ResumeList/ResumeCareerView.vue";
+import ResumeEducationView from "../ResumeList/ResumeEducationView.vue";
+import ResumeSkillView from "../ResumeList/ResumeSkillView.vue";
+import ResumeCertificationView from "../ResumeList/ResumeCertificationView.vue";
+import { useRouter } from "vue-router";
+
 
 const basicinformation = ref();
 const userInfo = useUserInfo();
@@ -487,8 +499,13 @@ const careerInfo = ref({});
 const educationInfo = ref({});
 const skillInfo = ref({});
 const certificationInfo = ref({});
+const router = useRouter();
+const resumeCareerView = ref(null);
+const resumeEducationView = ref(null);
+const resumeSkillView = ref(null);
+const resumeCertificationView = ref(null);
 
-const basicInfo = async () => {
+const basicInfoFn = async () => {
   const param = {
     loginId: user.loginId,
     userNm: user.userNm,
@@ -498,6 +515,15 @@ const basicInfo = async () => {
     basicinformation.value = res.data.result;
   });
 };
+
+const MyResumes =async (idx) =>{
+  const param = {
+    resIdx: idx
+  };
+  await axios.post(Resume.MyResume, param).then((res) => {
+    basicinformation.value = res.data.result;
+  });
+}
 
 const handlerSaveBtn = async () => {
   const text = {
@@ -523,6 +549,10 @@ const handlerSaveBtn = async () => {
   await axios.post(Resume.SaveResume, formData).then((res) => {
     if (res.data.result === "success") {
       alert("이력서가 등록되었습니다.");
+      router.push({
+      name: "MyResumes",
+      params: { idx: basicinformation.value.resIdx },
+    });
     }
   });
 };
@@ -574,11 +604,11 @@ const addCareer = async () => {
     reason: careerInfo.value.reason,
     crrDesc: careerInfo.value.crr_desc,
   };
-  await axios.post(Resume.InsertCareer, text).then((res) => {
+  await axios.post(ResumeAddTable.InsertCareer, text).then((res) => {
     if (res.data.result === "success") {
       careerAddState.value = !careerAddState.value;
       careerInfo.value = {};
-      alert("경력 추가 완");
+      resumeCareerView.value.careerDetail();
     }
   });
 };
@@ -593,11 +623,11 @@ const addEdu = async () => {
     grdDate: educationInfo.value.grdDate,
     grdStatus: educationInfo.value.grdStatus,
   };
-  await axios.post(Resume.InsertEducation, text).then((res) => {
+  await axios.post(ResumeAddTable.InsertEducation, text).then((res) => {
     if (res.data.result === "success") {
       eduAddState.value = !eduAddState.value;
       educationInfo.value = {};
-      alert("학력 추가 완");
+      resumeEducationView.value.eduDetail();
     }
   });
 };
@@ -608,11 +638,11 @@ const addSkill = async () => {
     skillName: skillInfo.value.skillName,
     skillDetail: skillInfo.value.skillDetail,
   };
-  await axios.post(Resume.InsertSkill, text).then((res) => {
+  await axios.post(ResumeAddTable.InsertSkill, text).then((res) => {
     if (res.data.result === "success") {
       skillAddState.value = !skillAddState.value;
       skillInfo.value = {};
-      alert("스킬 추가 완");
+      resumeSkillView.value.skillDetail();
     }
   });
 };
@@ -625,11 +655,11 @@ const addCert = async () => {
     issuer: certificationInfo.value.issuer,
     acqDate: certificationInfo.value.acqDate,
   };
-  await axios.post(Resume.InsertCertification, text).then((res) => {
+  await axios.post(ResumeAddTable.InsertCertification, text).then((res) => {
     if (res.data.result === "success") {
       certAddState.value = !certAddState.value;
       certificationInfo.value = {};
-      alert("자격 추가 완");
+      resumeCertificationView.value.certDetail();
     }
   });
 };
@@ -640,8 +670,16 @@ const deleteAttach = () => {
 };
 
 onMounted(() => {
-  basicInfo();
+  const params = new URLSearchParams(window.location.search); // URL의 쿼리 파라미터 추출
+  const resumeNum = params.get('resumeNum'); // 'resumeNum' 값 가져오기
+
+  if (resumeNum) {
+    MyResumes(parseInt(resumeNum, 10)); // 숫자로 변환 후 함수 호출
+  } else {
+    basicInfoFn(); // 'resumeNum' 없을 때 기본 함수 호출
+  }
 });
+
 </script>
 
 <style lang="scss" scoped>
@@ -655,6 +693,7 @@ onMounted(() => {
 
 .resumeDetail_body_haeder {
   margin-top: 15px;
+  font-weight: bold;
   padding: 5px;
   font-size: 20px;
   border-bottom: 0.5px solid black;
