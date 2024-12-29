@@ -137,10 +137,18 @@ const newResumeCreate = () => {
   router.push({ name: "resume-new" });
 };
 
+// 공부용
+// const resumeIdxAdd =(resumeidx)=>{
+//   router.push({
+//     name: "MyResumes",
+//     params: { idx: resumeidx },
+//   });
+// }
+
 const resumeIdxAdd =(resumeidx)=>{
   router.push({
     name: "MyResumes",
-    params: { idx: resumeidx },
+    query: { resumeNum: resumeidx },
   });
 }
 
