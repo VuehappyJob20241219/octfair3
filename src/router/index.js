@@ -170,6 +170,31 @@ const routes = [{
                     },
                 ],
             },
+            {
+                path: "manage-post",
+                name: "manage-post",
+                children: [{
+                        path: "post.do",
+                        name: "managePost",
+                        component: BizPost,
+                    },
+                    {
+                        path: "approval.do",
+                        name: "managePostApproval",
+                        component: BizPost,
+                    },
+                    {
+                        path: ":postIdx/:bizIdx",
+                        name: "managePostApprovalDetail",
+                        component: BizPostDetail,
+                    },
+                    {
+                        path: ":postIdx/:bizIdx",
+                        name: "managePostDetail",
+                        component: BizPostDetail,
+                    },
+                ],
+            },
         ],
     },
     {

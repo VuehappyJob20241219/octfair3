@@ -1,7 +1,9 @@
 <template>
   <div>
     <div>
-      <button @click="handleNewInsert">공고 등록</button>
+      <template v-if="userInfo.user.userType === 'B'">
+        <button @click="handleNewInsert">공고 등록</button>
+      </template>
     </div>
     <table>
       <colgroup>
@@ -62,20 +64,32 @@ import Pagination from "../../../common/Pagination.vue";
 import { useQuery } from "@tanstack/vue-query";
 import { useQueryClient } from "@tanstack/vue-query";
 import router from "../../../../router";
-const queryClient = useQueryClient();
+import { useUserInfo } from "../../../../stores/userInfo";
+import { useRoute } from "vue-router";
 
+const userInfo = useUserInfo();
+const queryClient = useQueryClient();
 // const HirePost = ref();
 const cPage = ref(1);
+const route = useRoute();
+console.log(route.name);
 
 const searchList = async () => {
-  const param = new URLSearchParams({
-    currentPage: cPage.value,
-    pageSize: 5,
-  });
-  const result = await axios.post(
+  const param = {
+    currentPage: (cPage.value).toString(),
+    pageSize: (5).toString(),
+  };
+  if(userInfo.user.userType === 'B'){
+    const result = await axios.post(
     "/api/manage-hire/managehireListBody.do",
     param,
-  );
+    );
+  }else if(userInfo.user.userType === 'M'){
+    const result = await axios.post(
+    "/api/manage-post/readPostListBody.do",
+    param,
+    );  
+  }
   return result.data;
 };
 
@@ -88,7 +102,7 @@ const {
 } = useQuery({
   queryKey: ["HirePost", cPage],
   queryFn: searchList,
-  staleTime: 1000 * 60,
+  // staleTime: 1000 * 60,
 });
 
 const handleNewInsert = () => {
