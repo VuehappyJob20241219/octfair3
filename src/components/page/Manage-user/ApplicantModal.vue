@@ -57,7 +57,7 @@
                             </tr>
                             <tr>
                                 <th>우편변호</th>
-                                <td><input type="text" v-model="applicantDetailValue.zipCode" /></td>
+                                <td><input type="text" v-model="applicantDetailValue.zipCode" readonly /></td>
                                 <button @click="openDaumPostcode">우편번호 찾기</button>
                             </tr>
                             <tr>
@@ -125,6 +125,11 @@ const openDaumPostcode = () => { //카카오API사용
 
 
 const updateApplicantDetail = async () => {
+    if (!checkForm()) {
+        var value;
+        value = ball;
+    }
+
     const param = new URLSearchParams({
         ...applicantDetailValue.value
     });
@@ -159,15 +164,15 @@ const checkForm = () => {
         alert("이름을 입력하세요.");
         return false;
     }
-    if (!inputSex) {
+    if (inputSex.length < 1) {
         alert("성별을 선택해주세요.");
         return false;
     }
-    if (!inputBirthday) {
+    if (inputBirthday.length < 1) {
         alert("생일을 입력해주세요.");
         return false;
     }
-    if (!inputPhone) {
+    if (inputPhone.length < 1) {
         alert("전화번호를 선택해주세요.");
         return false;
     }
@@ -175,7 +180,7 @@ const checkForm = () => {
         alert("전화번호 형식을 확인해주세요.");
         return false;
     }
-    if (!inputEmail) {
+    if (inputEmail.length < 1) {
         alert("이메일을 선택해주세요.");
         return false;
     }
@@ -183,11 +188,11 @@ const checkForm = () => {
         alert("이메일 형식을 확인해주세요.");
         return false;
     }
-    if (!inputRegDate) {
+    if (inputRegDate.length < 1) {
         alert("가입일자를 입력해주세요.");
         return false;
     }
-    if (!inputZipCode) {
+    if (inputZipCode.length < 1) {
         alert("우편번호(주소)를 입력해주세요.");
         return false;
     }
