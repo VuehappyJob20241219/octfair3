@@ -22,6 +22,7 @@ import BizPost from "../views/ManageHire/BizPost.vue";
 import Mypage from "../views/Mypage/Mypage.vue";
 import Withdraw from "../views/Mypage/Withdraw.vue";
 import NotFound from "../views/NotFound.vue";
+import Scrap from "../views/Scrap/Scrap.vue";
 
 const routes = [{
         path: "/",
@@ -179,6 +180,18 @@ const routes = [{
                         name: "withdraw",
                         component: Withdraw,
                     },
+                ],
+            },
+            {
+                path: "jobs",
+                name: "jobs",
+                children: [{
+
+                        path: "scrap.do",
+                        name: "scrap",
+                        component: Scrap,
+                    },
+                
                 ],
             },
         ],
