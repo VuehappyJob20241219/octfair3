@@ -86,6 +86,7 @@ import { watchEffect } from 'vue';
 import { useModalStore } from "../../../stores/modalState";
 
 const props = defineProps(["loginId"]);
+const emit = defineEmits(["modalClose"]);
 
 const applicantDetailValue = ref({});
 const modalStateApplicant = useModalStore();
@@ -126,25 +127,26 @@ const openDaumPostcode = () => { //카카오API사용
 
 const updateApplicantDetail = async () => {
     if (!checkForm()) {
-        var value;
-        value = ball;
+        return;
     }
 
     const param = new URLSearchParams({
         ...applicantDetailValue.value
     });
 
-    await axios.post("/api/manage-user/applicantInfoUpdate.do", param);
+    return await axios.post("/api/manage-user/applicantInfoUpdate.do", param);
 }
 
 const { mutate: handlerUpdateBtn }
     = useMutation({
         mutationFn: updateApplicantDetail,
-        onSuccess: () => {
-            console.log("onSuccess");
-            handlerModal();
-        },
-        mutationKey: ['applicantUpdate']
+        mutationKey: ['applicantUpdate'],
+        onSettled: (data, error) => {
+            if (data) {
+                handlerModal();
+                console.log("모달닫는다!!")
+            }
+        }
     })
 
 const checkForm = () => {
@@ -230,7 +232,7 @@ watchEffect(() => {
 
 
 onUnmounted(() => {
-    injectedValue.value = "";
+    emit("modalClose");
 });
 
 </script>
