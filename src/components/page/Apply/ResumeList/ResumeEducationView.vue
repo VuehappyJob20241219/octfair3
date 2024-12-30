@@ -1,48 +1,48 @@
 <template>
-  <template v-if="careerProperties.career.length > 0">
+  <template v-if="educationProperties.edu.length > 0">
     <div class="contents">
       <table class="career-table">
         <colgroup>
           <col width="20%" />
-          <col width="30%" />
-          <col width="13%" />
-          <col width="12%" />
           <col width="15%" />
+          <col width="25%" />
+          <col width="20%" />
+          <col width="10%" />
           <col width="10%" />
         </colgroup>
         <thead>
           <tr>
             <th>기간</th>
-            <th>회사명</th>
-            <th>부서명</th>
-            <th>직급/직책</th>
-            <th>퇴사사유</th>
+            <th>학력</th>
+            <th>학교명</th>
+            <th>전공</th>
+            <th>구분</th>
             <th>삭제</th>
           </tr>
         </thead>
-        <tbody v-for="(career, index) in careerProperties.career" :key="index">
+        <tbody v-for="(edu, index) in educationProperties.edu" :key="index">
           <tr>
-            <td rowspan="2">
+            <td >
               <span>
-                {{ career.startDate.substr(0, 7) }}
+                {{ edu.admDate.substr(0, 7) }}
                 ~
-                {{ career.endDate.substr(0, 7) }}
+                {{ edu.grdDate.substr(0, 7) }}
               </span>
             </td>
             <td>
-              <span>{{ career.company }}</span>
+              <span>{{ edu.eduLevel }}</span>
             </td>
             <td>
-              <span>{{ career.dept }}</span>
+              <span>{{ edu.schoolName }}</span>
             </td>
             <td>
-              <span>{{ career.position }}</span>
+              <span>{{ edu.major }}</span>
             </td>
             <td>
-              <span>{{ career.reason }}</span>
+              <span>{{ edu.grdStatus }}</span>
             </td>
             <td rowspan="2">
-              <button @click="DeleteCareer(career.crrIdx)">
+              <button @click="DeleteEdu(edu.eduIdx)">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="20px"
@@ -57,16 +57,13 @@
               </button>
             </td>
           </tr>
-          <tr>
-            <td colspan="4" style="white-space: pre-wrap; text-align: left">{{ career.crrDesc }}</td>
-          </tr>
         </tbody>
       </table>
     </div>
   </template>
   <template v-else>
     <div class="contents">
-      <p class="res-comment">경력사항을 추가할 수 있습니다.</p>
+      <p class="res-comment">학력사항을 추가할 수 있습니다.</p>
     </div>
   </template>
 </template>
@@ -74,38 +71,36 @@
 <script setup>
 import axios from "axios";
 import { ResumeAddTable } from "../../../../api/axiosApi/resumeApi";
-import { onMounted, defineExpose } from "vue";
 
-const careerProperties = ref({
-  career: [],
+const educationProperties = ref({
+  edu: [],
 });
 const props = defineProps(["idx"]);
-const emit = defineEmits(["postSuccess"])
 
-const careerDetail = async () => {
-  await axios.post(ResumeAddTable.ListCareer, { resIdx: props.idx }).then((res) => {
-    careerProperties.value = res.data;
+const eduDetail = async () => {
+  await axios.post(ResumeAddTable.ListEducation, { resIdx: props.idx }).then((res) => {
+    educationProperties.value = res.data;
   });
 };
 
-const DeleteCareer = async (idx) => {
+const DeleteEdu = async (idx) => {
   const param = {
     resIdx: props.idx,
-    crrIdx: idx,
+    eduIdx: idx,
   };
-  await axios.post(ResumeAddTable.DeleteCareer, param).then((res) => {
+  await axios.post(ResumeAddTable.DeleteEducation, param).then((res) => {
     if (res.data.result === "success") {
-      careerDetail();
+      eduDetail();
     }
   });
 };
 
 defineExpose({
-  careerDetail,
+  eduDetail,
 });
 
 onMounted(() => {
-  careerDetail();
+  eduDetail();
 });
 </script>
 
