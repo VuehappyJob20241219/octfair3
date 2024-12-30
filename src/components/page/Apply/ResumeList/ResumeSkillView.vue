@@ -1,48 +1,32 @@
 <template>
-  <template v-if="careerProperties.career.length > 0">
+  <template v-if="skillProperties.skill.length > 0">
     <div class="contents">
       <table class="career-table">
         <colgroup>
-          <col width="20%" />
           <col width="30%" />
-          <col width="13%" />
-          <col width="12%" />
-          <col width="15%" />
+          <col width="60%" />
           <col width="10%" />
         </colgroup>
         <thead>
           <tr>
-            <th>기간</th>
-            <th>회사명</th>
-            <th>부서명</th>
-            <th>직급/직책</th>
-            <th>퇴사사유</th>
+            <th>보유기술 및 능력</th>
+            <th>상세내용</th>
             <th>삭제</th>
           </tr>
         </thead>
-        <tbody v-for="(career, index) in careerProperties.career" :key="index">
+        <tbody v-for="(skill, index) in skillProperties.skill" :key="index">
           <tr>
-            <td rowspan="2">
+            <td >
               <span>
-                {{ career.startDate.substr(0, 7) }}
-                ~
-                {{ career.endDate.substr(0, 7) }}
+                {{ skill.skillName }}
               </span>
             </td>
             <td>
-              <span>{{ career.company }}</span>
+              <span>{{ skill.skillDetail }}</span>
             </td>
-            <td>
-              <span>{{ career.dept }}</span>
-            </td>
-            <td>
-              <span>{{ career.position }}</span>
-            </td>
-            <td>
-              <span>{{ career.reason }}</span>
-            </td>
+          
             <td rowspan="2">
-              <button @click="DeleteCareer(career.crrIdx)">
+              <button @click="DeleteSkill(skill.skillIdx)">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="20px"
@@ -57,55 +41,50 @@
               </button>
             </td>
           </tr>
-          <tr>
-            <td colspan="4" style="white-space: pre-wrap; text-align: left">{{ career.crrDesc }}</td>
-          </tr>
         </tbody>
       </table>
     </div>
   </template>
   <template v-else>
     <div class="contents">
-      <p class="res-comment">경력사항을 추가할 수 있습니다.</p>
+      <p class="res-comment">보유기술 및 능력을 추가할 수 있습니다.</p>
     </div>
   </template>
 </template>
 
 <script setup>
 import axios from "axios";
-import { onMounted } from "vue";
 import { ResumeAddTable } from "../../../../api/axiosApi/resumeApi";
 
-const careerProperties = ref({
-  career: [],
+const skillProperties = ref({
+  skill: [],
 });
 const props = defineProps(["idx"]);
-const emit = defineEmits(["postSuccess"]);
 
-const careerDetail = async () => {
-  await axios.post(ResumeAddTable.ListCareer, { resIdx: props.idx }).then((res) => {
-    careerProperties.value = res.data;
+const skillDetail = async () => {
+  await axios.post(ResumeAddTable.ListSkill, { resIdx: props.idx }).then((res) => {
+    skillProperties.value = res.data;
   });
 };
 
-const DeleteCareer = async (idx) => {
+const DeleteSkill = async (idx) => {
   const param = {
     resIdx: props.idx,
-    crrIdx: idx,
+    skillIdx: idx,
   };
-  await axios.post(ResumeAddTable.DeleteCareer, param).then((res) => {
+  await axios.post(ResumeAddTable.DeleteSkill, param).then((res) => {
     if (res.data.result === "success") {
-      careerDetail();
+      skillDetail();
     }
   });
 };
 
 defineExpose({
-  careerDetail,
+  skillDetail,
 });
 
 onMounted(() => {
-  careerDetail();
+  skillDetail();
 });
 </script>
 
@@ -159,7 +138,7 @@ onMounted(() => {
   .res-comment {
     font-size: 16px;
     text-align: center;
-    color: #88cfec;
+    color: #88CFEC;
   }
 
   &.empty-state {

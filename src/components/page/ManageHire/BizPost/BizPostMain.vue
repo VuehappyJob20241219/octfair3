@@ -1,7 +1,9 @@
 <template>
   <div>
     <div>
-      <button @click="handleNewInsert">공고 등록</button>
+      <template v-if="userInfo.user.userType === 'B'">
+        <button @click="handleNewInsert">공고 등록</button>
+      </template>
     </div>
     <table>
       <colgroup>
@@ -26,7 +28,8 @@
       <tbody>
         <template v-if="isLoading">...로딩중</template>
         <template v-if="isSuccess">
-          <template v-if="HirePost.MCount > 0">
+          <template v-if="HirePost.MCount > 0 || HirePost.pendingList.length > 0 || HirePost.approvalList.length > 0">
+            <template v-if="userInfo.user.userType === 'B'">
             <tr v-for="MList in HirePost.MList" v-bind:key="MList.postIdx">
               <td @click="handlerDetail(MList.postIdx)">{{ MList.title }}</td>
               <td>{{ MList.expRequired }}</td>
@@ -35,6 +38,27 @@
               <td>{{ MList.appStatus }}</td>
               <td>{{ MList.workLocation }}</td>
             </tr>
+            </template>
+            <template v-if="userInfo.user.userType === 'M'">
+            <tr v-for="MList in HirePost.pendingList" v-bind:key="MList.postIdx">
+              <td @click="handlerDetail(MList.postIdx)">{{ MList.title }}</td>
+              <td>{{ MList.expRequired }}</td>
+              <td>{{ MList.postDate }}</td>
+              <td>{{ MList.endDate }}</td>
+              <td>{{ MList.appStatus }}</td>
+              <td>{{ MList.workLocation }}</td>
+            </tr>
+            </template>
+            <template v-if="userInfo.user.userType === 'A'">
+            <tr v-for="MList in HirePost.approvalList" v-bind:key="MList.postIdx">
+              <td @click="handlerDetail(MList.postIdx)">{{ MList.title }}</td>
+              <td>{{ MList.expRequired }}</td>
+              <td>{{ MList.postDate }}</td>
+              <td>{{ MList.endDate }}</td>
+              <td>{{ MList.appStatus }}</td>
+              <td>{{ MList.workLocation }}</td>
+            </tr>
+            </template>
           </template>
           <template v-else>
             <tr>
@@ -62,21 +86,41 @@ import Pagination from "../../../common/Pagination.vue";
 import { useQuery } from "@tanstack/vue-query";
 import { useQueryClient } from "@tanstack/vue-query";
 import router from "../../../../router";
-const queryClient = useQueryClient();
+import { useUserInfo } from "../../../../stores/userInfo";
+import { useRoute } from "vue-router";
 
+const userInfo = useUserInfo();
+const queryClient = useQueryClient();
 // const HirePost = ref();
 const cPage = ref(1);
+const route = useRoute();
+console.log(route.name);
 
 const searchList = async () => {
-  const param = new URLSearchParams({
-    currentPage: cPage.value,
-    pageSize: 5,
-  });
-  const result = await axios.post(
+  const param = {
+    currentPage: (cPage.value).toString(),
+    pageSize: (5).toString(),
+  };
+  if(userInfo.user.userType === 'B'){
+    const result = await axios.post(
     "/api/manage-hire/managehireListBody.do",
     param,
-  );
-  return result.data;
+    );
+    return result.data;
+  }else if(userInfo.user.userType === 'M'){
+    const result = await axios.post(
+    "/api/manage-post/readPostListBody.do",
+    param,
+    );  
+    return result.data;
+  }else{
+    const result = await axios.post(
+    "/api/manage-post/readPostListBody.do",
+    param,
+    );  
+    return result.data;
+  }
+  
 };
 
 const {
@@ -88,7 +132,7 @@ const {
 } = useQuery({
   queryKey: ["HirePost", cPage],
   queryFn: searchList,
-  staleTime: 1000 * 60,
+  // staleTime: 1000 * 60,
 });
 
 const handleNewInsert = () => {
