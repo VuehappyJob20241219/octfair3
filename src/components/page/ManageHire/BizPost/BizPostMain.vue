@@ -28,7 +28,8 @@
       <tbody>
         <template v-if="isLoading">...로딩중</template>
         <template v-if="isSuccess">
-          <template v-if="HirePost.MCount > 0">
+          <template v-if="HirePost.MCount > 0 || HirePost.pendingList.length > 0 || HirePost.approvalList.length > 0">
+            <template v-if="userInfo.user.userType === 'B'">
             <tr v-for="MList in HirePost.MList" v-bind:key="MList.postIdx">
               <td @click="handlerDetail(MList.postIdx)">{{ MList.title }}</td>
               <td>{{ MList.expRequired }}</td>
@@ -37,6 +38,27 @@
               <td>{{ MList.appStatus }}</td>
               <td>{{ MList.workLocation }}</td>
             </tr>
+            </template>
+            <template v-if="userInfo.user.userType === 'M'">
+            <tr v-for="MList in HirePost.pendingList" v-bind:key="MList.postIdx">
+              <td @click="handlerDetail(MList.postIdx)">{{ MList.title }}</td>
+              <td>{{ MList.expRequired }}</td>
+              <td>{{ MList.postDate }}</td>
+              <td>{{ MList.endDate }}</td>
+              <td>{{ MList.appStatus }}</td>
+              <td>{{ MList.workLocation }}</td>
+            </tr>
+            </template>
+            <template v-if="userInfo.user.userType === 'A'">
+            <tr v-for="MList in HirePost.approvalList" v-bind:key="MList.postIdx">
+              <td @click="handlerDetail(MList.postIdx)">{{ MList.title }}</td>
+              <td>{{ MList.expRequired }}</td>
+              <td>{{ MList.postDate }}</td>
+              <td>{{ MList.endDate }}</td>
+              <td>{{ MList.appStatus }}</td>
+              <td>{{ MList.workLocation }}</td>
+            </tr>
+            </template>
           </template>
           <template v-else>
             <tr>
@@ -84,13 +106,21 @@ const searchList = async () => {
     "/api/manage-hire/managehireListBody.do",
     param,
     );
+    return result.data;
   }else if(userInfo.user.userType === 'M'){
     const result = await axios.post(
     "/api/manage-post/readPostListBody.do",
     param,
     );  
+    return result.data;
+  }else{
+    const result = await axios.post(
+    "/api/manage-post/readPostListBody.do",
+    param,
+    );  
+    return result.data;
   }
-  return result.data;
+  
 };
 
 const {
