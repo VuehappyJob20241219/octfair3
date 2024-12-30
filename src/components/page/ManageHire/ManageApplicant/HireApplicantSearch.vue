@@ -1,8 +1,13 @@
 <template>
   <div class="search-box">
-    <span>공고제목</span>
     <select v-model.lazy="postIdx">
       <option v-for="post in postList" v-bind:key="post.postIdx">{{ post.title }}</option>
+    </select>
+
+    <select v-if="postIdx != 0">
+      <option>서류심사</option>
+      <option>인적성</option>
+      <option>면접</option>
     </select>
     <!-- <select v-for="process in processList.process" :key="process.processIdx">
       <option>{{ process.processName }}</option>
@@ -15,17 +20,23 @@ import { useUserInfo } from "../../../../stores/userInfo";
 const postList = ref();
 const userInfo = useUserInfo();
 const keyword = ref("");
+const postIdx = ref(0);
 
-const handlerSearch = async () => {
+const handlerSearchPostName = async () => {
   await axios.post("/api/manage-hire/applicantJson.do", { loginId: userInfo.user.loginId }).then((res) => {
     postList.value = res.data.MDetail;
+    // if (postIdx) {
+    //   procList.value = res.data.
+    // }
   });
 };
 
-// watch(route, searchMenu);
+watchEffect((postIdx) => {
+  handlerSearchPostName;
+});
 
 onMounted(() => {
-  handlerSearch();
+  handlerSearchPostName();
 });
 </script>
 
