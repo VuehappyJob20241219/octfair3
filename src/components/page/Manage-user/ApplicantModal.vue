@@ -22,7 +22,7 @@
                                 <td><button @click="pwReset">초기화</button></td>
                             </tr>
                             <tr>
-                                <th>이름</th>
+                                <th>이름<span style="color: red;">*</span></th>
                                 <td><input type="text" v-model="applicantDetailValue.name" /></td>
                             </tr>
                             <tr>
@@ -33,19 +33,19 @@
                                     </select></td>
                             </tr>
                             <tr>
-                                <th>생년월일</th>
+                                <th>생년월일<span style="color: red;">*</span></th>
                                 <td><input type="date" v-model="applicantDetailValue.birthday" /></td>
                             </tr>
                             <tr>
-                                <th>전화번호</th>
+                                <th>전화번호<span style="color: red;">*</span></th>
                                 <td><input type="text" v-model="applicantDetailValue.phone" /></td>
                             </tr>
                             <tr>
-                                <th>이메일</th>
+                                <th>이메일<span style="color: red;">*</span></th>
                                 <td><input type="email" v-model="applicantDetailValue.email" /></td>
                             </tr>
                             <tr>
-                                <th>가입일자</th>
+                                <th>가입일자<span style="color: red;">*</span></th>
                                 <td><input type="date" v-model="applicantDetailValue.regdate" /></td>
                             </tr>
                             <tr>
@@ -56,13 +56,13 @@
                                     </select></td>
                             </tr>
                             <tr>
-                                <th>우편변호</th>
+                                <th>우편변호<span style="color: red;">*</span></th>
                                 <td><input type="text" v-model="applicantDetailValue.zipCode" readonly /></td>
                                 <button @click="openDaumPostcode">우편번호 찾기</button>
                             </tr>
                             <tr>
                                 <th>주소</th>
-                                <td><input type="text" v-model="applicantDetailValue.address" /></td>
+                                <td><input type="text" v-model="applicantDetailValue.address" readonly /></td>
                             </tr>
                             <tr>
                                 <th>상세주소</th>
@@ -163,10 +163,6 @@ const checkForm = () => {
         alert("이름을 입력하세요.");
         return false;
     }
-    if (!inputSex) {
-        alert("성별을 선택해주세요.");
-        return false;
-    }
     if (!inputBirthday) {
         alert("생일을 입력해주세요.");
         return false;
@@ -192,7 +188,7 @@ const checkForm = () => {
         return false;
     }
     if (!inputZipCode) {
-        alert("우편번호(주소)를 입력해주세요.");
+        alert("우편번호를 입력해주세요.");
         return false;
     }
     if (!ZipCodeRules.test(inputZipCode)) {
@@ -269,7 +265,7 @@ label.title {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
     position: relative;
     // max-width: 60%;
-    width: 500px;
+    width: 550px;
     max-height: 90%;
     /* 모달 높이를 화면에 맞게 제한 */
     overflow-y: auto;
@@ -286,7 +282,7 @@ input[type="tel"] {
     border-radius: 4px;
     border: 1px solid #ccc;
     // font-size: 13px;
-    width: 200px;
+    width: 250px;
 }
 
 select {
