@@ -129,6 +129,11 @@ const routes = [{
                       component: BizPostInsert,
                   },
                   {
+                    path: "bizPostInsert.do/:postIdx",
+                    name: "bizPostModify",
+                    component: BizPostInsert,
+                },
+                  {
                       path: "bizPostDetail.do/:postIdx",
                       name: "bizPostDetail",
                       component: BizPostDetail,
