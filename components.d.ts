@@ -48,6 +48,7 @@ declare module 'vue' {
     QnaPassword: typeof import('./src/components/page/Board/Qna/QnaPassword.vue')['default']
     QnaSearch: typeof import('./src/components/page/Board/Qna/QnaSearch.vue')['default']
     ResumeCareerView: typeof import('./src/components/page/Apply/ResumeList/ResumeCareerView.vue')['default']
+    ResumeCertificationView: typeof import('./src/components/page/Apply/ResumeList/ResumeCertificationView.vue')['default']
     ResumeDetail: typeof import('./src/components/page/Apply/ResumeDetail/ResumeDetail.vue')['default']
     ResumeEducationView: typeof import('./src/components/page/Apply/ResumeList/ResumeEducationView.vue')['default']
     ResumeList: typeof import('./src/components/page/Apply/ResumeMain/ResumeList.vue')['default']
