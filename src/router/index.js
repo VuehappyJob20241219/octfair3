@@ -113,6 +113,17 @@ const routes = [
             name: "resume-new",
             component: ResumePost,
           },
+          //  {
+          //   path: "resume-detail.do?resumeNum=:idx",
+          //   name: "MyResumes",
+          //   component: ResumePost,
+          // },
+          {
+            path: "resume-detail.do",
+            name: "MyResumes",
+            component: ResumePost,
+            props: (route) => ({ resumeNum: route.query.resumeNum }), // 쿼리 파라미터 전달
+          },
           {
             path: "history.do",
             name: "history",
@@ -132,6 +143,11 @@ const routes = [
           {
             path: "bizPostInsert.do",
             name: "bizPostInsert",
+            component: BizPostInsert,
+          },
+          {
+            path: "bizPostInsert.do/:postIdx",
+            name: "bizPostModify",
             component: BizPostInsert,
           },
           {
@@ -175,6 +191,48 @@ const routes = [
             path: "withdraw.do",
             name: "withdraw",
             component: Withdraw,
+          },
+        ],
+      },
+      {
+        path: "manage-post",
+        name: "manage-post",
+        children: [
+          {
+            path: "post.do",
+            name: "managePost",
+            component: BizPost,
+          },
+          {
+            path: "approval.do",
+            name: "managePostApproval",
+            component: BizPost,
+          },
+          {
+            path: ":postIdx/:bizIdx",
+            name: "managePostApprovalDetail",
+            component: BizPostDetail,
+          },
+          {
+            path: ":postIdx/:bizIdx",
+            name: "managePostDetail",
+            component: BizPostDetail,
+          },
+        ],
+      },
+      {
+        path: "jobs",
+        name: "jobs",
+        children: [
+          {
+            path: "posts.do",
+            name: "jobsPosts",
+            component: BizPost,
+          },
+          {
+            path: "scrap.do",
+            name: "postScrap",
+            component: BizPost,
           },
         ],
       },
