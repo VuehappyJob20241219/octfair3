@@ -50,7 +50,8 @@
           <button type="button" class="showTableBtn" id="career" @click="showAddCareer">+ 추가</button>
           <ul>
             <li class="list" id="careerList">
-              <!-- 조회값 여기에 추가 -->
+              <!-- 작업 중 -->
+              <ResumeCareerView :idx="basicinformation.resIdx" />
             </li>
             <li id="careerInputTable" class="inputTable" v-show="careerAddState">
               <table class="col">
@@ -470,6 +471,7 @@ import { useModalStore } from "@/stores/modalState";
 import axios from "axios";
 import { Resume } from "../../../../api/axiosApi/resumeApi";
 import { useUserInfo } from "../../../../stores/userInfo";
+import ResumeCareerView from "../ResumeList/ResumeCareerView.vue";
 
 const basicinformation = ref();
 const userInfo = useUserInfo();
@@ -518,7 +520,6 @@ const handlerSaveBtn = async () => {
       type: "application/json",
     })
   );
-  console.log("formData", formData);
   await axios.post(Resume.SaveResume, formData).then((res) => {
     if (res.data.result === "success") {
       alert("이력서가 등록되었습니다.");
@@ -536,7 +537,6 @@ const handlerFile = (e) => {
 };
 
 const handerResumePreview = (idx) => {
-  console.log("글번호", idx);
   ResumePreviewModalState.setModalState();
   resumePreviewIdx.value = idx;
 };
@@ -728,13 +728,13 @@ textarea {
 }
 
 .btnType.gray.list {
- width: 20%;
+  width: 20%;
 }
 
 .btnType.blue {
   text-align: center;
   margin: 5px;
-  background-color: #36ADE4; /* 파란색 버튼 */
+  background-color: #36ade4; /* 파란색 버튼 */
 }
 
 .btnType.blue.button {
@@ -825,5 +825,4 @@ table td {
   width: 100%;
   height: 100%;
 }
-
 </style>
