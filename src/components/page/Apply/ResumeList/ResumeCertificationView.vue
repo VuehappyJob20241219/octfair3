@@ -1,48 +1,41 @@
 <template>
-  <template v-if="careerProperties.career.length > 0">
+  <template v-if="certificationProperties.cert.length > 0">
     <div class="contents">
       <table class="career-table">
         <colgroup>
-          <col width="20%" />
           <col width="30%" />
-          <col width="13%" />
-          <col width="12%" />
           <col width="15%" />
+          <col width="25%" />
+          <col width="20%" />
           <col width="10%" />
         </colgroup>
         <thead>
           <tr>
-            <th>기간</th>
-            <th>회사명</th>
-            <th>부서명</th>
-            <th>직급/직책</th>
-            <th>퇴사사유</th>
+            <th>자격증명</th>
+            <th>등급</th>
+            <th>발행처</th>
+            <th>취득일자</th>
             <th>삭제</th>
           </tr>
         </thead>
-        <tbody v-for="(career, index) in careerProperties.career" :key="index">
+        <tbody v-for="(cert, index) in certificationProperties.cert" :key="index">
           <tr>
-            <td rowspan="2">
+            <td >
               <span>
-                {{ career.startDate.substr(0, 7) }}
-                ~
-                {{ career.endDate.substr(0, 7) }}
+                {{ cert.certName }}
               </span>
             </td>
             <td>
-              <span>{{ career.company }}</span>
+              <span>{{ cert.grade }}</span>
             </td>
             <td>
-              <span>{{ career.dept }}</span>
+              <span>{{ cert.issuer }}</span>
             </td>
             <td>
-              <span>{{ career.position }}</span>
-            </td>
-            <td>
-              <span>{{ career.reason }}</span>
+              <span>{{ cert.acqDate.substr(0, 7) }}</span>
             </td>
             <td rowspan="2">
-              <button @click="DeleteCareer(career.crrIdx)">
+              <button @click="DeleteCert(cert.certIdx)">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="20px"
@@ -57,16 +50,13 @@
               </button>
             </td>
           </tr>
-          <tr>
-            <td colspan="4" style="white-space: pre-wrap; text-align: left">{{ career.crrDesc }}</td>
-          </tr>
         </tbody>
       </table>
     </div>
   </template>
   <template v-else>
     <div class="contents">
-      <p class="res-comment">경력사항을 추가할 수 있습니다.</p>
+      <p class="res-comment">취득한 자격증을 추가할 수 있습니다.</p>
     </div>
   </template>
 </template>
@@ -74,38 +64,36 @@
 <script setup>
 import axios from "axios";
 import { ResumeAddTable } from "../../../../api/axiosApi/resumeApi";
-import { onMounted, defineExpose } from "vue";
 
-const careerProperties = ref({
-  career: [],
+const certificationProperties = ref({
+  cert: [],
 });
 const props = defineProps(["idx"]);
-const emit = defineEmits(["postSuccess"])
 
-const careerDetail = async () => {
-  await axios.post(ResumeAddTable.ListCareer, { resIdx: props.idx }).then((res) => {
-    careerProperties.value = res.data;
+const certDetail = async () => {
+  await axios.post(ResumeAddTable.ListCertification, { resIdx: props.idx }).then((res) => {
+    certificationProperties.value = res.data;
   });
 };
 
-const DeleteCareer = async (idx) => {
+const DeleteCert = async (idx) => {
   const param = {
     resIdx: props.idx,
-    crrIdx: idx,
+    certIdx: idx,
   };
-  await axios.post(ResumeAddTable.DeleteCareer, param).then((res) => {
+  await axios.post(ResumeAddTable.DeleteCertification, param).then((res) => {
     if (res.data.result === "success") {
-      careerDetail();
+      certDetail();
     }
   });
 };
 
 defineExpose({
-  careerDetail,
+  certDetail,
 });
 
 onMounted(() => {
-  careerDetail();
+  certDetail();
 });
 </script>
 
