@@ -1,6 +1,5 @@
 <template>
-    <ApplicantModal v-if="modalStateApplicant.modalState" @postSuccess="searchList" @modalClose="() => (loginId = 0)"
-        :loginId="loginId" />
+    <ApplicantModal v-if="modalStateApplicant.modalState" :loginId="loginId" />
     <div class="applicantList">
         <table>
             <colgroup>
@@ -50,14 +49,10 @@
 <script setup>
 import { useQuery } from '@tanstack/vue-query';
 import axios from "axios";
-import { useRoute } from "vue-router";
 import { useModalStore } from "../../../stores/modalState";
-
 import Pagination from "../../common/Pagination.vue";
 
-const route = useRoute();
-const router = useRouter();
-// const applicantList = ref();
+
 const cPage = ref(1);
 const modalStateApplicant = useModalStore();
 const loginId = ref("");
@@ -74,7 +69,6 @@ const searchList = async () => {
 
     return result.data;
 };
-
 
 const {
     data: applicantList,

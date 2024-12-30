@@ -80,29 +80,16 @@
 
 
 <script setup>
-import { useQuery } from '@tanstack/vue-query';
+import { useMutation, useQuery } from '@tanstack/vue-query';
 import axios from "axios";
 import { watchEffect } from 'vue';
 import { useModalStore } from "../../../stores/modalState";
 
-const emit = defineEmits(["postSuccess", "modalClose"]);
 const props = defineProps(["loginId"]);
 
-// const applicantDetail = ref({});
 const applicantDetailValue = ref({});
 const modalStateApplicant = useModalStore();
 const injectedValue = inject('provideValue');
-
-// const searchDetail = () => {
-//     const param = new URLSearchParams({
-//         loginId: props.loginId
-//     });
-
-//     axios.post('/api/manage-user/applicantManageDetail.do', param)
-//         .then((res) => {
-//             applicantDetail.value = res.data.detail;
-//         });
-// };
 
 const searchDetail = async () => {
     const param = new URLSearchParams({
@@ -136,24 +123,24 @@ const openDaumPostcode = () => { //카카오API사용
     }).open();
 }
 
-const handlerUpdateBtn = () => {
-    //유효성 검사
-    if (!checkForm()) {
-        console.log("수정에 실패하였습니다.");
-        return;
-    }
 
+const updateApplicantDetail = async () => {
     const param = new URLSearchParams({
         ...applicantDetailValue.value
     });
 
-    axios.post("/api/manage-user/applicantInfoUpdate.do", param).then((res) => {
-        if (res.data.result === 'success') {
-            handlerModal();
-            emit('postSuccess');
-        };
-    })
+    await axios.post("/api/manage-user/applicantInfoUpdate.do", param);
 }
+
+const { mutate: handlerUpdateBtn }
+    = useMutation({
+        mutationFn: updateApplicantDetail,
+        onSuccess: () => {
+            console.log("onSuccess");
+            handlerModal();
+        },
+        mutationKey: ['applicantUpdate']
+    })
 
 const checkForm = () => {
     let inputName = applicantDetailValue.value.name;
@@ -236,12 +223,9 @@ watchEffect(() => {
     }
 })
 
-// onMounted(() => {
-//     props.loginId && searchDetail();
-// });
 
 onUnmounted(() => {
-    emit("modalClose");
+    injectedValue.value = "";
 });
 
 </script>
