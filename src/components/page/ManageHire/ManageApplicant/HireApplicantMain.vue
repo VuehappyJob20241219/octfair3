@@ -6,7 +6,7 @@
       @modalClose="() => (noticeIdx = 0)"
       :idx="noticeIdx"
     /> -->
-    현재 페이지: {{ cPage }} 총 개수: {{ ApplicantList?.ApplicantCount }}
+    <!-- 현재 페이지: {{ cPage }} 총 개수: {{ ApplicantList?.ApplicantCount }} -->
     <table>
       <colgroup>
         <col width="10%" />
@@ -53,15 +53,18 @@
 
 <script setup>
 import axios from "axios";
+import { useUserInfo } from "../../../../stores/userInfo";
+
+const userInfo = useUserInfo();
 
 const searchList = () => {
   const param = new URLSearchParams({});
-  axios.post("/api/manage-hire/applicantListBody.do").then((res) => {
-    ApplicantList.value = res.data.value;
+  axios.post("/api/manage-hire/applicantListBody.do", { loginId: userInfo.user.loginId, postIdx: 22 }).then((res) => {
+    ApplicantList.value = res.data.list;
   });
 };
 
-onMount(() => {
+onMounted(() => {
   searchList();
 });
 </script>

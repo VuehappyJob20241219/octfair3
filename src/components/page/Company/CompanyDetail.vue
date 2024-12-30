@@ -80,7 +80,7 @@ const router = useRouter();
 const { params } = useRoute();
 
 const searchDetail = () => {
-  axios.post("/api/company/companyUpdatePageRe.do", { loginId: userInfo.user.loginId }).then((res) => {
+  axios.post("/api/company/companyDetailPageRe.do/" + params.postIdx + "/" + params.bizIdx, params).then((res) => {
     companyDetail.value = res.data.detail || {};
     if (
       companyDetail.value.fileExt === "jpg" ||

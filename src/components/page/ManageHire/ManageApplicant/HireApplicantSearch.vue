@@ -1,30 +1,31 @@
 <template>
   <div class="search-box">
     <span>공고제목</span>
-    <select v-for="post in postList.post" :key="post.postIdx">
-      <option>{{ post.title }}</option>
+    <select v-model.lazy="postIdx">
+      <option v-for="post in postList" v-bind:key="post.postIdx">{{ post.title }}</option>
     </select>
-    <select v-for="process in processList.process" :key="process.processIdx">
+    <!-- <select v-for="process in processList.process" :key="process.processIdx">
       <option>{{ process.processName }}</option>
-    </select>
+    </select> -->
   </div>
 </template>
 <script setup>
 import axios from "axios";
+import { useUserInfo } from "../../../../stores/userInfo";
 const postList = ref();
+const userInfo = useUserInfo();
+const keyword = ref("");
 
-const searchMenu = () => {
-  axios.post("/api/manage-hire/applicant.do").then((res) => {
-    // console.log("콘솔:" + res.data);
-    postList.value = res.data;
-    // processList.value = res.data;
+const handlerSearch = async () => {
+  await axios.post("/api/manage-hire/applicantJson.do", { loginId: userInfo.user.loginId }).then((res) => {
+    postList.value = res.data.MDetail;
   });
 };
 
 // watch(route, searchMenu);
 
-onBeforeMount(() => {
-  searchMenu();
+onMounted(() => {
+  handlerSearch();
 });
 </script>
 
