@@ -1,7 +1,8 @@
 <template>
     <teleport to="body">
         <div class="backdrop">
-            <div class="container">
+            <div v-if="isLoading">로딩중 입니다</div>
+            <div v-if="isSuccess" class="container">
                 <label class="title">회사 정보</label>
                 <div class="content">
                     <table>
@@ -14,43 +15,43 @@
                         <tbody>
                             <tr>
                                 <th>사업자번호</th>
-                                <td><input type="text" v-model="bizManageDetail.bizIdx" readonly /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizIdx" readonly /></td>
                             </tr>
                             <tr>
                                 <th>사업자명</th>
-                                <td><input type="text" v-model="bizManageDetail.bizName" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizName" /></td>
                             </tr>
                             <tr>
                                 <th>대표자</th>
-                                <td><input type="text" v-model="bizManageDetail.bizCeoName" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizCeoName" /></td>
                             </tr>
                             <tr>
                                 <th>사원수</th>
-                                <td><input type="text" v-model="bizManageDetail.bizEmpCount" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizEmpCount" /></td>
                             </tr>
                             <tr>
                                 <th>매출액</th>
-                                <td><input type="text" v-model="bizManageDetail.bizRevenue" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizRevenue" /></td>
                             </tr>
                             <tr>
                                 <th>연락처</th>
-                                <td><input type="text" v-model="bizManageDetail.bizContact" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizContact" /></td>
                             </tr>
                             <tr>
                                 <th>사업자주소</th>
-                                <td><input type="text" v-model="bizManageDetail.bizAddr" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizAddr" /></td>
                             </tr>
                             <tr>
                                 <th>홈페이지주소</th>
-                                <td><input type="text" v-model="bizManageDetail.bizWebUrl" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizWebUrl" /></td>
                             </tr>
                             <tr>
                                 <th>설립일</th>
-                                <td><input type="date" v-model="bizManageDetail.bizFoundDate" /></td>
+                                <td><input type="date" v-model="bizDetailValue.bizFoundDate" /></td>
                             </tr>
                             <tr>
                                 <th>회사소개</th>
-                                <td><input type="text" v-model="bizManageDetail.bizIntro" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizIntro" /></td>
                             </tr>
 
                         </tbody>
@@ -65,26 +66,36 @@
 
 
 <script setup>
+import { useQuery } from '@tanstack/vue-query';
 import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
 
 const emit = defineEmits(["postSuccess", "modalClose"]);
 const props = defineProps(["bizIdx"]);
 
-const bizManageDetail = ref({});
+const bizDetailValue = ref({});
 const modalStateBiz = useModalStore();
 
-
-const searchDetail = () => {
+const searchDetail = async () => {
     const param = new URLSearchParams({
         bizIdx: props.bizIdx
     });
 
-    axios.post('/api/manage-user/bizManageDetail.do', param)
-        .then((res) => {
-            bizManageDetail.value = res.data.detail;
-        });
-};
+    const result = await axios.post('/api/manage-user/bizManageDetail.do', param)
+
+    return result.data;
+}
+
+const {
+    data: bizDetail,
+    isLoading,
+    isSuccess,
+    isError
+} = useQuery({
+    queryKey: ['bizDetail'],
+    queryFn: searchDetail,
+    enabled: !!props.bizIdx
+})
 
 const handlerSaveBtn = () => {
     //유효성 검사
@@ -106,8 +117,8 @@ const handlerSaveBtn = () => {
 }
 
 const checkForm = () => {
-    let inputBizName = bizManageDetail.value.bizName;
-    let inputContact = bizManageDetail.value.bizContact;
+    let inputBizName = bizDetailValue.value.bizName;
+    let inputContact = bizDetailValue.value.bizContact;
 
     let phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
 
@@ -133,9 +144,11 @@ const handlerModal = () => {
     modalStateBiz.setModalState();
 };
 
-onMounted(() => {
-    props.bizIdx && searchDetail();
-});
+watchEffect(() => {
+    if (isSuccess.value) {
+        bizDetailValue.value = toRaw(bizDetail.value.detail);
+    }
+})
 
 onUnmounted(() => {
     emit("modalClose");
