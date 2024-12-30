@@ -9,4 +9,6 @@ export const Resume = {
   InsertEducation: "/api/apply/insertEduBody.do",
   InsertSkill: "/api/apply/insertSkillBody.do",
   InsertCertification: "/api/apply/insertCertBody.do",
+  ListCareer: "/api/apply/careerListBody.do",
+  DeleteCareer: "/api/apply/deleteCareerBody.do",
 };
