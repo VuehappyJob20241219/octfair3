@@ -200,6 +200,21 @@ const routes = [{
                     },
                 ],
             },
+            {
+                path: "jobs",
+                name: "jobs",
+                children: [{
+                        path: "posts.do",
+                        name: "jobsPosts",
+                        component: BizPost,
+                    },
+                    {
+                        path: "scrap.do",
+                        name: "postScrap",
+                        component: BizPost,
+                    },                    
+                ],
+            },
         ],
     },
     {
