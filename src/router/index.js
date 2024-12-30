@@ -156,7 +156,7 @@ const routes = [
             component: CompanyEdit,
           },
           {
-            path: "companyDetailPage.do",
+            path: "companyDetailPage.do/:postIdx/:bizIdx",
             name: "companyDetailPage",
             component: CompanyInfo,
           },

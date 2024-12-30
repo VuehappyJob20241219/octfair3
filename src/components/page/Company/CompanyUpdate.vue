@@ -23,8 +23,9 @@
           <input type="text" v-model="companyDetail.bizContact" @input="companyPhoneNumChange" />
         </td>
         <th>사업자 주소</th>
-        <td>
+        <td class="address">
           <input type="text" v-model="companyDetail.bizAddr" />
+          <button @click="openDaumPostcode">찾기</button>
         </td>
       </tr>
       <tr>
@@ -208,10 +209,18 @@ const companyPhoneNumChange = (e) => {
   return phone;
 };
 
+const openDaumPostcode = () => {
+  new daum.Postcode({
+    oncomplete: (data) => {
+      companyDetail.value.bizAddr = data.roadAddress;
+    },
+  }).open();
+};
+
 const handlerValidation = () => {
   const today = new Date();
   const addressPattern = /^[\w\s가-힣]+$/;
-  const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}([\/?%&=.#]*)?$/;
+  const urlPattern = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(:\d+)?(\/[^\s]*)?$/;
 
   const inputs = companyDetail.value;
 
@@ -384,6 +393,21 @@ img {
     background-color: #3e8e41;
     box-shadow: 0 2px #666;
     transform: translateY(2px);
+  }
+}
+
+.address {
+  display: inline;
+  text-align: left;
+  input {
+    width: 70%;
+  }
+  button {
+    width: 20%;
+    height: 30px;
+    font-size: 10px;
+    float: right;
+    text-align: center;
   }
 }
 </style>
