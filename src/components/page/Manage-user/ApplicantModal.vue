@@ -1,7 +1,8 @@
 <template>
     <teleport to="body">
         <div class="backdrop">
-            <div class="container">
+            <!-- <div v-if="isLoading">로딩중 입니다</div> -->
+            <div v-if="isSuccess" class="container">
                 <label class="title">개인 회원 정보</label>
                 <div class="content">
                     <table>
@@ -14,7 +15,7 @@
                         <tbody>
                             <tr>
                                 <th>아이디</th>
-                                <td><input type="text" v-model="applicantDetail.loginId" readonly /></td>
+                                <td><input type="text" v-model="applicantDetailValue.loginId" readonly /></td>
                             </tr>
                             <tr>
                                 <th>비밀번호</th>
@@ -22,50 +23,50 @@
                             </tr>
                             <tr>
                                 <th>이름</th>
-                                <td><input type="text" v-model="applicantDetail.name" /></td>
+                                <td><input type="text" v-model="applicantDetailValue.name" /></td>
                             </tr>
                             <tr>
                                 <th>성별</th>
-                                <td><select v-model="applicantDetail.sex">
+                                <td><select v-model="applicantDetailValue.sex">
                                         <option value="1">남자</option>
                                         <option value="2">여자</option>
                                     </select></td>
                             </tr>
                             <tr>
                                 <th>생년월일</th>
-                                <td><input type="date" v-model="applicantDetail.birthday" /></td>
+                                <td><input type="date" v-model="applicantDetailValue.birthday" /></td>
                             </tr>
                             <tr>
                                 <th>전화번호</th>
-                                <td><input type="text" v-model="applicantDetail.phone" /></td>
+                                <td><input type="text" v-model="applicantDetailValue.phone" /></td>
                             </tr>
                             <tr>
                                 <th>이메일</th>
-                                <td><input type="email" v-model="applicantDetail.email" /></td>
+                                <td><input type="email" v-model="applicantDetailValue.email" /></td>
                             </tr>
                             <tr>
                                 <th>가입일자</th>
-                                <td><input type="date" v-model="applicantDetail.regdate" /></td>
+                                <td><input type="date" v-model="applicantDetailValue.regdate" /></td>
                             </tr>
                             <tr>
                                 <th>활성화</th>
-                                <td><select v-model="applicantDetail.statusYn">
+                                <td><select v-model="applicantDetailValue.statusYn">
                                         <option value="1">활성</option>
                                         <option value="2">비활성</option>
                                     </select></td>
                             </tr>
                             <tr>
                                 <th>우편변호</th>
-                                <td><input type="text" v-model="applicantDetail.zipCode" /></td>
+                                <td><input type="text" v-model="applicantDetailValue.zipCode" /></td>
                                 <button @click="openDaumPostcode">우편번호 찾기</button>
                             </tr>
                             <tr>
                                 <th>주소</th>
-                                <td><input type="text" v-model="applicantDetail.address" /></td>
+                                <td><input type="text" v-model="applicantDetailValue.address" /></td>
                             </tr>
                             <tr>
                                 <th>상세주소</th>
-                                <td><input type="text" v-model="applicantDetail.detailAddress" /></td>
+                                <td><input type="text" v-model="applicantDetailValue.detailAddress" /></td>
                             </tr>
                         </tbody>
                     </table>
@@ -79,31 +80,58 @@
 
 
 <script setup>
+import { useQuery } from '@tanstack/vue-query';
 import axios from "axios";
+import { watchEffect } from 'vue';
 import { useModalStore } from "../../../stores/modalState";
 
 const emit = defineEmits(["postSuccess", "modalClose"]);
 const props = defineProps(["loginId"]);
 
-const applicantDetail = ref({});
+// const applicantDetail = ref({});
+const applicantDetailValue = ref({});
 const modalStateApplicant = useModalStore();
+const injectedValue = inject('provideValue');
 
-const searchDetail = () => {
+// const searchDetail = () => {
+//     const param = new URLSearchParams({
+//         loginId: props.loginId
+//     });
+
+//     axios.post('/api/manage-user/applicantManageDetail.do', param)
+//         .then((res) => {
+//             applicantDetail.value = res.data.detail;
+//         });
+// };
+
+const searchDetail = async () => {
     const param = new URLSearchParams({
         loginId: props.loginId
     });
 
-    axios.post('/api/manage-user/applicantManageDetail.do', param)
-        .then((res) => {
-            applicantDetail.value = res.data.detail;
-        });
+    const result = await axios.post('/api/manage-user/applicantManageDetail.do', param)
+
+    return result.data;
 };
+
+const {
+    data: applicantDetail,
+    isLoading,
+    isSuccess,
+    isLoadingError,
+    isError
+} = useQuery({
+    queryKey: ['applicantDetail'],
+    queryFn: searchDetail,
+    enabled: !!props.loginId
+})
+
 
 const openDaumPostcode = () => { //카카오API사용
     new daum.Postcode({
         oncomplete: (data) => {
-            applicantDetail.value.zipCode = data.zonecode;
-            applicantDetail.value.address = data.roadAddress;
+            applicantDetailValue.value.zipCode = data.zonecode;
+            applicantDetailValue.value.address = data.roadAddress;
         },
     }).open();
 }
@@ -116,7 +144,7 @@ const handlerUpdateBtn = () => {
     }
 
     const param = new URLSearchParams({
-        ...applicantDetail.value
+        ...applicantDetailValue.value
     });
 
     axios.post("/api/manage-user/applicantInfoUpdate.do", param).then((res) => {
@@ -128,13 +156,13 @@ const handlerUpdateBtn = () => {
 }
 
 const checkForm = () => {
-    let inputName = applicantDetail.value.name;
-    let inputSex = applicantDetail.value.sex;
-    let inputBirthday = applicantDetail.value.birthday;
-    let inputPhone = applicantDetail.value.phone;
-    let inputEmail = applicantDetail.value.email;
-    let inputRegDate = applicantDetail.value.regdate;
-    let inputZipCode = applicantDetail.value.zipCode;
+    let inputName = applicantDetailValue.value.name;
+    let inputSex = applicantDetailValue.value.sex;
+    let inputBirthday = applicantDetailValue.value.birthday;
+    let inputPhone = applicantDetailValue.value.phone;
+    let inputEmail = applicantDetailValue.value.email;
+    let inputRegDate = applicantDetailValue.value.regdate;
+    let inputZipCode = applicantDetailValue.value.zipCode;
 
     const emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
     const phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
@@ -185,7 +213,7 @@ const checkForm = () => {
 
 const pwReset = () => {
     const param = new URLSearchParams({
-        loginId: applicantDetail.value.loginId
+        loginId: applicantDetailValue.value.loginId
     });
 
     axios.post("/api/manage-user/applicantPwReset.do", param)
@@ -202,9 +230,15 @@ const handlerModal = () => {
     modalStateApplicant.setModalState();
 };
 
-onMounted(() => {
-    props.loginId && searchDetail();
-});
+watchEffect(() => {
+    if (isSuccess.value) {
+        applicantDetailValue.value = toRaw(applicantDetail.value.detail);
+    }
+})
+
+// onMounted(() => {
+//     props.loginId && searchDetail();
+// });
 
 onUnmounted(() => {
     emit("modalClose");
