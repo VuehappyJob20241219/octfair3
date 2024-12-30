@@ -7,7 +7,7 @@
           <!-- 첨부파일 -->
           <div v-if="basicinformation.fileName">
             <div class="file-container">
-              <div v-if="imageUrl" class="file-link" @click="ResumeFileDownload">
+              <div v-if="imageUrl" class="file-link">
                 <img :src="imageUrl" class="my-image" />
               </div>
             </div>
