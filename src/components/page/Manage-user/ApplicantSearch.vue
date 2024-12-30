@@ -1,24 +1,19 @@
 <template>
     <div class="search-box">
         회원명
-        <input v-model.lazy="keyword" />
+        <input v-model="searchKey.searchName" />
         <button @click="handlerSearch">검색</button>
     </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import router from "../../../router";
 
-const keyword = ref("");
+const injectValue = inject('provideValue');
+const searchKey = ref({});
 
 const handlerSearch = () => {
-    const query = [];
-    !keyword.value || query.push(`searchName=${keyword.value}`);
-
-    const queryString = query.length > 0 ? `?${query.join(`&`)}` : ``;
-
-    router.push(queryString);
+    injectValue.value = { ...searchKey.value };
 };
 
 </script>

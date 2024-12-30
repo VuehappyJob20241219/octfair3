@@ -108,6 +108,17 @@ const routes = [{
                         name: "resume-new",
                         component: ResumePost,
                     },
+                    //  {
+                    //   path: "resume-detail.do?resumeNum=:idx",
+                    //   name: "MyResumes",
+                    //   component: ResumePost,
+                    // },
+                    {
+                        path: "resume-detail.do",
+                        name: "MyResumes",
+                        component: ResumePost,
+                        props: (route) => ({ resumeNum: route.query.resumeNum }), // 쿼리 파라미터 전달
+                      },
                     {
                         path: "history.do",
                         name: "history",
