@@ -34,7 +34,7 @@
                       variant="warning"
                       size="lg"
                       style="width: 150px; margin-right: 20px"
-                      @click=handlerSaveScrap
+                      @click=handlerSaveScrap(postDetail.postIdx)
                     >
                       스크랩
                     </b-button>
@@ -186,6 +186,7 @@ import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import { useQuery } from "@tanstack/vue-query";
 import 'bootstrap-vue-3';
+import { useScrapSaveMutation } from "../../../hook/scrap/useScrapSaveMutation";
 
 const { params } = useRoute();
 const postDetail = ref(null);
@@ -228,6 +229,10 @@ const navigatePost= (param) => {
     }
 }
 
+
+
+//신효 - 스크랩 등록
+// const {mutate: handlerSaveScrap} = useScrapSaveMutation(postDetail.value.postIdx)
 
 </script>
 
