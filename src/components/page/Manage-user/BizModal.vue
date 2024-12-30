@@ -57,7 +57,7 @@
                     </table>
                 </div>
                 <button @click="handlerSaveBtn">수정</button>
-            <button @click="handlerModal">취소</button>
+                <button @click="handlerModal">취소</button>
             </div>
         </div>
     </teleport>
@@ -116,14 +116,14 @@ const checkForm = () => {
         return false;
     }
 
-    if(!inputContact){
+    if (!inputContact) {
         //공백인 경우 저장 가능
-    }else if(!phoneRules.test(inputContact)){
+    } else if (!phoneRules.test(inputContact)) {
         alert("전화번호 형식을 확인해주세요.");
         return false;
     }
     console.log(inputContact);
-    
+
     return true;
 }
 
@@ -177,16 +177,14 @@ label.title {
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
     position: relative;
-    max-width: 60%;
+    // max-width: 60%;
+    width: 500px;
     max-height: 90%;
     /* 모달 높이를 화면에 맞게 제한 */
     overflow-y: auto;
     /* 내부 스크롤 가능하게 설정 */
 }
 
-// .content {
-//     display: inline-block;
-// }
 
 input[type="text"],
 input[type="date"],
@@ -198,7 +196,7 @@ input[type="tel"] {
     border-radius: 4px;
     border: 1px solid #ccc;
     // font-size: 13px;
-    width: 200px;
+    width: 300px;
 }
 
 select {
@@ -251,7 +249,7 @@ table {
     th {
         white-space: nowrap;
         /* 줄 바꿈 방지 */
-        width: 100px;
+        width: 110px;
         background-color: #2676bf;
         color: #ddd;
         display: block;
