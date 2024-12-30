@@ -17,8 +17,8 @@ import Join from "../views/Join/JoinApplicant.vue";
 import Login from "../views/Login/Login.vue";
 import Applicant from "../views/Manage-user/Applicant.vue";
 import Biz from "../views/Manage-user/Biz.vue";
-import ManageHireApplicant from "../views/ManageHire/ManageHireApplicant.vue";
 import BizPost from "../views/ManageHire/BizPost.vue";
+import ManageHireApplicant from "../views/ManageHire/ManageHireApplicant.vue";
 import Mypage from "../views/Mypage/Mypage.vue";
 import Withdraw from "../views/Mypage/Withdraw.vue";
 import NotFound from "../views/NotFound.vue";
@@ -259,7 +259,7 @@ const router = createRouter({
 router.beforeEach(async (to, from) => {
   const userInfo = useUserInfo();
 
-  if (!userInfo.isAuthenticated && !(to.name == "login")) {
+  if (!userInfo.isAuthenticated && !["login", "join"].includes(to.name)) {
     alert("로그인이 필요합니다.");
     return { name: "login" };
   }
