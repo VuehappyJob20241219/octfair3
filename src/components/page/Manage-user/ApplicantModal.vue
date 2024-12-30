@@ -265,7 +265,7 @@ label.title {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
     position: relative;
     // max-width: 60%;
-    width: 500px;
+    width: 550px;
     max-height: 90%;
     /* 모달 높이를 화면에 맞게 제한 */
     overflow-y: auto;
@@ -282,7 +282,7 @@ input[type="tel"] {
     border-radius: 4px;
     border: 1px solid #ccc;
     // font-size: 13px;
-    width: 200px;
+    width: 250px;
 }
 
 select {
