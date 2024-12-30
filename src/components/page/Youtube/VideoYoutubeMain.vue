@@ -1,12 +1,7 @@
 <template>
   <div>
     <ul v-if="data && data.length" class="video-list">
-      <li
-        v-for="(video, index) in data"
-        :key="index"
-        @click="handlerPlay(video.videoId)"
-        class="video-item"
-      >
+      <li v-for="(video, index) in data" :key="index" @click="handlerPlay(video.videoId)" class="video-item">
         <img :src="video.thumbnailUrl" alt="Thumbnail" />
         <p>{{ video.title }}</p>
       </li>
@@ -33,21 +28,18 @@ const setActive = (newKeyword) => {
 };
 
 const handlerPlay = (videoId) => {
-
   const url = `https://www.youtube.com/embed/${videoId}?start=12&autoplay=1&mute=0`;
-  console.log(url)
-  videoUrl.url =url
-}
-
+  console.log(url);
+  videoUrl.url = url;
+};
 
 // API 요청 함수
 const fetchPopularVideos = async (finalKeyword) => {
-  console.log("여기탐?")
   const defaultKeyword = "개발자"; // 기본 검색어
   const keyword = finalKeyword || defaultKeyword; // 검색어가 없으면 기본값 사용
   try {
     const params = {
-      key: "AIzaSyAJ4dc6-yESxTC58MB3qZPQ4fN-d03oscE", // 실제 API 키로 변경
+      key: "My googleApi Key", // 실제 API 키로 변경
       q: keyword,
       part: "snippet",
       type: "video",
@@ -79,16 +71,6 @@ const fetchPopularVideos = async (finalKeyword) => {
   }
 };
 
-// 동영상 페이지로 이동하는 함수
-// const goToVideo = (videoId) => {
-//   if (videoId) {
-//     const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
-//     window.open(videoUrl, "_blank"); // 새 탭에서 동영상 페이지로 이동
-//   } else {
-//     console.error("동영상 ID가 없습니다.");
-//   }
-// };
-
 watch(
   keywordValue, // 감시 대상
   (newValue) => {
@@ -103,7 +85,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-div{
+div {
   margin-top: 20px;
 }
 .video-list {
