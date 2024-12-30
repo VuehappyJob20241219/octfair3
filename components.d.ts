@@ -38,7 +38,6 @@ declare module 'vue' {
     LeftManuBar: typeof import('./src/components/layout/LeftManuBar.vue')['default']
     LoginMain: typeof import('./src/components/page/Login/LoginMain.vue')['default']
     LunchMenu: typeof import('./src/components/layout/AddOnPack/LunchMenu.vue')['default']
-    LunchMenuMain: typeof import('./src/components/page/Youtube/LunchMenuMain.vue')['default']
     MypageMain: typeof import('./src/components/page/Mypage/MypageMain.vue')['default']
     MypageModal: typeof import('./src/components/page/Mypage/MypageModal.vue')['default']
     NoticeMain: typeof import('./src/components/page/Board/Notice/NoticeMain.vue')['default']
