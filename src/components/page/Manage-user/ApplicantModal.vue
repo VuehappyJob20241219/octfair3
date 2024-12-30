@@ -155,19 +155,19 @@ const checkForm = () => {
     const phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
     const ZipCodeRules = /[0-9\-]{5}/;
 
-    if (inputName.length < 1) {
+    if (!inputName) {
         alert("이름을 입력하세요.");
         return false;
     }
-    if (inputSex.length < 1) {
+    if (!inputSex) {
         alert("성별을 선택해주세요.");
         return false;
     }
-    if (inputBirthday.length < 1) {
+    if (!inputBirthday) {
         alert("생일을 입력해주세요.");
         return false;
     }
-    if (inputPhone.length < 1) {
+    if (!inputPhone) {
         alert("전화번호를 선택해주세요.");
         return false;
     }
@@ -175,7 +175,7 @@ const checkForm = () => {
         alert("전화번호 형식을 확인해주세요.");
         return false;
     }
-    if (inputEmail.length < 1) {
+    if (!inputEmail) {
         alert("이메일을 선택해주세요.");
         return false;
     }
@@ -183,11 +183,11 @@ const checkForm = () => {
         alert("이메일 형식을 확인해주세요.");
         return false;
     }
-    if (inputRegDate.length < 1) {
+    if (!inputRegDate) {
         alert("가입일자를 입력해주세요.");
         return false;
     }
-    if (inputZipCode.length < 1) {
+    if (!inputZipCode) {
         alert("우편번호(주소)를 입력해주세요.");
         return false;
     }
