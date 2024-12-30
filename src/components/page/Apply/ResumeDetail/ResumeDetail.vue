@@ -2,23 +2,58 @@
   <ResumePreview v-if="ResumePreviewModalState.modalState" :idx="resumePreviewIdx" />
   <div class="resumeDetail_body_wrap">
     <div v-if="basicinformation" class="resumeDetail_body_basicInfo">
-      <div class="inputRow">
-        <label for="resTitle">제목:</label>
-        <input type="text" v-model="basicinformation.resTitle" />
+      <div class="flex-row" style="display: flex; align-items: center">
+        <div class="photo-section" style="max-width: 200px; margin-left: 20px">
+          <!-- 첨부파일 -->
+          <div v-if="basicinformation.fileName">
+            <div class="file-container">
+              <div v-if="imageUrl" class="file-link" @click="ResumeFileDownload">
+                <img :src="imageUrl" class="my-image" />
+              </div>
+            </div>
+            <div
+              id="attach-delete"
+              v-if="basicinformation.fileName"
+              @click="deleteFile(basicinformation.resIdx)"
+              style="text-align: center"
+            >
+              사진제거
+            </div>
+          </div>
+          <!-- 신규등록 -->
+          <div v-else>
+            <div v-if="imageUrl">
+              <img :src="imageUrl" @click="triggerFileInput" class="my-image" />
+              <div v-if="!fileData.name" @click="triggerFileInput" style="text-align: center">
+                이미지를 등록해주세요
+              </div>
+            </div>
+            <input id="resumeAttach" type="file" ref="fileInput" @change="handlerFile" style="display: none" />
+            <div class="" v-if="fileData.name" style="cursor: pointer">
+              <div @click="deleteAttach" style="text-align: center">사진제거</div>
+            </div>
+          </div>
+        </div>
+        <!-- 내용 -->
+        <div class="content-section" style="flex: 1; margin-left: 20px">
+          <div class="inputRow">
+            <!-- <label for="resTitle" style="font-size: 25px; font-weight: 900">제목:</label> -->
+            <input type="text" v-model="basicinformation.resTitle" style="font-size: 20px; font-weight: 900" />
+          </div>
+          <div class="inputRow">
+            <!-- <label for="resumeName" style="font-size: 15px; font-weight: 900">이름:</label> -->
+            <input type="text" v-model="basicinformation.userNm" style="font-size: 15px; font-weight: 500" />
+          </div>
+          <div class="inputRow">
+            <!-- <label for="resumeEmail" style="font-size: 15px; font-weight: 900">이메일: </label> -->
+            <input type="text" v-model="basicinformation.email" style="font-size: 15px; font-weight: 500" />
+          </div>
+          <div class="inputRow">
+            <!-- <label for="resumephone" style="font-size: 15px; font-weight: 900">전화번호: </label> -->
+            <input type="text" v-model="basicinformation.phone" style="font-size: 15px; font-weight: 500" />
+          </div>
+        </div>
       </div>
-      <div class="inputRow">
-        <label for="resTitle">이름:</label>
-        <input type="text" v-model="basicinformation.userNm" />
-      </div>
-      <div class="inputRow">
-        <label for="resTitle">이메일: </label>
-        <input type="text" v-model="basicinformation.email" />
-      </div>
-      <div class="inputRow">
-        <label for="resTitle">전화번호: </label>
-        <input type="text" v-model="basicinformation.phone" />
-      </div>
-
       <div class="resumeDetail_body">
         <div class="resumeDetail_body_haeder">간단소개글</div>
         <div class="resumeDetail_body_guide">
@@ -50,9 +85,7 @@
           <button type="button" class="showTableBtn" id="career" @click="showAddCareer">+ 추가</button>
           <ul>
             <li class="list" id="careerList">
-              <ResumeCareerView 
-              ref="resumeCareerView"
-      :idx="basicinformation.resIdx" />
+              <ResumeCareerView ref="resumeCareerView" :idx="basicinformation.resIdx" />
             </li>
             <li id="careerInputTable" class="inputTable" v-show="careerAddState">
               <table class="col">
@@ -171,9 +204,7 @@
           <button type="button" class="showTableBtn" id="education" @click="showAddEdu">+ 추가</button>
           <ul>
             <li class="list" id="educationList">
-               <ResumeEducationView 
-                ref="resumeEducationView"
-               :idx="basicinformation.resIdx"/>
+              <ResumeEducationView ref="resumeEducationView" :idx="basicinformation.resIdx" />
             </li>
             <li id="educationInputTable" class="inputTable" v-show="eduAddState">
               <table class="col">
@@ -275,9 +306,7 @@
         </div>
         <ul>
           <li class="list" id="skillList">
-             <ResumeSkillView 
-             ref="resumeSkillView"
-             :idx="basicinformation.resIdx"/>
+            <ResumeSkillView ref="resumeSkillView" :idx="basicinformation.resIdx" />
           </li>
           <li id="skillInputTable" class="inputTable" v-show="skillAddState">
             <table class="col">
@@ -330,9 +359,7 @@
         </div>
         <ul>
           <li class="list" id="certificationList">
-             <ResumeCertificationView 
-              ref="resumeCertificationView"
-             :idx="basicinformation.resIdx"/>
+            <ResumeCertificationView ref="resumeCertificationView" :idx="basicinformation.resIdx" />
           </li>
           <li id="certificationInputTable" class="inputTable" v-show="certAddState">
             <table class="col">
@@ -445,29 +472,13 @@
           <p class="resumeDetail_body_guide_text">• 포트폴리오, 경력기술서 등 첨부파일이 있다면 등록해주세요.</p>
         </div>
         <!-- 첨부파일 -->
-        <div v-if="basicinformation.fileName">
+        <!-- <div v-if="basicinformation.fileName">
           <div class="file-container">
-          <span class="file-link"  @click="ResumeFileDownload">{{basicinformation.fileName}}</span>
-          <button class="attach-delete" id="attach-delete" @click="deleteFile(basicinformation.resIdx)">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="50px"
-                viewBox="0 -960 960 960"
-                width="50px"
-                fill="#5f6368"
-              >
-                <path
-                  d="M312-144q-29.7 0-50.85-21.15Q240-186.3 240-216v-480h-48v-72h192v-48h192v48h192v72h-48v479.57Q720-186 698.85-165T648-144H312Zm336-552H312v480h336v-480ZM384-288h72v-336h-72v336Zm120 0h72v-336h-72v336ZM312-696v480-480Z"
-                />
-              </svg>
-            </button>
-        </div>
-      </div>
-        <div v-else>
-          <input id="resumeAttach" type="file" @change="handlerFile"/>
-          <div class="attach-container" v-if="fileData.name">
-            <span class="attach-fileName"></span>
-            <button class="attach-delete" id="attach-delete" @click="deleteAttach">
+            <span class="file-link" @click="ResumeFileDownload">{{ basicinformation.fileName }}</span>
+            <div v-if="imageUrl">
+              <img :src="imageUrl" />
+            </div>
+            <button class="attach-delete" id="attach-delete" @click="deleteFile(basicinformation.resIdx)">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="50px"
@@ -482,6 +493,29 @@
             </button>
           </div>
         </div>
+        <div v-else>
+          <div v-if="imageUrl">
+            <img :src="imageUrl" />
+          </div>
+          <input id="resumeAttach" type="file" @change="handlerFile" />
+          <div class="attach-container" v-if="fileData.name">
+            <span class="attach-fileName"></span>
+
+            <button class="attach-delete" id="attach-delete" @click="deleteAttach">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="50px"
+                viewBox="0 -960 960 960"
+                width="50px"
+                fill="#5f6368"
+              >
+                <path
+                  d="M312-144q-29.7 0-50.85-21.15Q240-186.3 240-216v-480h-48v-72h192v-48h192v48h192v72h-48v479.57Q720-186 698.85-165T648-144H312Zm336-552H312v480h336v-480ZM384-288h72v-336h-72v336Zm120 0h72v-336h-72v336ZM312-696v480-480Z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div> -->
       </div>
       <div class="btnGroup">
         <button class="btnType gray list" @click="$router.go(-1)">목록으로</button>
@@ -495,14 +529,13 @@
 <script setup>
 import { useModalStore } from "@/stores/modalState";
 import axios from "axios";
-import { Resume , ResumeAddTable } from "../../../../api/axiosApi/resumeApi";
+import { useRouter } from "vue-router";
+import { Resume, ResumeAddTable } from "../../../../api/axiosApi/resumeApi";
 import { useUserInfo } from "../../../../stores/userInfo";
 import ResumeCareerView from "../ResumeList/ResumeCareerView.vue";
+import ResumeCertificationView from "../ResumeList/ResumeCertificationView.vue";
 import ResumeEducationView from "../ResumeList/ResumeEducationView.vue";
 import ResumeSkillView from "../ResumeList/ResumeSkillView.vue";
-import ResumeCertificationView from "../ResumeList/ResumeCertificationView.vue";
-import { useRouter } from "vue-router";
-
 
 const basicinformation = ref();
 const userInfo = useUserInfo();
@@ -523,6 +556,8 @@ const resumeCareerView = ref(null);
 const resumeEducationView = ref(null);
 const resumeSkillView = ref(null);
 const resumeCertificationView = ref(null);
+const imageUrl = ref("/no_image.jpg");
+const fileInput = ref(null); // 파일 입력 요소 참조
 
 const basicInfoFn = async () => {
   const param = {
@@ -535,14 +570,17 @@ const basicInfoFn = async () => {
   });
 };
 
-const MyResumes =async (idx) =>{
+const MyResumes = async (idx) => {
   const param = {
-    resIdx: idx
+    resIdx: idx,
   };
   await axios.post(Resume.MyResume, param).then((res) => {
     basicinformation.value = res.data.result;
+    if (basicinformation.value.fileName) {
+      getFileImage();
+    }
   });
-}
+};
 
 const handlerSaveBtn = async () => {
   const text = {
@@ -569,18 +607,21 @@ const handlerSaveBtn = async () => {
     if (res.data.result === "success") {
       alert("이력서가 등록되었습니다.");
       router.push({
-      name: "MyResumes",
-      query: { resumeNum: basicinformation.value.resIdx }, // query로 전달
-    });
-    MyResumes(parseInt(basicinformation.value.resIdx, 10));
+        name: "MyResumes",
+        query: { resumeNum: basicinformation.value.resIdx }, // query로 전달
+      });
+      MyResumes(parseInt(basicinformation.value.resIdx, 10));
     }
   });
 };
 
 const handlerFile = (e) => {
-  const fileinfo = e.target.files;
-  if (fileinfo) {
-    fileData.value = fileinfo[0];
+  const fileInfo = e.target.files;
+  const fileInfoSplit = fileInfo[0].name.split(".");
+  const fileExtension = fileInfoSplit[1].toLowerCase();
+  if (fileExtension === "jpg" || fileExtension === "gif" || fileExtension === "png") {
+    imageUrl.value = URL.createObjectURL(fileInfo[0]);
+    fileData.value = fileInfo[0];
   } else {
     fileData.value = {};
   }
@@ -687,6 +728,7 @@ const addCert = async () => {
 const deleteAttach = () => {
   fileData.value = {};
   document.getElementById("resumeAttach").value = ""; // 파일 입력 초기화
+  imageUrl.value = "/no_image.jpg";
 };
 
 const ResumeFileDownload = () => {
@@ -709,21 +751,41 @@ const ResumeFileDownload = () => {
   });
 };
 
-const deleteFile =async (idx)=> {
-console.log('파일 삭제 인덱스',idx)
-const param = {
-  resIdx: idx
-}
-await axios.post(ResumeAddTable.DeleteAttachFile, param).then((res)=>{
-  if(res.data.result ==='success'){
-    MyResumes(idx)
-  }
-})
-}
+const getFileImage = () => {
+  let param = new URLSearchParams();
+  param.append("resIdx", basicinformation.value.resIdx);
+  const postAction = {
+    url: "/api/apply/resumeFileDownload.do",
+    method: "POST",
+    data: param,
+    responseType: "blob",
+  };
+  axios(postAction).then((res) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    imageUrl.value = url;
+  });
+};
+
+const deleteFile = async (idx) => {
+  const param = {
+    resIdx: idx,
+  };
+  await axios.post(ResumeAddTable.DeleteAttachFile, param).then((res) => {
+    if (res.data.result === "success") {
+      MyResumes(idx);
+      imageUrl.value = "/no_image.jpg";
+      fileData.value = {};
+    }
+  });
+};
+
+const triggerFileInput = () => {
+  fileInput.value.click();
+};
 
 onMounted(() => {
   const params = new URLSearchParams(window.location.search); // URL의 쿼리 파라미터 추출
-  const resumeNum = params.get('resumeNum'); // 'resumeNum' 값 가져오기
+  const resumeNum = params.get("resumeNum"); // 'resumeNum' 값 가져오기
 
   if (resumeNum) {
     MyResumes(parseInt(resumeNum, 10)); // 숫자로 변환 후 함수 호출
@@ -731,7 +793,6 @@ onMounted(() => {
     basicInfoFn(); // 'resumeNum' 없을 때 기본 함수 호출
   }
 });
-
 </script>
 
 <style lang="scss" scoped>
@@ -936,4 +997,16 @@ table td {
   text-decoration: underline; /* 호버 시 밑줄 효과 */
 }
 
+img {
+  width: 200px;
+  height: 200px;
+}
+
+.my-image {
+  width: 170px; /* 가로 4.5cm에 해당하는 픽셀 */
+  height: 229px; /* 세로 5.79cm에 해당하는 픽셀 */
+  object-fit: cover; /* 이미지 비율을 유지하면서 잘리기 */
+  border: 2px solid #ccc; /* 이미지 테두리 (선택 사항) */
+  margin: 10px; /* 이미지 주변 여백 (필요에 따라 조정) */
+}
 </style>
