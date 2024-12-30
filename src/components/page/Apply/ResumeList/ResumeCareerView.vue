@@ -73,14 +73,14 @@
 
 <script setup>
 import axios from "axios";
+import { onMounted } from "vue";
 import { ResumeAddTable } from "../../../../api/axiosApi/resumeApi";
-import { onMounted, defineExpose } from "vue";
 
 const careerProperties = ref({
   career: [],
 });
 const props = defineProps(["idx"]);
-const emit = defineEmits(["postSuccess"])
+const emit = defineEmits(["postSuccess"]);
 
 const careerDetail = async () => {
   await axios.post(ResumeAddTable.ListCareer, { resIdx: props.idx }).then((res) => {
@@ -159,7 +159,7 @@ onMounted(() => {
   .res-comment {
     font-size: 16px;
     text-align: center;
-    color: #88CFEC;
+    color: #88cfec;
   }
 
   &.empty-state {
