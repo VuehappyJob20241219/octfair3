@@ -1,7 +1,7 @@
 <template>
     <teleport to="body">
         <div class="backdrop">
-            <!-- <div v-if="isLoading">로딩중 입니다</div> -->
+            <div v-if="isLoading">로딩중 입니다</div>
             <div v-if="isSuccess" class="container">
                 <label class="title">개인 회원 정보</label>
                 <div class="content">
@@ -90,7 +90,6 @@ const emit = defineEmits(["modalClose"]);
 
 const applicantDetailValue = ref({});
 const modalStateApplicant = useModalStore();
-const injectedValue = inject('provideValue');
 
 const searchDetail = async () => {
     const param = new URLSearchParams({
@@ -106,7 +105,6 @@ const {
     data: applicantDetail,
     isLoading,
     isSuccess,
-    isLoadingError,
     isError
 } = useQuery({
     queryKey: ['applicantDetail'],
@@ -144,7 +142,6 @@ const { mutate: handlerUpdateBtn }
         onSettled: (data, error) => {
             if (data) {
                 handlerModal();
-                console.log("모달닫는다!!")
             }
         }
     })

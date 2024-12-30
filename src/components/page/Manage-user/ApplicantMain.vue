@@ -74,7 +74,6 @@ const {
     data: applicantList,
     isLoading,
     isSuccess,
-    isLoadingError,
     isError,
     refetch
 } = useQuery({
