@@ -22,7 +22,7 @@
         </thead>
         <tbody v-for="(edu, index) in educationProperties.edu" :key="index">
           <tr>
-            <td >
+            <td>
               <span>
                 {{ edu.admDate.substr(0, 7) }}
                 ~
@@ -154,7 +154,7 @@ onMounted(() => {
   .res-comment {
     font-size: 16px;
     text-align: center;
-    color: #88CFEC;
+    color: #88cfec;
   }
 
   &.empty-state {

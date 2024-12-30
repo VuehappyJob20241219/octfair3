@@ -141,6 +141,11 @@ const routes = [{
                       component: BizPostInsert,
                   },
                   {
+                    path: "bizPostInsert.do/:postIdx",
+                    name: "bizPostModify",
+                    component: BizPostInsert,
+                },
+                  {
                       path: "bizPostDetail.do/:postIdx",
                       name: "bizPostDetail",
                       component: BizPostDetail,
@@ -183,15 +188,48 @@ const routes = [{
                 ],
             },
             {
+                path: "manage-post",
+                name: "manage-post",
+                children: [{
+                        path: "post.do",
+                        name: "managePost",
+                        component: BizPost,
+                    },
+                    {
+                        path: "approval.do",
+                        name: "managePostApproval",
+                        component: BizPost,
+                    },
+                    {
+                        path: ":postIdx/:bizIdx",
+                        name: "managePostApprovalDetail",
+                        component: BizPostDetail,
+                    },
+                    {
+                        path: ":postIdx/:bizIdx",
+                        name: "managePostDetail",
+                        component: BizPostDetail,
+                    },
+                ],
+            },
+            {
                 path: "jobs",
                 name: "jobs",
                 children: [{
-
+                        path: "posts.do",
+                        name: "jobsPosts",
+                        component: BizPost,
+                    },
+                    {
+                        path: "scrap.do",
+                        name: "postScrap",
+                        component: BizPost,
+                    },
+                    {
                         path: "scrap.do",
                         name: "scrap",
                         component: Scrap,
                     },
-                
                 ],
             },
         ],

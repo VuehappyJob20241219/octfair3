@@ -20,7 +20,7 @@
         </thead>
         <tbody v-for="(cert, index) in certificationProperties.cert" :key="index">
           <tr>
-            <td >
+            <td>
               <span>
                 {{ cert.certName }}
               </span>
@@ -147,7 +147,7 @@ onMounted(() => {
   .res-comment {
     font-size: 16px;
     text-align: center;
-    color: #88CFEC;
+    color: #88cfec;
   }
 
   &.empty-state {
