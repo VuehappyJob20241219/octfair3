@@ -112,6 +112,10 @@
             <h5>■ 혜택 & 복지 </h5>
             <span class="p-4">{{postDetail?.benefits}}</span>
           </div>
+          <div class="mt-5">
+            <h5>■ 첨부 파일일 </h5>
+            <span class="p-4">{{postDetail?.benefits}}</span>
+          </div>
         </div>
         <template v-if="userType === 'b'">
           <div class="d-flex justify-content-center mt-5 ">
