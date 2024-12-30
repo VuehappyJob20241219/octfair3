@@ -93,31 +93,6 @@ const handlerModal = (id) => {
     modalStateApplicant.setModalState();
 };
 
-
-///////////////////////////////////////////////////
-
-// const searchList = async () => {
-//     const data = {
-//         searchName: route.query.searchName || "",
-//         currentPage: (cPage.value).toString(),
-//         pageSize: (5).toString(),
-//     };
-
-//     console.log(data);
-//     await axios
-//         .post("/api/manage-user/applicantListBody.do", data)
-//         .then((res) => {
-//             applicantList.value = res.data;
-//         })
-//         .catch(() => { });
-// }
-
-// watch(route, () => searchList());
-
-// onMounted(() => {
-//     searchList();
-// });
-
 </script>
 
 <style lang="scss" scoped>

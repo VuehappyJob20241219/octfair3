@@ -136,9 +136,9 @@ const checkForm = () => {
     let inputRegDate = applicantDetail.value.regdate;
     let inputZipCode = applicantDetail.value.zipCode;
 
-    let emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-    let phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
-    let ZipCodeRules = /[0-9\-]{5}/;
+    const emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+    const phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
+    const ZipCodeRules = /[0-9\-]{5}/;
 
     if (inputName.length < 1) {
         alert("이름을 입력하세요.");
@@ -246,7 +246,8 @@ label.title {
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
     position: relative;
-    max-width: 60%;
+    // max-width: 60%;
+    width: 500px;
     max-height: 90%;
     /* 모달 높이를 화면에 맞게 제한 */
     overflow-y: auto;
