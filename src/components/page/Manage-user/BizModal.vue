@@ -18,7 +18,7 @@
                                 <td><input type="text" v-model="bizDetailValue.bizIdx" readonly /></td>
                             </tr>
                             <tr>
-                                <th>사업자명</th>
+                                <th>사업자명<span style="color: red;">*</span></th>
                                 <td><input type="text" v-model="bizDetailValue.bizName" /></td>
                             </tr>
                             <tr>
