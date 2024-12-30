@@ -33,7 +33,6 @@ declare module 'vue' {
     HireApplicantMain: typeof import('./src/components/page/ManageHire/ManageApplicant/HireApplicantMain.vue')['default']
     HireApplicantSearch: typeof import('./src/components/page/ManageHire/ManageApplicant/HireApplicantSearch.vue')['default']
     HistoryMain: typeof import('./src/components/page/Apply/History/HistoryMain.vue')['default']
-    HistoryResumeModal: typeof import('./src/components/page/Apply/History/HistoryResumeModal.vue')['default']
     HistorySearch: typeof import('./src/components/page/Apply/History/HistorySearch.vue')['default']
     JoinApplicantMain: typeof import('./src/components/page/Join/JoinApplicantMain.vue')['default']
     LeftManuBar: typeof import('./src/components/layout/LeftManuBar.vue')['default']
