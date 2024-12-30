@@ -1,5 +1,5 @@
 <template>
-  <BizModal v-if="modalStateBiz.modalState" @postSuccess="searchList" :bizIdx="bizIdx" />
+  <BizModal v-if="modalStateBiz.modalState" :bizIdx="bizIdx" @modalClose="() => (refetch())" />
   <div class="divManage-bizList">
     <table>
       <colgroup>
@@ -74,6 +74,7 @@ const {
   isLoading,
   isSuccess,
   isError,
+  refetch
 } = useQuery({
   queryKey: ['bizList', injectedValue, cPage],
   queryFn: searchList,

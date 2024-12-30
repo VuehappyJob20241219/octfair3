@@ -57,7 +57,7 @@
                         </tbody>
                     </table>
                 </div>
-                <button @click="handlerSaveBtn">수정</button>
+                <button @click="handlerUpdateBtn">수정</button>
                 <button @click="handlerModal">취소</button>
             </div>
         </div>
@@ -66,11 +66,11 @@
 
 
 <script setup>
-import { useQuery } from '@tanstack/vue-query';
+import { useMutation, useQuery } from '@tanstack/vue-query';
 import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
 
-const emit = defineEmits(["postSuccess", "modalClose"]);
+const emit = defineEmits(["modalClose"]);
 const props = defineProps(["bizIdx"]);
 
 const bizDetailValue = ref({});
@@ -97,30 +97,35 @@ const {
     enabled: !!props.bizIdx
 })
 
-const handlerSaveBtn = () => {
-    //유효성 검사
+const updateBizDetail = async () => {
     if (!checkForm()) {
-        console.log("수정에 실패하였습니다.");
         return;
     }
 
     const param = new URLSearchParams({
-        ...bizManageDetail.value
+        ...bizDetailValue.value
     });
 
-    axios.post("/api/manage-user/bizInfoUpdate.do", param).then((res) => {
-        if (res.data.result === 'success') {
-            handlerModal();
-            emit('postSuccess');
-        };
-    })
+    return await axios.post("/api/manage-user/bizInfoUpdate.do", param)
 }
+
+const { mutate: handlerUpdateBtn }
+    = useMutation({
+        mutationFn: updateBizDetail,
+        mutationKey: ['bizUpdate'],
+        onSettled: (data, error) => {
+            if (data) {
+                handlerModal();
+            }
+        }
+    })
+
 
 const checkForm = () => {
     let inputBizName = bizDetailValue.value.bizName;
     let inputContact = bizDetailValue.value.bizContact;
 
-    let phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
+    const phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
 
     if (inputBizName.length < 1) {
         alert("사업자명을 입력하세요.");
@@ -133,11 +138,9 @@ const checkForm = () => {
         alert("전화번호 형식을 확인해주세요.");
         return false;
     }
-    console.log(inputContact);
 
     return true;
 }
-
 
 
 const handlerModal = () => {
