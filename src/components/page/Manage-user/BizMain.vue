@@ -45,42 +45,45 @@
 </template>
 
 <script setup>
+import { useQuery } from '@tanstack/vue-query';
 import axios from "axios";
-import { onMounted } from "vue";
-import { useRoute } from "vue-router";
 import { useModalStore } from "../../../stores/modalState";
 import Pagination from "../../common/Pagination.vue";
 
-const route = useRoute();
-const bizList = ref();
+
 const cPage = ref(1);
 const modalStateBiz = useModalStore();
 const bizIdx = ref("");
+const injectedValue = inject('provideValue');
+
 
 const searchList = async () => {
   const data = {
-    searchName: route.query.searchName || "",
-    currentPage: cPage.value.toString(),
+    ...injectedValue.value,
+    currentPage: (cPage.value).toString(),
     pageSize: (5).toString(),
   };
-  await axios
-    .post("/api/manage-user/bizListBody.do", data)
-    .then((res) => {
-      bizList.value = res.data;
-    })
-    .catch(() => { });
-};
+
+  const result = await axios.post("/api/manage-user/bizListBody.do", data)
+
+  return result.data;
+}
+
+const {
+  data: bizList,
+  isLoading,
+  isSuccess,
+  isError,
+} = useQuery({
+  queryKey: ['bizList', injectedValue, cPage],
+  queryFn: searchList,
+})
+
 
 const handlerModal = (idx) => {
   bizIdx.value = idx;
   modalStateBiz.setModalState();
 };
-
-watch(route, searchList);
-
-onMounted(() => {
-  searchList();
-});
 
 </script>
 
