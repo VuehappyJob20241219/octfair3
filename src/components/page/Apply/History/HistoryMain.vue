@@ -29,7 +29,7 @@
                       </td>
                       <td>
                        
-                        <p>{{ list.viewed===1 ? '열람' : '미열람' }}</p>
+                        <p>{{ list.viewed === '1' ? '열람' : '미열람' }}</p>
                       </td>
                       <td>
                         <button class="cancel-button">지원취소</button>
