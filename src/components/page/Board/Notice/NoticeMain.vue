@@ -1,13 +1,6 @@
 <template>
   <div class="divNoticeList">
     현재 페이지: {{ cPage }}, 총 개수: {{ noticeList?.noticeCnt }}
-    <NoticeModal
-      v-if="modalState.modalState"
-      @postSuccess="searchList"
-      @modalClose="() => (noticeIdx = 0)"
-      :idx="noticeIdx"
-    />
-    <!-- <NoticeModal v-show="modalValue"/> -->
     <table>
       <colgroup>
         <col width="10%" />
@@ -53,48 +46,26 @@
 </template>
 
 <script setup>
-import { useModalStore } from "@/stores/modalState";
-import axios from "axios";
-import { onMounted } from "vue";
-import { useRoute } from "vue-router";
 import Pagination from "../../../common/Pagination.vue";
+import { useRouter } from "vue-router";
+import { useNoticeListSearchQuery } from "../../../hook/notice/useNoticeListSearchQuery";
 
-const route = useRoute();
-// console.log(route);
-// watch(route, () => console.log(route.query));
-const noticeList = ref();
-// const noticeCount = ref(0);
+const router = useRouter();
 const cPage = ref(1);
-const modalState = useModalStore();
-const noticeIdx = ref(0);
+const injectedValue = inject('provideValue');
 
-const searchList = () => {
-  const param = new URLSearchParams({
-    searchTitle: route.query.searchTitle || "",
-    searchStDate: route.query.searchStDate || "",
-    searchEdDate: route.query.searchEdDate || "",
-    currentPage: cPage.value,
-    pageSize: 5,
-  });
-  axios.post("/api/board/noticeListJson.do", param).then((res) => {
-    noticeList.value = res.data;
+
+const  { data: noticeList } 
+    = useNoticeListSearchQuery(
+    injectedValue, cPage
+);
+
+const handlerModal = (param) => {
+  router.push({
+    name: 'noticeDetail',
+    params: { idx: param },
   });
 };
-
-const handlerModal = (idx) => {
-  modalState.setModalState();
-  noticeIdx.value = idx;
-};
-
-watch(route, searchList);
-
-onMounted(() => {
-  searchList();
-});
-
-// onBeforeMounted(()=>{
-//     searchList();
-// })
 </script>
 
 <style lang="scss" scoped>

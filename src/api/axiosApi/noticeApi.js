@@ -1,5 +1,6 @@
 export const Notice = {
   SearchNoticeList: "/api/board/noticeListJson.do",
+  SearchNoticeDetail: "/api/board/noticeDetailBody.do",
   InsertNotice: "/api/board/noticeSaveBody.do",
   InsertNoticeFile: "/api/board/noticeFileSaveForm.do",
   UpdateNotice: "/api/board/noticeUpdateBody.do",

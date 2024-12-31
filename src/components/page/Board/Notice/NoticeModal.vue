@@ -2,10 +2,10 @@
   <teleport to="body">
     <div class="backdrop">
       <div class="container">
-        <label> 제목 :<input type="text" v-model="noticeDetail.title" /> </label>
+        <label> 제목 :<input type="text" v-model="noticeDetail.detail.title" /> </label>
         <label>
           내용 :
-          <input type="text" v-model="noticeDetail.content" />
+          <input type="text" v-model="noticeDetail.detail.content" />
         </label>
         파일 :<input type="file" style="display: none" id="fileInput" @change="handlerFile" />
         <label class="img-label" htmlFor="fileInput"> 파일 첨부하기 </label>
@@ -35,9 +35,14 @@ import { useModalStore } from "@/stores/modalState";
 import axios from "axios";
 import { onMounted, onUnmounted } from "vue";
 import { useUserInfo } from "../../../../stores/userInfo";
+import { useRoute } from "vue-router";
+import { useNoticeDetailSearchQuery } from "../../../hook/notice/useNoticeDetailSearchQuery";
+
+const route = useRoute();
+const  { data: noticeDetail } = useNoticeDetailSearchQuery(route.params.idx);
+
 
 const modalState = useModalStore();
-const noticeDetail = ref({});
 const userInfo = useUserInfo();
 const emit = defineEmits(["postSuccess", "modalClose"]);
 const props = defineProps(["idx"]);
@@ -72,20 +77,21 @@ const handlerSaveBtn = () => {
   });
 };
 
-const searchDetail = () => {
-  axios.post("/api/board/noticeDetailBody.do", { noticeSeq: props.idx }).then((res) => {
-    noticeDetail.value = res.data.detail;
-    if (
-      noticeDetail.value.fileExt === "jpg" ||
-      noticeDetail.value.fileExt === "gif" ||
-      noticeDetail.value.fileExt === "png" ||
-      noticeDetail.value.fileExt === "webp"
-    ) {
-      getFileImage();
-    }
-    console.log(noticeDetail.value);
-  });
-};
+
+// const searchDetail = () => {
+//   axios.post("/api/board/noticeDetailBody.do", { noticeSeq: props.idx }).then((res) => {
+//     noticeDetail.value = res.data.detail;
+//     if (
+//       noticeDetail.value.fileExt === "jpg" ||
+//       noticeDetail.value.fileExt === "gif" ||
+//       noticeDetail.value.fileExt === "png" ||
+//       noticeDetail.value.fileExt === "webp"
+//     ) {
+//       getFileImage();
+//     }
+//     console.log(noticeDetail.value);
+//   });
+// };
 
 const handlerUpdateBtn = () => {
   const textData = {
@@ -165,9 +171,9 @@ const fileDownload = () => {
   });
 };
 
-onMounted(() => {
-  props.idx && searchDetail();
-});
+// onMounted(() => {
+//   props.idx && searchDetail();
+// });
 
 onUnmounted(() => {
   emit("modalClose");
