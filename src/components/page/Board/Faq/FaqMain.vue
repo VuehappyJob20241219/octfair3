@@ -1,13 +1,7 @@
-<template>
-  <FaqModal
-    v-if="faqModalState.modalState"
-    @postSuccess="searchList"
-    @modalClose="() => (faqSeq = 0)"
-    :idx="faq_idx"
-  />
-  <b-button :pressed.sync="myToggle==='personal'" variant="primary"  @click="personalFaq">개인회원</b-button>
-  <b-button :pressed.sync="myToggle==='company'" variant="primary"  @click="companyFaq">기업회원</b-button>  
+<template>   
   <div class="divFaqList">
+  <b-button :pressed.sync="myToggle==='personal'" variant="primary"  @click="personalFaq">개인회원</b-button>
+  <b-button :pressed.sync="myToggle==='company'" variant="primary"  @click="companyFaq">기업회원</b-button> 
     <table>
       <colgroup>
         <col width="10%" />
@@ -47,12 +41,7 @@
               </tr>
               <tr>
                 <!-- 내용 -->
-                <transition
-                  @before-enter="beforeEnter"
-                  @enter="enter"
-                  @before-leave="beforeLeave"
-                  @leave="leave"
-                >
+                <transition>
                   <td v-if="activeAccordion === faq.faq_idx" colspan="4">
                     {{ faq.content }}
                   </td>
@@ -73,6 +62,12 @@
       :onClick="searchList"
       v-model="cPage"
     />
+    <FaqModal
+    v-if="faqModalState.modalState"
+    @postSuccess="searchList"
+    @modalClose="() => (faqSeq = 0)"
+    :idx="faq_idx"
+  />
   </div>
 </template>
 <script setup>
@@ -130,24 +125,6 @@ const handlerModal = (idx) => {
   faq_idx.value = idx;
 };
 
-const beforeEnter = (el) => {
-  el.style.maxHeight = "0";
-};
-
-const enter = (el) => {
-  el.style.maxHeight = el.scrollHeight + "px"; // 내용에 맞게 max-height 설정
-};
-
-const beforeLeave = (el) => {
-  el.style.maxHeight = el.scrollHeight + "px"; // leave 전에는 펼쳐진 상태로 유지
-};
-
-const leave = (el) => {
-  el.style.maxHeight = "0";
-  el.style.overflow = "hidden";
-};
-
-
 
 onMounted(() => {
   searchList();
@@ -185,5 +162,15 @@ table {
     opacity: 0.9;
     cursor: pointer;
   }
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>
