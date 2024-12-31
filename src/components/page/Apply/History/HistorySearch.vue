@@ -29,14 +29,14 @@ import { inject } from 'vue';
 const injectValue = inject("provideValue");
 // 부모 컴포넌트에서 제공한 defaultSearchKey를 inject()로 받아옴
 const defaultSearchKey = inject("defaultSearchKey");
-// searchKey는 기본값으로 초기화
+// searchKey를 기본값으로 초기화
 const searchKey = ref({ ...injectValue.value });
 
 const handlerSearch = () => {
   injectValue.value = { ...searchKey.value };
 }
 
-//검색어, 검색결과 초기화화
+//검색어, 검색결과 초기화
 const handlerReset = () => {
   searchKey.value = { ...defaultSearchKey };
   injectValue.value = { ...searchKey.value };
