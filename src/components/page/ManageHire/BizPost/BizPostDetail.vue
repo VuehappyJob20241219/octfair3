@@ -1,5 +1,15 @@
 <template>
   <ContextBox>공고 상세 보기</ContextBox>
+  <ApplyUserResumeModal
+      v-if="modalState.modalState"
+      @postSuccess="searchList"
+      @modalClose="() => (postIdx = 0,bizIdx=0 )"
+      :pIdx="postIdx"
+      :bIdx="bizIdx"
+      :postDetail="postDetail"
+      :bizDetail="bizDetail"
+      :scrap=null
+    />
   <template v-if="isLoading">...로딩중</template>
   <template v-if="isSuccess">
   <b-container class="mt-2">
@@ -58,7 +68,7 @@
                       variant="primary"
                       size="lg"
                       style=" width: 150px"
-                      @click="handlerModal(postDetail, bizDetail)"
+                      @click="handlerModal(postDetail.postIdx, bizDetail.bizIdx)"
                     >
                       입사지원
                     </b-button>
@@ -71,7 +81,7 @@
                         width: 150px;
                         color: #007bff;
                         border-color: #007bff;"
-                      @click="handlerModal(postDetail, bizDetail)"
+                      @click="handlerModal(postDetail.postIdx, bizDetail.bizIdx)"
                     >
                       입사지원
                     </b-button>
@@ -113,7 +123,7 @@
             <span class="p-4">{{postDetail?.benefits}}</span>
           </div>
           <div class="mt-5">
-            <h5>■ 첨부 파일일 </h5>
+            <h5>■ 첨부 파일 </h5>
             <span class="p-4">{{postDetail?.benefits}}</span>
           </div>
         </div>
@@ -186,6 +196,8 @@ import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import { useQuery } from "@tanstack/vue-query";
 import 'bootstrap-vue-3';
+import { useModalStore } from "@/stores/modalState";
+import ApplyUserResumeModal from "../../Apply/ResumeList/ApplyUserResumeModal.vue";
 
 const { params } = useRoute();
 const postDetail = ref(null);
@@ -193,6 +205,9 @@ const bizDetail = ref(null);
 const isClicked = ref(null);
 const userType = ref(null);
 const router = useRouter();
+const postIdx = ref(0);
+const bizIdx = ref(0);
+const modalState = useModalStore();
 
 const searchList = async () => {
   const result = await axios.post(
@@ -228,7 +243,11 @@ const navigatePost= (param) => {
     }
 }
 
-
+const handlerModal = (pIdx,bIdx) => {
+  modalState.setModalState();
+  postIdx.value = pIdx;
+  bizIdx.value = bIdx;
+};
 </script>
 
 <style lang="scss" scoped>
