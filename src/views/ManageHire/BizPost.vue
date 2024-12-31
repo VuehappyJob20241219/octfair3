@@ -1,8 +1,8 @@
 <template>
-    <template v-if="userInfo.user.userType === 'M'">
+    <template v-if="userInfo.user.userType === 'M' && route.name == 'managePostApproval'">
         <ContextBox>공고심사</ContextBox>
     </template>
-    <template v-if="userInfo.user.userType === 'A'">
+    <template v-if="userInfo.user.userType === 'A' || route.name == 'managePost'">
         <ContextBox>공고보기</ContextBox>
     </template>
     <template v-if="userInfo.user.userType === 'B'">
@@ -13,7 +13,9 @@
 
 <script setup>
 import { useUserInfo } from "../../stores/userInfo";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const userInfo = useUserInfo();
 const bizSearchValue = ref();
 

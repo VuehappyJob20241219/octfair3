@@ -248,6 +248,28 @@ const handlerModal = (pIdx,bIdx) => {
   postIdx.value = pIdx;
   bizIdx.value = bIdx;
 };
+
+const handlerUpdateAppStatus = async (pIdx, status) => {
+  const params = {
+    postIdx: pIdx,
+    appStatus: status,
+  };
+  const result = await axios.post(
+    "/api/manage-post/statusUpdateBody.do",
+    params,
+  );
+
+  if(result.data.result == 'success'){    
+    alert("처리되었습니다.");
+    if(status == "승인"){
+      router.push({ name: "managePost"})
+    }else if(status == "불허"){
+      router.push({ name: "managePostApproval"})
+    }
+  }
+
+}
+
 </script>
 
 <style lang="scss" scoped>
