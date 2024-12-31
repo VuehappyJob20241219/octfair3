@@ -4,17 +4,19 @@
     <input type="date" v-model="searchStartDate" />
     <input type="date" v-model="searchEndDate" />
     <button @click="handlerSearch">검색</button>
-    <button @click="handlerModal">신규등록</button>
+    <button @click="handlerModal" v-if="userInfo.user.userType==='M'">신규등록</button>
   </div>
 </template>
 <script setup>
 import router from "@/router";
 import { useModalStore } from "@/stores/modalState";
+import { useUserInfo } from "../../../../stores/userInfo";
 
 const keyword = ref("");
 const searchStartDate = ref("");
 const searchEndDate = ref("");
 const modalState = useModalStore();
+const userInfo= useUserInfo();
 
 const handlerSearch = () => {
   const query = [];
