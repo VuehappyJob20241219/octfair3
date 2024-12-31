@@ -28,7 +28,7 @@
       <tbody>
         <template v-if="isLoading">...로딩중</template>
         <template v-if="isSuccess">
-          <template v-if="HirePost.MCount > 0 || HirePost.pendingList.length > 0 || HirePost.approvalList.length > 0">
+          <template v-if="HirePost?.MCount > 0 || HirePost.pendingList?.length > 0 || HirePost.approvalList?.length > 0">
             <template v-if="userInfo.user.userType === 'B'">
             <tr v-for="MList in HirePost.MList" v-bind:key="MList.postIdx">
               <td @click="handlerDetail(MList.postIdx)">{{ MList.title }}</td>
@@ -39,7 +39,7 @@
               <td>{{ MList.workLocation }}</td>
             </tr>
             </template>
-            <template v-if="userInfo.user.userType === 'M'">
+            <template v-if="userInfo.user.userType === 'M' && route.name == 'managePostApproval'">
             <tr v-for="MList in HirePost.pendingList" v-bind:key="MList.postIdx">
               <td @click="handlerDetail(MList.postIdx)">{{ MList.title }}</td>
               <td>{{ MList.expRequired }}</td>
@@ -49,7 +49,7 @@
               <td>{{ MList.workLocation }}</td>
             </tr>
             </template>
-            <template v-if="userInfo.user.userType === 'A'">
+            <template v-if="userInfo.user.userType === 'A' || route.name == 'managePost'">
             <tr v-for="MList in HirePost.approvalList" v-bind:key="MList.postIdx">
               <td @click="handlerDetail(MList.postIdx)">{{ MList.title }}</td>
               <td>{{ MList.expRequired }}</td>
@@ -60,7 +60,7 @@
             </tr>
             </template>
           </template>
-          <template v-else>
+          <template v-if="HirePost?.MCount == 0 || HirePost.pendingList?.length == 0 || HirePost.approvalList?.length == 0">
             <tr>
               <td colspan="7">채용 공고가 없습니다</td>
             </tr>
@@ -70,7 +70,7 @@
       </tbody>
     </table>
     <Pagination
-      :totalItems="HirePost?.MCount || 0"
+      :totalItems="HirePost?.MCount || HirePost?.pendingPostCnt || HirePost?.approvalPostCnt || 0"
       :items-per-page="5"
       :max-pages-shown="5"
       :onClick="searchList"
@@ -94,7 +94,7 @@ const queryClient = useQueryClient();
 // const HirePost = ref();
 const cPage = ref(1);
 const route = useRoute();
-console.log(route.name);
+const injectedValue = inject('bizSearchValue');
 
 const searchList = async () => {
   const param = {
@@ -107,13 +107,9 @@ const searchList = async () => {
     param,
     );
     return result.data;
-  }else if(userInfo.user.userType === 'M'){
-    const result = await axios.post(
-    "/api/manage-post/readPostListBody.do",
-    param,
-    );  
-    return result.data;
   }else{
+    Object.assign(param, injectedValue.value);
+    console.log(param);
     const result = await axios.post(
     "/api/manage-post/readPostListBody.do",
     param,
@@ -130,7 +126,7 @@ const {
   isSuccess,
   isError,
 } = useQuery({
-  queryKey: ["HirePost", cPage],
+  queryKey: ["HirePost", cPage, injectedValue],
   queryFn: searchList,
   // staleTime: 1000 * 60,
 });

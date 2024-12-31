@@ -24,6 +24,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.env
 brave-anagram-438514-n3-87cad63c922e.json
-
+.env
