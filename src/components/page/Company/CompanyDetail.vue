@@ -64,22 +64,23 @@
     </table>
   </div>
   <div style="text-align: right">
-    <button @click="$router.go(-1)">기업 지원 공고 확인하기</button>
+    <button @click="$router.go(-1)">기업 지원공고 확인하기</button>
   </div>
 </template>
 
 <script setup>
 import axios from "axios";
 import { useUserInfo } from "../../../stores/userInfo";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const userInfo = useUserInfo();
 const companyDetail = ref({});
 const imageUrl = ref("");
 const router = useRouter();
+const { params } = useRoute();
 
 const searchDetail = () => {
-  axios.post("/api/company/companyUpdatePageRe.do", { loginId: userInfo.user.loginId }).then((res) => {
+  axios.post("/api/company/companyDetailPageRe.do/" + params.postIdx + "/" + params.bizIdx, params).then((res) => {
     companyDetail.value = res.data.detail || {};
     if (
       companyDetail.value.fileExt === "jpg" ||
@@ -87,7 +88,7 @@ const searchDetail = () => {
       companyDetail.value.fileExt === "png" ||
       companyDetail.value.fileExt === "webp"
     ) {
-      getFileImage(6);
+      getFileImage(params.bizIdx);
     }
   });
 };
