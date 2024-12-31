@@ -39,7 +39,7 @@ const fetchPopularVideos = async (finalKeyword) => {
   const keyword = finalKeyword || defaultKeyword; // 검색어가 없으면 기본값 사용
   try {
     const params = {
-      key: "My googleApi Key", // 실제 API 키로 변경
+      key: import.meta.env.VITE_APP_YOUTUBE_API_KEY, // 실제 API 키로 변경
       q: keyword,
       part: "snippet",
       type: "video",
