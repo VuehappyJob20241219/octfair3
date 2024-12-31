@@ -14,10 +14,10 @@
 </template>
 
 <script setup>
-import { useUserInfo } from "../../../../stores/userInfo";
+import axios from "axios";
 import { onMounted, reactive, watchEffect } from "vue";
 import router from "../../../../router";
-import axios from "axios";
+import { useUserInfo } from "../../../../stores/userInfo";
 
 const postList = ref();
 const userInfo = useUserInfo();

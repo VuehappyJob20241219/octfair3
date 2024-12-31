@@ -70,8 +70,8 @@
 
 <script setup>
 import axios from "axios";
-import { useUserInfo } from "../../../stores/userInfo";
 import { useRoute, useRouter } from "vue-router";
+import { useUserInfo } from "../../../stores/userInfo";
 
 const userInfo = useUserInfo();
 const companyDetail = ref({});

@@ -1,5 +1,5 @@
 <template>
-  <BizModal v-if="modalStateBiz.modalState" :bizIdx="bizIdx" @modalClose="() => (refetch())" />
+  <BizModal v-if="modalStateBiz.modalState" :bizIdx="bizIdx" @modalClose="() => refetch()" />
   <div class="divManage-bizList">
     <table>
       <colgroup>
@@ -39,53 +39,54 @@
         </template>
       </tbody>
     </table>
-    <Pagination :totalItems="bizList?.bizCnt || 0" :items-per-page="5" :max-pages-shown="5" :onClick="searchList"
-      v-model="cPage" />
+    <Pagination
+      :totalItems="bizList?.bizCnt || 0"
+      :items-per-page="5"
+      :max-pages-shown="5"
+      :onClick="searchList"
+      v-model="cPage"
+    />
   </div>
 </template>
 
 <script setup>
-import { useQuery } from '@tanstack/vue-query';
+import { useQuery } from "@tanstack/vue-query";
 import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
 import Pagination from "../../common/Pagination.vue";
 
-
 const cPage = ref(1);
 const modalStateBiz = useModalStore();
 const bizIdx = ref("");
-const injectedValue = inject('provideValue');
-
+const injectedValue = inject("provideValue");
 
 const searchList = async () => {
   const data = {
     ...injectedValue.value,
-    currentPage: (cPage.value).toString(),
+    currentPage: cPage.value.toString(),
     pageSize: (5).toString(),
   };
 
-  const result = await axios.post("/api/manage-user/bizListBody.do", data)
+  const result = await axios.post("/api/manage-user/bizListBody.do", data);
 
   return result.data;
-}
+};
 
 const {
   data: bizList,
   isLoading,
   isSuccess,
   isError,
-  refetch
+  refetch,
 } = useQuery({
-  queryKey: ['bizList', injectedValue, cPage],
+  queryKey: ["bizList", injectedValue, cPage],
   queryFn: searchList,
-})
-
+});
 
 const handlerModal = (idx) => {
   bizIdx.value = idx;
   modalStateBiz.setModalState();
 };
-
 </script>
 
 <style lang="scss" scoped>

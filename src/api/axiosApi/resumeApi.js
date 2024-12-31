@@ -5,7 +5,7 @@ export const Resume = {
   BasicInfoResume: "/api/apply/resumeNew.do",
   SaveResume: "/api/apply/resumeSaveBody.do",
   PreviewResume: "/api/apply/previewResumeBody.do",
-  MyResume:'/api/apply/resumeDetail.do'
+  MyResume: "/api/apply/resumeDetail.do",
 };
 
 export const ResumeAddTable = {
@@ -13,13 +13,16 @@ export const ResumeAddTable = {
   ListCareer: "/api/apply/careerListBody.do",
   DeleteCareer: "/api/apply/deleteCareerBody.do",
   InsertEducation: "/api/apply/insertEduBody.do",
-  ListEducation:"/api/apply/eduListBody.do",
+  ListEducation: "/api/apply/eduListBody.do",
   DeleteEducation: "/api/apply/deleteEduBody.do",
   InsertSkill: "/api/apply/insertSkillBody.do",
-  ListSkill:"/api/apply/skillListBody.do",
+  ListSkill: "/api/apply/skillListBody.do",
   DeleteSkill: "/api/apply/deleteSkillBody.do",
   InsertCertification: "/api/apply/insertCertBody.do",
   ListCertification: "/api/apply/certListBody.do",
   DeleteCertification: "/api/apply/deleteCertBody.do",
   DeleteAttachFile: "/api/apply/deleteAttachFile.do",
+  InsertAttachment: "/api/apply/attachmentSaveBody.do",
+  ListAttachment: "/api/apply/attachmentListBody.do",
+  DeleteAttachment: "/api/apply/deleteAttachmentBody.do",
 };
