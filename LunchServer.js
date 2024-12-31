@@ -15,7 +15,7 @@ const getFormattedDate = () => {
 const date = getFormattedDate();
 const filePath = `V:/FileRepository/menu/${date}.jpg`; // 기본 이미지 파일 경로 설정
 const client = new ImageAnnotatorClient({
-  keyFilename: "C:/Users/SERVER/Desktop/octfair3/octfair3/octfair-c397a2a8acfa.json",
+  keyFilename: "C:/Users/SERVER/Desktop/octfair3/octfair3/octfair-9317c1d0b082.json",
 });
 
 // OCR 처리 함수
