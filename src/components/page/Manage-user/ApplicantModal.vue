@@ -1,7 +1,8 @@
 <template>
     <teleport to="body">
         <div class="backdrop">
-            <div class="container">
+            <div v-if="isLoading">로딩중 입니다</div>
+            <div v-if="isSuccess" class="container">
                 <label class="title">개인 회원 정보</label>
                 <div class="content">
                     <table>
@@ -14,58 +15,58 @@
                         <tbody>
                             <tr>
                                 <th>아이디</th>
-                                <td><input type="text" v-model="applicantDetail.loginId" readonly /></td>
+                                <td><input type="text" v-model="applicantDetailValue.loginId" readonly /></td>
                             </tr>
                             <tr>
                                 <th>비밀번호</th>
                                 <td><button @click="pwReset">초기화</button></td>
                             </tr>
                             <tr>
-                                <th>이름</th>
-                                <td><input type="text" v-model="applicantDetail.name" /></td>
+                                <th>이름<span style="color: red;">*</span></th>
+                                <td><input type="text" v-model="applicantDetailValue.name" /></td>
                             </tr>
                             <tr>
                                 <th>성별</th>
-                                <td><select v-model="applicantDetail.sex">
+                                <td><select v-model="applicantDetailValue.sex">
                                         <option value="1">남자</option>
                                         <option value="2">여자</option>
                                     </select></td>
                             </tr>
                             <tr>
-                                <th>생년월일</th>
-                                <td><input type="date" v-model="applicantDetail.birthday" /></td>
+                                <th>생년월일<span style="color: red;">*</span></th>
+                                <td><input type="date" v-model="applicantDetailValue.birthday" /></td>
                             </tr>
                             <tr>
-                                <th>전화번호</th>
-                                <td><input type="text" v-model="applicantDetail.phone" /></td>
+                                <th>전화번호<span style="color: red;">*</span></th>
+                                <td><input type="text" v-model="applicantDetailValue.phone" /></td>
                             </tr>
                             <tr>
-                                <th>이메일</th>
-                                <td><input type="email" v-model="applicantDetail.email" /></td>
+                                <th>이메일<span style="color: red;">*</span></th>
+                                <td><input type="email" v-model="applicantDetailValue.email" /></td>
                             </tr>
                             <tr>
-                                <th>가입일자</th>
-                                <td><input type="date" v-model="applicantDetail.regdate" /></td>
+                                <th>가입일자<span style="color: red;">*</span></th>
+                                <td><input type="date" v-model="applicantDetailValue.regdate" /></td>
                             </tr>
                             <tr>
                                 <th>활성화</th>
-                                <td><select v-model="applicantDetail.statusYn">
+                                <td><select v-model="applicantDetailValue.statusYn">
                                         <option value="1">활성</option>
                                         <option value="2">비활성</option>
                                     </select></td>
                             </tr>
                             <tr>
-                                <th>우편변호</th>
-                                <td><input type="text" v-model="applicantDetail.zipCode" /></td>
+                                <th>우편변호<span style="color: red;">*</span></th>
+                                <td><input type="text" v-model="applicantDetailValue.zipCode" readonly /></td>
                                 <button @click="openDaumPostcode">우편번호 찾기</button>
                             </tr>
                             <tr>
                                 <th>주소</th>
-                                <td><input type="text" v-model="applicantDetail.address" /></td>
+                                <td><input type="text" v-model="applicantDetailValue.address" readonly /></td>
                             </tr>
                             <tr>
                                 <th>상세주소</th>
-                                <td><input type="text" v-model="applicantDetail.detailAddress" /></td>
+                                <td><input type="text" v-model="applicantDetailValue.detailAddress" /></td>
                             </tr>
                         </tbody>
                     </table>
@@ -79,101 +80,115 @@
 
 
 <script setup>
+import { useMutation, useQuery } from '@tanstack/vue-query';
 import axios from "axios";
+import { watchEffect } from 'vue';
 import { useModalStore } from "../../../stores/modalState";
 
-const emit = defineEmits(["postSuccess", "modalClose"]);
 const props = defineProps(["loginId"]);
+const emit = defineEmits(["modalClose"]);
 
-const applicantDetail = ref({});
+const applicantDetailValue = ref({});
 const modalStateApplicant = useModalStore();
 
-const searchDetail = () => {
+const searchDetail = async () => {
     const param = new URLSearchParams({
         loginId: props.loginId
     });
 
-    axios.post('/api/manage-user/applicantManageDetail.do', param)
-        .then((res) => {
-            applicantDetail.value = res.data.detail;
-        });
+    const result = await axios.post('/api/manage-user/applicantManageDetail.do', param)
+
+    return result.data;
 };
+
+const {
+    data: applicantDetail,
+    isLoading,
+    isSuccess,
+    isError
+} = useQuery({
+    queryKey: ['applicantDetail'],
+    queryFn: searchDetail,
+    enabled: !!props.loginId
+})
+
 
 const openDaumPostcode = () => { //카카오API사용
     new daum.Postcode({
         oncomplete: (data) => {
-            applicantDetail.value.zipCode = data.zonecode;
-            applicantDetail.value.address = data.roadAddress;
+            applicantDetailValue.value.zipCode = data.zonecode;
+            applicantDetailValue.value.address = data.roadAddress;
         },
     }).open();
 }
 
-const handlerUpdateBtn = () => {
-    //유효성 검사
+
+const updateApplicantDetail = async () => {
     if (!checkForm()) {
-        console.log("수정에 실패하였습니다.");
         return;
     }
 
     const param = new URLSearchParams({
-        ...applicantDetail.value
+        ...applicantDetailValue.value
     });
 
-    axios.post("/api/manage-user/applicantInfoUpdate.do", param).then((res) => {
-        if (res.data.result === 'success') {
-            handlerModal();
-            emit('postSuccess');
-        };
-    })
+    return await axios.post("/api/manage-user/applicantInfoUpdate.do", param);
 }
 
+const { mutate: handlerUpdateBtn }
+    = useMutation({
+        mutationFn: updateApplicantDetail,
+        mutationKey: ['applicantUpdate'],
+        onSettled: (data, error) => {
+            if (data) {
+                handlerModal();
+            }
+        }
+    })
+
 const checkForm = () => {
-    let inputName = applicantDetail.value.name;
-    let inputSex = applicantDetail.value.sex;
-    let inputBirthday = applicantDetail.value.birthday;
-    let inputPhone = applicantDetail.value.phone;
-    let inputEmail = applicantDetail.value.email;
-    let inputRegDate = applicantDetail.value.regdate;
-    let inputZipCode = applicantDetail.value.zipCode;
+    let inputName = applicantDetailValue.value.name;
+    let inputSex = applicantDetailValue.value.sex;
+    let inputBirthday = applicantDetailValue.value.birthday;
+    let inputPhone = applicantDetailValue.value.phone;
+    let inputEmail = applicantDetailValue.value.email;
+    let inputRegDate = applicantDetailValue.value.regdate;
+    let inputZipCode = applicantDetailValue.value.zipCode;
 
     const emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
     const phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
     const ZipCodeRules = /[0-9\-]{5}/;
 
-    if (inputName.length < 1) {
+    if (!inputName) {
         alert("이름을 입력하세요.");
         return false;
     }
-    if (inputSex.length < 1) {
-        alert("성별을 선택해주세요.");
-        return false;
-    }
-    if (inputBirthday.length < 1) {
+    if (!inputBirthday) {
         alert("생일을 입력해주세요.");
         return false;
     }
-    if (inputPhone.length < 1) {
-        alert("전화번호를 선택해주세요.");
+    if (!inputPhone) {
+        alert("전화번호를 입력해주세요.");
         return false;
     }
     if (!phoneRules.test(inputPhone)) {
         alert("전화번호 형식을 확인해주세요.");
         return false;
     }
-    if (inputEmail.length < 1) {
-        alert("이메일을 선택해주세요.");
+    if (!inputEmail) {
+        alert("이메일을 입력해주세요.");
         return false;
     }
     if (!emailRules.test(inputEmail)) {
         alert("이메일 형식을 확인해주세요.");
         return false;
     }
-    if (inputRegDate.length < 1) {
+    if (!inputRegDate) {
         alert("가입일자를 입력해주세요.");
         return false;
     }
-    if (inputZipCode.length < 1) {
-        alert("우편번호(주소)를 입력해주세요.");
+    if (!inputZipCode) {
+        alert("우편번호를 입력해주세요.");
         return false;
     }
     if (!ZipCodeRules.test(inputZipCode)) {
@@ -185,7 +200,7 @@ const checkForm = () => {
 
 const pwReset = () => {
     const param = new URLSearchParams({
-        loginId: applicantDetail.value.loginId
+        loginId: applicantDetailValue.value.loginId
     });
 
     axios.post("/api/manage-user/applicantPwReset.do", param)
@@ -202,9 +217,12 @@ const handlerModal = () => {
     modalStateApplicant.setModalState();
 };
 
-onMounted(() => {
-    props.loginId && searchDetail();
-});
+watchEffect(() => {
+    if (isSuccess.value) {
+        applicantDetailValue.value = toRaw(applicantDetail.value.detail);
+    }
+})
+
 
 onUnmounted(() => {
     emit("modalClose");
@@ -247,7 +265,7 @@ label.title {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
     position: relative;
     // max-width: 60%;
-    width: 500px;
+    width: 550px;
     max-height: 90%;
     /* 모달 높이를 화면에 맞게 제한 */
     overflow-y: auto;
@@ -264,7 +282,7 @@ input[type="tel"] {
     border-radius: 4px;
     border: 1px solid #ccc;
     // font-size: 13px;
-    width: 200px;
+    width: 250px;
 }
 
 select {

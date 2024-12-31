@@ -4,43 +4,60 @@
       <div class="container">
         <div id="printArea">
           <div class="resumePreviewTitle">이력서 미리보기</div>
-          <template v-if="resumeDetailinformation">
-            <div style="margin-bottom: 20px">
-              <p style="white-space: pre-line; font-size: 25px; font-weight: 900">{{ resumeProperties.resTitle }}</p>
-            </div>
-            <div style="margin-bottom: 5px" v-if="resumeProperties.userNm">
-              <p style="white-space: pre-line; font-size: 15px; font-weight: 500">
-                이름 : {{ resumeProperties.userNm }}
-              </p>
-            </div>
-            <div style="margin-bottom: 5px">
-              <p style="white-space: pre-line; font-size: 15px; font-weight: 500">
-                이메일 : {{ resumeProperties.email }}
-              </p>
-            </div>
-            <div style="margin-bottom: 10px">
-              <p style="white-space: pre-line; font-size: 15px; font-weight: 500">
-                연락처 : {{ resumeProperties.phone }}
-              </p>
-            </div>
-            <div style="margin-top: 20px; padding: 15px; border-top: 1px solid #ccc">
-              <div>
-                <p style="white-space: pre-line">{{ resumeProperties.shortIntro }}</p>
-              </div>
-              <div style="" v-if="resumeProperties.proLink">
-                <p style="white-space: pre-line">
-                  링크 :
-                  <a style="color: #36f" :href="resumeProperties.proLink">{{ resumeProperties.proLink }}</a>
-                </p>
-              </div>
-              <div v-if="resumeProperties.fileName" @click="ResumeFileDownload" class="file-download">
-                <p style="white-space: pre-line">
-                  첨부파일 :
-                  <span class="file-link">{{ resumeProperties.fileName }}</span>
-                </p>
+          <!-- 이력서 사진 작업 -->
+          <div style="display: flex; border: 2px solid #ccc; padding: 5px; margin-top: 10px">
+            <div class="file-container" style="margin: 20px">
+              <div v-if="imageUrl">
+                <img :src="imageUrl" class="my-image" />
               </div>
             </div>
-          </template>
+            <div>
+              <template v-if="resumeDetailinformation" style="flex: 1">
+                <div style="margin-top: 40px">
+                  <p style="white-space: pre-line; font-size: 25px; font-weight: 900">
+                    {{ resumeProperties.resTitle }}
+                  </p>
+                </div>
+                <div style="margin-left: 10px" v-if="resumeProperties.userNm">
+                  <p style="white-space: pre-line; font-size: 15px; font-weight: 500">
+                    이름 : {{ resumeProperties.userNm }}
+                  </p>
+                </div>
+                <div style="margin-left: 10px">
+                  <p style="white-space: pre-line; font-size: 15px; font-weight: 500">
+                    이메일 : {{ resumeProperties.email }}
+                  </p>
+                </div>
+                <div style="margin-left: 10px">
+                  <p style="white-space: pre-line; font-size: 15px; font-weight: 500">
+                    연락처 : {{ resumeProperties.phone }}
+                  </p>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div style="margin-top: 20px; padding: 15px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc">
+            <div>
+              <p style="white-space: pre-line">{{ resumeProperties.shortIntro }}</p>
+            </div>
+          </div>
+          <div style="margin-left: 20px; margin-top: 20px" v-if="resumeProperties.proLink">
+            <p style="white-space: pre-line">
+              링크 :
+              <a style="color: #36f" :href="resumeProperties.proLink">{{ resumeProperties.proLink }}</a>
+            </p>
+          </div>
+          <div
+            v-if="resumeProperties.fileName"
+            @click="ResumeFileDownload"
+            class="file-download"
+            style="margin-left: 20px"
+          >
+            <p style="white-space: pre-line">
+              첨부파일 :
+              <span class="file-link">{{ resumeProperties.fileName }}</span>
+            </p>
+          </div>
           <!-- 경력 -->
           <template v-if="careerProperties.length > 0">
             <div style="padding: 15px">
@@ -267,6 +284,7 @@ const resumeDetailinformation = ref({
   resIdx: 0,
   resumeInfo: {},
 });
+const imageUrl = ref("/no_image.jpg");
 
 const resumeProperties = computed(() => {
   return resumeDetailinformation.value.resumeInfo || {}; // resumeInfo가 없을 경우 빈 객체 반환
@@ -295,6 +313,23 @@ const closeModal = () => {
 const resumeDetail = async () => {
   await axios.post(Resume.PreviewResume, { resIdx: props.idx }).then((res) => {
     resumeDetailinformation.value = res.data;
+    getFileImage();
+  });
+};
+
+const getFileImage = () => {
+  let param = new URLSearchParams();
+  param.append("resIdx", props.idx);
+  const postAction = {
+    url: "/api/apply/resumeFileDownload.do",
+    method: "POST",
+    data: param,
+    responseType: "blob",
+  };
+  axios(postAction).then((res) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    imageUrl.value = url;
+    console.log(res);
   });
 };
 
@@ -375,13 +410,13 @@ input[type="text"] {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
   position: relative;
   width: 800px;
-  height: 800px;
+  height: 600px;
   overflow: auto;
 }
 
 img {
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 200px;
 }
 
 .img-label {
@@ -495,5 +530,13 @@ button {
   .btnType.blue:hover {
     background-color: #0056b3; /* 파란색 버튼 호버 색상 */
   }
+}
+
+.my-image {
+  width: 170px; /* 가로 4.5cm에 해당하는 픽셀 */
+  height: 229px; /* 세로 5.79cm에 해당하는 픽셀 */
+  object-fit: cover; /* 이미지 비율을 유지하면서 잘리기 */
+  border: 2px solid #ccc; /* 이미지 테두리 (선택 사항) */
+  margin: 10px; /* 이미지 주변 여백 (필요에 따라 조정) */
 }
 </style>
