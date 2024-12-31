@@ -1,6 +1,5 @@
 <template>
-    <ApplicantModal v-if="modalStateApplicant.modalState" @postSuccess="searchList" @modalClose="() => (loginId = 0)"
-        :loginId="loginId" />
+    <ApplicantModal v-if="modalStateApplicant.modalState" :loginId="loginId" @modalClose="() => (refetch())" />
     <div class="applicantList">
         <table>
             <colgroup>
@@ -48,44 +47,44 @@
 
 
 <script setup>
+import { useQuery } from '@tanstack/vue-query';
 import axios from "axios";
-import { onMounted } from "vue";
-import { useRoute } from "vue-router";
 import { useModalStore } from "../../../stores/modalState";
 import Pagination from "../../common/Pagination.vue";
 
-const route = useRoute();
-const applicantList = ref();
+
 const cPage = ref(1);
 const modalStateApplicant = useModalStore();
 const loginId = ref("");
+const injectedValue = inject('provideValue');
 
 const searchList = async () => {
+
     const data = {
-        searchName: route.query.searchName || "",
+        ...injectedValue.value,
         currentPage: (cPage.value).toString(),
         pageSize: (5).toString(),
     };
+    const result = await axios.post("/api/manage-user/applicantListBody.do", data);
 
-    console.log(data);
-    await axios
-        .post("/api/manage-user/applicantListBody.do", data)
-        .then((res) => {
-            applicantList.value = res.data;
-        })
-        .catch(() => { });
-}
+    return result.data;
+};
+
+const {
+    data: applicantList,
+    isLoading,
+    isSuccess,
+    isError,
+    refetch
+} = useQuery({
+    queryKey: ['applicantList', injectedValue, cPage],
+    queryFn: searchList,
+})
 
 const handlerModal = (id) => {
     loginId.value = id;
     modalStateApplicant.setModalState();
 };
-
-watch(route, () => searchList());
-
-onMounted(() => {
-    searchList();
-});
 
 </script>
 

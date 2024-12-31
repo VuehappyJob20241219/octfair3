@@ -17,11 +17,12 @@ import Join from "../views/Join/JoinApplicant.vue";
 import Login from "../views/Login/Login.vue";
 import Applicant from "../views/Manage-user/Applicant.vue";
 import Biz from "../views/Manage-user/Biz.vue";
+import BizPost from "../views/ManageHire/BizPost.vue";
 import ManageHireApplicant from "../views/ManageHire/ManageHireApplicant.vue";
-import Post from "../views/ManageHire/Post.vue";
 import Mypage from "../views/Mypage/Mypage.vue";
 import Withdraw from "../views/Mypage/Withdraw.vue";
 import NotFound from "../views/NotFound.vue";
+import Scrap from "../views/Scrap/Scrap.vue";
 
 const routes = [
   {
@@ -113,6 +114,17 @@ const routes = [
             name: "resume-new",
             component: ResumePost,
           },
+          //  {
+          //   path: "resume-detail.do?resumeNum=:idx",
+          //   name: "MyResumes",
+          //   component: ResumePost,
+          // },
+          {
+            path: "resume-detail.do",
+            name: "MyResumes",
+            component: ResumePost,
+            props: (route) => ({ resumeNum: route.query.resumeNum }), // 쿼리 파라미터 전달
+          },
           {
             path: "history.do",
             name: "history",
@@ -127,11 +139,16 @@ const routes = [
           {
             path: "post.do",
             name: "post",
-            component: Post,
+            component: BizPost,
           },
           {
             path: "bizPostInsert.do",
             name: "bizPostInsert",
+            component: BizPostInsert,
+          },
+          {
+            path: "bizPostInsert.do/:postIdx",
+            name: "bizPostModify",
             component: BizPostInsert,
           },
           {
@@ -156,7 +173,8 @@ const routes = [
             component: CompanyEdit,
           },
           {
-            path: "companyDetailPage.do",
+
+            path: "companyDetailPage.do/:postIdx/:bizIdx",
             name: "companyDetailPage",
             component: CompanyInfo,
           },
@@ -178,6 +196,53 @@ const routes = [
           },
         ],
       },
+      {
+        path: "manage-post",
+        name: "manage-post",
+        children: [
+          {
+            path: "post.do",
+            name: "managePost",
+            component: BizPost,
+          },
+          {
+            path: "approval.do",
+            name: "managePostApproval",
+            component: BizPost,
+          },
+          {
+            path: ":postIdx/:bizIdx",
+            name: "managePostApprovalDetail",
+            component: BizPostDetail,
+          },
+          {
+            path: ":postIdx/:bizIdx",
+            name: "managePostDetail",
+            component: BizPostDetail,
+          },
+        ],
+      },
+      {
+        path: "jobs",
+        name: "jobs",
+        children: [
+          {
+            path: "posts.do",
+            name: "jobsPosts",
+            component: BizPost,
+          },
+          {
+            path: "scrap.do",
+            name: "postScrap",
+            component: BizPost,
+          },
+          {
+            path: "scrap.do",
+            name: "scrap",
+            component: Scrap,
+          },
+        ],
+      },
     ],
   },
   {
@@ -192,6 +257,7 @@ const router = createRouter({
     routes,
 });
 
+<<<<<<< HEAD
 router.beforeEach(async(to, from) => {
     const userInfo = useUserInfo();
 
@@ -202,3 +268,15 @@ router.beforeEach(async(to, from) => {
 });
 
 export default router;
+=======
+router.beforeEach(async (to, from) => {
+  const userInfo = useUserInfo();
+
+  if (!userInfo.isAuthenticated && !["login", "join"].includes(to.name)) {
+    alert("로그인이 필요합니다.");
+    return { name: "login" };
+  }
+});
+
+export default router;
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4

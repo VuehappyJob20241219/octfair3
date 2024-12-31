@@ -20,11 +20,12 @@
       <tr>
         <th>연락처</th>
         <td>
-          <input type="text" v-model="companyDetail.bizContact" />
+          <input type="text" v-model="companyDetail.bizContact" @input="companyPhoneNumChange" />
         </td>
         <th>사업자 주소</th>
-        <td>
+        <td class="address">
           <input type="text" v-model="companyDetail.bizAddr" />
+          <button @click="openDaumPostcode">찾기</button>
         </td>
       </tr>
       <tr>
@@ -134,6 +135,11 @@ const handlerCompanyInsert = async () => {
 };
 
 const handlerCompanyUpdate = async () => {
+  const validation = handlerValidation();
+  if (!validation) {
+    return;
+  }
+
   const textData = {
     ...companyDetail.value,
     loginId: userInfo.user.loginId,
@@ -181,8 +187,9 @@ const getFileImage = (idx) => {
 };
 
 const companyPhoneNumChange = (e) => {
-  const inputNum = e.target.value;
-  var phone = inputNum.replace(/[^0-9]/g, "");
+  let inputNum = e.target.value;
+  console.log("inputNum====>  " + inputNum);
+  let phone = inputNum.replace(/[^0-9]/g, "");
 
   if (phone.length >= 3) {
     var prefix = phone.substring(0, 3);
@@ -199,64 +206,75 @@ const companyPhoneNumChange = (e) => {
   if (phone.length > 13) {
     phone = phone.substring(0, 13);
   }
-  phoneNum.value = phone;
+  return phone;
 };
 
-// const handlerValidation = () => {
-//   const today = new Date();
-//   const addressPattern = /^[\w\s가-힣]+$/;
-//   const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}([\/?%&=.#]*)?$/;
+const openDaumPostcode = () => {
+  new daum.Postcode({
+    oncomplete: (data) => {
+      companyDetail.value.bizAddr = data.roadAddress;
+    },
+  }).open();
+};
 
-//   const inputs = companyDetail.value;
-//   console.log("companyDetail: " + inputs);
+const handlerValidation = () => {
+  const today = new Date();
+  const addressPattern = /^[\w\s가-힣]+$/;
+  const urlPattern = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(:\d+)?(\/[^\s]*)?$/;
 
-//   if (!inputs.bizName) {
-//     alert("사업자 이름을 입력해 주세요.");
-//     return;
-//   } else if (!inputs.bizCeoName) {
-//     alert("사업자 이름을 입력해 주세요.");
-//     return;
-//   } else if (!inputs.bizContact) {
-//     alert("연락처를 입력해 주세요.");
-//     return;
-//   } else if (!inputs.bizAddr) {
-//     alert("주소를 입력해 주세요.");
-//     return;
-//   } else if (!inputs.bizFoundDate) {
-//     alert("설립일을 입력해 주세요.");
-//     return;
-//   } else if (!inputs.bizWebUrl) {
-//     alert("홈페이지 주소를 입력해 주세요.");
-//     return;
-//   } else if (!inputs.bizEmpCount) {
-//     alert("사원수를 입력해 주세요.");
-//     return;
-//   } else if (!inputs.bizRevenue) {
-//     alert("매출액을 입력해 주세요.");
-//     return;
-//     // } else if (!inputs.fileData) {
-//     //   alert('로고를 등록해 주세요.');
-//     //   return;
-//   }
+  const inputs = companyDetail.value;
 
-//   if (today < new Date(inputs.bizFoundDate)) {
-//     alert("설립일은 오늘보다 이전이어야 합니다.");
-//     return false;
-//   }
+  if (!inputs.bizName) {
+    alert("사업자명을 입력해 주세요.");
+    return;
+  } else if (!inputs.bizCeoName) {
+    alert("사업자 대표를 입력해 주세요.");
+    return;
+  } else if (!inputs.bizContact) {
+    alert("연락처를 입력해 주세요.");
+    return;
+  } else if (!inputs.bizAddr) {
+    alert("사업자 주소를 입력해 주세요.");
+    return;
+  } else if (!inputs.bizEmpCount) {
+    alert("사원수를 선택해 주세요.");
+    return;
+  } else if (!inputs.bizWebUrl) {
+    alert("홈페이지 주소를 입력해 주세요.");
+    return;
+  } else if (!inputs.bizFoundDate) {
+    alert("설립일을 입력해 주세요.");
+    return;
+  } else if (!inputs.bizRevenue) {
+    alert("매출액을 입력해 주세요.");
+    return;
+  } else if (!inputs.bizIntro) {
+    alert("기업소개를 입력해 주세요.");
+    return;
+    // } else if (!inputs.fileData) {
+    //   alert('로고를 등록해 주세요.');
+    //   return;
+  }
 
-//   if (!addressPattern.test(inputs.bizAddr)) {
-//     alert("주소는 특수 문자를 포함하지 않는 형식으로 입력해 주세요.");
-//     return false;
-//   }
+  if (today < new Date(inputs.bizFoundDate)) {
+    alert("설립일은 오늘보다 이전이어야 합니다.");
+    return false;
+  }
 
-//   if (!urlPattern.test(inputs.bizWebUrl)) {
-//     alert("홈페이지 주소는 올바른 URL 형식으로 입력해 주세요.");
-//     return false;
-//   }
+  if (!addressPattern.test(inputs.bizAddr)) {
+    alert("주소는 특수 문자를 포함하지 않는 형식으로 입력해 주세요.");
+    return false;
+  }
 
-//   return inputs;
-// };
+  if (!urlPattern.test(inputs.bizWebUrl)) {
+    alert("홈페이지 주소는 올바른 URL 형식으로 입력해 주세요.");
+    return false;
+  }
 
+  return true;
+};
+
+<<<<<<< HEAD
 // const fileDownload = () => {
 //   let param = new URLSearchParams();
 //   param.append("bizIdx", companyDetail.value.bizIdx);
@@ -276,6 +294,27 @@ const companyPhoneNumChange = (e) => {
 //     link.remove();
 //   });
 // };
+=======
+const fileDownload = () => {
+  let param = new URLSearchParams();
+  param.append("bizIdx", companyDetail.value.bizIdx);
+  const postAction = {
+    url: "/api/company/companyImageDownload.do",
+    method: "POST",
+    data: param,
+    responseType: "blob",
+  };
+  axios(postAction).then((res) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", companyDetail.value.bizLogo);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  });
+};
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
 
 const handlerCompanyDelete = async () => {
   await axios.post("/api/company/companyDeleteRe.do", { loginId: userInfo.user.loginId }).then((res) => {
@@ -357,5 +396,40 @@ button {
 img {
   width: 100px;
   height: 100px;
+}
+
+.img-label {
+  margin-top: 10px;
+  padding: 6px 25px;
+  background-color: #ccc;
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.9);
+  cursor: pointer;
+
+  &:hover {
+    background-color: #45a049;
+    color: white;
+  }
+
+  &:active {
+    background-color: #3e8e41;
+    box-shadow: 0 2px #666;
+    transform: translateY(2px);
+  }
+}
+
+.address {
+  display: inline;
+  text-align: left;
+  input {
+    width: 70%;
+  }
+  button {
+    width: 20%;
+    height: 30px;
+    font-size: 10px;
+    float: right;
+    text-align: center;
+  }
 }
 </style>

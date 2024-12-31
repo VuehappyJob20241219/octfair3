@@ -64,22 +64,37 @@
     </table>
   </div>
   <div style="text-align: right">
+<<<<<<< HEAD
     <button @click="$router.go(-1)">기업 지원 공고 확인하기</button>
+=======
+    <button @click="$router.go(-1)">기업 지원공고 확인하기</button>
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
   </div>
 </template>
 
 <script setup>
 import axios from "axios";
 import { useUserInfo } from "../../../stores/userInfo";
+<<<<<<< HEAD
 import { useRouter } from "vue-router";
+=======
+import { useRoute, useRouter } from "vue-router";
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
 
 const userInfo = useUserInfo();
 const companyDetail = ref({});
 const imageUrl = ref("");
 const router = useRouter();
+<<<<<<< HEAD
 
 const searchDetail = () => {
   axios.post("/api/company/companyUpdatePageRe.do", { loginId: userInfo.user.loginId }).then((res) => {
+=======
+const { params } = useRoute();
+
+const searchDetail = () => {
+  axios.post("/api/company/companyDetailPageRe.do/" + params.postIdx + "/" + params.bizIdx, params).then((res) => {
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
     companyDetail.value = res.data.detail || {};
     if (
       companyDetail.value.fileExt === "jpg" ||
@@ -87,7 +102,11 @@ const searchDetail = () => {
       companyDetail.value.fileExt === "png" ||
       companyDetail.value.fileExt === "webp"
     ) {
+<<<<<<< HEAD
       getFileImage(6);
+=======
+      getFileImage(params.bizIdx);
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
     }
   });
 };

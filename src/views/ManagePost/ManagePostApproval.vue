@@ -1,5 +1,5 @@
 <template>
-    <ContextBox>공고관리</ContextBox>
+    <ContextBox>공고심사</ContextBox>
     <BizPostMain></BizPostMain>
 </template>
 

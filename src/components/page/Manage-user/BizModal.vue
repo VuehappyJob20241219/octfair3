@@ -1,7 +1,8 @@
 <template>
     <teleport to="body">
         <div class="backdrop">
-            <div class="container">
+            <div v-if="isLoading">로딩중 입니다</div>
+            <div v-if="isSuccess" class="container">
                 <label class="title">회사 정보</label>
                 <div class="content">
                     <table>
@@ -14,50 +15,50 @@
                         <tbody>
                             <tr>
                                 <th>사업자번호</th>
-                                <td><input type="text" v-model="bizManageDetail.bizIdx" readonly /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizIdx" readonly /></td>
                             </tr>
                             <tr>
-                                <th>사업자명</th>
-                                <td><input type="text" v-model="bizManageDetail.bizName" /></td>
+                                <th>사업자명<span style="color: red;">*</span></th>
+                                <td><input type="text" v-model="bizDetailValue.bizName" /></td>
                             </tr>
                             <tr>
                                 <th>대표자</th>
-                                <td><input type="text" v-model="bizManageDetail.bizCeoName" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizCeoName" /></td>
                             </tr>
                             <tr>
                                 <th>사원수</th>
-                                <td><input type="text" v-model="bizManageDetail.bizEmpCount" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizEmpCount" /></td>
                             </tr>
                             <tr>
                                 <th>매출액</th>
-                                <td><input type="text" v-model="bizManageDetail.bizRevenue" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizRevenue" /></td>
                             </tr>
                             <tr>
                                 <th>연락처</th>
-                                <td><input type="text" v-model="bizManageDetail.bizContact" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizContact" /></td>
                             </tr>
                             <tr>
                                 <th>사업자주소</th>
-                                <td><input type="text" v-model="bizManageDetail.bizAddr" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizAddr" /></td>
                             </tr>
                             <tr>
                                 <th>홈페이지주소</th>
-                                <td><input type="text" v-model="bizManageDetail.bizWebUrl" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizWebUrl" /></td>
                             </tr>
                             <tr>
                                 <th>설립일</th>
-                                <td><input type="date" v-model="bizManageDetail.bizFoundDate" /></td>
+                                <td><input type="date" v-model="bizDetailValue.bizFoundDate" /></td>
                             </tr>
                             <tr>
                                 <th>회사소개</th>
-                                <td><input type="text" v-model="bizManageDetail.bizIntro" /></td>
+                                <td><input type="text" v-model="bizDetailValue.bizIntro" /></td>
                             </tr>
 
                         </tbody>
                     </table>
                 </div>
-                <button @click="handlerSaveBtn">수정</button>
-            <button @click="handlerModal">취소</button>
+                <button @click="handlerUpdateBtn">수정</button>
+                <button @click="handlerModal">취소</button>
             </div>
         </div>
     </teleport>
@@ -65,77 +66,92 @@
 
 
 <script setup>
+import { useMutation, useQuery } from '@tanstack/vue-query';
 import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
 
-const emit = defineEmits(["postSuccess", "modalClose"]);
+const emit = defineEmits(["modalClose"]);
 const props = defineProps(["bizIdx"]);
 
-const bizManageDetail = ref({});
+const bizDetailValue = ref({});
 const modalStateBiz = useModalStore();
 
-
-const searchDetail = () => {
+const searchDetail = async () => {
     const param = new URLSearchParams({
         bizIdx: props.bizIdx
     });
 
-    axios.post('/api/manage-user/bizManageDetail.do', param)
-        .then((res) => {
-            bizManageDetail.value = res.data.detail;
-        });
-};
+    const result = await axios.post('/api/manage-user/bizManageDetail.do', param)
 
-const handlerSaveBtn = () => {
-    //유효성 검사
+    return result.data;
+}
+
+const {
+    data: bizDetail,
+    isLoading,
+    isSuccess,
+    isError
+} = useQuery({
+    queryKey: ['bizDetail'],
+    queryFn: searchDetail,
+    enabled: !!props.bizIdx
+})
+
+const updateBizDetail = async () => {
     if (!checkForm()) {
-        console.log("수정에 실패하였습니다.");
         return;
     }
 
     const param = new URLSearchParams({
-        ...bizManageDetail.value
+        ...bizDetailValue.value
     });
 
-    axios.post("/api/manage-user/bizInfoUpdate.do", param).then((res) => {
-        if (res.data.result === 'success') {
-            handlerModal();
-            emit('postSuccess');
-        };
-    })
+    return await axios.post("/api/manage-user/bizInfoUpdate.do", param)
 }
 
-const checkForm = () => {
-    let inputBizName = bizManageDetail.value.bizName;
-    let inputContact = bizManageDetail.value.bizContact;
+const { mutate: handlerUpdateBtn }
+    = useMutation({
+        mutationFn: updateBizDetail,
+        mutationKey: ['bizUpdate'],
+        onSettled: (data, error) => {
+            if (data) {
+                handlerModal();
+            }
+        }
+    })
 
-    let phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
+
+const checkForm = () => {
+    let inputBizName = bizDetailValue.value.bizName;
+    let inputContact = bizDetailValue.value.bizContact;
+
+    const phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
 
     if (inputBizName.length < 1) {
         alert("사업자명을 입력하세요.");
         return false;
     }
 
-    if(!inputContact){
+    if (!inputContact) {
         //공백인 경우 저장 가능
-    }else if(!phoneRules.test(inputContact)){
+    } else if (!phoneRules.test(inputContact)) {
         alert("전화번호 형식을 확인해주세요.");
         return false;
     }
-    console.log(inputContact);
-    
+
     return true;
 }
-
 
 
 const handlerModal = () => {
     modalStateBiz.setModalState();
 };
 
-onMounted(() => {
-    props.bizIdx && searchDetail();
-});
+watchEffect(() => {
+    if (isSuccess.value) {
+        bizDetailValue.value = toRaw(bizDetail.value.detail);
+    }
+})
 
 onUnmounted(() => {
     emit("modalClose");
@@ -177,16 +193,14 @@ label.title {
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
     position: relative;
-    max-width: 60%;
+    // max-width: 60%;
+    width: 500px;
     max-height: 90%;
     /* 모달 높이를 화면에 맞게 제한 */
     overflow-y: auto;
     /* 내부 스크롤 가능하게 설정 */
 }
 
-// .content {
-//     display: inline-block;
-// }
 
 input[type="text"],
 input[type="date"],
@@ -198,7 +212,7 @@ input[type="tel"] {
     border-radius: 4px;
     border: 1px solid #ccc;
     // font-size: 13px;
-    width: 200px;
+    width: 300px;
 }
 
 select {
@@ -251,7 +265,7 @@ table {
     th {
         white-space: nowrap;
         /* 줄 바꿈 방지 */
-        width: 100px;
+        width: 110px;
         background-color: #2676bf;
         color: #ddd;
         display: block;

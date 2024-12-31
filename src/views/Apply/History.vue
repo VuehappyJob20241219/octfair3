@@ -22,11 +22,3 @@ provide("provideValue", provideValue);
 provide("cPage", cPage);
 provide("defaultSearchKey", defaultSearchKey);
 </script>
-
-
-
-
-<!-- // 검색 조건 초기화 함수
-const resetSearchKey = () => {
-  Object.assign(searchKey, defaultSearchKey); // 상태 초기화
-}; -->
