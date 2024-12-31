@@ -1,6 +1,6 @@
 <template>
   <VideoSearch></VideoSearch>
-  <ContextBox>{{ stateValue.state === "Lunch" ? "점심매뉴" : "자료검색" }}</ContextBox>
+  <ContextBox>{{ stateValue.state === "Lunch" ? "점심메뉴" : "자료검색" }}</ContextBox>
   <!-- 분기 처리 -->
   <VideoWatch v-if="provideUrl.url !== ''"></VideoWatch>
   <VideoYoutubeMain v-else-if="provideUrl.url === '' && stateValue.state === 'search'"></VideoYoutubeMain>

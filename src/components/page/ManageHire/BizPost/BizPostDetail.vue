@@ -124,7 +124,7 @@
           </div>
           <div class="mt-5">
             <h5>■ 첨부 파일 </h5>
-            <span class="p-4">{{postDetail?.benefits}}</span>
+            <span class="fileDown" @click="handleDown(postDetail.postIdx,bizDetail.bizIdx)">{{postDetail?.fileName}}</span>
           </div>
         </div>
         <template v-if="userType === 'b'">
@@ -136,7 +136,7 @@
         </template>
         
         <div class="d-flex justify-content-center m-2">
-          <template v-if="userType === 'B' && postDetail?.appStatus === '대기중'">
+          <template v-if="userType === 'B' ">
             <div>
               <b-button
                 variant="primary"
@@ -145,6 +145,14 @@
                 @click="navigatePost(`${postDetail.postIdx}`)"              
               >
                 수정하기
+              </b-button>
+              <b-button
+                variant="primary"
+                size="lg"
+                class="mx-1"
+                @click="handleDelete(postDetail.postIdx,bizDetail.bizIdx)"              
+              >
+                삭제하기
               </b-button>
               <b-button
                 variant="secondary"
@@ -241,6 +249,55 @@ const navigatePost= (param) => {
     } else {
       router.push({ name: "bizPostModify", params: { postIdx: param } });  // 지정된 URL로 이동
     }
+}
+
+const handleDelete = async (pIdx,bIdx) => {
+  const params = {
+    postIdx: pIdx,
+    bizIdx: bIdx,
+  };
+  const result = await axios.post(
+    "/api/manage-hire/managehireDeleteBody.do",
+    params,
+  );
+
+  if(result.data.result == 'success'){    
+    alert("삭제 처리되었습니다.");
+    router.go(-1);
+  }  
+}
+
+const handleDown = (pIdx,bIdx) => {
+  const params = {
+    postIdx: pIdx,
+    bizIdx: bIdx,
+  };
+  const download = {
+    url: "/api/manage-hire/managehireDownloadBody.do",
+    method: "POST",
+    data: params,
+    responseType: "blob",
+  };
+  axios(download).then((res) => {
+    // 다운로드한 파일을 브라우저에서 처리
+    const file = new Blob([res.data], { type: "application/octet-stream" });
+      const fileURL = URL.createObjectURL(file);
+      console.log()
+      // 파일 이름을 서버에서 받은 파일 이름으로 설정
+      const fileName = postDetail.value.fileName;
+
+      // 다운로드 링크 생성
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = fileName;
+      link.click(); // 자동으로 다운로드 시작
+
+      // 다운로드 후 URL 객체 해제
+      URL.revokeObjectURL(fileURL);
+    })
+    .catch((error) => {
+      console.error("파일 다운로드 실패:", error);
+    });
 }
 
 const handlerModal = (pIdx,bIdx) => {

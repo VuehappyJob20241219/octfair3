@@ -1,7 +1,7 @@
 <template>
   <div class="search-box">
     <button @click="btnHendler('search')">자료검색</button> 
-    <button @click="btnHendler('Lunch')">오늘의 매뉴</button> 
+    <button @click="btnHendler('Lunch')">오늘의 메뉴</button> 
     <input v-model.lazy="keyword" />
     <button @click="handlerSearch">검색</button>
   </div>
