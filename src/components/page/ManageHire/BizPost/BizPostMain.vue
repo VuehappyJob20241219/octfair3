@@ -94,7 +94,7 @@ const queryClient = useQueryClient();
 // const HirePost = ref();
 const cPage = ref(1);
 const route = useRoute();
-console.log(route.name);
+const injectedValue = inject('bizSearchValue');
 
 const searchList = async () => {
   const param = {
@@ -108,6 +108,8 @@ const searchList = async () => {
     );
     return result.data;
   }else{
+    Object.assign(param, injectedValue.value);
+    console.log(param);
     const result = await axios.post(
     "/api/manage-post/readPostListBody.do",
     param,
@@ -124,7 +126,7 @@ const {
   isSuccess,
   isError,
 } = useQuery({
-  queryKey: ["HirePost", cPage],
+  queryKey: ["HirePost", cPage, injectedValue],
   queryFn: searchList,
   // staleTime: 1000 * 60,
 });

@@ -16,6 +16,7 @@ declare module 'vue' {
     BizPostDetail: typeof import('./src/components/page/ManageHire/BizPost/BizPostDetail.vue')['default']
     BizPostInsert: typeof import('./src/components/page/ManageHire/BizPost/BizPostInsert.vue')['default']
     BizPostMain: typeof import('./src/components/page/ManageHire/BizPost/BizPostMain.vue')['default']
+    BizPostSearch: typeof import('./src/components/page/ManageHire/BizPost/BizPostSearch.vue')['default']
     BizSearch: typeof import('./src/components/page/Manage-user/BizSearch.vue')['default']
     CompanyDetail: typeof import('./src/components/page/Company/CompanyDetail.vue')['default']
     CompanyUpdate: typeof import('./src/components/page/Company/CompanyUpdate.vue')['default']
