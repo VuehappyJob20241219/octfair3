@@ -20,7 +20,7 @@
             <th>삭제</th>
           </tr>
         </thead>
-        <tbody v-for="(career, index) in careerProperties.career" :key="index" style="overflow: hidden">
+        <tbody v-for="(career, index) in careerProperties.career" :key="index">
           <tr>
             <td rowspan="2">
               <span>
@@ -29,16 +29,16 @@
                 {{ career.endDate.substr(0, 7) }}
               </span>
             </td>
-            <td style="word-break: break-word">
+            <td>
               <span>{{ career.company }}</span>
             </td>
-            <td style="word-break: break-word">
+            <td>
               <span>{{ career.dept }}</span>
             </td>
-            <td style="word-break: break-word">
+            <td>
               <span>{{ career.position }}</span>
             </td>
-            <td style="word-break: break-word">
+            <td>
               <span>{{ career.reason }}</span>
             </td>
             <td rowspan="2">
@@ -58,9 +58,7 @@
             </td>
           </tr>
           <tr>
-            <td colspan="4" style="white-space: pre-wrap; text-align: left; word-break: break-word">
-              {{ career.crrDesc }}
-            </td>
+            <td colspan="4" style="white-space: pre-wrap; text-align: left">{{ career.crrDesc }}</td>
           </tr>
         </tbody>
       </table>

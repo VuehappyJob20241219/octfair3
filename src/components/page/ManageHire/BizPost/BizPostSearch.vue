@@ -1,19 +1,19 @@
 <template>
   <div class="search-box">
-    사업자명
-    <input v-model="searchKey.searchName" />
+    <input v-model.lazy="searchKey.searchTitle" />
+    <input type="date" v-model="searchKey.searchStDate" />
+    <input type="date" v-model="searchKey.searchEdDate" />
     <button @click="handlerSearch">검색</button>
   </div>
 </template>
-
 <script setup>
 import { ref } from "vue";
 
-const injectValue = inject("provideValue");
+const injectValue = inject('bizSearchValue');
 const searchKey = ref({});
 
 const handlerSearch = () => {
-  injectValue.value = { ...searchKey.value };
+    injectValue.value = { ...searchKey.value };
 };
 </script>
 

@@ -1,7 +1,7 @@
 <template>
   <template v-if="educationProperties.edu.length > 0">
     <div class="contents">
-      <table class="edu-table">
+      <table class="career-table">
         <colgroup>
           <col width="20%" />
           <col width="15%" />
@@ -105,7 +105,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.edu-table {
+.career-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;

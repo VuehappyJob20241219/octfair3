@@ -1,20 +1,23 @@
 <template>
-  <div class="search-box">
-    사업자명
-    <input v-model="searchKey.searchName" />
-    <button @click="handlerSearch">검색</button>
-  </div>
+    <div class="search-box">
+        <input v-model="searchKey.searchTitle"/>
+        <input type="date" v-model="searchKey.searchStDate" />
+        <input type="date" v-model="searchKey.searchEdDate" />
+        <button @click="handlerSearch">검색</button>
+        <button>삭제</button>
+    </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { inject } from 'vue';
 
 const injectValue = inject("provideValue");
 const searchKey = ref({});
 
 const handlerSearch = () => {
-  injectValue.value = { ...searchKey.value };
-};
+    injectValue.value = { ...searchKey.value };
+}
+
 </script>
 
 <style lang="scss" scoped>

@@ -38,26 +38,16 @@
           </div>
           <div style="margin-top: 20px; padding: 15px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc">
             <div>
-              간단소개:
               <p style="white-space: pre-line">{{ resumeProperties.shortIntro }}</p>
             </div>
           </div>
-          <div style="margin-left: 20px; margin-top: 20px; overflow: hidden" v-if="resumeProperties.proLink">
-            <p style="white-space: pre-line; word-break: break-word">
+          <div style="margin-left: 20px; margin-top: 20px" v-if="resumeProperties.proLink">
+            <p style="white-space: pre-line">
               링크 :
-              <a
-                style="color: #36f"
-                :href="
-                  resumeProperties.proLink.startsWith('http')
-                    ? resumeProperties.proLink
-                    : 'https://' + resumeProperties.proLink
-                "
-              >
-                {{ resumeProperties.proLink }}</a
-              >
+              <a style="color: #36f" :href="resumeProperties.proLink">{{ resumeProperties.proLink }}</a>
             </p>
           </div>
-          <!-- <div
+          <div
             v-if="resumeProperties.fileName"
             @click="ResumeFileDownload"
             class="file-download"
@@ -67,7 +57,7 @@
               첨부파일 :
               <span class="file-link">{{ resumeProperties.fileName }}</span>
             </p>
-          </div> -->
+          </div>
           <!-- 경력 -->
           <template v-if="careerProperties.length > 0">
             <div style="padding: 15px">
@@ -84,7 +74,7 @@
                 경력
               </div>
               <div>
-                <ul style="list-style: none; padding: 0; overflow: hidden">
+                <ul style="list-style: none; padding: 0">
                   <div v-for="(career, index) in careerProperties" :key="index">
                     <li
                       style="
@@ -96,7 +86,7 @@
                       "
                     >
                       <!-- 날짜 데이터 -->
-                      <div style="flex: 1; text-align: center; font-weight: 800; border-right: 2px solid #f1f1f1">
+                      <div style="flex: 1; text-align: center; font-weight: 800">
                         <span>
                           {{ career.startDate.substr(0, 7) }}
                           ~
@@ -107,31 +97,13 @@
                       <div style="flex: 4; padding-left: 10px">
                         <div style="flex: 3; padding-left: 10px">
                           <div style="display: flex; align-items: center; margin-bottom: 20px">
-                            <div
-                              style="
-                                font-weight: 900;
-                                font-size: 25px;
-                                margin-left: 5px;
-                                word-break: break-word;
-                                border-right: 2px solid #f1f1f1;
-                              "
-                            >
-                              {{ career.company }}
-                            </div>
-                            <div style="font-weight: 700; margin-left: 10px; margin-top: 15px; word-break: break-word">
+                            <div style="font-weight: 900; font-size: 20px; margin-left: 5px">{{ career.company }}</div>
+                            <div style="font-weight: 900; margin-left: 10px">
                               &nbsp; {{ career.dept }} | {{ career.position }}
                             </div>
                           </div>
                         </div>
-                        <div
-                          style="
-                            font-weight: 400;
-                            margin-top: 20px;
-                            margin-left: 20px;
-                            white-space: pre-line;
-                            word-break: break-word;
-                          "
-                        >
+                        <div style="margin-top: 20px; white-space: pre-line">
                           <p>{{ career.crrDesc }}</p>
                         </div>
                       </div>
@@ -169,7 +141,7 @@
                         display: flex;
                       "
                     >
-                      <div style="flex: 1; width: 20%; padding-left: 10px; border-right: 2px solid #f1f1f1">
+                      <div style="flex: 1; width: 20%; padding-left: 10px">
                         <span style="font-weight: 900">
                           <span>
                             {{ edu.admDate.substr(0, 7) }}
@@ -180,11 +152,9 @@
                       </div>
 
                       <div style="flex: 3; width: 60%; padding-left: 10px">
-                        <span style="font-weight: 900; font-size: 15px">
-                          {{ edu.schoolName }}
-                        </span>
+                        <span style="font-weight: 900; font-size: 15px"> {{ edu.schoolName }} </span>
                         <template v-if="edu.major">
-                          <span style="font-weight: 900; margin-left: 20px"> {{ edu.major }} </span>
+                          <span style="font-weight: 900"> | {{ edu.major }} </span>
                         </template>
                       </div>
                       <div style="flex: 1; width: 20%; text-align: left; font-weight: 500">
@@ -212,7 +182,7 @@
                 스킬
               </div>
               <div>
-                <ul style="list-style: none; padding: 0; overflow: hidden">
+                <ul style="list-style: none; padding: 0">
                   <div v-for="(skill, index) in skillProperties" :key="index">
                     <li
                       style="
@@ -224,22 +194,14 @@
                         display: flex;
                       "
                     >
-                      <div
-                        style="
-                          flex: 1;
-                          width: 20%;
-                          padding-left: 10px;
-                          word-break: break-word;
-                          border-right: 2px solid #f1f1f1;
-                        "
-                      >
+                      <div style="flex: 1; width: 20%; padding-left: 10px">
                         <span style="font-weight: 900">
                           <span>
                             {{ skill.skillName }}
                           </span>
                         </span>
                       </div>
-                      <div style="flex: 3; width: 60%; padding-left: 10px; word-break: break-word">
+                      <div style="flex: 3; width: 60%; padding-left: 10px">
                         <span style="font-weight: 900; font-size: 15px"> {{ skill.skillDetail }} </span>
                       </div>
                     </li>
@@ -276,7 +238,7 @@
                         display: flex;
                       "
                     >
-                      <div style="flex: 1; width: 20%; padding-left: 10px; border-right: 2px solid #f1f1f1">
+                      <div style="flex: 1; width: 20%; padding-left: 10px">
                         <span style="font-weight: 900">
                           <span>
                             {{ cert.acqDate.substr(0, 7) }}
@@ -296,86 +258,6 @@
                     </li>
                   </div>
                 </ul>
-              </div>
-            </div>
-          </template>
-          <!-- 첨부파일 -->
-          <template v-if="attachmentProperties.length > 0">
-            <div style="margin-top: 20px; padding: 15px">
-              <div
-                style="
-                  font-size: 1.2em;
-                  font-weight: bold;
-                  color: #333;
-                  padding: 10px;
-                  border-top: 1px solid #000;
-                  border-bottom: 1px solid #ccc;
-                "
-              >
-                첨부파일
-              </div>
-              <div>
-                <ul style="list-style: none; padding: 0">
-                  <div v-for="(att, index) in attachmentProperties" :key="index">
-                    <li
-                      style="
-                        padding: 15px;
-                        border-bottom: 2px solid #f1f1f1;
-                        display: flex;
-                        justify-content: space-between;
-                      "
-                    >
-                      <div
-                        style="
-                          flex: 0 1 30%;
-                          padding-left: 10px;
-                          margin-top: 10px;
-                          text-align: center;
-                          border-right: 2px solid #f1f1f1;
-                        "
-                      >
-                        <span style="font-weight: 900; text-align: center"> {{ att.category }}</span>
-                      </div>
-                      <div style="flex: 1 1 70%; display: flex; flex-direction: column; overflow: hidden">
-                        <!-- overflow: hidden 추가 -->
-                        <div
-                          style="
-                            flex: 1;
-                            padding-left: 10px;
-                            overflow-wrap: break-word;
-                            border-bottom: 2px solid #f1f1f1;
-                          "
-                        >
-                          <!-- flex: 1로 수정, overflow-wrap: break-word 추가 -->
-                          <span style="font-weight: 500; font-size: 15px"> {{ att.content }}</span>
-                        </div>
-                        <div style="flex: 0 1 30%; padding-left: 10px">
-                          <span style="font-weight: 900" class="file-link"> {{ att.fileName }}</span>
-                        </div>
-                      </div>
-                    </li>
-                  </div>
-                </ul>
-              </div>
-            </div>
-          </template>
-          <!-- 자기소개서 -->
-          <template v-if="resumeDetailinformation">
-            <div style="padding: 15px">
-              <div
-                style="
-                  font-size: 1.2em;
-                  font-weight: bold;
-                  color: #333;
-                  padding: 10px;
-                  border-top: 1px solid #000;
-                  border-bottom: 1px solid #ccc;
-                "
-              >
-                자기소개서
-              </div>
-              <div style="padding-left: 10px; margin: 10px">
-                {{ resumeProperties.perStatement }}
               </div>
             </div>
           </template>
@@ -422,10 +304,6 @@ const skillProperties = computed(() => {
 
 const certProperties = computed(() => {
   return resumeDetailinformation.value.certInfo || []; // resumeInfo가 없을 경우 빈 객체 반환
-});
-
-const attachmentProperties = computed(() => {
-  return resumeDetailinformation.value.attInfo || []; // resumeInfo가 없을 경우 빈 객체 반환
 });
 
 const closeModal = () => {

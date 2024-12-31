@@ -1,7 +1,7 @@
 <template>
   <template v-if="certificationProperties.cert.length > 0">
     <div class="contents">
-      <table class="cert-table">
+      <table class="career-table">
         <colgroup>
           <col width="30%" />
           <col width="15%" />
@@ -98,7 +98,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.cert-table {
+.career-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
