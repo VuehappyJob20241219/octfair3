@@ -1,7 +1,7 @@
 <template>
   <template v-if="skillProperties.skill.length > 0">
     <div class="contents">
-      <table class="career-table">
+      <table class="skill-table">
         <colgroup>
           <col width="30%" />
           <col width="60%" />
@@ -15,16 +15,16 @@
           </tr>
         </thead>
         <tbody v-for="(skill, index) in skillProperties.skill" :key="index">
-          <tr>
-            <td >
+          <tr style="overflow: hidden">
+            <td style="word-break: break-word">
               <span>
                 {{ skill.skillName }}
               </span>
             </td>
-            <td>
+            <td style="word-break: break-word">
               <span>{{ skill.skillDetail }}</span>
             </td>
-          
+
             <td rowspan="2">
               <button @click="DeleteSkill(skill.skillIdx)">
                 <svg
@@ -89,7 +89,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.career-table {
+.skill-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
@@ -138,7 +138,7 @@ onMounted(() => {
   .res-comment {
     font-size: 16px;
     text-align: center;
-    color: #88CFEC;
+    color: #88cfec;
   }
 
   &.empty-state {
