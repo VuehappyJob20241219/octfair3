@@ -4,6 +4,100 @@
       <div class="container">
         <div id="printArea">
           <div class="resumePreviewTitle">이력서 미리보기</div>
+<<<<<<< HEAD
+          <template v-if="resumeDetailinformation">
+            <div style="margin-bottom: 20px">
+              <p style="white-space: pre-line; font-size: 25px; font-weight: 900">{{ resumeProperties.resTitle }}</p>
+            </div>
+            <div style="margin-bottom: 5px" v-if="resumeProperties.userNm">
+              <p style="white-space: pre-line; font-size: 15px; font-weight: 500">
+                이름 : {{ resumeProperties.userNm }}
+              </p>
+            </div>
+            <div style="margin-bottom: 5px">
+              <p style="white-space: pre-line; font-size: 15px; font-weight: 500">
+                이메일 : {{ resumeProperties.email }}
+              </p>
+            </div>
+            <div style="margin-bottom: 10px">
+              <p style="white-space: pre-line; font-size: 15px; font-weight: 500">
+                연락처 : {{ resumeProperties.phone }}
+              </p>
+            </div>
+            <div style="margin-top: 20px; padding: 15px; border-top: 1px solid #ccc">
+              <div>
+                <p style="white-space: pre-line">{{ resumeProperties.shortIntro }}</p>
+              </div>
+              <div style="" v-if="resumeProperties.proLink">
+                <p style="white-space: pre-line">
+                  링크 :
+                  <a style="color: #36f" :href="resumeProperties.proLink">{{ resumeProperties.proLink }}</a>
+                </p>
+              </div>
+              <div v-if="resumeProperties.fileName" @click="ResumeFileDownload" class="file-download">
+                <p style="white-space: pre-line">
+                  첨부파일 :
+                  <span class="file-link">{{ resumeProperties.fileName }}</span>
+                </p>
+              </div>
+            </div>
+          </template>
+          <!-- 경력 -->
+          <template v-if="careerProperties.length > 0">
+            <div style="padding: 15px">
+              <div
+                style="
+                  font-size: 1.2em;
+                  font-weight: bold;
+                  color: #333;
+                  padding: 10px;
+                  border-top: 1px solid #000;
+                  border-bottom: 1px solid #ccc;
+                "
+              >
+                경력
+              </div>
+              <div>
+                <ul style="list-style: none; padding: 0">
+                  <div v-for="(career, index) in careerProperties" :key="index">
+                    <li
+                      style="
+                        padding: 15px;
+                        border-bottom: 2px solid #f1f1f1;
+                        display: flex;
+                        align-items: flex-start;
+                        align-items: center;
+                      "
+                    >
+                      <!-- 날짜 데이터 -->
+                      <div style="flex: 1; text-align: center; font-weight: 800">
+                        <span>
+                          {{ career.startDate.substr(0, 7) }}
+                          ~
+                          {{ career.endDate.substr(0, 7) }}
+                        </span>
+                      </div>
+                      <!-- 나머지 데이터 -->
+                      <div style="flex: 4; padding-left: 10px">
+                        <div style="flex: 3; padding-left: 10px">
+                          <div style="display: flex; align-items: center; margin-bottom: 20px">
+                            <div style="font-weight: 900; font-size: 20px; margin-left: 5px">{{ career.company }}</div>
+                            <div style="font-weight: 900; margin-left: 10px">
+                              &nbsp; {{ career.dept }} | {{ career.position }}
+                            </div>
+                          </div>
+                        </div>
+                        <div style="margin-top: 20px; white-space: pre-line">
+                          <p>{{ career.crrDesc }}</p>
+                        </div>
+                      </div>
+                    </li>
+                  </div>
+                </ul>
+              </div>
+            </div>
+          </template>
+=======
           <!-- 이력서 사진 작업 -->
           <div style="display: flex; border: 2px solid #ccc; padding: 5px; margin-top: 10px">
             <div class="file-container" style="margin: 20px">
@@ -113,6 +207,7 @@
               </div>
             </div>
           </template>
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
           <!-- 학력 -->
           <template v-if="eduProperties.length > 0">
             <div style="margin-top: 20px; padding: 15px">
@@ -284,7 +379,10 @@ const resumeDetailinformation = ref({
   resIdx: 0,
   resumeInfo: {},
 });
+<<<<<<< HEAD
+=======
 const imageUrl = ref("/no_image.jpg");
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
 
 const resumeProperties = computed(() => {
   return resumeDetailinformation.value.resumeInfo || {}; // resumeInfo가 없을 경우 빈 객체 반환
@@ -330,6 +428,35 @@ const getFileImage = () => {
     const url = window.URL.createObjectURL(new Blob([res.data]));
     imageUrl.value = url;
     console.log(res);
+  });
+};
+
+const printPage = () => {
+  printJS({
+    printable: "printArea", //영역 id 값
+    type: "html",
+    targetStyles: ["*"],
+    maxWidth: "100%",
+  });
+};
+
+const ResumeFileDownload = () => {
+  let param = new URLSearchParams();
+  param.append("resIdx", props.idx);
+  const postAction = {
+    url: "/api/apply/resumeFileDownload.do",
+    method: "POST",
+    data: param,
+    responseType: "blob",
+  };
+  axios(postAction).then((res) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", resumeProperties.value.fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   });
 };
 
@@ -410,7 +537,11 @@ input[type="text"] {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
   position: relative;
   width: 800px;
+<<<<<<< HEAD
+  height: 800px;
+=======
   height: 600px;
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
   overflow: auto;
 }
 
@@ -530,6 +661,8 @@ button {
   .btnType.blue:hover {
     background-color: #0056b3; /* 파란색 버튼 호버 색상 */
   }
+<<<<<<< HEAD
+=======
 }
 
 .my-image {
@@ -538,5 +671,6 @@ button {
   object-fit: cover; /* 이미지 비율을 유지하면서 잘리기 */
   border: 2px solid #ccc; /* 이미지 테두리 (선택 사항) */
   margin: 10px; /* 이미지 주변 여백 (필요에 따라 조정) */
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
 }
 </style>

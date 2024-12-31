@@ -253,10 +253,22 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory("/"),
-  routes,
+    history: createWebHistory("/"),
+    routes,
 });
 
+<<<<<<< HEAD
+router.beforeEach(async(to, from) => {
+    const userInfo = useUserInfo();
+
+    if (!userInfo.isAuthenticated && !(to.name == "login")) {
+        alert("로그인이 필요합니다.");
+        return { name: "login" };
+    }
+});
+
+export default router;
+=======
 router.beforeEach(async (to, from) => {
   const userInfo = useUserInfo();
 
@@ -267,3 +279,4 @@ router.beforeEach(async (to, from) => {
 });
 
 export default router;
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4

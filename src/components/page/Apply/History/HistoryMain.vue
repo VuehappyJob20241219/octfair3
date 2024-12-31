@@ -68,6 +68,8 @@ const injectedValue = inject("provideValue");
 const { data: historyList, isLoading, refetch, isSuccess, isError }
   = useHistoryListQuery(injectedValue, cPage);
 
+<<<<<<< HEAD
+=======
 const modalStore = useModalStore();
 const selectedResumeIdx = ref(null);
 
@@ -78,6 +80,7 @@ const handlerResume = (param) => {
 }
 
 
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
 </script>
 
 

@@ -1,17 +1,30 @@
 <template>
   <div class="search-box">
+<<<<<<< HEAD
+    <span>공고제목</span>
+    <select>
+      <option>사무직 공고</option>
+      <option>기술직 공고</option>
+      <option>경비원 공고</option>
+    </select>
+    <select>
+=======
     <select v-model.lazy="postIdx">
       <option v-for="post in postList" v-bind:key="post.postIdx">{{ post.title }}</option>
     </select>
 
     <select v-if="postIdx != 0">
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
       <option>서류심사</option>
       <option>인적성</option>
       <option>면접</option>
     </select>
+<<<<<<< HEAD
+=======
     <!-- <select v-for="process in processList.process" :key="process.processIdx">
       <option>{{ process.processName }}</option>
     </select> -->
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
   </div>
 </template>
 <script setup>

@@ -274,6 +274,27 @@ const handlerValidation = () => {
   return true;
 };
 
+<<<<<<< HEAD
+// const fileDownload = () => {
+//   let param = new URLSearchParams();
+//   param.append("bizIdx", companyDetail.value.bizIdx);
+//   const postAction = {
+//     url: "/api/company/companyImageDownload.do",
+//     method: "POST",
+//     data: param,
+//     responseType: "blob",
+//   };
+//   axios(postAction).then((res) => {
+//     const url = window.URL.createObjectURL(new Blob([res.data]));
+//     const link = document.createElement("a");
+//     link.href = url;
+//     link.setAttribute("download", companyDetail.value.bizLogo);
+//     document.body.appendChild(link);
+//     link.click();
+//     link.remove();
+//   });
+// };
+=======
 const fileDownload = () => {
   let param = new URLSearchParams();
   param.append("bizIdx", companyDetail.value.bizIdx);
@@ -293,6 +314,7 @@ const fileDownload = () => {
     link.remove();
   });
 };
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
 
 const handlerCompanyDelete = async () => {
   await axios.post("/api/company/companyDeleteRe.do", { loginId: userInfo.user.loginId }).then((res) => {

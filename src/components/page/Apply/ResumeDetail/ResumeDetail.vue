@@ -309,7 +309,11 @@
             <ResumeSkillView ref="resumeSkillView" :idx="basicinformation.resIdx" />
           </li>
           <li id="skillInputTable" class="inputTable" v-show="skillAddState">
+<<<<<<< HEAD
+            <table class="row">
+=======
             <table class="col">
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
               <colgroup>
                 <col width="30%" />
                 <col width="70%" />
@@ -317,21 +321,37 @@
               <tbody>
                 <tr>
                   <td>
+<<<<<<< HEAD
+                    <label style="margin: 10px">스킬명:</label>
+=======
                     <label style="margin: 10px">보유기술 및 능력:</label>
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
                     <input
                       type="text"
                       id="skillName"
                       style="padding: 5px; width: 80%; margin: 10px"
+<<<<<<< HEAD
+                      placeholder="스킬명"
+=======
                       placeholder="보유기술 및 능력"
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
                       v-model="skillInfo.skillName"
                     />
                   </td>
                   <td>
+<<<<<<< HEAD
+                    <label style="margin: 20px"> 스킬상세기재:</label>
+                    <textarea
+                      style="height: auto; margin: 10px; width: 95%"
+                      id="skillDetail"
+                      placeholder="  스킬 상세 기재"
+=======
                     <label style="margin: 20px"> 상세내용:</label>
                     <textarea
                       style="height: auto; margin: 10px; width: 95%"
                       id="skillDetail"
                       placeholder=" 상세내용"
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
                       v-model="skillInfo.skillDetail"
                     ></textarea>
                   </td>
@@ -345,7 +365,11 @@
           </li>
         </ul>
       </div>
+<<<<<<< HEAD
+      <!-- 자격증 작업 중 -->
+=======
       <!-- 자격증  -->
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
       <div class="resumeDetail_body">
         <div class="resumeDetail_body_haeder">자격증 및 외국어</div>
         <div class="resumeDetail_body_guide">
@@ -471,6 +495,13 @@
         <div class="resumeDetail_body_guide">
           <p class="resumeDetail_body_guide_text">• 포트폴리오, 경력기술서 등 첨부파일이 있다면 등록해주세요.</p>
         </div>
+<<<<<<< HEAD
+        <div>
+          <input id="resumeAttach" type="file" @change="handlerFile" :name="fileInputName" />
+          <div class="attach-container" v-if="fileData.name">
+            <span class="attach-fileName"></span>
+            <button class="attach-delete" id="attach-delete" @click="deleteAttach">
+=======
         <!-- 첨부파일 -->
         <!-- <div v-if="basicinformation.fileName">
           <div class="file-container">
@@ -479,6 +510,7 @@
               <img :src="imageUrl" />
             </div>
             <button class="attach-delete" id="attach-delete" @click="deleteFile(basicinformation.resIdx)">
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="50px"
@@ -551,6 +583,10 @@ const careerInfo = ref({});
 const educationInfo = ref({});
 const skillInfo = ref({});
 const certificationInfo = ref({});
+<<<<<<< HEAD
+
+const basicInfo = async () => {
+=======
 const router = useRouter();
 const resumeCareerView = ref(null);
 const resumeEducationView = ref(null);
@@ -560,6 +596,7 @@ const imageUrl = ref("/no_image.jpg");
 const fileInput = ref(null); // 파일 입력 요소 참조
 
 const basicInfoFn = async () => {
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
   const param = {
     loginId: user.loginId,
     userNm: user.userNm,
@@ -616,12 +653,18 @@ const handlerSaveBtn = async () => {
 };
 
 const handlerFile = (e) => {
+<<<<<<< HEAD
+  const fileinfo = e.target.files;
+  if (fileinfo) {
+    fileData.value = fileinfo[0];
+=======
   const fileInfo = e.target.files;
   const fileInfoSplit = fileInfo[0].name.split(".");
   const fileExtension = fileInfoSplit[1].toLowerCase();
   if (fileExtension === "jpg" || fileExtension === "gif" || fileExtension === "png") {
     imageUrl.value = URL.createObjectURL(fileInfo[0]);
     fileData.value = fileInfo[0];
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
   } else {
     fileData.value = {};
   }
@@ -665,11 +708,19 @@ const addCareer = async () => {
     reason: careerInfo.value.reason,
     crrDesc: careerInfo.value.crr_desc,
   };
+<<<<<<< HEAD
+  await axios.post(Resume.InsertCareer, text).then((res) => {
+    if (res.data.result === "success") {
+      careerAddState.value = !careerAddState.value;
+      careerInfo.value = {};
+      alert("경력 추가 완");
+=======
   await axios.post(ResumeAddTable.InsertCareer, text).then((res) => {
     if (res.data.result === "success") {
       careerAddState.value = !careerAddState.value;
       careerInfo.value = {};
       resumeCareerView.value.careerDetail();
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
     }
   });
 };
@@ -684,11 +735,19 @@ const addEdu = async () => {
     grdDate: educationInfo.value.grdDate,
     grdStatus: educationInfo.value.grdStatus,
   };
+<<<<<<< HEAD
+  await axios.post(Resume.InsertEducation, text).then((res) => {
+    if (res.data.result === "success") {
+      eduAddState.value = !eduAddState.value;
+      educationInfo.value = {};
+      alert("학력 추가 완");
+=======
   await axios.post(ResumeAddTable.InsertEducation, text).then((res) => {
     if (res.data.result === "success") {
       eduAddState.value = !eduAddState.value;
       educationInfo.value = {};
       resumeEducationView.value.eduDetail();
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
     }
   });
 };
@@ -699,11 +758,19 @@ const addSkill = async () => {
     skillName: skillInfo.value.skillName,
     skillDetail: skillInfo.value.skillDetail,
   };
+<<<<<<< HEAD
+  await axios.post(Resume.InsertSkill, text).then((res) => {
+    if (res.data.result === "success") {
+      skillAddState.value = !skillAddState.value;
+      skillInfo.value = {};
+      alert("스킬 추가 완");
+=======
   await axios.post(ResumeAddTable.InsertSkill, text).then((res) => {
     if (res.data.result === "success") {
       skillAddState.value = !skillAddState.value;
       skillInfo.value = {};
       resumeSkillView.value.skillDetail();
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
     }
   });
 };
@@ -716,11 +783,19 @@ const addCert = async () => {
     issuer: certificationInfo.value.issuer,
     acqDate: certificationInfo.value.acqDate,
   };
+<<<<<<< HEAD
+  await axios.post(Resume.InsertCertification, text).then((res) => {
+    if (res.data.result === "success") {
+      certAddState.value = !certAddState.value;
+      certificationInfo.value = {};
+      alert("자격 추가 완");
+=======
   await axios.post(ResumeAddTable.InsertCertification, text).then((res) => {
     if (res.data.result === "success") {
       certAddState.value = !certAddState.value;
       certificationInfo.value = {};
       resumeCertificationView.value.certDetail();
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
     }
   });
 };
@@ -728,6 +803,8 @@ const addCert = async () => {
 const deleteAttach = () => {
   fileData.value = {};
   document.getElementById("resumeAttach").value = ""; // 파일 입력 초기화
+<<<<<<< HEAD
+=======
   imageUrl.value = "/no_image.jpg";
 };
 
@@ -781,6 +858,7 @@ const deleteFile = async (idx) => {
 
 const triggerFileInput = () => {
   fileInput.value.click();
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
 };
 
 onMounted(() => {
@@ -880,13 +958,21 @@ textarea {
 }
 
 .btnType.gray.list {
+<<<<<<< HEAD
+ width: 20%;
+=======
   width: 20%;
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
 }
 
 .btnType.blue {
   text-align: center;
   margin: 5px;
+<<<<<<< HEAD
+  background-color: #36ADE4; /* 파란색 버튼 */
+=======
   background-color: #36ade4; /* 파란색 버튼 */
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
 }
 
 .btnType.blue.button {
@@ -977,6 +1063,9 @@ table td {
   width: 100%;
   height: 100%;
 }
+<<<<<<< HEAD
+
+=======
 .file-download {
   cursor: pointer; /* 커서를 포인터로 변경 */
 }
@@ -1009,4 +1098,5 @@ img {
   border: 2px solid #ccc; /* 이미지 테두리 (선택 사항) */
   margin: 10px; /* 이미지 주변 여백 (필요에 따라 조정) */
 }
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
 </style>

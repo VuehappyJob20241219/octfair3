@@ -1,13 +1,12 @@
 <template>
-    <ContextBox>FAQ</ContextBox>
-    <FaqSearch></FaqSearch>
-    <FaqMain></FaqMain>    
-  </template>
-  
- <script setup>
+  <ContextBox>FAQ</ContextBox>
+  <br>
+  <FaqSearch></FaqSearch>
+  <FaqMain></FaqMain>
+</template>
 
+<script setup>
+const provideValue = ref();
 
- const provideValue = ref();
-  
 provide("provideValue", provideValue);
 </script>

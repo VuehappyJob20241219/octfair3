@@ -1,5 +1,9 @@
 <template>
+<<<<<<< HEAD
+  <BizModal v-if="modalStateBiz.modalState" @postSuccess="searchList" :bizIdx="bizIdx" />
+=======
   <BizModal v-if="modalStateBiz.modalState" :bizIdx="bizIdx" @modalClose="() => (refetch())" />
+>>>>>>> 6ccbee06a592cd71e9fd7bbb3c80c81e210494e4
   <div class="divManage-bizList">
     <table>
       <colgroup>
