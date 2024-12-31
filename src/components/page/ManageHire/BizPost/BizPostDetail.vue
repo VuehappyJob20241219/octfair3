@@ -1,5 +1,15 @@
 <template>
   <ContextBox>공고 상세 보기</ContextBox>
+  <ApplyUserResumeModal
+      v-if="modalState.modalState"
+      @postSuccess="searchList"
+      @modalClose="() => (postIdx = 0,bizIdx=0 )"
+      :pIdx="postIdx"
+      :bIdx="bizIdx"
+      :postDetail="postDetail"
+      :bizDetail="bizDetail"
+      :scrap=null
+    />
   <template v-if="isLoading">...로딩중</template>
   <template v-if="isSuccess">
   <b-container class="mt-2">
@@ -58,7 +68,7 @@
                       variant="primary"
                       size="lg"
                       style=" width: 150px"
-                      @click="handlerModal(postDetail, bizDetail)"
+                      @click="handlerModal(postDetail.postIdx, bizDetail.bizIdx)"
                     >
                       입사지원
                     </b-button>
@@ -71,7 +81,7 @@
                         width: 150px;
                         color: #007bff;
                         border-color: #007bff;"
-                      @click="handlerModal(postDetail, bizDetail)"
+                      @click="handlerModal(postDetail.postIdx, bizDetail.bizIdx)"
                     >
                       입사지원
                     </b-button>
@@ -113,8 +123,8 @@
             <span class="p-4">{{postDetail?.benefits}}</span>
           </div>
           <div class="mt-5">
-            <h5>■ 첨부 파일일 </h5>
-            <span class="p-4">{{postDetail?.benefits}}</span>
+            <h5>■ 첨부 파일 </h5>
+            <span class="fileDown" @click="handleDown(postDetail.postIdx,bizDetail.bizIdx)">{{postDetail?.fileName}}</span>
           </div>
         </div>
         <template v-if="userType === 'b'">
@@ -126,7 +136,7 @@
         </template>
         
         <div class="d-flex justify-content-center m-2">
-          <template v-if="userType === 'B' && postDetail?.appStatus === '대기중'">
+          <template v-if="userType === 'B' ">
             <div>
               <b-button
                 variant="primary"
@@ -135,6 +145,14 @@
                 @click="navigatePost(`${postDetail.postIdx}`)"              
               >
                 수정하기
+              </b-button>
+              <b-button
+                variant="primary"
+                size="lg"
+                class="mx-1"
+                @click="handleDelete(postDetail.postIdx,bizDetail.bizIdx)"              
+              >
+                삭제하기
               </b-button>
               <b-button
                 variant="secondary"
@@ -186,6 +204,8 @@ import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import { useQuery } from "@tanstack/vue-query";
 import 'bootstrap-vue-3';
+import { useModalStore } from "@/stores/modalState";
+import ApplyUserResumeModal from "../../Apply/ResumeList/ApplyUserResumeModal.vue";
 
 const { params } = useRoute();
 const postDetail = ref(null);
@@ -193,6 +213,9 @@ const bizDetail = ref(null);
 const isClicked = ref(null);
 const userType = ref(null);
 const router = useRouter();
+const postIdx = ref(0);
+const bizIdx = ref(0);
+const modalState = useModalStore();
 
 const searchList = async () => {
   const result = await axios.post(
@@ -228,6 +251,81 @@ const navigatePost= (param) => {
     }
 }
 
+const handleDelete = async (pIdx,bIdx) => {
+  const params = {
+    postIdx: pIdx,
+    bizIdx: bIdx,
+  };
+  const result = await axios.post(
+    "/api/manage-hire/managehireDeleteBody.do",
+    params,
+  );
+
+  if(result.data.result == 'success'){    
+    alert("삭제 처리되었습니다.");
+    router.go(-1);
+  }  
+}
+
+const handleDown = (pIdx,bIdx) => {
+  const params = {
+    postIdx: pIdx,
+    bizIdx: bIdx,
+  };
+  const download = {
+    url: "/api/manage-hire/managehireDownloadBody.do",
+    method: "POST",
+    data: params,
+    responseType: "blob",
+  };
+  axios(download).then((res) => {
+    // 다운로드한 파일을 브라우저에서 처리
+    const file = new Blob([res.data], { type: "application/octet-stream" });
+      const fileURL = URL.createObjectURL(file);
+      console.log()
+      // 파일 이름을 서버에서 받은 파일 이름으로 설정
+      const fileName = postDetail.value.fileName;
+
+      // 다운로드 링크 생성
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = fileName;
+      link.click(); // 자동으로 다운로드 시작
+
+      // 다운로드 후 URL 객체 해제
+      URL.revokeObjectURL(fileURL);
+    })
+    .catch((error) => {
+      console.error("파일 다운로드 실패:", error);
+    });
+}
+
+const handlerModal = (pIdx,bIdx) => {
+  modalState.setModalState();
+  postIdx.value = pIdx;
+  bizIdx.value = bIdx;
+};
+
+const handlerUpdateAppStatus = async (pIdx, status) => {
+  const params = {
+    postIdx: pIdx,
+    appStatus: status,
+  };
+  const result = await axios.post(
+    "/api/manage-post/statusUpdateBody.do",
+    params,
+  );
+
+  if(result.data.result == 'success'){    
+    alert("처리되었습니다.");
+    if(status == "승인"){
+      router.push({ name: "managePost"})
+    }else if(status == "불허"){
+      router.push({ name: "managePostApproval"})
+    }
+  }
+
+}
 
 </script>
 

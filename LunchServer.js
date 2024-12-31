@@ -15,7 +15,7 @@ const getFormattedDate = () => {
 const date = getFormattedDate();
 const filePath = `V:/FileRepository/menu/${date}.jpg`; // 기본 이미지 파일 경로 설정
 const client = new ImageAnnotatorClient({
-  keyFilename: "C:/Users/SERVER/Desktop/octfair3/octfair3/octfair-c397a2a8acfa.json",
+  keyFilename: "brave-anagram-438514-n3-87cad63c922e.json",
 });
 
 // OCR 처리 함수
