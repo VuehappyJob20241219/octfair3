@@ -2,10 +2,10 @@
   <teleport to="body">
     <div class="backdrop">
       <div class="container">
-        <label> 제목 :<input type="text" v-model="noticeDetail.detail.title" /> </label>
+        <label> 제목 :<input type="text" v-model="noticeDetail.datail.title" /> </label>
         <label>
           내용 :
-          <input type="text" v-model="noticeDetail.detail.content" />
+          <input type="text" v-model="noticeDetail.datail.content" />
         </label>
         파일 :<input type="file" style="display: none" id="fileInput" @change="handlerFile" />
         <label class="img-label" htmlFor="fileInput"> 파일 첨부하기 </label>
@@ -39,7 +39,7 @@ import { useRoute } from "vue-router";
 import { useNoticeDetailSearchQuery } from "../../../hook/notice/useNoticeDetailSearchQuery";
 
 const route = useRoute();
-const  { data: noticeDetail } = useNoticeDetailSearchQuery(route.params.idx);
+const { data: noticeDetail } = useNoticeDetailSearchQuery(route.params.idx);
 
 
 const modalState = useModalStore();
