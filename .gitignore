@@ -9,6 +9,7 @@ lerna-debug.log*
 
 package.json
 package-lock.json
+brave-anagram-438514-n3-87cad63c922e.json
 node_modules
 dist
 dist-ssr
