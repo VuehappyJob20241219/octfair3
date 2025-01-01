@@ -59,23 +59,29 @@
 
 <script setup>
 import axios from "axios";
-import { useUserInfo } from "../../../../stores/userInfo";
+import {inject} from "vue";
+import {useUserInfo} from "../../../../stores/userInfo";
 
-const userInfo = useUserInfo();
 const cPage = ref(1);
 const applicantList = ref();
+const userInfo = useUserInfo();
+const injectedValue = inject("provideValue");
 
+// console.log("inject공고인덱스 ==> " + injectedValue.value.postIdx);
+// console.log("inject채용절차 ==> " + injectedValue.value.keyword);
+// console.log("inject공고Idx ==> " + injectedValue.postIdx);
 const loadApplicantList = async () => {
-  const param = new URLSearchParams({});
+  const params = {
+    ...injectedValue,
+    loginId: userInfo.user.loginId,
+    firstProc: "abc",
+    startSeq: "1",
+    pageSize: "5",
+    currentPage: "1",
+  };
+
   await axios
-    .post("/api/manage-hire/applicantListBody.do", {
-      loginId: userInfo.user.loginId,
-      postIdx: "22",
-      keyword: "서류심사중",
-      startSeq: "1",
-      pageSize: "5",
-      currentPage: "1",
-    })
+    .post("/api/manage-hire/applicantListBody.do", params)
     .then((res) => {
       applicantList.value = res.data.list;
     });
