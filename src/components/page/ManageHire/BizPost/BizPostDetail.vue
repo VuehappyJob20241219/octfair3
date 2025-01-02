@@ -285,13 +285,6 @@ const handlerUpdateAppStatus = async (pIdx, status) => {
     }
   }
 };
-const navigatePost= (param) => {
-  if (param === 'back') {
-      router.go(-1);  // 뒤로가기
-    } else {
-      router.push({ name: "bizPostModify", params: { postIdx: param } });  // 지정된 URL로 이동
-    }
-}
 
 
 
