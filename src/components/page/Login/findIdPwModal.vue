@@ -90,6 +90,7 @@
 
 
 <script setup>
+import { useMutation } from "@tanstack/vue-query";
 import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
 
@@ -115,17 +116,13 @@ const setPw = ref({
 const idBtn = () => {
     findId.value = !(findId.value);
     findPw.value = false;
-
-    // console.log("findId.value: " + findId.value);
 }
 const pwBtn = () => {
     findPw.value = !(findPw.value);
     findId.value = false;
-
-    // console.log("findPw.value: " + findPw.value);
 }
 
-const findIdBtn = () => {
+const findMyId = async () => {
     let inputName = document.getElementById("regiName").value;
     let inputEmail = document.getElementById("emailName").value;
 
@@ -144,17 +141,25 @@ const findIdBtn = () => {
         email: inputEmail
     })
 
-    axios.post("/api/selectFindInfoId.do", param)
-        .then((res) => {
-            if (res.data.result === 'SUCCESS') {
-                findId.value = false;
-                myId.value.id = res.data.id;
-                myId.value.state = true;
-            };
-        })
+    const result = await axios.post("/api/selectFindInfoId.do", param);
+    return result.data;
 }
 
-const findPwBtn = () => {
+const { mutate: findIdBtn } = useMutation({
+    mutationFn: findMyId,
+    mutationKey: ["findMyId"],
+    onSettled: (data, error) => {
+        if (data.result === 'SUCCESS') {
+            findId.value = false;
+            myId.value.id = data.id;
+            myId.value.state = true;
+        } else if (data) {
+            alert("해당 정보로 찾으시는 ID가 존재하지 않습니다.");
+        }
+    },
+})
+
+const findMyPw = async () => {
     let inputId = document.getElementById("regiId").value;
     let inputEmail = document.getElementById("emailPwd").value;
 
@@ -173,23 +178,29 @@ const findPwBtn = () => {
         email: document.getElementById("emailPwd").value
     })
 
-    axios.post("/api/selectFindInfoPw.do", param)
-        .then((res) => {
-            if (res.data.result === 'SUCCESS') {
-                setPw.value.id = document.getElementById("regiId").value;
-                findPw.value = false;
-                setPw.value.state = true;
-            };
-        })
+    const result = await axios.post("/api/selectFindInfoPw.do", param)
+    return result.data;
 }
 
+const { mutate: findPwBtn } = useMutation({
+    mutationFn: findMyPw,
+    mutationKey: ["findMyPw"],
+    onSettled: (data, error) => {
+        if (data.result === 'SUCCESS') {
+            setPw.value.id = document.getElementById("regiId").value;
+            findPw.value = false;
+            setPw.value.state = true;
+        } else if (data) {
+            alert("해당 정보로 찾으시는 PW가 존재하지 않습니다.");
+        }
+    },
+})
 
-const handlerUpdateBtn = () => {
+const updatePW = async () => {
     let inputPw = document.getElementById("newPasswd").value;
     let inputPwOk = document.getElementById("newPasswdConfirm").value;
 
     const passwordRules = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
-
 
     if (!inputPw) {
         alert("비밀번호를 입력하세요.");
@@ -211,23 +222,27 @@ const handlerUpdateBtn = () => {
         return false;
     }
 
-
     const param = new URLSearchParams({
         id: setPw.value.id,
         pw: document.getElementById("newPasswd").value,
     });
 
-    axios.post('/api/updateFindPw.do', param)
-        .then((res) => {
-            if (res.data.result === 'SUCCESS') {
-                alert("비밀번호를 변경하였습니다.")
-                handlerModal();
-            } else {
-                alert("비밀번호 변경에 실패하였습니다.")
-            }
-        })
+    const result = await axios.post('/api/updateFindPw.do', param)
+    return result.data;
 }
 
+const { mutate: handlerUpdateBtn } = useMutation({
+    mutationFn: updatePW,
+    mutationKey: ["updatePW"],
+    onSettled: (data, error) => {
+        if (data.result === 'SUCCESS') {
+            alert("비밀번호를 변경하였습니다.")
+            handlerModal();
+        } else {
+            alert("비밀번호 변경에 실패하였습니다.")
+        }
+    },
+})
 
 const handlerModal = () => {
     modalState.setModalState();

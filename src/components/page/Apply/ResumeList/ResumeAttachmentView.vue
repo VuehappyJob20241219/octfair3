@@ -44,8 +44,11 @@
             </td>
           </tr>
           <tr>
-            <td colspan="1">
+            <td colspan="1" v-if="att.fileName">
               <span @click="ResumeFileDownload(att.attIdx)">{{ att.fileName }}</span>
+            </td>
+            <td colspan="1" v-else="">
+              <span>첨부된 파일이 없습니다.</span>
             </td>
           </tr>
         </tbody>
