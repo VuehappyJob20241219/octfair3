@@ -19,7 +19,7 @@
           <td><button @click="handlerPwModal">수정</button></td>
         </tr>
         <tr>
-          <th>이름</th>
+          <th>이름<span style="color: red">*</span></th>
           <td><input type="text" v-model="userDetailValue.name" /></td>
         </tr>
         <tr>
@@ -32,15 +32,15 @@
           </td>
         </tr>
         <tr>
-          <th>생년월일</th>
+          <th>생년월일<span style="color: red">*</span></th>
           <td><input type="date" v-model="userDetailValue.birthday" /></td>
         </tr>
         <tr>
-          <th>전화번호</th>
+          <th>전화번호<span style="color: red">*</span></th>
           <td><input type="text" v-model="userDetailValue.phone" /></td>
         </tr>
         <tr>
-          <th>이메일</th>
+          <th>이메일<span style="color: red">*</span></th>
           <td><input type="email" v-model="userDetailValue.email" /></td>
         </tr>
         <tr v-if="userDetailValue.userType == 'B'">
@@ -50,7 +50,7 @@
           </td>
         </tr>
         <tr>
-          <th>우편변호</th>
+          <th>우편변호<span style="color: red">*</span></th>
           <td><input type="text" v-model="userDetailValue.zipCode" readonly /></td>
           <button @click="openDaumPostcode">우편번호 찾기</button>
         </tr>
@@ -249,7 +249,7 @@ input[type="tel"] {
   border-radius: 4px;
   border: 1px solid #ccc;
   // font-size: 13px;
-  width: 200px;
+  width: 250px;
 }
 
 select {
