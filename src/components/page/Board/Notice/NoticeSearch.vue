@@ -1,10 +1,10 @@
 <template>
-  <div class="search-box">
-    <input v-model="searchKey.searchTitle" />
-    <input type="date" v-model="searchKey.searchStartDate" />
-    <input type="date" v-model="searchKey.searchEndDate" />
-    <button @click="handlerSearch">검색</button>
-    <button @click="()=>$router.push('notice.do/insert')">신규등록</button>
+  <div class="search-box">        
+      <input v-model="searchKey.searchTitle" />
+      <input type="date" v-model="searchKey.searchStDate" />
+      <input type="date" v-model="searchKey.searchEdDate" />
+      <button @click="handlerSearch">검색</button>
+      <button @click="()=>$router.push('notice.do/insert')">신규등록</button>
   </div>
 </template>
 <script setup>
@@ -14,8 +14,9 @@ const injectedValue = inject('provideValue');
 const searchKey = ref({});
 
 const handlerSearch = () =>{
-    injectedValue.value={...searchKey.value};
+  injectedValue.value={...searchKey.value};
 };
+
 </script>
 
 <style lang="scss" scoped>
@@ -51,13 +52,13 @@ button {
   background-color: #3bb2ea;
 
   &:hover {
-    background-color: #45a049;
+      background-color: #45a049;
   }
 
   &:active {
-    background-color: #3e8e41;
-    box-shadow: 0 2px #666;
-    transform: translateY(2px);
+      background-color: #3e8e41;
+      box-shadow: 0 2px #666;
+      transform: translateY(2px);
   }
 }
 </style>

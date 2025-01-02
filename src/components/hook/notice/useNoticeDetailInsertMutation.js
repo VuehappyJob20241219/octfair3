@@ -6,8 +6,8 @@ export const useNoticeDetailInsertMutation = (detailValue, fileData, userid) => 
   const queryClient = useQueryClient();
   const router = useRouter();
   return useMutation({
+    mutationKey: ['noticeInsert'],
     mutationFn: () => insertNoticeDetail(detailValue.value, fileData.value, userid),
-    mutationKey: ["noticeUpdate"],
     onSuccess: () => {
       router.go(-1);
       queryClient.invalidateQueries({

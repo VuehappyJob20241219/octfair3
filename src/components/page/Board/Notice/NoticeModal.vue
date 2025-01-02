@@ -2,10 +2,10 @@
   <teleport to="body">
     <div class="backdrop">
       <div class="container">
-        <label> 제목 :<input type="text" v-model="noticeDetail.datail.title" /> </label>
+        <label> 제목 :<input type="text" v-model="detailValue.title" /> </label>
         <label>
           내용 :
-          <input type="text" v-model="noticeDetail.datail.content" />
+          <input type="text" v-model="detailValue.content" />
         </label>
         파일 :<input type="file" style="display: none" id="fileInput" @change="handlerFile" />
         <label class="img-label" htmlFor="fileInput"> 파일 첨부하기 </label>
@@ -19,11 +19,11 @@
           </div>
         </div>
         <div class="button-box">
-          <button v-if="props.idx" @click="handlerDeleteBtn">삭제</button>
-          <button @click="props.idx ? handlerUpdateBtn() : handlerSaveBtn()">
-            {{ props.idx ? "수정" : "저장" }}
+          <button v-if="params.idx" @click="handlerDeleteBtn">삭제</button>
+          <button @click="params.idx ? handlerUpdateBtn() : handlerSaveBtn()">
+            {{ params.idx ? "수정" : "저장" }}
           </button>
-          <button @click="handlerModal">나가기</button>
+          <button @click="$router.go(-1)">나가기</button>
         </div>
       </div>
     </div>
@@ -33,13 +33,17 @@
 <script setup>
 import { useModalStore } from "@/stores/modalState";
 import axios from "axios";
-import { onMounted, onUnmounted } from "vue";
 import { useUserInfo } from "../../../../stores/userInfo";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useNoticeDetailSearchQuery } from "../../../hook/notice/useNoticeDetailSearchQuery";
+import { useNoticeDetailDeleteMutation } from "../../../hook/notice/useNoticeDetailDeleteMutation";
+import { useNoticeDetailInsertMutation } from "../../../hook/notice/useNoticeDetailInsertMutation";
 
-const route = useRoute();
-const { data: noticeDetail } = useNoticeDetailSearchQuery(route.params.idx);
+const { params } = useRoute();
+const detailValue = ref({});
+const router = useRouter();
+
+const { data: noticeDetail, isSuccess } = useNoticeDetailSearchQuery(params.idx);
 
 
 const modalState = useModalStore();
@@ -49,15 +53,13 @@ const props = defineProps(["idx"]);
 const imageUrl = ref("");
 const fileData = ref("");
 
-const handlerModal = () => {
-  modalState.setModalState();
-};
+
 
 const handlerSaveBtn = () => {
   const textData = {
-    ...noticeDetail.value,
+    ...detailValue.value,
     loginId: userInfo.user.loginId,
-    context: noticeDetail.value.content,
+    context: detailValue.content,
   };
 
   const formData = new FormData();
@@ -73,6 +75,7 @@ const handlerSaveBtn = () => {
     if (res.data.result === "success") {
       modalState.setModalState();
       emit("postSuccess");
+      router.go(-1);
     }
   });
 };
@@ -93,37 +96,30 @@ const handlerSaveBtn = () => {
 //   });
 // };
 
-const handlerUpdateBtn = () => {
-  const textData = {
-    title: noticeDetail.value.title,
-    content: noticeDetail.value.content,
-    noticeSeq: props.idx,
-  };
-  const formData = new FormData();
-  if (fileData.value) formData.append("file", fileData.value);
-  formData.append(
-    "text",
-    new Blob([JSON.stringify(textData)], {
-      type: "application/json",
-    })
-  );
+// const handlerUpdateBtn = () => {
+//   const textData = {
+//     title: noticeDetail.value.title,
+//     content: noticeDetail.value.content,
+//     noticeSeq: props.idx,
+//   };
+//   const formData = new FormData();
+//   if (fileData.value) formData.append("file", fileData.value);
+//   formData.append(
+//     "text",
+//     new Blob([JSON.stringify(textData)], {
+//       type: "application/json",
+//     })
+//   );
 
-  axios.post("/api/board/noticeUpdateFileForm.do", formData).then((res) => {
-    if (res.data.result === "success") {
-      modalState.setModalState();
-      emit("postSuccess");
-    }
-  });
-};
-
-const handlerDeleteBtn = () => {
-  axios.post("/api/board/noticeDeleteBody.do", { noticeSeq: props.idx }).then((res) => {
-    if (res.data.result === "success") {
-      modalState.setModalState();
-      emit("postSuccess");
-    }
-  });
-};
+//   axios.post("/api/board/noticeUpdateFileForm.do", formData).then((res) => {
+//     if (res.data.result === "success") {
+//       modalState.setModalState();
+//       emit("postSuccess");
+//     }
+//   });
+// };
+const { mutate: handlerUpdateBtn } = useNoticeDetailInsertMutation(detailValue, fileData, userInfo.user.loginId);
+const { mutate: handlerDeleteBtn } = useNoticeDetailDeleteMutation(params.idx);
 
 const handlerFile = (e) => {
   const fileInfo = e.target.files;
@@ -135,21 +131,21 @@ const handlerFile = (e) => {
   fileData.value = fileInfo[0];
 };
 
-const getFileImage = () => {
-  let param = new URLSearchParams();
-  param.append("noticeSeq", props.idx);
-  const postAction = {
-    url: "/api/board/noticeDownload.do",
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-  axios(postAction).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    imageUrl.value = url;
-    console.log(res);
-  });
-};
+// const getFileImage = () => {
+//   let param = new URLSearchParams();
+//   param.append("noticeSeq", props.idx);
+//   const postAction = {
+//     url: "/api/board/noticeDownload.do",
+//     method: "POST",
+//     data: param,
+//     responseType: "blob",
+//   };
+//   axios(postAction).then((res) => {
+//     const url = window.URL.createObjectURL(new Blob([res.data]));
+//     imageUrl.value = url;
+//     console.log(res);
+//   });
+// };
 
 const fileDownload = () => {
   let param = new URLSearchParams();
@@ -171,12 +167,11 @@ const fileDownload = () => {
   });
 };
 
-// onMounted(() => {
-//   props.idx && searchDetail();
-// });
 
-onUnmounted(() => {
-  emit("modalClose");
+watchEffect(() => {
+  if (isSuccess.value && noticeDetail.value) {
+    detailValue.value = toRaw(noticeDetail.value.detail);
+  }
 });
 </script>
 

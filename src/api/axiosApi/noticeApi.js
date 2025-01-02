@@ -6,4 +6,5 @@ export const Notice = {
   UpdateNotice: "/api/board/noticeUpdateBody.do",
   UpdateNoticeFile: "/api/board/noticeUpdateFileForm.do",
   DeleteNotice: "/api/board/noticeDeleteBody.do",
+  NoticeImageDownload: "/api/board/noticeDownload.do",
 };

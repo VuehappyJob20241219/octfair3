@@ -18,11 +18,11 @@
         </tr>
       </thead>
       <tbody>
-        <template v-if="noticeList">
-          <template v-if="noticeList.noticeCnt">
-            <tr v-for="notice in noticeList.notice" :key="notice.noticeIdx" @click="handlerModal(notice.noticeIdx)">
+        <template v-if="isSuccess">
+          <template v-if="noticeList.noticeCnt > 0">
+            <tr v-for="notice in noticeList.notice" :key="notice.noticeIdx" >
               <td>{{ notice.noticeIdx }}</td>
-              <td>{{ notice.title }}</td>
+              <td @click="handlerModal(notice.noticeIdx)">{{ notice.title }}</td>
               <td>{{ notice.createdDate.substr(0, 10) }}</td>
               <td>{{ notice.author }}</td>
             </tr>
@@ -49,13 +49,13 @@
 import Pagination from "../../../common/Pagination.vue";
 import { useRouter } from "vue-router";
 import { useNoticeListSearchQuery } from "../../../hook/notice/useNoticeListSearchQuery";
+import { inject } from "vue";
 
 const router = useRouter();
 const cPage = ref(1);
 const injectedValue = inject('provideValue');
 
-
-const  { data: noticeList } 
+const  { data: noticeList, isSuccess } 
     = useNoticeListSearchQuery(
     injectedValue, cPage
 );

@@ -55,6 +55,11 @@ const routes = [
             name: 'noticeDetail',
             component: NoticeModal,
           },
+          {
+            path: 'notice.do/insert',
+            name: 'noticeInsert',
+            component: NoticeModal,
+          },
           // qna 경로
           {
             path: "qna.do",
