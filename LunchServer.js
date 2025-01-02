@@ -1,5 +1,5 @@
-import fs from "fs";
 import { ImageAnnotatorClient } from "@google-cloud/vision";
+import fs from "fs";
 
 // 환경 변수 기반 경로 설정
 
@@ -15,7 +15,7 @@ const getFormattedDate = () => {
 const date = getFormattedDate();
 const filePath = `V:/FileRepository/menu/${date}.jpg`; // 기본 이미지 파일 경로 설정
 const client = new ImageAnnotatorClient({
-  keyFilename: "brave-anagram-438514-n3-87cad63c922e.json",
+  keyFilename: "brave-anagram-438514-n3-bfd0a7128c43.json",
 });
 
 // OCR 처리 함수
@@ -25,7 +25,11 @@ const processOCR = async (filePath) => {
     const annotations = result.textAnnotations;
     if (annotations.length > 0) {
       console.log("OCR Text:", annotations[0].description);
-      fs.writeFileSync(`uploads/ocr_result(${date}).txt`, annotations[0].description, "utf8");
+      fs.writeFileSync(
+        `uploads/ocr_result(${date}).txt`,
+        annotations[0].description,
+        "utf8"
+      );
     } else {
       console.log("OCR 결과를 찾을 수 없습니다.");
     }
