@@ -17,8 +17,15 @@ export default {
     };
   },
   mounted() {
+const today = new Date();
+const formattedDate = today.getFullYear().toString().slice(-2) + '-' +
+                      (today.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                      today.getDate().toString().padStart(2, '0');
+// 파일 경로에서 날짜 부분을 동적으로 변경
+const filePath = `uploads/ocr_result(${formattedDate}).txt`;
     // HTTP 요청으로 파일 불러오기
-    fetch("uploads/ocr_result(24-12-30).txt")
+
+    fetch(filePath)
       .then((response) => {
         if (!response.ok) {
           throw new Error("파일을 불러오지 못했습니다.");
