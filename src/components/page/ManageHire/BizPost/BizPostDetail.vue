@@ -30,6 +30,7 @@
             <template v-if="userType === 'A'">            
                 <div class="p-2 d-flex justify-content-center">
                   <template v-if="isClicked.isScraped">
+                  <template v-if="postDetail">
                     <b-button
                       variant="warning"
                       size="lg"
@@ -38,6 +39,7 @@
                     >
                       스크랩
                     </b-button>
+                  </template>
                   </template>
                   <template v-else>
                     <b-button
@@ -232,8 +234,15 @@ const navigatePost= (param) => {
 
 
 //신효 - 스크랩 등록
-// const {mutate: handlerSaveScrap} = useScrapSaveMutation(postDetail.value.postIdx)
-
+ //const {mutate: handlerSaveScrap} = useScrapSaveMutation(postDetail.value.postIdx)
+const handlerSaveScrap = () => {
+  if (!postDetail.value || !postDetail.value.postIdx) {
+    console.error("postIdx가 정의되지 않았습니다.");
+    return;
+  }
+  const { mutate } = useScrapSaveMutation(postDetail.value.postIdx);
+  mutate();
+};
 </script>
 
 <style lang="scss" scoped>
