@@ -39,9 +39,11 @@ const handlerInitSearch = () => {
     injectValue.value = {
       postIdx: selectedPostIdx,
       keyword: selectedProc,
+      procArry: procArry,
     };
     console.log("search에서 념겨주는 injectValue.postIdx => " + injectValue.value.postIdx);
     console.log("search에서 념겨주는 injectValue.keyword => " + injectValue.value.keyword);
+    console.log("search에서 념겨주는 injectValue.procArry => " + injectValue.value.procArry);
   });
 };
 
@@ -62,6 +64,7 @@ watch([selectedPostIdx, selectedProc], () => {
   injectValue.value = {
     postIdx: selectedPostIdx,
     keyword: selectedProc,
+    procArry: procArry,
   };
   // console.log("바뀐 provide 공고번호 ==> " + injectValue.value.postIdx);
   // console.log("바뀐 provide 채용절차 ==> " + injectValue.value.keyword);
