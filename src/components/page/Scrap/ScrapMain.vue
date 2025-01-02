@@ -17,7 +17,7 @@
                 <template v-if="isSuccess">
                     <template v-if="scrapList.scrapCnt > 0">
                         <tr v-for="scrap in scrapList.scrapList" :key="scrap.scrapIdx">
-                            <td><input type="checkBox"></td>
+                            <td><input type="checkBox" value="scrap.scrapIdx" v-model="checkedList" ></td>
                             <td>{{ scrap.postBizName }}</td>
                             <td>{{ scrap.postTitle }}</td>
                             <td>{{ scrap.postExpRequired }}</td>
@@ -50,6 +50,7 @@ const injectedValue = inject("provideValue");
 const { data: scrapList, isLoading, refetch, isSuccess, isError }
     = useScrapListQuery(injectedValue, cPage);
 
+const checkedList = inject("checkedList");
 
 </script>
 
