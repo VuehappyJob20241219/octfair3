@@ -25,6 +25,7 @@
     padding-left: 20px;
     margin: 0;
     background-color: white;
+    min-width: 500px;
     max-width: 50%;
 }
 
