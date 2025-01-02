@@ -1,10 +1,6 @@
 <template>
-  <ApplicantModal
-    v-if="modalStateApplicant.modalState"
-    @postSuccess="searchList"
-    @modalClose="() => (loginId = 0)"
-    :loginId="loginId"
-  />
+  <ApplicantModal v-if="modalStateApplicant.modalState" @postSuccess="searchList" @modalClose="() => (loginId = 0)"
+    :loginId="loginId" />
   <div class="applicantList">
     <table>
       <colgroup>
@@ -44,27 +40,18 @@
         </template>
       </tbody>
     </table>
-    <Pagination
-      :totalItems="applicantList?.applicantCnt || 0"
-      :items-per-page="5"
-      :max-pages-shown="5"
-      :onClick="searchList"
-      v-model="cPage"
-    />
+    <Pagination :totalItems="applicantList?.applicantCnt || 0" :items-per-page="5" :max-pages-shown="5"
+      :onClick="searchList" v-model="cPage" />
   </div>
 </template>
 
 <script setup>
 import { useQuery } from "@tanstack/vue-query";
 import axios from "axios";
-import { useRoute } from "vue-router";
 import { useModalStore } from "../../../stores/modalState";
-
 import Pagination from "../../common/Pagination.vue";
 
-const route = useRoute();
-const router = useRouter();
-// const applicantList = ref();
+
 const cPage = ref(1);
 const modalStateApplicant = useModalStore();
 const loginId = ref("");
