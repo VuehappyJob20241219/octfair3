@@ -1,31 +1,35 @@
 <template>
   <div class="search-box">
-    <button @click="btnHendler('search')">자료검색</button> 
-    <button @click="btnHendler('Lunch')">오늘의 메뉴</button> 
-    <input v-model.lazy="keyword" />
+    <input v-model="searchKey.searchTitle" />
+    <input type="date" v-model="searchKey.searchStartDate" />
+    <input type="date" v-model="searchKey.searchEndDate" />
     <button @click="handlerSearch">검색</button>
+    <button @click="handleNewInsert">신규등록</button>
   </div>
 </template>
 <script setup>
-
-const keyword = ref("");
-const keywordValue = inject("provideValue");
-const stateValue = inject("stateValue");
+import { useQueryClient } from "@tanstack/vue-query";
+import router from "../../../../router";
+const queryClient = useQueryClient();
+const injectValue = inject("provideValue");
+const searchKey = ref({});
 
 const handlerSearch = () => {
-  keywordValue.keyword=keyword.value;
+  injectValue.value = { ...searchKey.value };
 };
 
-const btnHendler = (e) => {
-  console.log(e)
-  stateValue.state = e;
-}
-
+const handleNewInsert = () => {
+  queryClient.removeQueries({
+    queryKey: ["noticeDetail"],
+  });
+  // 페이지 이동
+  router.push("notice.do/insert");
+};
 </script>
 
 <style lang="scss" scoped>
 .search-box {
-  margin-top: 5px;
+  margin-bottom: 10px;
   display: block;
   float: inline-end;
 }
@@ -45,7 +49,7 @@ button {
   display: inline-block;
   border: none;
   color: white;
-  width: 80px;
+  width: 70px;
   padding-top: 8px;
   padding-bottom: 8px;
   font-size: 12px;

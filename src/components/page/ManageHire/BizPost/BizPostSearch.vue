@@ -1,31 +1,25 @@
 <template>
   <div class="search-box">
-    <button @click="btnHendler('search')">자료검색</button> 
-    <button @click="btnHendler('Lunch')">오늘의 메뉴</button> 
-    <input v-model.lazy="keyword" />
+    <input v-model.lazy="searchKey.searchTitle" />
+    <input type="date" v-model="searchKey.searchStDate" />
+    <input type="date" v-model="searchKey.searchEdDate" />
     <button @click="handlerSearch">검색</button>
   </div>
 </template>
 <script setup>
+import { ref } from "vue";
 
-const keyword = ref("");
-const keywordValue = inject("provideValue");
-const stateValue = inject("stateValue");
+const injectValue = inject('bizSearchValue');
+const searchKey = ref({});
 
 const handlerSearch = () => {
-  keywordValue.keyword=keyword.value;
+    injectValue.value = { ...searchKey.value };
 };
-
-const btnHendler = (e) => {
-  console.log(e)
-  stateValue.state = e;
-}
-
 </script>
 
 <style lang="scss" scoped>
 .search-box {
-  margin-top: 5px;
+  margin-bottom: 10px;
   display: block;
   float: inline-end;
 }
@@ -45,7 +39,7 @@ button {
   display: inline-block;
   border: none;
   color: white;
-  width: 80px;
+  width: 70px;
   padding-top: 8px;
   padding-bottom: 8px;
   font-size: 12px;
