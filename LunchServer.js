@@ -1,5 +1,5 @@
-import fs from "fs";
 import { ImageAnnotatorClient } from "@google-cloud/vision";
+import fs from "fs";
 
 // 환경 변수 기반 경로 설정
 
@@ -25,7 +25,11 @@ const processOCR = async (filePath) => {
     const annotations = result.textAnnotations;
     if (annotations.length > 0) {
       console.log("OCR Text:", annotations[0].description);
-      fs.writeFileSync(`uploads/ocr_result(${date}).txt`, annotations[0].description, "utf8");
+      fs.writeFileSync(
+        `uploads/ocr_result(${date}).txt`,
+        annotations[0].description,
+        "utf8"
+      );
     } else {
       console.log("OCR 결과를 찾을 수 없습니다.");
     }

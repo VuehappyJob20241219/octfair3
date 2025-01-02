@@ -1,15 +1,15 @@
 <template>
   <ContextBox>공고 상세 보기</ContextBox>
   <ApplyUserResumeModal
-      v-if="modalState.modalState"
-      @postSuccess="searchList"
-      @modalClose="() => (postIdx = 0,bizIdx=0 )"
-      :pIdx="postIdx"
-      :bIdx="bizIdx"
-      :postDetail="postDetail"
-      :bizDetail="bizDetail"
-      :scrap=null
-    />
+    v-if="modalState.modalState"
+    @postSuccess="searchList"
+    @modalClose="() => ((postIdx = 0), (bizIdx = 0))"
+    :pIdx="postIdx"
+    :bIdx="bizIdx"
+    :postDetail="postDetail"
+    :bizDetail="bizDetail"
+    :scrap="null"
+  />
   <template v-if="isLoading">...로딩중</template>
   <template v-if="isSuccess">
   <div class="mt-2">
@@ -239,12 +239,13 @@
 </template>
 
 <script setup>
-import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
-import { useQuery } from "@tanstack/vue-query";
-import 'bootstrap-vue-3';
 import { useModalStore } from "@/stores/modalState";
+import { useQuery } from "@tanstack/vue-query";
+import axios from "axios";
+import "bootstrap-vue-3";
+import { useRoute, useRouter } from "vue-router";
 import ApplyUserResumeModal from "../../Apply/ResumeList/ApplyUserResumeModal.vue";
+import { useScrapSaveMutation } from "../../../hook/scrap/useScrapSaveMutation";
 
 const { params } = useRoute();
 const postDetail = ref(null);
@@ -257,11 +258,8 @@ const bizIdx = ref(0);
 const modalState = useModalStore();
 
 const searchList = async () => {
-  const result = await axios.post(
-    "/api/manage-hire/readPostDetailBody.do",
-    params,
-  );
-  if(result.data){
+  const result = await axios.post("/api/manage-hire/readPostDetailBody.do", params);
+  if (result.data) {
     postDetail.value = result.data.postDetail;
     bizDetail.value = result.data.bizDetail;
     isClicked.value = result.data.isClicked;
@@ -270,43 +268,34 @@ const searchList = async () => {
   return result.data;
 };
 
-const {
-  data,
-  isLoading,
-  refetch,
-  isSuccess,
-  isError,
-} = useQuery({
+const { data, isLoading, refetch, isSuccess, isError } = useQuery({
   queryKey: ["bizPostDetail"],
   queryFn: searchList,
 });
 // const { postDetail, bizDetail, isClicked } = data || {};
 
-const navigatePost= (param) => {
-  if (param === 'back') {
-      router.go(-1);  // 뒤로가기
-    } else {
-      router.push({ name: "bizPostModify", params: { postIdx: param } });  // 지정된 URL로 이동
-    }
-}
+const navigatePost = (param) => {
+  if (param === "back") {
+    router.go(-1); // 뒤로가기
+  } else {
+    router.push({ name: "bizPostModify", params: { postIdx: param } }); // 지정된 URL로 이동
+  }
+};
 
-const handleDelete = async (pIdx,bIdx) => {
+const handleDelete = async (pIdx, bIdx) => {
   const params = {
     postIdx: pIdx,
     bizIdx: bIdx,
   };
-  const result = await axios.post(
-    "/api/manage-hire/managehireDeleteBody.do",
-    params,
-  );
+  const result = await axios.post("/api/manage-hire/managehireDeleteBody.do", params);
 
-  if(result.data.result == 'success'){    
+  if (result.data.result == "success") {
     alert("삭제 처리되었습니다.");
     router.go(-1);
-  }  
-}
+  }
+};
 
-const handleDown = (pIdx,bIdx) => {
+const handleDown = (pIdx, bIdx) => {
   const params = {
     postIdx: pIdx,
     bizIdx: bIdx,
@@ -317,11 +306,12 @@ const handleDown = (pIdx,bIdx) => {
     data: params,
     responseType: "blob",
   };
-  axios(download).then((res) => {
-    // 다운로드한 파일을 브라우저에서 처리
-    const file = new Blob([res.data], { type: "application/octet-stream" });
+  axios(download)
+    .then((res) => {
+      // 다운로드한 파일을 브라우저에서 처리
+      const file = new Blob([res.data], { type: "application/octet-stream" });
       const fileURL = URL.createObjectURL(file);
-      console.log()
+      console.log();
       // 파일 이름을 서버에서 받은 파일 이름으로 설정
       const fileName = postDetail.value.fileName;
 
@@ -337,9 +327,9 @@ const handleDown = (pIdx,bIdx) => {
     .catch((error) => {
       console.error("파일 다운로드 실패:", error);
     });
-}
+};
 
-const handlerModal = (pIdx,bIdx) => {
+const handlerModal = (pIdx, bIdx) => {
   modalState.setModalState();
   postIdx.value = pIdx;
   bizIdx.value = bIdx;
@@ -350,22 +340,30 @@ const handlerUpdateAppStatus = async (pIdx, status) => {
     postIdx: pIdx,
     appStatus: status,
   };
-  const result = await axios.post(
-    "/api/manage-post/statusUpdateBody.do",
-    params,
-  );
+  const result = await axios.post("/api/manage-post/statusUpdateBody.do", params);
 
-  if(result.data.result == 'success'){    
+  if (result.data.result == "success") {
     alert("처리되었습니다.");
-    if(status == "승인"){
-      router.push({ name: "managePost"})
-    }else if(status == "불허"){
-      router.push({ name: "managePostApproval"})
+    if (status == "승인") {
+      router.push({ name: "managePost" });
+    } else if (status == "불허") {
+      router.push({ name: "managePostApproval" });
     }
   }
+};
 
-}
 
+
+//신효 - 스크랩 등록
+ //const {mutate: handlerSaveScrap} = useScrapSaveMutation(postDetail.value.postIdx)
+// const handlerSaveScrap = () => {
+//   if (!postDetail.value || !postDetail.value.postIdx) {
+//     console.error("postIdx가 정의되지 않았습니다.");
+//     return;
+//   }
+//   const { mutate } = useScrapSaveMutation(postDetail.value.postIdx);
+//   mutate();
+// };
 </script>
 
 <style lang="scss" scoped>
@@ -377,99 +375,99 @@ const handlerUpdateAppStatus = async (pIdx, status) => {
     padding: 20px;
   }
 
-  .bizDetailContainer {
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+.bizDetailContainer {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.postDetailContainer {
+  padding: 20px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+}
+
+.postTitleAndButtonContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.bizImg {
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+// 기본 버튼 스타일
+button {
+  background-color: #3bb2ea;
+  border: none;
+  color: white;
+  padding: 10px 22px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+  box-shadow: 0 4px #999;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: #45a049;
   }
 
-  .postDetailContainer {
-    padding: 20px;
-    background-color: #f9fafb;
-    border-radius: 8px;
+  &:active {
+    background-color: #3e8e41;
+    box-shadow: 0 2px #666;
+    transform: translateY(2px);
   }
+}
 
-  .postTitleAndButtonContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+// 스크랩 버튼
+.scrapButton {
+  background-color: #007bff;
+
+  &:hover {
+    background-color: #0056b3;
   }
+}
 
-  .bizImg {
-    max-width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: 8px;
+// 입사지원 버튼
+.applyButton {
+  background-color: #ffc107;
+
+  &:hover {
+    background-color: #ffa000;
   }
+}
 
-  // 기본 버튼 스타일
-  button {
-    background-color: #3bb2ea;
-    border: none;
-    color: white;
-    padding: 10px 22px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 12px;
-    box-shadow: 0 4px #999;
-    transition: 0.3s;
+//    기업정보 버튼
+.bizInfoButton {
+  background-color: #eeeeee;
+  color: #333;
+  border: 1px solid #ccc;
 
-    &:hover {
-      background-color: #45a049;
-    }
-
-    &:active {
-      background-color: #3e8e41;
-      box-shadow: 0 2px #666;
-      transform: translateY(2px);
-    }
-  }
-
-  // 스크랩 버튼
-  .scrapButton {
-    background-color: #007bff;
-
-    &:hover {
-      background-color: #0056b3;
-    }
-  }
-
-  // 입사지원 버튼
-  .applyButton {
-    background-color: #ffc107;
-
-    &:hover {
-      background-color: #ffa000;
-    }
-  }
-
-  //    기업정보 버튼
-  .bizInfoButton {
-    background-color: #eeeeee;
+  &:hover {
+    background-color: #e0e0e0;
     color: #333;
-    border: 1px solid #ccc;
-
-    &:hover {
-      background-color: #e0e0e0;
-      color: #333;
-      border-color: #bbb;
-    }
+    border-color: #bbb;
   }
+}
 
-  //    뒤로가기 버튼
-  .backButton {
-    background-color: #6c757d;
+//    뒤로가기 버튼
+.backButton {
+  background-color: #6c757d;
 
-    &:hover {
-      background-color: #5a6268;
-    }
+  &:hover {
+    background-color: #5a6268;
   }
+}
 
   // 로딩중
   .loadingText {

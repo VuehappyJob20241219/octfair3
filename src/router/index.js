@@ -173,7 +173,6 @@ const routes = [
             component: CompanyEdit,
           },
           {
-
             path: "companyDetailPage.do/:postIdx/:bizIdx",
             name: "companyDetailPage",
             component: CompanyInfo,
@@ -229,11 +228,6 @@ const routes = [
           {
             path: "posts.do",
             name: "jobsPosts",
-            component: BizPost,
-          },
-          {
-            path: "scrap.do",
-            name: "postScrap",
             component: BizPost,
           },
           {

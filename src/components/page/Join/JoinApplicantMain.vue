@@ -1,39 +1,39 @@
 <template>
-    <div class="divManageApplicantJoin">
+    <div class="divManageJoin">
         <div class="content">
             <table>
                 <colgroup>
-                    <col width="120px">
+                    <col width="130px">
                     <col width="*">
                     <col width="120px">
                     <col width="*">
                 </colgroup>
                 <tbody>
-                    <th>회원유형</th>
+                    <th>회원유형<span style="color: red;">*</span></th>
                     <td><select v-model="register.userType">
                             <option disabled value="">선택</option>
                             <option value="A">개인회원</option>
                             <option value="B">기업회원</option>
                         </select></td>
                     <tr>
-                        <th>아이디</th>
+                        <th>아이디<span style="color: red;">*</span></th>
                         <td><input v-model.lazy="register.loginId" type="text" /></td>
-                        <td><button @click="loginIdCheck">중복확인</button></td>
+                        <td><button @click="loginIdCheckBtn">중복확인</button></td>
                     </tr>
                     <tr>
-                        <th>비밀번호</th>
+                        <th>비밀번호<span style="color: red;">*</span></th>
                         <td><input v-model="register.password" type="text" /></td>
                     </tr>
                     <tr>
-                        <th>비밀번호 확인</th>
+                        <th>비밀번호 확인<span style="color: red;">*</span></th>
                         <td><input v-model="register.password1" type="text" /></td>
                     </tr>
                     <tr>
-                        <th>이름</th>
+                        <th>이름<span style="color: red;">*</span></th>
                         <td><input v-model="register.name" type="text" /></td>
                     </tr>
                     <tr>
-                        <th>성별</th>
+                        <th>성별<span style="color: red;">*</span></th>
                         <td><select v-model="register.sex">
                                 <option disabled value="">선택</option>
                                 <option value="1">남자</option>
@@ -41,25 +41,25 @@
                             </select></td>
                     </tr>
                     <tr>
-                        <th>생년월일</th>
+                        <th>생년월일<span style="color: red;">*</span></th>
                         <td><input v-model="register.birthday" type="date" /></td>
                     </tr>
                     <tr>
-                        <th>전화번호</th>
+                        <th>전화번호<span style="color: red;">*</span></th>
                         <td><input v-model="register.phone" type="tel" /></td>
                     </tr>
                     <tr>
-                        <th>이메일</th>
+                        <th>이메일<span style="color: red;">*</span></th>
                         <td><input v-model="register.email" type="email" /></td>
                     </tr>
                     <tr>
-                        <th>우편번호</th>
+                        <th>우편번호<span style="color: red;">*</span></th>
                         <td><input v-model="register.zipCode" type="text" readonly /></td>
                         <td><button @click="openDaumPostcode">우편번호 찾기</button></td>
                     </tr>
                     <tr>
                         <th>주소</th>
-                        <td><input v-model="register.address" type="text" /></td>
+                        <td><input v-model="register.address" type="text" readonly /></td>
                     </tr>
                     <tr>
                         <th>상세주소</th>
@@ -74,6 +74,7 @@
 </template>
 
 <script setup>
+import { useMutation } from '@tanstack/vue-query';
 import axios from 'axios';
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
@@ -95,13 +96,11 @@ const openDaumPostcode = () => { //카카오API사용
     }).open();
 }
 
-const handlerSaveBtn = () => {
-
+const joinUser = async () => {
     if (!checkForm()) {
-        console.log("등록에 실패하였습니다.");
         return;
-
     }
+
     if (!checkId.value) {
         alert("ID 중복 확인을 해주세요.");
         return false;
@@ -115,15 +114,21 @@ const handlerSaveBtn = () => {
         statusYn: 1
     });
 
-    console.log(register.value)
-    axios.post("/api/registerBCrypt.do", param).then((res) => {
-        if (res.data.result === 'SUCCESS') {
+    const result = await axios.post("/api/registerBCrypt.do", param);
+
+    return result.data;
+}
+
+const { mutate: handlerSaveBtn } = useMutation({
+    mutationFn: joinUser,
+    mutationKey: ["joinUser"],
+    onSettled: (data, error) => {
+        if (data.result === 'SUCCESS') {
             alert("회원 가입에 성공했습니다.")
             router.push('/');
         }
-    })
-
-}
+    },
+})
 
 const checkForm = () => {
     let inputUserType = register.value.userType;
@@ -199,23 +204,31 @@ const checkForm = () => {
     return true;
 }
 
-const loginIdCheck = () => {
+const loginIdCheck = async () => {
     let inputId = register.value.loginId;
 
     const param = new URLSearchParams({
         loginId: inputId
     });
 
-    axios.post("/api/check_loginId.do", param).then((res) => {
+    const result = await axios.post("/api/check_loginId.do", param);
 
-        if (res.data === 0) {
+    return result.data;
+}
+
+const { mutate: loginIdCheckBtn } = useMutation({
+    mutationFn: loginIdCheck,
+    mutationKey: ["loginIdCheck"],
+    onSettled: (data, error) => {
+        if (data === 0) {
             checkId.value = true;
             alert("사용할 수 있는 아이디 입니다.");
         } else {
             alert("중복된 아이디가 존재합니다.");
         }
-    }).catch(() => { });
-}
+    }
+})
+
 
 watch(() => register.value.loginId, () => {
     checkId.value = false;
@@ -301,6 +314,7 @@ table {
         background-color: #2676bf;
         color: #ddd;
         display: block;
+        width: 120px;
         height: 60px;
         line-height: 60px;
         padding-left: 10px;

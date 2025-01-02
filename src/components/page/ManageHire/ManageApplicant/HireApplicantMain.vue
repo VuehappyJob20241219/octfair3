@@ -23,26 +23,19 @@
         <template v-if="applicantList">
           <template v-for="list in applicantList" :key="list.resIdx">
             <tr>
-              <td rowspan="4">
+              <td>
                 <div>{{ list.name }}</div>
                 <div>{{ list.resTitle }}</div>
                 <div>{{ list.applyDate.substring(0, 10) }}</div>
               </td>
-            </tr>
-            <tr>
-              <td rowspan="4">
+              <td>
                 <div>학력: {{ list.grdStatus }}</div>
                 <div>전화번호: {{ list.phone }}</div>
                 <div>이메일: {{ list.email }}</div>
               </td>
-            </tr>
-            <tr>
-              <td rowspan="2">
-                <button>지원자 이력서 보기</button>
-              </td>
-              <td rowspan="2">
-                <button>합격</button>
-                <button>불합격</button>
+              <td>
+                <div><button>지원자 이력서 보기</button></div>
+                <div><button>합격</button> <button>불합격</button></div>
               </td>
             </tr>
           </template>
@@ -72,14 +65,14 @@ const userInfo = useUserInfo();
 const cPage = ref(1);
 const applicantList = ref();
 
-const searchList = async () => {
+const loadApplicantList = async () => {
   const param = new URLSearchParams({});
   await axios
     .post("/api/manage-hire/applicantListBody.do", {
       loginId: userInfo.user.loginId,
-      postIdx: 22,
+      postIdx: "22",
       keyword: "서류심사중",
-      startSeq: 1,
+      startSeq: "1",
       pageSize: "5",
       currentPage: "1",
     })
@@ -89,7 +82,7 @@ const searchList = async () => {
 };
 
 onMounted(() => {
-  searchList();
+  // loadApplicantList();
 });
 </script>
 
