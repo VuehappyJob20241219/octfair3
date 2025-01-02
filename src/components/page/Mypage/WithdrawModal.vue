@@ -28,6 +28,7 @@
 </template>
 
 <script setup>
+import { useMutation } from "@tanstack/vue-query";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { useModalStore } from "../../../stores/modalState";
@@ -37,23 +38,31 @@ const userInfo = useUserInfo();
 const modalState = useModalStore();
 const router = useRouter();
 
-const handlerBtn = () => {
+const withDraw = async () => {
     const param = new URLSearchParams({
         password: document.getElementById("passwd").value,
     });
-    axios.post('/api/mypage/deleteUser.do', param)
-        .then((res) => {
-            if (res.data.result === 'success') {
-                alert("탈퇴 되었습니다.\n지금까지 서비스를 이용해주셔서 감사합니다.")
-                userInfo.setAuthenticated();
-                handlerModal();
-                sessionStorage.setItem("userInfo", "");
-                router.push('/');
-            } else {
-                alert("비밀번호를 확인해주세요.")
-            }
-        })
+
+    const result = await axios.post('/api/mypage/deleteUser.do', param);
+
+    return result.data;
 }
+
+const { mutate: handlerBtn } = useMutation({
+    mutationFn: withDraw,
+    mutationKey: ["withDraw"],
+    onSettled: (data, error) => {
+        if (data.result === 'success') {
+            alert("탈퇴 되었습니다.\n지금까지 서비스를 이용해주셔서 감사합니다.");
+            userInfo.setAuthenticated();
+            handlerModal();
+            sessionStorage.setItem("userInfo", "");
+            router.push('/');
+        } else {
+            alert("비밀번호를 확인해주세요.");
+        }
+    },
+})
 
 const handlerModal = () => {
     modalState.setModalState();
