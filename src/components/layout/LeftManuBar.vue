@@ -5,7 +5,7 @@
   <div class="logo-box">
     <img :src="vue_logo" alt="logoImage" />
     <div class="user-info">
-      <div>{{ userInfo.user.loginId }}</div>
+      <div><span class="user">{{ userInfo.user.loginId }}</span></div>
       <button @click="handlerLogout">로그아웃</button>
     </div>
   </div>
@@ -29,6 +29,7 @@
 import { useUserInfo } from "@/stores/userInfo";
 import logo from "../../assets/logo.png";
 import vue_logo from "../../assets/vue_logo.png";
+import { useRouter } from "vue-router";
 
 const userInfo = useUserInfo();
 const router = useRouter();
@@ -102,6 +103,7 @@ button:active {
 .logo-box {
   background: #2676bf;
   border-radius: 10px;
+  height: 70px;
 
   img {
     top: 22px;
@@ -114,9 +116,13 @@ button:active {
   .user-info {
     position: relative;
     right: 120px;
-    top: 30px;
-    float: right;
+    top: 10px;
+    float: right;   
   }
+}
+
+.user{
+  color: white;
 }
 
 ul {
