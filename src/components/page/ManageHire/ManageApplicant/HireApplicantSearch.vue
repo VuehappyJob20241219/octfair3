@@ -1,23 +1,12 @@
 <template>
   <div class="search-box">
-    <select
-      v-model="selectedPostIdx"
-      @change="handlerProcSearch(selectedPostIdx)"
-    >
-      <option
-        v-for="post in postList"
-        v-bind:key="post.postIdx"
-        v-bind:value="post.postIdx"
-      >
+    <select v-model="selectedPostIdx" @change="handlerProcSearch(selectedPostIdx)">
+      <option v-for="post in postList" v-bind:key="post.postIdx" v-bind:value="post.postIdx">
         {{ post.title }}
       </option>
     </select>
     <select v-model="selectedProc">
-      <option
-        v-for="process in procArry"
-        v-bind:key="process"
-        v-bind:value="process"
-      >
+      <option v-for="process in procArry" v-bind:key="process" v-bind:value="process">
         {{ process }}
       </option>
       <option value="최종합격">최종합격</option>
@@ -28,8 +17,8 @@
 
 <script setup>
 import axios from "axios";
-import {inject, onMounted, watchEffect} from "vue";
-import {useUserInfo} from "../../../../stores/userInfo";
+import { inject, onMounted, watchEffect } from "vue";
+import { useUserInfo } from "../../../../stores/userInfo";
 
 let procArry = ref();
 const injectValue = inject("provideValue");
@@ -40,7 +29,7 @@ const selectedProc = ref();
 const userInfo = useUserInfo();
 
 const handlerInitSearch = () => {
-  const param = {loginId: userInfo.user.loginId};
+  const param = { loginId: userInfo.user.loginId };
   axios.post("/api/manage-hire/applicantJson.do", param).then((res) => {
     postList.value = res.data.MDetail;
     procArry.value = res.data.MDetail[0].hirProcess.split(" - ");
@@ -58,7 +47,7 @@ const handlerInitSearch = () => {
 };
 
 const handlerProcSearch = (idx) => {
-  const params = {loginId: userInfo.user.loginId, postIdx: idx};
+  const params = { loginId: userInfo.user.loginId, postIdx: idx };
   // console.log("선택된 postIdx --> " + params.postIdx);
   axios.post("/api/manage-hire/procList.do", params).then((res) => {
     procArry.value = res.data.procList.split(" - ");

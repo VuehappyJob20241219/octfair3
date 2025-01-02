@@ -21,24 +21,22 @@
       </thead>
       <tbody>
         <template v-if="applicantList">
-          <template v-for="list in applicantList" :key="list.resIdx">
-            <tr>
-              <td>
-                <div>{{ list.name }}</div>
-                <div>{{ list.resTitle }}</div>
-                <div>{{ list.applyDate.substring(0, 10) }}</div>
-              </td>
-              <td>
-                <div>학력: {{ list.grdStatus }}</div>
-                <div>전화번호: {{ list.phone }}</div>
-                <div>이메일: {{ list.email }}</div>
-              </td>
-              <td>
-                <div><button>지원자 이력서 보기</button></div>
-                <div><button>합격</button> <button>불합격</button></div>
-              </td>
-            </tr>
-          </template>
+          <tr v-for="list in applicantList" :key="list.resIdx">
+            <td>
+              <div>{{ list.name }}</div>
+              <div>{{ list.resTitle }}</div>
+              <div>{{ list.applyDate.substring(0, 10) }}</div>
+            </td>
+            <td>
+              <div>학력: {{ list.grdStatus }}</div>
+              <div>전화번호: {{ list.phone }}</div>
+              <div>이메일: {{ list.email }}</div>
+            </td>
+            <td>
+              <div><button>지원자 이력서 보기</button></div>
+              <div><button>합격</button> <button>불합격</button></div>
+            </td>
+          </tr>
         </template>
         <template v-else>
           <tr>
@@ -59,8 +57,8 @@
 
 <script setup>
 import axios from "axios";
-import {inject} from "vue";
-import {useUserInfo} from "../../../../stores/userInfo";
+import { inject } from "vue";
+import { useUserInfo } from "../../../../stores/userInfo";
 
 const cPage = ref(1);
 const applicantList = ref();
@@ -80,11 +78,9 @@ const loadApplicantList = async () => {
     currentPage: "1",
   };
 
-  await axios
-    .post("/api/manage-hire/applicantListBody.do", params)
-    .then((res) => {
-      applicantList.value = res.data.list;
-    });
+  await axios.post("/api/manage-hire/applicantListBody.do", params).then((res) => {
+    applicantList.value = res.data.list;
+  });
 };
 
 onMounted(() => {
