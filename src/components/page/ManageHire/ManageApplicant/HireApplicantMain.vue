@@ -57,20 +57,19 @@
 
 <script setup>
 import axios from "axios";
-import { inject } from "vue";
+import { inject, watch } from "vue";
 import { useUserInfo } from "../../../../stores/userInfo";
 
 const cPage = ref(1);
 const applicantList = ref();
 const userInfo = useUserInfo();
-const injectedValue = inject("provideValue");
+const injectedValue = inject("providedValue");
 
-// console.log("inject공고인덱스 ==> " + injectedValue.value.postIdx);
-// console.log("inject채용절차 ==> " + injectedValue.value.keyword);
-// console.log("inject공고Idx ==> " + injectedValue.postIdx);
-const loadApplicantList = async () => {
+const loadApplicantList = () => {
+  console.log("main에서 받은 injectedValue ==>" + injectedValue.value.postIdx);
+  console.log("main에서 받은 injectedValue ==>" + injectedValue.value.keyword);
   const params = {
-    ...injectedValue,
+    ...injectedValue.value,
     loginId: userInfo.user.loginId,
     firstProc: "abc",
     startSeq: "1",
@@ -78,14 +77,20 @@ const loadApplicantList = async () => {
     currentPage: "1",
   };
 
-  await axios.post("/api/manage-hire/applicantListBody.do", params).then((res) => {
+  axios.post("/api/manage-hire/applicantListBody.do", params).then((res) => {
     applicantList.value = res.data.list;
   });
 };
 
-onMounted(() => {
-  // loadApplicantList();
-});
+watch([injectedValue], () => loadApplicantList());
+
+// onMounted(() => {
+//   loadApplicantList();
+//   // if (injectedValue.value) {
+//   //   console.log("main에서 받은 injectedValue ==>" + injectedValue.value.postIdx);
+//   //   console.log("main에서 받은 injectedValue ==>" + injectedValue.value.keyword);
+//   // }
+// });
 </script>
 
 <style lang="scss" scoped>

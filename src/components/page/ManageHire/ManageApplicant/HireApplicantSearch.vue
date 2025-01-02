@@ -17,12 +17,11 @@
 
 <script setup>
 import axios from "axios";
-import { inject, onMounted, watchEffect } from "vue";
+import { inject, onMounted } from "vue";
 import { useUserInfo } from "../../../../stores/userInfo";
 
 let procArry = ref();
-const injectValue = inject("provideValue");
-const defaultValue = inject("provideValue");
+const injectValue = inject("providedValue");
 const postList = ref();
 const selectedPostIdx = ref();
 const selectedProc = ref();
@@ -33,16 +32,16 @@ const handlerInitSearch = () => {
   axios.post("/api/manage-hire/applicantJson.do", param).then((res) => {
     postList.value = res.data.MDetail;
     procArry.value = res.data.MDetail[0].hirProcess.split(" - ");
-    // console.log("초기 procArry ==> " + procArry.value);
     if (postList.value && postList.value.length > 0) {
       selectedPostIdx.value = postList.value[0].postIdx;
       selectedProc.value = procArry.value[0];
     }
-    defaultValue.value = {
+    injectValue.value = {
       postIdx: selectedPostIdx,
       keyword: selectedProc,
     };
-    console.log("defaultValuePostIdx = " + defaultValue.value.postIdx);
+    console.log("search에서 념겨주는 injectValue.postIdx => " + injectValue.value.postIdx);
+    console.log("search에서 념겨주는 injectValue.keyword => " + injectValue.value.keyword);
   });
 };
 
@@ -64,8 +63,8 @@ watch([selectedPostIdx, selectedProc], () => {
     postIdx: selectedPostIdx,
     keyword: selectedProc,
   };
-  // console.log("provide 공고번호 ==> " + injectValue.value.postIdx);
-  // console.log("provide 채용절차 ==> " + injectValue.value.keyword);
+  // console.log("바뀐 provide 공고번호 ==> " + injectValue.value.postIdx);
+  // console.log("바뀐 provide 채용절차 ==> " + injectValue.value.keyword);
 });
 
 onMounted(() => handlerInitSearch());
