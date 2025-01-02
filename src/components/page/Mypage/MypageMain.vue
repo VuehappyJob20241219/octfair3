@@ -1,6 +1,7 @@
 <template>
   <MypageModal v-if="modalStatePw.modalState" />
-  <div class="content">
+  <div v-if="isLoading">로딩중 입니다</div>
+  <div v-if="isSuccess" class="content">
     <table>
       <colgroup>
         <col width="120px" />
@@ -11,7 +12,7 @@
       <tbody>
         <tr>
           <th>아이디</th>
-          <td><input type="text" v-model="userDetail.loginId" readonly /></td>
+          <td><input type="text" v-model="userDetailValue.loginId" readonly /></td>
         </tr>
         <tr>
           <th>비밀번호</th>
@@ -19,12 +20,12 @@
         </tr>
         <tr>
           <th>이름</th>
-          <td><input type="text" v-model="userDetail.name" /></td>
+          <td><input type="text" v-model="userDetailValue.name" /></td>
         </tr>
         <tr>
           <th>성별</th>
           <td>
-            <select v-model="userDetail.sex">
+            <select v-model="userDetailValue.sex">
               <option value="1">남자</option>
               <option value="2">여자</option>
             </select>
@@ -32,17 +33,17 @@
         </tr>
         <tr>
           <th>생년월일</th>
-          <td><input type="date" v-model="userDetail.birthday" /></td>
+          <td><input type="date" v-model="userDetailValue.birthday" /></td>
         </tr>
         <tr>
           <th>전화번호</th>
-          <td><input type="text" v-model="userDetail.phone" /></td>
+          <td><input type="text" v-model="userDetailValue.phone" /></td>
         </tr>
         <tr>
           <th>이메일</th>
-          <td><input type="email" v-model="userDetail.email" /></td>
+          <td><input type="email" v-model="userDetailValue.email" /></td>
         </tr>
-        <tr v-if="userDetail.userType == 'B'">
+        <tr v-if="userDetailValue.userType == 'B'">
           <th>기업정보</th>
           <td>
             <button @click="handlerUpdateBiz()">{{ chkRegBiz.bizIdx ? "수정" : "등록" }}</button>
@@ -50,16 +51,16 @@
         </tr>
         <tr>
           <th>우편변호</th>
-          <td><input type="text" v-model="userDetail.zipCode" readonly /></td>
+          <td><input type="text" v-model="userDetailValue.zipCode" readonly /></td>
           <button @click="openDaumPostcode">우편번호 찾기</button>
         </tr>
         <tr>
           <th>주소</th>
-          <td><input type="text" v-model="userDetail.address" /></td>
+          <td><input type="text" v-model="userDetailValue.address" readonly /></td>
         </tr>
         <tr>
           <th>상세주소</th>
-          <td><input type="text" v-model="userDetail.detailAddress" /></td>
+          <td><input type="text" v-model="userDetailValue.detailAddress" /></td>
         </tr>
       </tbody>
     </table>
@@ -69,6 +70,7 @@
 </template>
 
 <script setup>
+import { useQuery } from "@tanstack/vue-query";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { useModalStore } from "../../../stores/modalState";
@@ -78,27 +80,51 @@ const props = defineProps(["loginId"]);
 
 const router = useRouter();
 const userInfo = useUserInfo();
-const userDetail = ref({});
+// const userDetail = ref({});
+const userDetailValue = ref({});
 const chkRegBiz = ref({});
 const modalStatePw = useModalStore();
 
-const searchDetail = () => {
+
+const searchDetail = async () => {
   const param = new URLSearchParams({
     loginId: userInfo.user.loginId,
   });
 
-  axios.post("/api/mypage/userDetail.do", param).then((res) => {
-    userDetail.value = res.data.detail;
-    chkRegBiz.value = res.data.chkRegBiz;
-  });
-};
+  const result = await axios.post("/api/mypage/userDetail.do", param)
+
+  return result.data;
+}
+
+const {
+  data: userDetail,
+  isLoading,
+  isSuccess,
+  isError,
+  refetch
+} = useQuery({
+  queryKey: ["userDetail"],
+  queryFn: searchDetail,
+  enabled: !!userInfo.user.loginId
+});
+
+// const searchDetail = () => {
+//   const param = new URLSearchParams({
+//     loginId: userInfo.user.loginId,
+//   });
+
+//   axios.post("/api/mypage/userDetail.do", param).then((res) => {
+//     userDetail.value = res.data.detail;
+//     chkRegBiz.value = res.data.chkRegBiz;
+//   });
+// };
 
 const openDaumPostcode = () => {
   //카카오API사용
   new daum.Postcode({
     oncomplete: (data) => {
-      userDetail.value.zipCode = data.zonecode;
-      userDetail.value.address = data.roadAddress;
+      userDetailValue.value.zipCode = data.zonecode;
+      userDetailValue.value.address = data.roadAddress;
     },
   }).open();
 };
@@ -116,7 +142,7 @@ const handlerUpdateBtn = () => {
   }
 
   const param = new URLSearchParams({
-    ...userDetail.value,
+    ...userDetailValue.value,
   });
 
   axios.post("/api/mypage/updateUserInfo.do", param).then((res) => {
@@ -127,12 +153,12 @@ const handlerUpdateBtn = () => {
 };
 
 const checkForm = () => {
-  let inputName = userDetail.value.name;
-  let inputSex = userDetail.value.sex;
-  let inputBirthday = userDetail.value.birthday;
-  let inputPhone = userDetail.value.phone;
-  let inputEmail = userDetail.value.email;
-  let inputZipCode = userDetail.value.zipCode;
+  let inputName = userDetailValue.value.name;
+  let inputSex = userDetailValue.value.sex;
+  let inputBirthday = userDetailValue.value.birthday;
+  let inputPhone = userDetailValue.value.phone;
+  let inputEmail = userDetailValue.value.email;
+  let inputZipCode = userDetailValue.value.zipCode;
 
   let emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
   let phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
@@ -181,9 +207,16 @@ const handlerPwModal = () => {
   modalStatePw.setModalState();
 };
 
-onMounted(() => {
-  userInfo.user.loginId && searchDetail();
+// onMounted(() => {
+//   userInfo.user.loginId && searchDetail();
+// });
+
+watchEffect(() => {
+  if (isSuccess.value) {
+    userDetailValue.value = toRaw(userDetail.value.detail);
+  }
 });
+
 </script>
 
 <style lang="scss" scoped>
