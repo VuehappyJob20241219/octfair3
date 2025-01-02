@@ -70,7 +70,7 @@
 </template>
 
 <script setup>
-import { useQuery } from "@tanstack/vue-query";
+import { useMutation, useQuery } from "@tanstack/vue-query";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { useModalStore } from "../../../stores/modalState";
@@ -124,8 +124,7 @@ const handlerUpdateBiz = () => {
   });
 };
 
-const handlerUpdateBtn = () => {
-  //유효성 검사
+const updateUserInfoDetail = async () => {
   if (!checkForm()) {
     return;
   }
@@ -134,12 +133,19 @@ const handlerUpdateBtn = () => {
     ...userDetailValue.value,
   });
 
-  axios.post("/api/mypage/updateUserInfo.do", param).then((res) => {
-    if (res.data.result === "success") {
+  return await axios.post("/api/mypage/updateUserInfo.do", param);
+}
+
+const { mutate: handlerUpdateBtn } = useMutation({
+  mutationFn: updateUserInfoDetail,
+  mutationKey: ["userInfoUpdate"],
+  onSettled: (data, error) => {
+    console.log(data.data);
+    if (data.data.result === "success") {
       alert("정보를 수정하였습니다.");
     }
-  });
-};
+  }
+})
 
 const checkForm = () => {
   let inputName = userDetailValue.value.name;
