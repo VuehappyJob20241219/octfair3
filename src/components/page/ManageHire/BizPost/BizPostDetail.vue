@@ -176,9 +176,6 @@ import axios from "axios";
 import "bootstrap-vue-3";
 import { useRoute, useRouter } from "vue-router";
 import ApplyUserResumeModal from "../../Apply/ResumeList/ApplyUserResumeModal.vue";
-import axios from "axios";
-import { useQuery } from "@tanstack/vue-query";
-import 'bootstrap-vue-3';
 import { useScrapSaveMutation } from "../../../hook/scrap/useScrapSaveMutation";
 
 const { params } = useRoute();
