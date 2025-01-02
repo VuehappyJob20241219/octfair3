@@ -18,7 +18,7 @@
                     <tr>
                         <th>아이디<span style="color: red;">*</span></th>
                         <td><input v-model.lazy="register.loginId" type="text" /></td>
-                        <td><button @click="loginIdCheck">중복확인</button></td>
+                        <td><button @click="loginIdCheckBtn">중복확인</button></td>
                     </tr>
                     <tr>
                         <th>비밀번호<span style="color: red;">*</span></th>
@@ -74,6 +74,7 @@
 </template>
 
 <script setup>
+import { useMutation } from '@tanstack/vue-query';
 import axios from 'axios';
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
@@ -95,13 +96,11 @@ const openDaumPostcode = () => { //카카오API사용
     }).open();
 }
 
-const handlerSaveBtn = () => {
-
+const joinUser = async () => {
     if (!checkForm()) {
-        console.log("등록에 실패하였습니다.");
         return;
-
     }
+
     if (!checkId.value) {
         alert("ID 중복 확인을 해주세요.");
         return false;
@@ -115,15 +114,21 @@ const handlerSaveBtn = () => {
         statusYn: 1
     });
 
-    console.log(register.value)
-    axios.post("/api/registerBCrypt.do", param).then((res) => {
-        if (res.data.result === 'SUCCESS') {
+    const result = await axios.post("/api/registerBCrypt.do", param);
+
+    return result.data;
+}
+
+const { mutate: handlerSaveBtn } = useMutation({
+    mutationFn: joinUser,
+    mutationKey: ["joinUser"],
+    onSettled: (data, error) => {
+        if (data.result === 'SUCCESS') {
             alert("회원 가입에 성공했습니다.")
             router.push('/');
         }
-    })
-
-}
+    },
+})
 
 const checkForm = () => {
     let inputUserType = register.value.userType;
@@ -199,23 +204,31 @@ const checkForm = () => {
     return true;
 }
 
-const loginIdCheck = () => {
+const loginIdCheck = async () => {
     let inputId = register.value.loginId;
 
     const param = new URLSearchParams({
         loginId: inputId
     });
 
-    axios.post("/api/check_loginId.do", param).then((res) => {
+    const result = await axios.post("/api/check_loginId.do", param);
 
-        if (res.data === 0) {
+    return result.data;
+}
+
+const { mutate: loginIdCheckBtn } = useMutation({
+    mutationFn: loginIdCheck,
+    mutationKey: ["loginIdCheck"],
+    onSettled: (data, error) => {
+        if (data === 0) {
             checkId.value = true;
             alert("사용할 수 있는 아이디 입니다.");
         } else {
             alert("중복된 아이디가 존재합니다.");
         }
-    }).catch(() => { });
-}
+    }
+})
+
 
 watch(() => register.value.loginId, () => {
     checkId.value = false;
@@ -225,11 +238,6 @@ watch(() => register.value.loginId, () => {
 </script>
 
 <style lang="scss" scoped>
-// .divManageJoin {
-//     width: 500px;
-//     margin: 0 auto;
-// }
-
 label {
     display: flex;
     flex-direction: column;
