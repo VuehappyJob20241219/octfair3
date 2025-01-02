@@ -1,39 +1,39 @@
 <template>
-    <div class="divManageApplicantJoin">
+    <div class="divManageJoin">
         <div class="content">
             <table>
                 <colgroup>
-                    <col width="120px">
+                    <col width="130px">
                     <col width="*">
                     <col width="120px">
                     <col width="*">
                 </colgroup>
                 <tbody>
-                    <th>회원유형</th>
+                    <th>회원유형<span style="color: red;">*</span></th>
                     <td><select v-model="register.userType">
                             <option disabled value="">선택</option>
                             <option value="A">개인회원</option>
                             <option value="B">기업회원</option>
                         </select></td>
                     <tr>
-                        <th>아이디</th>
+                        <th>아이디<span style="color: red;">*</span></th>
                         <td><input v-model.lazy="register.loginId" type="text" /></td>
                         <td><button @click="loginIdCheck">중복확인</button></td>
                     </tr>
                     <tr>
-                        <th>비밀번호</th>
+                        <th>비밀번호<span style="color: red;">*</span></th>
                         <td><input v-model="register.password" type="text" /></td>
                     </tr>
                     <tr>
-                        <th>비밀번호 확인</th>
+                        <th>비밀번호 확인<span style="color: red;">*</span></th>
                         <td><input v-model="register.password1" type="text" /></td>
                     </tr>
                     <tr>
-                        <th>이름</th>
+                        <th>이름<span style="color: red;">*</span></th>
                         <td><input v-model="register.name" type="text" /></td>
                     </tr>
                     <tr>
-                        <th>성별</th>
+                        <th>성별<span style="color: red;">*</span></th>
                         <td><select v-model="register.sex">
                                 <option disabled value="">선택</option>
                                 <option value="1">남자</option>
@@ -41,25 +41,25 @@
                             </select></td>
                     </tr>
                     <tr>
-                        <th>생년월일</th>
+                        <th>생년월일<span style="color: red;">*</span></th>
                         <td><input v-model="register.birthday" type="date" /></td>
                     </tr>
                     <tr>
-                        <th>전화번호</th>
+                        <th>전화번호<span style="color: red;">*</span></th>
                         <td><input v-model="register.phone" type="tel" /></td>
                     </tr>
                     <tr>
-                        <th>이메일</th>
+                        <th>이메일<span style="color: red;">*</span></th>
                         <td><input v-model="register.email" type="email" /></td>
                     </tr>
                     <tr>
-                        <th>우편번호</th>
+                        <th>우편번호<span style="color: red;">*</span></th>
                         <td><input v-model="register.zipCode" type="text" readonly /></td>
                         <td><button @click="openDaumPostcode">우편번호 찾기</button></td>
                     </tr>
                     <tr>
                         <th>주소</th>
-                        <td><input v-model="register.address" type="text" /></td>
+                        <td><input v-model="register.address" type="text" readonly /></td>
                     </tr>
                     <tr>
                         <th>상세주소</th>
@@ -225,6 +225,11 @@ watch(() => register.value.loginId, () => {
 </script>
 
 <style lang="scss" scoped>
+// .divManageJoin {
+//     width: 500px;
+//     margin: 0 auto;
+// }
+
 label {
     display: flex;
     flex-direction: column;
@@ -301,6 +306,7 @@ table {
         background-color: #2676bf;
         color: #ddd;
         display: block;
+        width: 120px;
         height: 60px;
         line-height: 60px;
         padding-left: 10px;
