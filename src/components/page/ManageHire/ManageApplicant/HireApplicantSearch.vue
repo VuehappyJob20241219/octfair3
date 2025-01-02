@@ -1,25 +1,61 @@
 <template>
   <div class="search-box">
-    <span>공고제목</span>
     <select>
-      <option>사무직 공고</option>
-      <option>기술직 공고</option>
-      <option>경비원 공고</option>
+      <option v-for="post in postList" v-bind:key="post.postIdx">
+        {{ post.title }}
+      </option>
     </select>
     <select>
-      <option>서류심사</option>
-      <option>인적성</option>
-      <option>면접</option>
+      <option v-for="process in procArry" v-bind:key="process">{{ process }}</option>
+      <option>최종합격</option>
+      <option>불합격</option>
     </select>
   </div>
 </template>
+
 <script setup>
-const injectedValue = inject("providedValue");
-const searchKey = ref({});
+import axios from "axios";
+import { onMounted, reactive, watchEffect } from "vue";
+import router from "../../../../router";
+import { useUserInfo } from "../../../../stores/userInfo";
+
+const postList = ref();
+const userInfo = useUserInfo();
+const postIdx = ref(0);
+let procArry = reactive([]);
+
+const handlerPostSearch = () => {
+  const param = { loginId: userInfo.user.loginId };
+  axios.post("/api/manage-hire/applicantJson.do", param).then((res) => {
+    postList.value = res.data.MDetail;
+    console.log("절차 ==> " + res.data.MDetail[0].hirProcess);
+    procArry = res.data.MDetail[0].hirProcess.split(" - ");
+    console.log("firstSplit ==> " + procArry[0]);
+  });
+};
+
+// const handlerProcSearch = (idx) => {
+//   axios.post("/api/manage-hire/applicantJson.do", { postIdx: idx }).then((res) => {
+//     procList.value = res.data.MDetail;
+//     for (let i = 0; i < res.data.MDetail.length; i++) {
+//       procArray[i] = res.data.MDetail[i].hirProcess;
+//     }
+//     console.log(procArray);
+//   });
+// };
 
 const handlerSearch = () => {
-  injectedValue.value = { ...searchKey.value };
+  const query = [];
+  !postIdx.value || query.push(`postIdx=${postIdx.value}`);
+  !procIdx.value || query.push(`procIdx=${procIdx.value}`);
+
+  const queryString = query.length > 0 ? `?${query.join("&")}` : "";
+  router.push(queryString);
 };
+
+watchEffect(() => window.location.search && router.push(window.location.pathname, { replace: true }));
+
+onMounted(() => handlerPostSearch());
 </script>
 
 <style lang="scss" scoped>
