@@ -19,7 +19,7 @@
               </tr>
               <tr>
                 <th>비밀번호</th>
-                <td><button @click="pwReset">초기화</button></td>
+                <td><button @click="resetPwBtn">초기화</button></td>
               </tr>
               <tr>
                 <th>이름<span style="color: red">*</span></th>
@@ -149,7 +149,6 @@ const { mutate: handlerUpdateBtn } = useMutation({
 
 const checkForm = () => {
   let inputName = applicantDetailValue.value.name;
-  let inputSex = applicantDetailValue.value.sex;
   let inputBirthday = applicantDetailValue.value.birthday;
   let inputPhone = applicantDetailValue.value.phone;
   let inputEmail = applicantDetailValue.value.email;
@@ -199,18 +198,26 @@ const checkForm = () => {
   return true;
 };
 
-const pwReset = () => {
+const resetPw = async () => {
   const param = new URLSearchParams({
     loginId: applicantDetailValue.value.loginId,
   });
 
-  axios.post("/api/manage-user/applicantPwReset.do", param).then((res) => {
-    console.log(res.data.result);
-    if (res.data.result === "success") {
+  const result = await axios.post("/api/manage-user/applicantPwReset.do", param);
+
+  return result.data;
+}
+
+const { mutate: resetPwBtn } = useMutation({
+  mutationFn: resetPw,
+  mutationKey: ["resetPw"],
+  onSettled: (data, error) => {
+    if (data.result === "success") {
       alert("비밀번호가 초기화되었습니다.");
     }
-  });
-};
+  }
+})
+
 
 const handlerModal = () => {
   modalStateApplicant.setModalState();

@@ -232,11 +232,6 @@ const routes = [
           },
           {
             path: "scrap.do",
-            name: "postScrap",
-            component: BizPost,
-          },
-          {
-            path: "scrap.do",
             name: "scrap",
             component: Scrap,
           },

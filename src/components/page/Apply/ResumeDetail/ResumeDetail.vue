@@ -471,7 +471,6 @@
         <div class="resumeDetail_body_guide">
           <p class="resumeDetail_body_guide_text">• 포트폴리오, 경력기술서 등 첨부파일이 있다면 등록해주세요.</p>
         </div>
-        <!-- 작업중 -->
         <!-- 첨부파일 -->
         <div class="listDiv">
           <button type="button" class="showTableBtn" id="education" @click="showAddAtt">+ 추가</button>
