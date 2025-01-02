@@ -7,8 +7,16 @@ import { RouterView } from 'vue-router';
 </template>
 
 <style>
+@font-face {
+  font-family: 'Nanum Gothic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('@/assets/fonts/NanumGothic.ttf') format('truetype'); /* ttf 파일 경로 */
+}
 body {
     -ms-overflow-style: none;
+    font-family: 'Nanum Barun Gothic', sans-serif;
 }
 body::-webkit-scrollbar {
     display: none;
