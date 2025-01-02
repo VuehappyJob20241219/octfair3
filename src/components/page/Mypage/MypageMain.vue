@@ -108,17 +108,6 @@ const {
   enabled: !!userInfo.user.loginId
 });
 
-// const searchDetail = () => {
-//   const param = new URLSearchParams({
-//     loginId: userInfo.user.loginId,
-//   });
-
-//   axios.post("/api/mypage/userDetail.do", param).then((res) => {
-//     userDetail.value = res.data.detail;
-//     chkRegBiz.value = res.data.chkRegBiz;
-//   });
-// };
-
 const openDaumPostcode = () => {
   //카카오API사용
   new daum.Postcode({
@@ -154,45 +143,40 @@ const handlerUpdateBtn = () => {
 
 const checkForm = () => {
   let inputName = userDetailValue.value.name;
-  let inputSex = userDetailValue.value.sex;
   let inputBirthday = userDetailValue.value.birthday;
   let inputPhone = userDetailValue.value.phone;
   let inputEmail = userDetailValue.value.email;
   let inputZipCode = userDetailValue.value.zipCode;
 
-  let emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-  let phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
-  let ZipCodeRules = /[0-9\-]{5}/;
+  const emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+  const phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
+  const ZipCodeRules = /[0-9\-]{5}/;
 
-  if (inputName.length < 1) {
+  if (!inputName) {
     alert("이름을 입력하세요.");
     return false;
   }
-  if (inputSex.length < 1) {
-    alert("성별을 선택해주세요.");
-    return false;
-  }
-  if (inputBirthday.length < 1) {
+  if (!inputBirthday) {
     alert("생일을 입력해주세요.");
     return false;
   }
-  if (inputPhone.length < 1) {
-    alert("전화번호를 선택해주세요.");
+  if (!inputPhone) {
+    alert("전화번호를 입력해주세요.");
     return false;
   }
   if (!phoneRules.test(inputPhone)) {
     alert("전화번호 형식을 확인해주세요.");
     return false;
   }
-  if (inputEmail.length < 1) {
-    alert("이메일을 선택해주세요.");
+  if (!inputEmail) {
+    alert("이메일을 입력해주세요.");
     return false;
   }
   if (!emailRules.test(inputEmail)) {
     alert("이메일 형식을 확인해주세요.");
     return false;
   }
-  if (inputZipCode.length < 1) {
+  if (!inputZipCode) {
     alert("우편번호(주소)를 입력해주세요.");
     return false;
   }
@@ -206,10 +190,6 @@ const checkForm = () => {
 const handlerPwModal = () => {
   modalStatePw.setModalState();
 };
-
-// onMounted(() => {
-//   userInfo.user.loginId && searchDetail();
-// });
 
 watchEffect(() => {
   if (isSuccess.value) {
