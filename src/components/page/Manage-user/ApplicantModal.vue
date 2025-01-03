@@ -83,10 +83,11 @@
 </template>
 
 <script setup>
-import { useMutation, useQuery } from "@tanstack/vue-query";
+import { useMutation } from "@tanstack/vue-query";
 import axios from "axios";
 import { watchEffect } from "vue";
 import { useModalStore } from "../../../stores/modalState";
+import { useApplicantDetailQuery } from "../../hook/applicant/useApplicantDetailQuery";
 
 const props = defineProps(["loginId"]);
 const emit = defineEmits(["modalClose"]);
@@ -94,26 +95,12 @@ const emit = defineEmits(["modalClose"]);
 const applicantDetailValue = ref({});
 const modalStateApplicant = useModalStore();
 
-const searchDetail = async () => {
-  const param = new URLSearchParams({
-    loginId: props.loginId,
-  });
-
-  const result = await axios.post("/api/manage-user/applicantManageDetail.do", param);
-
-  return result.data;
-};
-
 const {
   data: applicantDetail,
   isLoading,
   isSuccess,
   isError,
-} = useQuery({
-  queryKey: ["applicantDetail"],
-  queryFn: searchDetail,
-  enabled: !!props.loginId,
-});
+} = useApplicantDetailQuery(props);
 
 const openDaumPostcode = () => {
   //카카오API사용
