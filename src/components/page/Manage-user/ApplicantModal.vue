@@ -83,12 +83,11 @@
 </template>
 
 <script setup>
-import { useMutation } from "@tanstack/vue-query";
-import axios from "axios";
 import { watchEffect } from "vue";
 import { useModalStore } from "../../../stores/modalState";
 import { useApplicantDetailQuery } from "../../hook/applicant/useApplicantDetailQuery";
 import { useApplicantDetailUpdateMutation } from "../../hook/applicant/useApplicantDetailUpdateMutation";
+import { useApplicantResetPwMutation } from "../../hook/applicant/useApplicantResetPwMutation";
 
 const props = defineProps(["loginId"]);
 const emit = defineEmits(["modalClose"]);
@@ -116,26 +115,7 @@ const openDaumPostcode = () => {
 const { mutate: handlerUpdateBtn }
   = useApplicantDetailUpdateMutation(applicantDetailValue);
 
-const resetPw = async () => {
-  const param = new URLSearchParams({
-    loginId: applicantDetailValue.value.loginId,
-  });
-
-  const result = await axios.post("/api/manage-user/applicantPwReset.do", param);
-
-  return result.data;
-}
-
-const { mutate: resetPwBtn } = useMutation({
-  mutationFn: resetPw,
-  mutationKey: ["resetPw"],
-  onSettled: (data, error) => {
-    if (data.result === "success") {
-      alert("비밀번호가 초기화되었습니다.");
-    }
-  }
-})
-
+const { mutate: resetPwBtn } = useApplicantResetPwMutation(applicantDetailValue);
 
 const handlerModal = () => {
   modalStateApplicant.setModalState();
