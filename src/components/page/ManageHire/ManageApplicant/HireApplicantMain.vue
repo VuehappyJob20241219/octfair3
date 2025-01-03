@@ -1,12 +1,5 @@
 <template>
   <div class="applicantList">
-    <!-- <NoticeModal
-      v-if="modalState.modalState"
-      @postSuccess="searchList"
-      @modalClose="() => (noticeIdx = 0)"
-      :idx="noticeIdx"
-    /> -->
-    <!-- 현재 페이지: {{ cPage }} 총 개수: {{ ApplicantList?.ApplicantCount }} -->
     <table>
       <colgroup>
         <col width="50%" />
@@ -33,8 +26,15 @@
               <div>이메일: {{ list.email }}</div>
             </td>
             <td>
-              <div><button @click="handlerResume(list.resIdx)" style="width: 150px">지원자 이력서 보기</button></div>
-              <div><button @click="updateProcPass(list.appId)">합격</button> <button>불합격</button></div>
+              <div>
+                <button @click="handlerResume({ resIdx: list.resIdx, appId: list.appId })" style="width: 150px">
+                  지원자 이력서 보기
+                </button>
+              </div>
+              <div v-if="nowStageName !== '최종합격' && list.viewed === 1">
+                <button @click="updateProcPass(list.appId)">합격</button>
+                <button @click="updateProcFail(list.appId)">불합격</button>
+              </div>
             </td>
           </tr>
         </template>
@@ -72,15 +72,18 @@ const injectedValue = inject("providedValue");
 const modalStore = useModalStore();
 const selectedResumeIdx = ref(null);
 const applicantCnt = ref();
+const currentStage = ref();
+const nextStage = ref();
+const beforeStage = ref();
+const nowStageName = ref();
 
 const loadApplicantList = () => {
-  // console.log("main에서 injectedValue.posIdx ==>" + injectedValue.value.postIdx);
-  // console.log("main에서 injectedValue.keyword ==>" + injectedValue.value.keyword);
-  // console.log("main에서 injectedValue.procArry ==>" + injectedValue.value.procArry);
+  currentStage.value = injectedValue.value.procArry.findIndex((stage) => stage === injectedValue.value.keyword);
+  nowStageName.value = injectedValue.value.keyword;
   const params = {
     ...injectedValue.value,
     loginId: userInfo.user.loginId,
-    firstProc: "abc",
+    firstProc: injectedValue.value.procArry[0],
     pageSize: "5",
     currentPage: "1",
   };
@@ -91,30 +94,43 @@ const loadApplicantList = () => {
   });
 };
 
-// const currentStatus
-
 const updateProcPass = (idx) => {
   const param = { appId: idx };
-  console.log("appId ==>" + param.appId);
-  console.log("현재 채용절차 ==> " + injectedValue.value.procArry);
-  // const nextStatus = procArry[index + 1];
-  // axios.post("/api/manage-hire/statusUpdateBody.do", param);
+  if (currentStage.value < injectedValue.value.procArry.length - 1) {
+    nextStage.value = injectedValue.value.procArry[currentStage.value + 1];
+  } else if (currentStage.value === injectedValue.value.procArry.length - 1) {
+    nextStage.value = "최종합격";
+  } else if (injectedValue.value.keyword === "불합격") {
+    nextStage.value = injectedValue.value.procArry[0];
+    alert("첫번째 채용절차로 넘어갑니다.");
+  } else {
+    alert("합격에 실패했습니다.");
+  }
+  axios.post("/api/manage-hire/statusUpdateBody.do", { appId: idx, keyword: nextStage.value }).then(() => {
+    loadApplicantList();
+  });
+};
+
+const updateProcFail = (idx) => {
+  if (currentStage.value >= 0) {
+    beforeStage.value = "불합격";
+  } else {
+    alert("불합격에 실패했습니다.");
+  }
+  axios.post("/api/manage-hire/statusUpdateBody.do", { appId: idx, keyword: beforeStage.value }).then(() => {
+    loadApplicantList();
+  });
 };
 
 const handlerResume = (param) => {
-  selectedResumeIdx.value = param;
+  selectedResumeIdx.value = param.resIdx;
   modalStore.setModalState();
+  axios.post("/api/manage-hire/viewUpdateBody.do", { appId: param.appId }).then(() => {
+    loadApplicantList();
+  });
 };
 
 watch([injectedValue], () => loadApplicantList());
-
-// onMounted(() => {
-//   loadApplicantList();
-//   // if (injectedValue.value) {
-//   //   console.log("main에서 받은 injectedValue ==>" + injectedValue.value.postIdx);
-//   //   console.log("main에서 받은 injectedValue ==>" + injectedValue.value.keyword);
-//   // }
-// });
 </script>
 
 <style lang="scss" scoped>
