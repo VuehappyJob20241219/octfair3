@@ -20,7 +20,6 @@ const handlerSearch = () => {
     injectValue.value = { ...searchKey.value };
 }
 
-
 const { mutate: handlerDelete } = useScrapDeleteMutation({ scrapIndexes: checkedList.value });
 
 

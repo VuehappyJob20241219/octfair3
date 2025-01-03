@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { provide } from 'vue';
+import { provide , ref } from 'vue';
 import ScrapMain from '../../components/page/Scrap/ScrapMain.vue';
 import ScrapSearch from '../../components/page/Scrap/ScrapSearch.vue';
 

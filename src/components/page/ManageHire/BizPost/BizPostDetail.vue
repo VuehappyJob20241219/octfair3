@@ -289,10 +289,19 @@ const handleDelete = async (pIdx, bIdx) => {
     postIdx: pIdx,
     bizIdx: bIdx,
   };
+
+  const postIndexes = [pIdx];
+  await axios.post("/api/jobs/updateScrapBody.do", { postIndexes }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+  })
+    
   const result = await axios.post("/api/manage-hire/managehireDeleteBody.do", params);
 
   if (result.data.result == "success") {
     alert("삭제 처리되었습니다.");
+
     router.go(-1);
   }
 };

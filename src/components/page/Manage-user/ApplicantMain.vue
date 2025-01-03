@@ -46,27 +46,15 @@
 </template>
 
 <script setup>
-import { useQuery } from "@tanstack/vue-query";
-import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
 import Pagination from "../../common/Pagination.vue";
+import { useApplicantListSearchQuery } from "../../hook/applicant/useApplicantListSearchQuery";
 
 
 const cPage = ref(1);
 const modalStateApplicant = useModalStore();
 const loginId = ref("");
 const injectedValue = inject("provideValue");
-
-const searchList = async () => {
-  const data = {
-    ...injectedValue.value,
-    currentPage: cPage.value.toString(),
-    pageSize: (5).toString(),
-  };
-  const result = await axios.post("/api/manage-user/applicantListBody.do", data);
-
-  return result.data;
-};
 
 const {
   data: applicantList,
@@ -75,15 +63,13 @@ const {
   isLoadingError,
   isError,
   refetch,
-} = useQuery({
-  queryKey: ["applicantList", injectedValue, cPage],
-  queryFn: searchList,
-});
+} = useApplicantListSearchQuery(injectedValue, cPage);
 
 const handlerModal = (id) => {
   loginId.value = id;
   modalStateApplicant.setModalState();
 };
+
 </script>
 
 <style lang="scss" scoped>
