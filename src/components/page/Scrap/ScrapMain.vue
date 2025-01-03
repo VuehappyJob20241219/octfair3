@@ -17,13 +17,13 @@
                 <template v-if="isSuccess">
                     <template v-if="scrapList.scrapCnt > 0">
                         <tr v-for="scrap in scrapList.scrapList" :key="scrap.scrapIdx">
-                            <td><input type="checkBox" value="scrap.scrapIdx" v-model="checkedList" ></td>
+                            <td><input type="checkBox" @change="handleCheckboxChange(scrap.scrapIdx)" ></td>
                             <td>{{ scrap.postBizName }}</td>
                             <td>{{ scrap.postTitle }}</td>
                             <td>{{ scrap.postExpRequired }}</td>
                             <td>{{ scrap.postWorkLocation }}</td>
                             <td>{{ scrap.postEndDate }}</td>
-                            <td><button class="apply-button">입사지원</button></td>                    
+                            <td><button class="apply-button">입사지원</button></td>                   
                         </tr>
                     </template>
                 </template>
@@ -51,6 +51,24 @@ const { data: scrapList, isLoading, refetch, isSuccess, isError }
     = useScrapListQuery(injectedValue, cPage);
 
 const checkedList = inject("checkedList");
+
+const handleCheckboxChange = (scrapIdx) => {
+  const index = checkedList.value.indexOf(scrapIdx);
+  index > -1 ? checkedList.value.splice(index, 1) : checkedList.value.push(scrapIdx);
+};
+// const handleCheckboxChange = (scrapIdx) => {
+//   // 체크박스를 선택하면 `scrapIdx` 값을 배열에 추가
+//   if (!checkedList.value.includes(scrapIdx)) {
+//     checkedList.value.push(scrapIdx);
+//   } else {
+//     // 체크박스를 해제하면 `scrapIdx` 값을 배열에서 제거
+//     const index = checkedList.value.indexOf(scrapIdx);
+//     if (index > -1) {
+//       checkedList.value.splice(index, 1);
+//     }
+//   }
+// };
+
 
 </script>
 
