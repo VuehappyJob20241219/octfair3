@@ -10,7 +10,7 @@ export const useScrapDeleteMutation = ({scrapIndexes}) => {
     mutationKey: ["scrapDelete"],
     onSuccess: () => {
       alert("스크랩 삭제 성공");
-      window.location.reload();
+      window.location.reload(); //새로고침
       queryClient.invalidateQueries({
         queryKey: ["bizPostDetail"], //임시로 작성, 공고리스트 useQuery안쓴거같음
       });
