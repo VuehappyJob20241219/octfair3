@@ -1,5 +1,5 @@
-import fs from "fs";
 import { ImageAnnotatorClient } from "@google-cloud/vision";
+import fs from "fs";
 
 // 환경 변수 기반 경로 설정
 
@@ -15,7 +15,7 @@ const getFormattedDate = () => {
 const date = getFormattedDate();
 const filePath = `V:/FileRepository/menu/${date}.jpg`; // 기본 이미지 파일 경로 설정
 const client = new ImageAnnotatorClient({
-  keyFilename: "brave-anagram-438514-n3-87cad63c922e.json",
+  keyFilename: "brave-anagram-438514-n3-bfd0a7128c43.json",
 });
 
 // OCR 처리 함수

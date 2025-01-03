@@ -1,18 +1,52 @@
 <template>
   <button class="newResumeCreateMove" @click="newResumeCreate">새 이력서 작성</button>
+  <h2>대표 이력서</h2>
+  <div class="resume-container">
+    <template v-if="resumeInfoArray && resumeInfoArray.resumeList && resumeInfoArray.resumeList.length > 0">
+      <div class="resume-content">
+        <div class="resume-details">
+          <div class="resume-photo">
+            <div v-if="imageUrl">
+              <img :src="imageUrl" class="my-image" />
+            </div>
+          </div>
+          <div class="resume-info">
+            <h3 class="resume-title">{{ resumeInfoArray.resumeList[0].resTitle }}</h3>
+            <div class="resume-contact">
+              <p><strong>이름:</strong> {{ resumeInfoArray.resumeList[0].userNm }}</p>
+              <p><strong>전화번호:</strong> {{ resumeInfoArray.resumeList[0].phone }}</p>
+              <p><strong>이메일:</strong> {{ resumeInfoArray.resumeList[0].email }}</p>
+              <p>{{ resumeInfoArray.resumeList[0].shortIntro }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="resume-actions">
+        <button class="copy-button" @click="resumeIdxAdd(resumeInfoArray.resumeList[0].resIdx)">수정하기</button>
+        <button class="delete-button" @click="resumeDelete(resumeInfoArray.resumeList[0].resIdx)">삭제하기</button>
+      </div>
+    </template>
+    <template v-else>
+      <p>등록된 이력서가 없습니다.</p>
+    </template>
+  </div>
+
   <div class="divResumeList">
     현재 페이지:{{ cPage }} 총 개수: {{ resumeInfoArray?.resumeCnt }}
     <table>
       <colgroup>
         <col width="50%" />
-        <col width="30%" />
         <col width="20%" />
+        <col width="15%" />
+        <col width="15%" />
       </colgroup>
       <thead>
         <tr>
           <th scope="col">이력서 제목</th>
           <th scope="col">관리</th>
           <th scope="col">최종 수정일</th>
+          <th scope="col">대표 이력서 설정</th>
         </tr>
       </thead>
       <tbody>
@@ -21,21 +55,20 @@
             <tr v-for="resume in resumeInfoArray.resumeList" :key="resume.resIdx">
               <td class="resumeTitle">
                 <span @click="resumeIdxAdd(resume.resIdx)"> {{ resume.resTitle }}</span>
-                <div class="resumeFile" @click="fileDownload(resume.resIdx)">
-                  잠시 프로필 사진 고칠예정:
-                  <label> {{ resume.fileName }}</label>
-                </div>
               </td>
               <td>
                 <button class="copy-button" @click="resumeCopy(resume.resIdx)">복사하기</button>
                 <button class="delete-button" @click="resumeDelete(resume.resIdx)">삭제하기</button>
               </td>
               <td>{{ resume.updatedDate }}</td>
+              <td>
+                <button class="copy-button">대표 이력서</button>
+              </td>
             </tr>
           </template>
           <template v-else>
             <tr>
-              <td colspan="7">일치하는 검색 결과가 없습니다</td>
+              <td colspan="7">등록된 이력서가 없습니다.</td>
             </tr>
           </template>
         </template>
@@ -66,6 +99,7 @@ const cPage = ref(1);
 const resumeCopyResult = ref();
 const resumeDeleteResult = ref();
 const router = useRouter();
+const imageUrl = ref("/no_image.jpg");
 
 const resumeSearchList = async () => {
   const param = {
@@ -112,28 +146,6 @@ const resumeDelete = async (idx) => {
   });
 };
 
-const fileDownload = (idx) => {
-  let param = new URLSearchParams();
-  param.append("resIdx", idx);
-
-  const postAtion = {
-    url: "/api/apply/resumeFileDownload.do",
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-  axios(postAtion).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    const resumeItem = resumeInfoArray.value.resumeList.find((item) => item.resIdx === idx);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", resumeItem.fileName);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  });
-};
-
 const newResumeCreate = () => {
   router.push({ name: "resume-new" });
 };
@@ -153,12 +165,109 @@ const resumeIdxAdd = (resumeidx) => {
   });
 };
 
+const getFileImage = (idx) => {
+  let param = new URLSearchParams();
+  param.append("resIdx", idx);
+  const postAction = {
+    url: "/api/apply/resumeFileDownload.do",
+    method: "POST",
+    data: param,
+    responseType: "blob",
+  };
+  axios(postAction).then((res) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    imageUrl.value = url;
+    console.log(res);
+  });
+};
+
 onMounted(() => {
   resumeSearchList();
 });
 </script>
 
 <style lang="scss" scoped>
+.resume-container {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 60%;
+  margin: 20px auto;
+  background-color: #f9f9f9;
+  position: relative; /* 부모 요소의 상대 위치 설정 */
+}
+
+.resume-content {
+  display: flex;
+  flex-direction: column; /* 세로 방향으로 배치 */
+}
+
+.resume-details {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.resume-photo {
+  flex: 1; /* 사진 영역의 비율 설정 */
+  text-align: center;
+}
+
+.resume-photo img {
+  width: 200px; /* 가로 4.5cm에 해당하는 픽셀 */
+  height: 229px; /* 세로 5.79cm에 해당하는 픽셀 */
+  object-fit: cover; /* 이미지 비율을 유지하면서 잘리기 */
+  border: 2px solid #ccc; /* 이미지 테두리 (선택 사항) */
+  margin: 10px; /* 이미지 주변 여백 (필요에 따라 조정) */
+}
+.resume-info {
+  flex: 2; /* 정보 영역의 비율 설정 */
+  padding-left: 10px;
+  display: flex; /* Flexbox 사용 */
+  flex-direction: column; /* 세로 방향으로 배치 */
+  align-items: center; /* 수평 중앙 정렬 */
+  text-align: left; /* 글자 왼쪽 정렬 */
+}
+
+.resume-contact p {
+  margin: 5px 0;
+  color: #34495e;
+}
+.resume-actions {
+  display: flex;
+  justify-content: flex-end; /* 오른쪽 정렬 */
+  position: absolute; /* 버튼을 고정 위치로 설정 */
+  bottom: 20px; /* 아래에서의 간격 */
+  right: 20px; /* 오른쪽에서의 간격 */
+}
+
+.copy-button,
+.delete-button {
+  padding: 10px 15px;
+  margin-left: 10px; /* 버튼 간의 간격 */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.copy-button {
+  background-color: #3498db;
+  color: white;
+}
+
+.delete-button {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.copy-button:hover {
+  background-color: #2980b9;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+}
+
 .newResumeCreateMove {
   position: absolute; /* 부모 컴포넌트 기준 위치 */
   top: 3%; /* divResumeList 상단 위로 배치 */
@@ -229,5 +338,15 @@ table {
   button:hover {
     opacity: 0.9;
   }
+}
+
+.file-link {
+  color: #36f; /* 파란색 글씨 */
+  transition: background-color 0.3s ease; /* 부드러운 배경색 변화 */
+}
+
+.file-link:hover {
+  background-color: rgba(54, 114, 255, 0.1); /* 호버 시 배경색 변화 */
+  text-decoration: underline; /* 호버 시 밑줄 효과 */
 }
 </style>
