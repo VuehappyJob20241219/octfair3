@@ -41,18 +41,13 @@ const handlerInitSearch = () => {
       keyword: selectedProc,
       procArry: procArry,
     };
-    console.log("search에서 념겨주는 injectValue.postIdx => " + injectValue.value.postIdx);
-    console.log("search에서 념겨주는 injectValue.keyword => " + injectValue.value.keyword);
-    console.log("search에서 념겨주는 injectValue.procArry => " + injectValue.value.procArry);
   });
 };
 
 const handlerProcSearch = (idx) => {
   const params = { loginId: userInfo.user.loginId, postIdx: idx };
-  // console.log("선택된 postIdx --> " + params.postIdx);
   axios.post("/api/manage-hire/procList.do", params).then((res) => {
     procArry.value = res.data.procList.split(" - ");
-    // console.log("바뀐 procArry ---> " + procArry.value);
     if (procArry.value) {
       selectedProc.value = procArry.value[0].process;
       selectedProc.value = procArry.value[0];
@@ -66,8 +61,6 @@ watch([selectedPostIdx, selectedProc], () => {
     keyword: selectedProc,
     procArry: procArry,
   };
-  // console.log("바뀐 provide 공고번호 ==> " + injectValue.value.postIdx);
-  // console.log("바뀐 provide 채용절차 ==> " + injectValue.value.keyword);
 });
 
 onMounted(() => handlerInitSearch());
