@@ -246,6 +246,8 @@ import "bootstrap-vue-3";
 import { useRoute, useRouter } from "vue-router";
 import ApplyUserResumeModal from "../../Apply/ResumeList/ApplyUserResumeModal.vue";
 import { useScrapSaveMutation } from "../../../hook/scrap/useScrapSaveMutation";
+import { useBizPostDetailQuery } from "../../../hook/bizPost/useBizPostDetailQuery";
+import { useBizPostDetailDeleteMutation } from "../../../hook/bizPost/useBizPostDetailDeleteMutation";
 
 const { params } = useRoute();
 const postDetail = ref(null);
@@ -257,22 +259,32 @@ const postIdx = ref(0);
 const bizIdx = ref(0);
 const modalState = useModalStore();
 
-const searchList = async () => {
-  const result = await axios.post("/api/manage-hire/readPostDetailBody.do", params);
-  if (result.data) {
-    postDetail.value = result.data.postDetail;
-    bizDetail.value = result.data.bizDetail;
-    isClicked.value = result.data.isClicked;
-    userType.value = result.data.userType;
-  }
-  return result.data;
-};
+// const searchList = async () => {
+//   const result = await axios.post("/api/manage-hire/readPostDetailBody.do", params);
+//   if (Detail) {
+//     postDetail.value = result.data.postDetail;
+//     bizDetail.value = result.data.bizDetail;
+//     isClicked.value = result.data.isClicked;
+//     userType.value = result.data.userType;
+//   }
+//   return result.data;
+// };
 
-const { data, isLoading, refetch, isSuccess, isError } = useQuery({
-  queryKey: ["bizPostDetail"],
-  queryFn: searchList,
+const { data: detail , isLoading, refetch, isSuccess, isError } = useBizPostDetailQuery(params);
+
+watchEffect(() => {
+  if (isSuccess.value && detail.value) {
+    postDetail.value = detail.value.postDetail;
+    bizDetail.value = detail.value.bizDetail;
+    isClicked.value = detail.value.isClicked;
+    userType.value = detail.value.userType;
+  }
 });
-// const { postDetail, bizDetail, isClicked } = data || {};
+
+// const { data, isLoading, refetch, isSuccess, isError } = useQuery({
+//   queryKey: ["bizPostDetail"],
+//   queryFn: searchList,
+// });
 
 const navigatePost = (param) => {
   if (param === "back") {
@@ -282,18 +294,20 @@ const navigatePost = (param) => {
   }
 };
 
-const handleDelete = async (pIdx, bIdx) => {
-  const params = {
-    postIdx: pIdx,
-    bizIdx: bIdx,
-  };
-  const result = await axios.post("/api/manage-hire/managehireDeleteBody.do", params);
+const { mutate: handleDelete } = useBizPostDetailDeleteMutation(pIdx, bIdx);
 
-  if (result.data.result == "success") {
-    alert("삭제 처리되었습니다.");
-    router.go(-1);
-  }
-};
+// const handleDelete = async (pIdx, bIdx) => {
+//   const params = {
+//     postIdx: pIdx,
+//     bizIdx: bIdx,
+//   };
+//   const result = await axios.post("/api/manage-hire/managehireDeleteBody.do", params);
+
+//   if (result.data.result == "success") {
+//     alert("삭제 처리되었습니다.");
+//     router.go(-1);
+//   }
+// };
 
 const handleDown = (pIdx, bIdx) => {
   const params = {
