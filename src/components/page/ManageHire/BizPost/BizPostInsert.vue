@@ -341,15 +341,6 @@ const handlerInsert = () => {
 const handlerFile = (e) => {
   const fileinfo = e.target.files;
   const fileinfoSplit = fileinfo[0].name.split(".");
-  // const fileExtension = fileinfoSplit[1].toLowerCase();
-  // if (
-  //   fileExtension === "jpg" ||
-  //   fileExtension === "gif" ||
-  //   fileExtension === "png" ||
-  //   fileExtension === "webp"
-  // ) {
-  //   imageUrl.value = URL.createObjectURL(fileinfo[0]);
-  // }
   fileData.value = fileinfo[0];
 };
 
