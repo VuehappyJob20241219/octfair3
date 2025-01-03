@@ -56,17 +56,6 @@ const modalStateApplicant = useModalStore();
 const loginId = ref("");
 const injectedValue = inject("provideValue");
 
-// const searchList = async () => {
-//   const data = {
-//     ...injectedValue.value,
-//     currentPage: cPage.value.toString(),
-//     pageSize: (5).toString(),
-//   };
-//   const result = await axios.post("/api/manage-user/applicantListBody.do", data);
-
-//   return result.data;
-// };
-
 const {
   data: applicantList,
   isLoading,
