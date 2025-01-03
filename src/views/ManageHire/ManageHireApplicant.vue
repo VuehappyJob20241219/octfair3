@@ -5,6 +5,6 @@
 </template>
 
 <script setup>
-const provideValue = ref();
-provide("provideValue", provideValue);
+const providedValue = ref({});
+provide("providedValue", providedValue);
 </script>

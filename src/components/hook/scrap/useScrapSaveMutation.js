@@ -9,12 +9,14 @@ export const useScrapSaveMutation = (postIdx) => {
   return useMutation({
     mutationFn: () => scrapSaveApi(postIdx),
     mutationKey: ["scrapSave"],
-    onSuccess: () => {
-      alert("스크랩 저장 성공");
-      router.go(-1);
-      queryClient.invalidateQueries({
+    onSuccess: (result) => {
+      if (result) {
+        alert("스크랩 저장 성공");
+        router.go(-1);
+        queryClient.invalidateQueries({
         queryKey: ["bizPostDetail"], //임시로 작성, 공고리스트 useQuery안쓴거같음
-      });
+        });
+      }
     },
   });
 };

@@ -1,23 +1,12 @@
 <template>
   <div class="search-box">
-    <select
-      v-model="selectedPostIdx"
-      @change="handlerProcSearch(selectedPostIdx)"
-    >
-      <option
-        v-for="post in postList"
-        v-bind:key="post.postIdx"
-        v-bind:value="post.postIdx"
-      >
+    <select v-model="selectedPostIdx" @change="handlerProcSearch(selectedPostIdx)">
+      <option v-for="post in postList" v-bind:key="post.postIdx" v-bind:value="post.postIdx">
         {{ post.title }}
       </option>
     </select>
     <select v-model="selectedProc">
-      <option
-        v-for="process in procArry"
-        v-bind:key="process"
-        v-bind:value="process"
-      >
+      <option v-for="process in procArry" v-bind:key="process" v-bind:value="process">
         {{ process }}
       </option>
       <option value="최종합격">최종합격</option>
@@ -28,37 +17,38 @@
 
 <script setup>
 import axios from "axios";
-import {inject, onMounted, watchEffect} from "vue";
-import {useUserInfo} from "../../../../stores/userInfo";
+import { inject, onMounted } from "vue";
+import { useUserInfo } from "../../../../stores/userInfo";
 
 let procArry = ref();
-const injectValue = inject("provideValue");
-const defaultValue = inject("provideValue");
+const injectValue = inject("providedValue");
 const postList = ref();
 const selectedPostIdx = ref();
 const selectedProc = ref();
 const userInfo = useUserInfo();
 
 const handlerInitSearch = () => {
-  const param = {loginId: userInfo.user.loginId};
+  const param = { loginId: userInfo.user.loginId };
   axios.post("/api/manage-hire/applicantJson.do", param).then((res) => {
     postList.value = res.data.MDetail;
     procArry.value = res.data.MDetail[0].hirProcess.split(" - ");
-    // console.log("초기 procArry ==> " + procArry.value);
     if (postList.value && postList.value.length > 0) {
       selectedPostIdx.value = postList.value[0].postIdx;
       selectedProc.value = procArry.value[0];
     }
-    defaultValue.value = {
+    injectValue.value = {
       postIdx: selectedPostIdx,
       keyword: selectedProc,
+      procArry: procArry,
     };
-    console.log("defaultValuePostIdx = " + defaultValue.value.postIdx);
+    console.log("search에서 념겨주는 injectValue.postIdx => " + injectValue.value.postIdx);
+    console.log("search에서 념겨주는 injectValue.keyword => " + injectValue.value.keyword);
+    console.log("search에서 념겨주는 injectValue.procArry => " + injectValue.value.procArry);
   });
 };
 
 const handlerProcSearch = (idx) => {
-  const params = {loginId: userInfo.user.loginId, postIdx: idx};
+  const params = { loginId: userInfo.user.loginId, postIdx: idx };
   // console.log("선택된 postIdx --> " + params.postIdx);
   axios.post("/api/manage-hire/procList.do", params).then((res) => {
     procArry.value = res.data.procList.split(" - ");
@@ -74,9 +64,10 @@ watch([selectedPostIdx, selectedProc], () => {
   injectValue.value = {
     postIdx: selectedPostIdx,
     keyword: selectedProc,
+    procArry: procArry,
   };
-  // console.log("provide 공고번호 ==> " + injectValue.value.postIdx);
-  // console.log("provide 채용절차 ==> " + injectValue.value.keyword);
+  // console.log("바뀐 provide 공고번호 ==> " + injectValue.value.postIdx);
+  // console.log("바뀐 provide 채용절차 ==> " + injectValue.value.keyword);
 });
 
 onMounted(() => handlerInitSearch());
