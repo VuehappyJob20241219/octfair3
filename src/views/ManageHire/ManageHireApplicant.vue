@@ -4,4 +4,7 @@
   <HireApplicantMain></HireApplicantMain>
 </template>
 
-<script setup></script>
+<script setup>
+const providedValue = ref({});
+provide("providedValue", providedValue);
+</script>

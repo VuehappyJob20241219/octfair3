@@ -66,6 +66,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     ScrapMain: typeof import('./src/components/page/Scrap/ScrapMain.vue')['default']
     ScrapSearch: typeof import('./src/components/page/Scrap/ScrapSearch.vue')['default']
+    Sdad: typeof import('./src/components/page/ManageHire/ManageApplicant/sdad.vue')['default']
     VideoSearch: typeof import('./src/components/page/Youtube/VideoSearch.vue')['default']
     VideoWatch: typeof import('./src/components/page/Youtube/VideoWatch.vue')['default']
     VideoYoutubeMain: typeof import('./src/components/page/Youtube/VideoYoutubeMain.vue')['default']
