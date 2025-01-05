@@ -207,14 +207,14 @@
               <b-button
                 variant="outline-success"
                 class="me-2"
-                @click="handlerUpdateAppStatus(postDetail.postIdx, '승인')"
+                @click="handlerUpdateAppStatus({ postIdx: postDetail.postIdx, status: '승인' })"
               >
                 승인
               </b-button>
               <b-button
                 variant="outline-danger"
                 class="me-2"
-                @click="handlerUpdateAppStatus(postDetail.postIdx, '불허')"
+                @click="handlerUpdateAppStatus({ postIdx: postDetail.postIdx, status: '불허' })"
               >
                 불허
               </b-button>
@@ -248,6 +248,7 @@ import ApplyUserResumeModal from "../../Apply/ResumeList/ApplyUserResumeModal.vu
 import { useScrapSaveMutation } from "../../../hook/scrap/useScrapSaveMutation";
 import { useBizPostDetailQuery } from "../../../hook/bizPost/useBizPostDetailQuery";
 import { useBizPostDetailDeleteMutation } from "../../../hook/bizPost/useBizPostDetailDeleteMutation";
+import { useBizPostStatusUpdateMutation } from "../../../hook/bizPost/useBizPostStatusUpdateMutation";
 
 const { params } = useRoute();
 const postDetail = ref(null);
@@ -296,7 +297,7 @@ const navigatePost = (param) => {
 };
 
 const { mutate: handleDelete } = useBizPostDetailDeleteMutation(postDetail, bizDetail);
-
+const { mutate: handlerUpdateAppStatus } = useBizPostStatusUpdateMutation();
 // const handleDelete = async (pIdx, bIdx) => {
 //   const params = {
 //     postIdx: pIdx,
@@ -350,22 +351,22 @@ const handlerModal = (pIdx, bIdx) => {
   bizIdx.value = bIdx;
 };
 
-const handlerUpdateAppStatus = async (pIdx, status) => {
-  const params = {
-    postIdx: pIdx,
-    appStatus: status,
-  };
-  const result = await axios.post("/api/manage-post/statusUpdateBody.do", params);
+// const handlerUpdateAppStatus = async (pIdx, status) => {
+//   const params = {
+//     postIdx: pIdx,
+//     appStatus: status,
+//   };
+//   const result = await axios.post("/api/manage-post/statusUpdateBody.do", params);
 
-  if (result.data.result == "success") {
-    alert("처리되었습니다.");
-    if (status == "승인") {
-      router.push({ name: "managePost" });
-    } else if (status == "불허") {
-      router.push({ name: "managePostApproval" });
-    }
-  }
-};
+//   if (result.data.result == "success") {
+//     alert("처리되었습니다.");
+//     if (status == "승인") {
+//       router.push({ name: "managePost" });
+//     } else if (status == "불허") {
+//       router.push({ name: "managePostApproval" });
+//     }
+//   }
+// };
 
 
 

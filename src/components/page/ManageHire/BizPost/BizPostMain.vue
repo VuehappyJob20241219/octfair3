@@ -63,7 +63,8 @@
             </template>
           </template>
           <template
-            v-if="HirePost.MCount == 0 || HirePost.pendingList?.length == 0 && HirePost.approvalList?.length == 0"
+            v-if="HirePost.MCount == 0 || (HirePost.pendingList?.length == 0 && route.name == 'managePostApproval') 
+            || HirePost.approvalList?.length == 0"
           >
             <tr>
               <td colspan="7">채용 공고가 없습니다</td>
@@ -74,7 +75,7 @@
       </tbody>
     </table>
     <Pagination
-      :totalItems="HirePost?.MCount || HirePost?.pendingPostCnt || HirePost?.approvalPostCnt || 0"
+      :totalItems="HirePost?.MCount || (route.name == 'managePostApproval' ? HirePost?.pendingPostCnt : HirePost?.approvalPostCnt) || 0"
       :items-per-page="5"
       :max-pages-shown="5"
       v-model="cPage"
