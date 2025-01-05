@@ -1,8 +1,7 @@
 <template>
   <button class="newResumeCreateMove" @click="newResumeCreate">새 이력서 작성</button>
-  <h2>대표 이력서</h2>
   <div class="resume-container">
-    <template v-if="resumeInfoArray && resumeInfoArray.resumeList && resumeInfoArray.resumeList.length > 0">
+    <template v-if="resumeMianInfoArray">
       <div class="resume-content">
         <div class="resume-details">
           <div class="resume-photo">
@@ -11,24 +10,25 @@
             </div>
           </div>
           <div class="resume-info">
-            <h3 class="resume-title">{{ resumeInfoArray.resumeList[0].resTitle }}</h3>
+            <h3 class="resume-title">{{ resumeMianInfoArray.resTitle }}</h3>
             <div class="resume-contact">
-              <p><strong>이름:</strong> {{ resumeInfoArray.resumeList[0].userNm }}</p>
-              <p><strong>전화번호:</strong> {{ resumeInfoArray.resumeList[0].phone }}</p>
-              <p><strong>이메일:</strong> {{ resumeInfoArray.resumeList[0].email }}</p>
-              <p>{{ resumeInfoArray.resumeList[0].shortIntro }}</p>
+              <p><strong>이름:</strong> {{ resumeMianInfoArray.userNm }}</p>
+              <p><strong>나이:</strong> {{ calculateAge(resumeMianInfoArray.birthday) }} 세  ({{  resumeMianInfoArray.sex === 1 ? '남성': '여성' }})</p>
+              <p><strong>전화번호:</strong> {{ resumeMianInfoArray.phone }}</p>
+              <p><strong>이메일:</strong> {{ resumeMianInfoArray.email }}</p>
+              <p>{{ resumeMianInfoArray.shortIntro }}</p>
             </div>
           </div>
         </div>
       </div>
 
       <div class="resume-actions">
-        <button class="copy-button" @click="resumeIdxAdd(resumeInfoArray.resumeList[0].resIdx)">수정하기</button>
-        <button class="delete-button" @click="resumeDelete(resumeInfoArray.resumeList[0].resIdx)">삭제하기</button>
+        <button class="copy-button" @click="resumeIdxAdd(resumeMianInfoArray.resIdx)">수정하기</button>
+        <button class="delete-button" @click="resumeDelete(resumeMianInfoArray.resIdx)">삭제하기</button>
       </div>
     </template>
     <template v-else>
-      <p>등록된 이력서가 없습니다.</p>
+      <p>대표 이력서로 선정된 이력서가 없습니다.</p>
     </template>
   </div>
 
@@ -62,7 +62,7 @@
               </td>
               <td>{{ resume.updatedDate }}</td>
               <td>
-                <button class="copy-button">대표 이력서</button>
+                <button class="copy-button" @click="mainResume(resume.resIdx)">대표 이력서</button>
               </td>
             </tr>
           </template>
@@ -100,6 +100,7 @@ const resumeCopyResult = ref();
 const resumeDeleteResult = ref();
 const router = useRouter();
 const imageUrl = ref("/no_image.jpg");
+const resumeMianInfoArray = ref();
 
 const resumeSearchList = async () => {
   const param = {
@@ -142,6 +143,9 @@ const resumeDelete = async (idx) => {
     resumeDeleteResult.value = res.data;
     if (resumeDeleteResult.value.result === "success") {
       resumeSearchList();
+      mainResumeDetail().then(()=>{
+      mainProfileImage();
+    })
     }
   });
 };
@@ -165,7 +169,38 @@ const resumeIdxAdd = (resumeidx) => {
   });
 };
 
+const mainResume = async (idx) => {
+  const param = {
+    loginId: user.loginId,
+    userNm: user.userNm,
+    userType: user.userType,
+    resIdx : idx,
+  }
+ await axios.post(Resume.MainResume, param).then(()=>{
+  alert('대표이력서로 설정되었습니다.')
+  mainResumeDetail().then(()=>{mainProfileImage()})
+ })
+}
+
+const mainResumeDetail = async () => {
+const param = {
+  loginId: user.loginId,
+  userNm: user.userNm,
+  userType: user.userType,
+}
+await axios.post(Resume.MainResumeDetail, param).then((res)=>{
+  resumeMianInfoArray.value=res.data.result;
+  console.log('resumeMianInfoArray.value',resumeMianInfoArray.value.resIdx);
+})
+}
+
+const mainProfileImage = () =>{
+    const profileImageIdx = resumeMianInfoArray.value.resIdx;
+    getFileImage(profileImageIdx);
+}
+
 const getFileImage = (idx) => {
+  console.log('사진 인덱스', idx)
   let param = new URLSearchParams();
   param.append("resIdx", idx);
   const postAction = {
@@ -177,12 +212,30 @@ const getFileImage = (idx) => {
   axios(postAction).then((res) => {
     const url = window.URL.createObjectURL(new Blob([res.data]));
     imageUrl.value = url;
-    console.log(res);
   });
 };
 
+const calculateAge= (birthday) => {
+    const birthDate = new Date(birthday); // 주어진 생일을 Date 객체로 변환
+    const today = new Date(); // 현재 날짜를 Date 객체로 생성
+
+    let age = today.getFullYear() - birthDate.getFullYear(); // 현재 연도에서 태어난 연도를 빼서 나이를 계산
+    const monthDifference = today.getMonth() - birthDate.getMonth(); // 현재 월과 생일 월의 차이 계산
+
+    // 생일이 지나지 않은 경우 나이를 하나 줄임
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        age--; // 생일이 지나지 않았다면 나이를 하나 줄임
+    }
+
+    return age;
+}
+
 onMounted(() => {
-  resumeSearchList();
+  resumeSearchList().then(()=>{
+    mainResumeDetail().then(()=>{
+      mainProfileImage();
+    })
+  })
 });
 </script>
 
@@ -250,24 +303,6 @@ onMounted(() => {
   font-size: 1em;
 }
 
-.copy-button {
-  background-color: #3498db;
-  color: white;
-}
-
-.delete-button {
-  background-color: #e74c3c;
-  color: white;
-}
-
-.copy-button:hover {
-  background-color: #2980b9;
-}
-
-.delete-button:hover {
-  background-color: #c0392b;
-}
-
 .newResumeCreateMove {
   position: absolute; /* 부모 컴포넌트 기준 위치 */
   top: 3%; /* divResumeList 상단 위로 배치 */
@@ -317,7 +352,12 @@ table {
   .resumeFile label:hover {
     cursor: pointer;
   }
-  .copy-button {
+  button:hover {
+    opacity: 0.9;
+  }
+}
+
+.copy-button {
     background-color: #39b0e8; /* 초록색 */
     color: white;
     border: none;
@@ -334,11 +374,6 @@ table {
     cursor: pointer;
     border-radius: 4px;
   }
-
-  button:hover {
-    opacity: 0.9;
-  }
-}
 
 .file-link {
   color: #36f; /* 파란색 글씨 */

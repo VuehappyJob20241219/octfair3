@@ -24,9 +24,9 @@
           <div v-else>
             <div v-if="imageUrl">
               <img :src="imageUrl" @click="triggerFileInput" class="my-image" />
-              <div v-if="!fileData.name" @click="triggerFileInput" style="text-align: center">
+              <!-- <div v-if="!fileData.name" @click="triggerFileInput" style="text-align: center">
                 이미지를 등록해주세요
-              </div>
+              </div> -->
             </div>
             <input id="resumeAttach" type="file" ref="fileInput" @change="handlerFile" />
             <div class="" v-if="fileData.name" style="cursor: pointer">
@@ -37,20 +37,26 @@
         <!-- 내용 -->
         <div class="content-section" style="flex: 1; margin-left: 20px">
           <div class="inputRow">
-            <!-- <label for="resTitle" style="font-size: 25px; font-weight: 900">제목:</label> -->
             <input type="text" v-model="basicinformation.resTitle" style="font-size: 20px; font-weight: 900" />
           </div>
           <div class="inputRow">
-            <!-- <label for="resumeName" style="font-size: 15px; font-weight: 900">이름:</label> -->
-            <input type="text" v-model="basicinformation.userNm" style="font-size: 15px; font-weight: 500" />
+          <strong>이름:</strong>   {{  basicinformation.userNm }}
           </div>
           <div class="inputRow">
-            <!-- <label for="resumeEmail" style="font-size: 15px; font-weight: 900">이메일: </label> -->
-            <input type="text" v-model="basicinformation.email" style="font-size: 15px; font-weight: 500" />
+          <strong>나이:</strong>  {{  basicinformation.birthday }}
+            ({{  basicinformation.sex === 1 ? '남성': '여성' }})
           </div>
           <div class="inputRow">
-            <!-- <label for="resumephone" style="font-size: 15px; font-weight: 900">전화번호: </label> -->
-            <input type="text" v-model="basicinformation.phone" style="font-size: 15px; font-weight: 500" />
+            <strong>전화번호:</strong>
+            {{  basicinformation.phone }}
+          </div>
+          <div class="inputRow">
+            <strong>이메일:</strong>
+            {{  basicinformation.email }}
+          </div>
+          <div class="inputRow">
+            <strong>주소: </strong>
+           {{  basicinformation.address }}
           </div>
         </div>
       </div>
