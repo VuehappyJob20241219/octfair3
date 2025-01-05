@@ -78,12 +78,7 @@ const handleCheckboxChange = (scrapIdx) => {
 //     }
 //   }
 // };
-
-
 </script>
-
-
-
 
 <style lang="scss" scoped>
 table {

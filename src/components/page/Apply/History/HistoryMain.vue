@@ -28,11 +28,11 @@
                         <p>{{ list.status }}</p>
                       </td>
                       <td>
-                       
+                      
                         <p>{{ list.viewed === '1' ? '열람' : '미열람' }}</p>
                       </td>
                       <td>
-                        <button class="cancel-button">지원취소</button>
+                        <button class="cancel-button" @click="handlerCancle(list.appId)">지원취소</button>
                       </td>
                       
                   </tr>
@@ -58,10 +58,11 @@
 
 <script setup>
 import Pagination from '../../../common/Pagination.vue';
-import { useHistoryListQuery } from '../../../hook/history/useHistoryListQuery';
 import { inject } from 'vue';
+import { useHistoryListQuery } from '../../../hook/history/useHistoryListQuery';
 import ResumePreview from '../ResumeDetail/ResumePreview.vue'; //이력서 모달
 import { useModalStore } from "@/stores/modalState"; //피냐 등록된 모달 상태관리
+import { useHistoryCancleMutation } from '../../../hook/history/useHistoryCancleMutation'; //지원취소소
 
 const cPage = inject("cPage"); // Provide에서 받아온 현재 페이지 상태
 const injectedValue = inject("provideValue");
@@ -74,8 +75,9 @@ const selectedResumeIdx = ref(null);
 const handlerResume = (param) => {
   selectedResumeIdx.value = param;
   modalStore.setModalState(); //모달 열기
-
 }
+
+const {mutate: handlerCancle} = useHistoryCancleMutation();
 
 
 </script>
