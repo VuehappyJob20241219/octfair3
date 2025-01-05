@@ -259,6 +259,7 @@ const postIdx = ref(0);
 const bizIdx = ref(0);
 const modalState = useModalStore();
 
+
 // const searchList = async () => {
 //   const result = await axios.post("/api/manage-hire/readPostDetailBody.do", params);
 //   if (Detail) {
@@ -294,7 +295,7 @@ const navigatePost = (param) => {
   }
 };
 
-const { mutate: handleDelete } = useBizPostDetailDeleteMutation(pIdx, bIdx);
+const { mutate: handleDelete } = useBizPostDetailDeleteMutation(postDetail, bizDetail);
 
 // const handleDelete = async (pIdx, bIdx) => {
 //   const params = {

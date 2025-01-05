@@ -20,6 +20,7 @@
                         <p>{{resume.resumeTitle}}</p>
                         <p>{{resume.userEmail}}</p>
                         <p>{{resume.userPhone}}</p>
+                        <button @click="handlerModify(resume.resumeIdx)">수정</button>
                         </div>
                         <input
                         type="radio"
@@ -70,6 +71,7 @@ const emit = defineEmits(["postSuccess", "modalClose"]);
 const userResumes = ref(null);
 const userInfo = useUserInfo();
 const resumeIdx = ref(0);
+const router = useRouter();
 
 const resumeList = async () => {
   const param = {
@@ -132,6 +134,14 @@ const handlerModal = () => {
 
 const handlerRadioChange = (idx) => {
     resumeIdx.value = idx;
+};
+
+const handlerModify = (resumeidx) => {
+  handlerModal();
+  router.push({
+    name: "MyResumes",
+    query: { resumeNum: resumeidx },
+  });
 };
 
 onUnmounted(() => {

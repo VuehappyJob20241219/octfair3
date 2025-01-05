@@ -63,7 +63,7 @@
             </template>
           </template>
           <template
-            v-if="HirePost?.MCount == 0 || HirePost.pendingList?.length == 0 || HirePost.approvalList?.length == 0"
+            v-if="HirePost.MCount == 0 || HirePost.pendingList?.length == 0 && HirePost.approvalList?.length == 0"
           >
             <tr>
               <td colspan="7">채용 공고가 없습니다</td>
@@ -77,7 +77,6 @@
       :totalItems="HirePost?.MCount || HirePost?.pendingPostCnt || HirePost?.approvalPostCnt || 0"
       :items-per-page="5"
       :max-pages-shown="5"
-      :onClick="searchList"
       v-model="cPage"
     />
   </div>
