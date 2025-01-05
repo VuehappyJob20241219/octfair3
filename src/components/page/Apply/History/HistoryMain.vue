@@ -52,7 +52,7 @@
     <ResumePreview
       v-if ="modalStore.modalState"
       :idx = "selectedResumeIdx"
-      ></ResumePreview>
+      />
 </div>
 </template>
 
