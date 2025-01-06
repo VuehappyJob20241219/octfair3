@@ -132,7 +132,7 @@ table {
     padding: 8px;
     border-bottom: 1px solid #ddd;
     text-align: left;
-    height: 30px;
+    height: 50px;
     text-align: center;
   }
 }

@@ -27,9 +27,9 @@
           </div>
           <div>
             <label> 비밀번호 </label>
-            <input required type="password" v-model="loginInfo.pwd" />
+            <input required type="password" v-model="loginInfo.pwd" @keydown.enter="handlerLogin" />
           </div>
-          <br>
+          <br />
           <div>
             <button class="login-button" @click="handlerLogin">Login</button>
           </div>
@@ -75,7 +75,6 @@ const handlerLogin = async () => {
 const handlerModal = () => {
   modalState.setModalState();
 };
-
 </script>
 
 <style scoped>
