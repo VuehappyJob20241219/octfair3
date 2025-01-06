@@ -26,6 +26,9 @@
                             </tr>
                         </tbody>
                     </table>
+                    <tr>
+                        <label class="tip">"비밀 번호는 숫자,영문자,특수문자 조합으로 8~15자리를 사용해야 합니다."</label>
+                    </tr>
                 </div>
                 <br />
                 <button @click="handlerUpdateBtn">수정</button>
@@ -87,6 +90,10 @@ onUnmounted(() => {
 
 label.title {
     font-size: 18px;
+}
+
+label.tip {
+    font-size: 10px;
 }
 
 table {

@@ -37,11 +37,11 @@
         </tr>
         <tr>
           <th>전화번호<span style="color: red">*</span></th>
-          <td><input type="text" v-model="userDetailValue.phone" /></td>
+          <td><input type="tel" v-model="userDetailValue.phone" placeholder="예시: 02-123-4567, 010-1234-5678" /></td>
         </tr>
         <tr>
           <th>이메일<span style="color: red">*</span></th>
-          <td><input type="email" v-model="userDetailValue.email" /></td>
+          <td><input type="email" v-model="userDetailValue.email" placeholder="예시: abc@naver.com" /></td>
         </tr>
         <tr v-if="userDetailValue.userType == 'B'">
           <th>기업정보</th>
