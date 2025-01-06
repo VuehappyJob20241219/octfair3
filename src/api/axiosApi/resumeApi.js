@@ -6,6 +6,8 @@ export const Resume = {
   SaveResume: "/api/apply/resumeSaveBody.do",
   PreviewResume: "/api/apply/previewResumeBody.do",
   MyResume: "/api/apply/resumeDetail.do",
+  MainResume: "/api/apply/mainResume.do",
+  MainResumeDetail: "/api/apply/mainResumeDetail.do",
 };
 
 export const ResumeAddTable = {
