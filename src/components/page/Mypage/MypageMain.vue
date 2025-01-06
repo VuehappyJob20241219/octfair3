@@ -118,7 +118,6 @@ watchEffect(() => {
     userDetailValue.value = toRaw(userDetail.value.detail);
   }
 });
-
 </script>
 
 <style lang="scss" scoped>

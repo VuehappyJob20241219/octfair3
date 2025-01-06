@@ -19,6 +19,7 @@
 import axios from "axios";
 import { inject, onMounted } from "vue";
 import { useUserInfo } from "../../../../stores/userInfo";
+import { ManageJobApplicant } from "../../../../api/axiosApi/companyApi";
 
 let procArry = ref();
 const injectValue = inject("providedValue");
@@ -29,7 +30,7 @@ const userInfo = useUserInfo();
 
 const handlerInitSearch = () => {
   const param = { loginId: userInfo.user.loginId };
-  axios.post("/api/manage-hire/applicantJson.do", param).then((res) => {
+  axios.post(ManageJobApplicant.SearchSelectOption, param).then((res) => {
     postList.value = res.data.MDetail;
     procArry.value = res.data.MDetail[0].hirProcess.split(" - ");
     if (postList.value && postList.value.length > 0) {
@@ -46,7 +47,7 @@ const handlerInitSearch = () => {
 
 const handlerProcSearch = (idx) => {
   const params = { loginId: userInfo.user.loginId, postIdx: idx };
-  axios.post("/api/manage-hire/procList.do", params).then((res) => {
+  axios.post(ManageJobApplicant.SearchProcOption, params).then((res) => {
     procArry.value = res.data.procList.split(" - ");
     if (procArry.value) {
       selectedProc.value = procArry.value[0].process;
