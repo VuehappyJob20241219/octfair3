@@ -70,6 +70,7 @@
 </template>
 
 <script setup>
+import { toRaw } from "vue";
 import { useRouter } from "vue-router";
 import { useModalStore } from "../../../stores/modalState";
 import { useUserInfo } from "../../../stores/userInfo";
@@ -107,7 +108,7 @@ const handlerUpdateBiz = () => {
   });
 };
 
-const { mutate: handlerUpdateBtn } = useMypageDetailUpdateMutation(userDetailValue);
+const { mutate: handlerUpdateBtn } = useMypageDetailUpdateMutation(userDetailValue, chkRegBiz);
 
 const handlerPwModal = () => {
   modalStatePw.setModalState();
@@ -116,6 +117,7 @@ const handlerPwModal = () => {
 watchEffect(() => {
   if (isSuccess.value) {
     userDetailValue.value = toRaw(userDetail.value.detail);
+    chkRegBiz.value = toRaw(userDetail.value.chkRegBiz);
   }
 });
 </script>
