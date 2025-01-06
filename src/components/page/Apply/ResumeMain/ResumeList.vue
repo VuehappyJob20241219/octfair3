@@ -13,7 +13,11 @@
             <h3 class="resume-title">{{ resumeMianInfoArray.resTitle }}</h3>
             <div class="resume-contact">
               <p><strong>이름:</strong> {{ resumeMianInfoArray.userNm }}</p>
-              <p><strong>나이:</strong> {{ calculateAge(resumeMianInfoArray.birthday) }} 세  ({{  resumeMianInfoArray.sex === 1 ? '남성': '여성' }})</p>
+              <p>
+                <strong>나이:</strong> {{ calculateAge(resumeMianInfoArray.birthday) }} 세 ({{
+                  resumeMianInfoArray.sex === 1 ? "남성" : "여성"
+                }})
+              </p>
               <p><strong>전화번호:</strong> {{ resumeMianInfoArray.phone }}</p>
               <p><strong>이메일:</strong> {{ resumeMianInfoArray.email }}</p>
               <p>{{ resumeMianInfoArray.shortIntro }}</p>
@@ -143,9 +147,9 @@ const resumeDelete = async (idx) => {
     resumeDeleteResult.value = res.data;
     if (resumeDeleteResult.value.result === "success") {
       resumeSearchList();
-      mainResumeDetail().then(()=>{
-      mainProfileImage();
-    })
+      mainResumeDetail().then(() => {
+        mainProfileImage();
+      });
     }
   });
 };
@@ -174,33 +178,33 @@ const mainResume = async (idx) => {
     loginId: user.loginId,
     userNm: user.userNm,
     userType: user.userType,
-    resIdx : idx,
-  }
- await axios.post(Resume.MainResume, param).then(()=>{
-  alert('대표이력서로 설정되었습니다.')
-  mainResumeDetail().then(()=>{mainProfileImage()})
- })
-}
+    resIdx: idx,
+  };
+  await axios.post(Resume.MainResume, param).then(() => {
+    alert("대표이력서로 설정되었습니다.");
+    mainResumeDetail().then(() => {
+      mainProfileImage();
+    });
+  });
+};
 
 const mainResumeDetail = async () => {
-const param = {
-  loginId: user.loginId,
-  userNm: user.userNm,
-  userType: user.userType,
-}
-await axios.post(Resume.MainResumeDetail, param).then((res)=>{
-  resumeMianInfoArray.value=res.data.result;
-  console.log('resumeMianInfoArray.value',resumeMianInfoArray.value.resIdx);
-})
-}
+  const param = {
+    loginId: user.loginId,
+    userNm: user.userNm,
+    userType: user.userType,
+  };
+  await axios.post(Resume.MainResumeDetail, param).then((res) => {
+    resumeMianInfoArray.value = res.data.result;
+  });
+};
 
-const mainProfileImage = () =>{
-    const profileImageIdx = resumeMianInfoArray.value.resIdx;
-    getFileImage(profileImageIdx);
-}
+const mainProfileImage = () => {
+  const profileImageIdx = resumeMianInfoArray.value.resIdx;
+  getFileImage(profileImageIdx);
+};
 
 const getFileImage = (idx) => {
-  console.log('사진 인덱스', idx)
   let param = new URLSearchParams();
   param.append("resIdx", idx);
   const postAction = {
@@ -215,27 +219,27 @@ const getFileImage = (idx) => {
   });
 };
 
-const calculateAge= (birthday) => {
-    const birthDate = new Date(birthday); // 주어진 생일을 Date 객체로 변환
-    const today = new Date(); // 현재 날짜를 Date 객체로 생성
+const calculateAge = (birthday) => {
+  const birthDate = new Date(birthday); // 주어진 생일을 Date 객체로 변환
+  const today = new Date(); // 현재 날짜를 Date 객체로 생성
 
-    let age = today.getFullYear() - birthDate.getFullYear(); // 현재 연도에서 태어난 연도를 빼서 나이를 계산
-    const monthDifference = today.getMonth() - birthDate.getMonth(); // 현재 월과 생일 월의 차이 계산
+  let age = today.getFullYear() - birthDate.getFullYear(); // 현재 연도에서 태어난 연도를 빼서 나이를 계산
+  const monthDifference = today.getMonth() - birthDate.getMonth(); // 현재 월과 생일 월의 차이 계산
 
-    // 생일이 지나지 않은 경우 나이를 하나 줄임
-    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-        age--; // 생일이 지나지 않았다면 나이를 하나 줄임
-    }
+  // 생일이 지나지 않은 경우 나이를 하나 줄임
+  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+    age--; // 생일이 지나지 않았다면 나이를 하나 줄임
+  }
 
-    return age;
-}
+  return age;
+};
 
 onMounted(() => {
-  resumeSearchList().then(()=>{
-    mainResumeDetail().then(()=>{
+  resumeSearchList().then(() => {
+    mainResumeDetail().then(() => {
       mainProfileImage();
-    })
-  })
+    });
+  });
 });
 </script>
 
@@ -358,22 +362,22 @@ table {
 }
 
 .copy-button {
-    background-color: #39b0e8; /* 초록색 */
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
+  background-color: #39b0e8; /* 초록색 */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
 
-  .delete-button {
-    background-color: #718da7; /* 빨간색 */
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
+.delete-button {
+  background-color: #718da7; /* 빨간색 */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
 
 .file-link {
   color: #36f; /* 파란색 글씨 */
