@@ -19,8 +19,13 @@ const checkedList = inject("checkedList");
 const handlerSearch = () => {
     injectValue.value = { ...searchKey.value };
 }
+const { mutate: deleteScrap } = useScrapDeleteMutation({ scrapIndexes: checkedList.value });
+const handlerDelete = () => {
+  if (checkedList.value && checkedList.value.length > 0) {
+    deleteScrap({ scrapIndexes: checkedList.value });
+    }
+}
 
-const { mutate: handlerDelete } = useScrapDeleteMutation({ scrapIndexes: checkedList.value });
 
 
 </script>
