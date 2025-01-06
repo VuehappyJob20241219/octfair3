@@ -9,12 +9,14 @@
                     <col width="*">
                 </colgroup>
                 <tbody>
-                    <th>회원유형<span style="color: red;">*</span></th>
-                    <td><select v-model="register.userType">
-                            <option disabled value="">선택</option>
-                            <option value="A">개인회원</option>
-                            <option value="B">기업회원</option>
-                        </select></td>
+                    <tr>
+                        <th>회원유형<span style="color: red;">*</span></th>
+                        <td><select v-model="register.userType">
+                                <option disabled value="">선택</option>
+                                <option value="A">개인회원</option>
+                                <option value="B">기업회원</option>
+                            </select></td>
+                    </tr>
                     <tr>
                         <th>아이디<span style="color: red;">*</span></th>
                         <td><input v-model.lazy="register.loginId" type="text" /></td>
