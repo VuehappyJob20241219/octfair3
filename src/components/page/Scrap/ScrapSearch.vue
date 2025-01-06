@@ -4,19 +4,24 @@
         <input type="date" v-model="searchKey.searchStDate" />
         <input type="date" v-model="searchKey.searchEdDate" />
         <button @click="handlerSearch">검색</button>
-        <button>삭제</button>
+        <button @click="handlerDelete">삭제</button>
     </div>
 </template>
 
 <script setup>
 import { inject } from 'vue';
+import { useScrapDeleteMutation } from '../../hook/scrap/useScrapDeleteMutation';
 
 const injectValue = inject("provideValue");
 const searchKey = ref({});
+const checkedList = inject("checkedList");
 
 const handlerSearch = () => {
     injectValue.value = { ...searchKey.value };
 }
+
+const { mutate: handlerDelete } = useScrapDeleteMutation({ scrapIndexes: checkedList.value });
+
 
 </script>
 

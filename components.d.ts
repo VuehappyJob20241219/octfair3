@@ -26,6 +26,7 @@ declare module 'vue' {
     FaqModal: typeof import('./src/components/page/Board/Faq/FaqModal.vue')['default']
     FaqSearch: typeof import('./src/components/page/Board/Faq/FaqSearch.vue')['default']
     FindIdPwModal: typeof import('./src/components/page/Login/findIdPwModal.vue')['default']
+    FirstfindIdPwModal: typeof import('./src/components/page/Login/FirstfindIdPwModal.vue')['default']
     FirstNoticeDetail: typeof import('./src/components/page/Board/Notice/FirstNoticeDetail.vue')['default']
     'FirstNoticeDetail copy': typeof import('./src/components/page/Board/Notice/FirstNoticeDetail copy.vue')['default']
     FirstNoticeMain: typeof import('./src/components/page/Board/Notice/FirstNoticeMain.vue')['default']

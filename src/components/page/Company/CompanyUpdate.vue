@@ -1,10 +1,9 @@
 <template>
   <table>
     <colgroup>
-      <col width="12%" />
-      <col width="38%" />
-      <col width="12%" />
-      <col width="38%" />
+      <col width="10%" />
+      <col width="40%" />
+      <col width="40%" />
     </colgroup>
     <tbody>
       <tr>
@@ -12,6 +11,11 @@
         <td>
           <input type="text" v-model="companyDetail.bizName" />
         </td>
+        <td rowspan="8" @click="fileDownload">
+          <img :src="imageUrl" />
+        </td>
+      </tr>
+      <tr>
         <th>사업자 대표</th>
         <td>
           <input type="text" v-model="companyDetail.bizCeoName" />
@@ -22,6 +26,8 @@
         <td>
           <input type="text" v-model="companyDetail.bizContact" @input="companyPhoneNumChange" />
         </td>
+      </tr>
+      <tr>
         <th>사업자 주소</th>
         <td class="address">
           <input type="text" v-model="companyDetail.bizAddr" />
@@ -39,6 +45,8 @@
             <option value="1000명 이상">1000명 이상</option>
           </select>
         </td>
+      </tr>
+      <tr>
         <th>홈페이지 주소</th>
         <td>
           <input type="text" v-model="companyDetail.bizWebUrl" />
@@ -49,6 +57,8 @@
         <td>
           <input type="date" v-model="companyDetail.bizFoundDate" />
         </td>
+      </tr>
+      <tr>
         <th>매출액</th>
         <td>
           <select v-model="companyDetail.bizRevenue">
@@ -59,22 +69,17 @@
           </select>
         </td>
       </tr>
+
       <tr>
         <th>기업소개</th>
         <td colspan="3" style="width: 95%">
-          <textarea rows="10" v-model="companyDetail.bizIntro"></textarea>
+          <textarea rows="6" v-model="companyDetail.bizIntro"></textarea>
         </td>
       </tr>
       <tr>
         <th>기업로고</th>
         <td colspan="3">
           <input type="file" id="fileInput" @change="handlerFile" />
-        </td>
-      </tr>
-      <tr>
-        <th>미리보기</th>
-        <td colspan="3" @click="fileDownload">
-          <img :src="imageUrl" />
         </td>
       </tr>
     </tbody>
@@ -102,17 +107,21 @@ const fileData = ref("");
 const router = useRouter();
 
 const searchDetail = () => {
-  axios.post("/api/company/companyUpdatePageRe.do", { loginId: userInfo.user.loginId }).then((res) => {
-    companyDetail.value = res.data.detail || {};
-    if (
-      companyDetail.value.fileExt === "jpg" ||
-      companyDetail.value.fileExt === "gif" ||
-      companyDetail.value.fileExt === "png" ||
-      companyDetail.value.fileExt === "webp"
-    ) {
-      getFileImage(companyDetail.value.bizIdx);
-    }
-  });
+  axios
+    .post("/api/company/companyUpdatePageRe.do", {
+      loginId: userInfo.user.loginId,
+    })
+    .then((res) => {
+      companyDetail.value = res.data.detail || {};
+      if (
+        companyDetail.value.fileExt === "jpg" ||
+        companyDetail.value.fileExt === "gif" ||
+        companyDetail.value.fileExt === "png" ||
+        companyDetail.value.fileExt === "webp"
+      ) {
+        getFileImage(companyDetail.value.bizIdx);
+      }
+    });
 };
 
 const handlerCompanyInsert = async () => {
@@ -322,13 +331,12 @@ table {
   th {
     text-align: center;
     background-color: #ccc;
-    // color: black;
   }
 
   td {
     border-bottom: 1px solid #ddd;
     text-align: left;
-    height: 30px;
+    height: 50px;
     text-align: center;
   }
 }
@@ -372,8 +380,8 @@ button {
 }
 
 img {
-  width: 100px;
-  height: 100px;
+  width: 300px;
+  height: 300px;
 }
 
 .img-label {
@@ -397,17 +405,20 @@ img {
 }
 
 .address {
-  display: inline;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   text-align: left;
   input {
     width: 70%;
+    margin-right: 10px;
   }
   button {
     width: 20%;
     height: 30px;
-    font-size: 10px;
-    float: right;
+    font-size: 13px;
     text-align: center;
+    padding: 0 10px;
   }
 }
 </style>

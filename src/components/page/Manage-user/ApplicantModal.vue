@@ -19,7 +19,7 @@
               </tr>
               <tr>
                 <th>비밀번호</th>
-                <td><button @click="pwReset">초기화</button></td>
+                <td><button @click="resetPwBtn">초기화</button></td>
               </tr>
               <tr>
                 <th>이름<span style="color: red">*</span></th>
@@ -83,10 +83,11 @@
 </template>
 
 <script setup>
-import { useMutation, useQuery } from "@tanstack/vue-query";
-import axios from "axios";
 import { watchEffect } from "vue";
 import { useModalStore } from "../../../stores/modalState";
+import { useApplicantDetailQuery } from "../../hook/applicant/useApplicantDetailQuery";
+import { useApplicantDetailUpdateMutation } from "../../hook/applicant/useApplicantDetailUpdateMutation";
+import { useApplicantResetPwMutation } from "../../hook/applicant/useApplicantResetPwMutation";
 
 const props = defineProps(["loginId"]);
 const emit = defineEmits(["modalClose"]);
@@ -94,26 +95,12 @@ const emit = defineEmits(["modalClose"]);
 const applicantDetailValue = ref({});
 const modalStateApplicant = useModalStore();
 
-const searchDetail = async () => {
-  const param = new URLSearchParams({
-    loginId: props.loginId,
-  });
-
-  const result = await axios.post("/api/manage-user/applicantManageDetail.do", param);
-
-  return result.data;
-};
-
 const {
   data: applicantDetail,
   isLoading,
   isSuccess,
   isError,
-} = useQuery({
-  queryKey: ["applicantDetail"],
-  queryFn: searchDetail,
-  enabled: !!props.loginId,
-});
+} = useApplicantDetailQuery(props);
 
 const openDaumPostcode = () => {
   //카카오API사용
@@ -125,92 +112,10 @@ const openDaumPostcode = () => {
   }).open();
 };
 
-const updateApplicantDetail = async () => {
-  if (!checkForm()) {
-    return;
-  }
+const { mutate: handlerUpdateBtn }
+  = useApplicantDetailUpdateMutation(applicantDetailValue);
 
-  const param = new URLSearchParams({
-    ...applicantDetailValue.value,
-  });
-
-  return await axios.post("/api/manage-user/applicantInfoUpdate.do", param);
-};
-
-const { mutate: handlerUpdateBtn } = useMutation({
-  mutationFn: updateApplicantDetail,
-  mutationKey: ["applicantUpdate"],
-  onSettled: (data, error) => {
-    if (data) {
-      handlerModal();
-    }
-  },
-});
-
-const checkForm = () => {
-  let inputName = applicantDetailValue.value.name;
-  let inputSex = applicantDetailValue.value.sex;
-  let inputBirthday = applicantDetailValue.value.birthday;
-  let inputPhone = applicantDetailValue.value.phone;
-  let inputEmail = applicantDetailValue.value.email;
-  let inputRegDate = applicantDetailValue.value.regdate;
-  let inputZipCode = applicantDetailValue.value.zipCode;
-
-  const emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-  const phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
-  const ZipCodeRules = /[0-9\-]{5}/;
-
-  if (!inputName) {
-    alert("이름을 입력하세요.");
-    return false;
-  }
-  if (!inputBirthday) {
-    alert("생일을 입력해주세요.");
-    return false;
-  }
-  if (!inputPhone) {
-    alert("전화번호를 입력해주세요.");
-    return false;
-  }
-  if (!phoneRules.test(inputPhone)) {
-    alert("전화번호 형식을 확인해주세요.");
-    return false;
-  }
-  if (!inputEmail) {
-    alert("이메일을 입력해주세요.");
-    return false;
-  }
-  if (!emailRules.test(inputEmail)) {
-    alert("이메일 형식을 확인해주세요.");
-    return false;
-  }
-  if (!inputRegDate) {
-    alert("가입일자를 입력해주세요.");
-    return false;
-  }
-  if (!inputZipCode) {
-    alert("우편번호를 입력해주세요.");
-    return false;
-  }
-  if (!ZipCodeRules.test(inputZipCode)) {
-    alert("우편번호를 확인해주세요.");
-    return false;
-  }
-  return true;
-};
-
-const pwReset = () => {
-  const param = new URLSearchParams({
-    loginId: applicantDetailValue.value.loginId,
-  });
-
-  axios.post("/api/manage-user/applicantPwReset.do", param).then((res) => {
-    console.log(res.data.result);
-    if (res.data.result === "success") {
-      alert("비밀번호가 초기화되었습니다.");
-    }
-  });
-};
+const { mutate: resetPwBtn } = useApplicantResetPwMutation(applicantDetailValue);
 
 const handlerModal = () => {
   modalStateApplicant.setModalState();
