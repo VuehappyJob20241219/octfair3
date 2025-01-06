@@ -1,22 +1,42 @@
 <template>
   <div class="search-box">        
-      <input v-model="searchKey.searchTitle" />
-      <input type="date" v-model="searchKey.searchStDate" />
-      <input type="date" v-model="searchKey.searchEdDate" />
+      <input v-model="keyword" />
+      <input type="date" v-model="searchStartDate" />
+      <input type="date" v-model="searchEndDate" />
       <button @click="handlerSearch">검색</button>
-      <button @click="()=>$router.push('notice.do/insert')">신규등록</button>
+      <button @click="handlerModal">신규등록</button>
   </div>
 </template>
 <script setup>
 import { inject } from 'vue';
+import router from "@/router";
+import { useModalStore } from "@/stores/modalState";
 
-const injectedValue = inject('provideValue');
-const searchKey = ref({});
+const keyword = ref("");
+const searchStartDate = ref("");
+const searchEndDate = ref("");
+const modalState = useModalStore();
 
-const handlerSearch = () =>{
-  injectedValue.value={...searchKey.value};
+// const injectedValue = inject('provideValue');
+// const searchKey = ref({});
+
+// const handlerSearch = () =>{
+//   injectedValue.value={...searchKey.value};
+// };
+
+const handlerSearch = () => {
+  const query = [];
+  !keyword.value || query.push(`searchTitle=${keyword.value}`);
+  !searchStartDate.value || query.push(`searchStDate=${searchStartDate.value}`);
+  !searchEndDate.value || query.push(`searchEdDate=${searchEndDate.value}`);
+  const queryString = query.length > 0 ? `?${query.join("&")}` : "";
+
+  router.push(queryString);
 };
 
+const handlerModal = () => {
+  modalState.setModalState();
+};
 </script>
 
 <style lang="scss" scoped>
