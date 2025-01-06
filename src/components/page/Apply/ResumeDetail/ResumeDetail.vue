@@ -24,9 +24,9 @@
           <div v-else>
             <div v-if="imageUrl">
               <img :src="imageUrl" @click="triggerFileInput" class="my-image" />
-              <div v-if="!fileData.name" @click="triggerFileInput" style="text-align: center">
+              <!-- <div v-if="!fileData.name" @click="triggerFileInput" style="text-align: center">
                 이미지를 등록해주세요
-              </div>
+              </div> -->
             </div>
             <input id="resumeAttach" type="file" ref="fileInput" @change="handlerFile" />
             <div class="" v-if="fileData.name" style="cursor: pointer">
@@ -37,20 +37,23 @@
         <!-- 내용 -->
         <div class="content-section" style="flex: 1; margin-left: 20px">
           <div class="inputRow">
-            <!-- <label for="resTitle" style="font-size: 25px; font-weight: 900">제목:</label> -->
             <input type="text" v-model="basicinformation.resTitle" style="font-size: 20px; font-weight: 900" />
           </div>
+          <div class="inputRow"><strong>이름:</strong> {{ basicinformation.userNm }}</div>
           <div class="inputRow">
-            <!-- <label for="resumeName" style="font-size: 15px; font-weight: 900">이름:</label> -->
-            <input type="text" v-model="basicinformation.userNm" style="font-size: 15px; font-weight: 500" />
+            <strong>나이:</strong> {{ basicinformation.birthday }} ({{ basicinformation.sex === 1 ? "남성" : "여성" }})
           </div>
           <div class="inputRow">
-            <!-- <label for="resumeEmail" style="font-size: 15px; font-weight: 900">이메일: </label> -->
-            <input type="text" v-model="basicinformation.email" style="font-size: 15px; font-weight: 500" />
+            <strong>전화번호:</strong>
+            {{ basicinformation.phone }}
           </div>
           <div class="inputRow">
-            <!-- <label for="resumephone" style="font-size: 15px; font-weight: 900">전화번호: </label> -->
-            <input type="text" v-model="basicinformation.phone" style="font-size: 15px; font-weight: 500" />
+            <strong>이메일:</strong>
+            {{ basicinformation.email }}
+          </div>
+          <div class="inputRow">
+            <strong>주소: </strong>
+            {{ basicinformation.address }}
           </div>
         </div>
       </div>
@@ -212,9 +215,9 @@
                   <tr>
                     <td>
                       <div class="inputRow">
-                        <label style="padding: 5px">학력구분:</label>
+                        <label style="padding: 5px">교육 단계:</label>
                         <select style="width: 80%" id="eduLevel" v-model="educationInfo.eduLevel">
-                          <option value="none" selected>학력구분</option>
+                          <option value="none" selected>교육 단계</option>
                           <option value="고등학교">고등학교</option>
                           <option value="대학교">대학교</option>
                           <option value="대학원(석사)">대학원(석사)</option>
@@ -272,9 +275,9 @@
                     </td>
                     <td>
                       <div class="inputRow">
-                        <label style="padding: 5px">졸업여부:</label>
+                        <label style="padding: 5px">학적 상태:</label>
                         <select style="width: 80%" id="grdStatus" v-model="educationInfo.grdStatus">
-                          <option value="none" selected>졸업여부</option>
+                          <option value="none" selected>학적 상태</option>
                           <option value="졸업">졸업</option>
                           <option value="재학">재학</option>
                           <option value="중퇴">중퇴</option>
@@ -494,7 +497,7 @@
                       <select
                         style="width: 80%; padding: 5px; margin: 5px"
                         id="attachmentCategory"
-                        v-model="attachmentInfo.Category"
+                        v-model="attachmentInfo.category"
                       >
                         <option value="none" selected>파일구분:</option>
                         <option value="포트폴리오">포트폴리오</option>
@@ -533,7 +536,7 @@
         </ul>
       </div>
       <div class="btnGroup">
-        <button class="btnType gray list" @click="$router.go(-1)">목록으로</button>
+        <button class="btnType gray list" @click="router.push('/vue/apply/resume.do')">목록으로</button>
         <button class="btnType blue button" @click="handlerSaveBtn()">저장하기</button>
         <button class="btnType gray list" @click="handerResumePreview(basicinformation.resIdx)">미리보기</button>
       </div>
@@ -579,6 +582,7 @@ const imageUrl = ref("/no_image.jpg");
 const fileInput = ref(null); // 파일 입력 요소 참조
 const attFileData = ref({});
 const fileData = ref({});
+const today = new Date();
 
 const basicInfoFn = async () => {
   const param = {
@@ -691,12 +695,53 @@ const showAddCert = () => {
 const showAddAtt = () => {
   attAddState.value = !attAddState.value;
   attachmentInfo.value = {};
-  attachmentInfo.value.Category = "none";
+  attachmentInfo.value.category = "none";
   attFileData.value = {};
   document.getElementById("AttachInput").value = ""; // 파일 입력 초기화
 };
 
+const validation = [
+  { key: "company", message: "회사명을 입력하세요.", group: "career" },
+  { key: "start_date", message: "입사일을 입력하세요.", group: "career" },
+  { key: "end_date", message: "퇴사일을 입력하세요.", group: "career" },
+  { key: "dept", message: "근무부서를 입력하세요.", group: "career" },
+  { key: "position", message: "직책/직급을 입력하세요.", group: "career" },
+  { key: "reason", message: "퇴사사유를 입력하세요.", group: "career" },
+  { key: "crr_desc", message: "담당업무를 입력하세요.", group: "career" },
+
+  { key: "eduLevel", message: "교육단계를 선택해주세요.", group: "education" },
+  { key: "schoolName", message: "학교이름을 입력해주세요.", group: "education" },
+  { key: "major", message: "전공을 입력해주세요.", group: "education" },
+  { key: "admDate", message: "입학일을 입력해주세요.", group: "education" },
+  { key: "grdDate", message: "졸업일을 입력해주세요..", group: "education" },
+  { key: "grdStatus", message: "학적 상태를 선택해주세요.", group: "education" },
+
+  { key: "skillName", message: "기술이름 또는 능력명을 입력해주세요", group: "skill" },
+  { key: "skillDetail", message: "기술 또는 능력을 상세하게 기재해주세요", group: "skill" },
+
+  { key: "certName", message: "자격증명을 입력해주세요", group: "certification" },
+  { key: "grade", message: "등급을 상세하게 입력해주세요", group: "certification" },
+  { key: "issuer", message: "발행처를 입력해주세요", group: "certification" },
+  { key: "acqDate", message: "취득일을 입력해주세요", group: "certification" },
+
+  { key: "category", message: "파일 유형을 선택해주세요", group: "attachment" },
+  { key: "content", message: "첨부파일에 대한 설명을 기재해주세요", group: "attachment" },
+];
 const addCareer = async () => {
+  const careerValidation = validation.filter((rule) => rule.group === "career");
+
+  for (const rule of careerValidation) {
+    if (!careerInfo.value[rule.key]) {
+      alert(rule.message);
+      return;
+    }
+  }
+
+  if (new Date(careerInfo.value.start_date) > today) {
+    alert("입사일은 오늘 날짜보다 미래로 설정할 수 없습니다.");
+    return;
+  }
+
   const text = {
     resIdx: basicinformation.value.resIdx,
     company: careerInfo.value.company,
@@ -716,6 +761,25 @@ const addCareer = async () => {
 };
 
 const addEdu = async () => {
+  const educationValidation = validation.filter((rule) => rule.group === "education");
+
+  if (educationInfo.value.eduLevel === "none") {
+    alert("교육 단계를 선택해주세요.");
+    return;
+  }
+
+  if (educationInfo.value.grdStatus === "none") {
+    alert("학적 상태를 선택해주세요.");
+    return;
+  }
+
+  for (const rule of educationValidation) {
+    if (!educationInfo.value[rule.key]) {
+      alert(rule.message);
+      return;
+    }
+  }
+
   const text = {
     resIdx: basicinformation.value.resIdx,
     eduLevel: educationInfo.value.eduLevel,
@@ -734,6 +798,15 @@ const addEdu = async () => {
 };
 
 const addSkill = async () => {
+  const skillValidation = validation.filter((rule) => rule.group === "skill");
+
+  for (const rule of skillValidation) {
+    if (!skillInfo.value[rule.key]) {
+      alert(rule.message);
+      return;
+    }
+  }
+
   const text = {
     resIdx: basicinformation.value.resIdx,
     skillName: skillInfo.value.skillName,
@@ -748,6 +821,15 @@ const addSkill = async () => {
 };
 
 const addCert = async () => {
+  const certValidation = validation.filter((rule) => rule.group === "certification");
+
+  for (const rule of certValidation) {
+    if (!certificationInfo.value[rule.key]) {
+      alert(rule.message);
+      return;
+    }
+  }
+
   const text = {
     resIdx: basicinformation.value.resIdx,
     certName: certificationInfo.value.certName,
@@ -764,9 +846,27 @@ const addCert = async () => {
 };
 
 const addAtt = async () => {
+  const attachmentValidation = validation.filter((rule) => rule.group === "attachment");
+
+  if (attachmentInfo.value.category === "none") {
+    alert("파일 유형을 선택해주세요.");
+    return;
+  }
+
+  for (const rule of attachmentValidation) {
+    if (!attachmentInfo.value[rule.key]) {
+      alert(rule.message);
+      return;
+    }
+  }
+  if (!attFileData.value || !(attFileData.value instanceof File)) {
+    alert("첨부파일이 없습니다.");
+    return; // 첨부파일이 없거나 File 객체가 아닐 경우 종료
+  }
+
   const text = {
     resIdx: basicinformation.value.resIdx,
-    category: attachmentInfo.value.Category,
+    category: attachmentInfo.value.category,
     content: attachmentInfo.value.content,
   };
   const formData = new FormData();

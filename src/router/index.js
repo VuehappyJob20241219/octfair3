@@ -9,6 +9,7 @@ import Resume from "../views/Apply/Resume.vue";
 import ResumePost from "../views/Apply/ResumePost.vue";
 import Faq from "../views/Board/Faq.vue";
 import Notice from "../views/Board/Notice.vue";
+import NoticeModal from "../components/page/Board/Notice/NoticeModal.vue"
 import Qna from "../views/Board/Qna.vue";
 import CompanyEdit from "../views/Company/CompanyEdit.vue";
 import CompanyInfo from "../views/Company/CompanyInfo.vue";
@@ -49,6 +50,16 @@ const routes = [
             name: "notice",
             component: Notice,
           },
+          {
+            path: 'notice.do/:idx',
+            name: 'noticeDetail',
+            component: NoticeModal,
+          },
+          {
+            path: 'notice.do/insert',
+            name: 'noticeInsert',
+            component: NoticeModal,
+          },
           // qna 경로
           {
             path: "qna.do",
@@ -65,18 +76,6 @@ const routes = [
             name: "qnaDetail",
             component: QnaDetail,
           },
-          // {
-          //   //단일 라우터
-          //   path: "notice.do/:idx",
-          //   name: "noticeDetail",
-          //   component: FirstNoticeDetail,
-          // },
-          // {
-          //   //단일 라우터
-          //   path: "notice.do/insert",
-          //   name: "noticeInsert",
-          //   component: FirstNoticeDetail,
-          // },
           {
             path: "faq.do",
             name: "faq",

@@ -1,13 +1,14 @@
 <template>
-  <div class="search-box">
-    <input v-model.lazy="keyword" />
-    <input type="date" v-model="searchStartDate" />
-    <input type="date" v-model="searchEndDate" />
-    <button @click="handlerSearch">검색</button>
-    <button @click="handlerModal">신규등록</button>
+  <div class="search-box">        
+      <input v-model="keyword" />
+      <input type="date" v-model="searchStartDate" />
+      <input type="date" v-model="searchEndDate" />
+      <button @click="handlerSearch">검색</button>
+      <button @click="handlerModal">신규등록</button>
   </div>
 </template>
 <script setup>
+import { inject } from 'vue';
 import router from "@/router";
 import { useModalStore } from "@/stores/modalState";
 
@@ -15,6 +16,13 @@ const keyword = ref("");
 const searchStartDate = ref("");
 const searchEndDate = ref("");
 const modalState = useModalStore();
+
+// const injectedValue = inject('provideValue');
+// const searchKey = ref({});
+
+// const handlerSearch = () =>{
+//   injectedValue.value={...searchKey.value};
+// };
 
 const handlerSearch = () => {
   const query = [];
@@ -29,14 +37,6 @@ const handlerSearch = () => {
 const handlerModal = () => {
   modalState.setModalState();
 };
-
-// 인자로 받는 함수안에 반응형 객체 (ref같은거)가 있으면, 객체가 변경될 때 마다, 해당 변수를 실행 시켜줌
-// 근데, 밑에 watchEffect는 ref같은거 없어요. 그래서 그냥 새로고침 누르면 최초에 한 번 실행되는 거입니다.
-watchEffect(
-  () =>
-    window.location.search &&
-    router.push(window.location.pathname, { replace: true })
-);
 </script>
 
 <style lang="scss" scoped>
@@ -72,13 +72,13 @@ button {
   background-color: #3bb2ea;
 
   &:hover {
-    background-color: #45a049;
+      background-color: #45a049;
   }
 
   &:active {
-    background-color: #3e8e41;
-    box-shadow: 0 2px #666;
-    transform: translateY(2px);
+      background-color: #3e8e41;
+      box-shadow: 0 2px #666;
+      transform: translateY(2px);
   }
 }
 </style>

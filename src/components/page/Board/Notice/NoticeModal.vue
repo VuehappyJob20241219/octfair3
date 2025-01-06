@@ -33,8 +33,17 @@
 <script setup>
 import { useModalStore } from "@/stores/modalState";
 import axios from "axios";
-import { onMounted, onUnmounted } from "vue";
 import { useUserInfo } from "../../../../stores/userInfo";
+import { useRoute, useRouter } from "vue-router";
+import { useNoticeDetailSearchQuery } from "../../../hook/notice/useNoticeDetailSearchQuery";
+import { useNoticeDetailDeleteMutation } from "../../../hook/notice/useNoticeDetailDeleteMutation";
+import { useNoticeDetailInsertMutation } from "../../../hook/notice/useNoticeDetailInsertMutation";
+import { onMounted, onUnmounted } from "vue";
+
+// const { params } = useRoute();
+
+// const { data: noticeDetail, isSuccess } = useNoticeDetailSearchQuery(params.idx);
+
 
 const modalState = useModalStore();
 const noticeDetail = ref({});
@@ -52,7 +61,7 @@ const handlerSaveBtn = () => {
   const textData = {
     ...noticeDetail.value,
     loginId: userInfo.user.loginId,
-    context: noticeDetail.value.content,
+    context: noticeDetail.content,
   };
 
   const formData = new FormData();
@@ -67,10 +76,11 @@ const handlerSaveBtn = () => {
   axios.post("/api/board/noticeFileSaveForm.do", formData).then((res) => {
     if (res.data.result === "success") {
       modalState.setModalState();
-      emit("postSuccess");
+      emit("postSuccess");      
     }
   });
 };
+
 
 const searchDetail = () => {
   axios.post("/api/board/noticeDetailBody.do", { noticeSeq: props.idx }).then((res) => {
@@ -110,6 +120,8 @@ const handlerUpdateBtn = () => {
   });
 };
 
+// const { mutate: handlerUpdateBtn } = useNoticeDetailInsertMutation(detailValue, fileData, userInfo.user.loginId);
+
 const handlerDeleteBtn = () => {
   axios.post("/api/board/noticeDeleteBody.do", { noticeSeq: props.idx }).then((res) => {
     if (res.data.result === "success") {
@@ -118,6 +130,8 @@ const handlerDeleteBtn = () => {
     }
   });
 };
+
+// const { mutate: handlerDeleteBtn } = useNoticeDetailDeleteMutation(params.idx);
 
 const handlerFile = (e) => {
   const fileInfo = e.target.files;
@@ -172,6 +186,13 @@ onMounted(() => {
 onUnmounted(() => {
   emit("modalClose");
 });
+
+// watchEffect(() => {
+//   if (isSuccess.value && noticeDetail.value) {
+//     detailValue.value = toRaw(noticeDetail.value.detail);
+//   }
+// });
+
 </script>
 
 <style lang="scss" scoped>

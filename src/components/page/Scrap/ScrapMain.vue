@@ -29,7 +29,7 @@
                               <td>{{ scrap.postExpRequired }}</td>
                               <td>{{ scrap.postWorkLocation }}</td>
                               <td>{{ scrap.postEndDate }}</td>
-                              <td><button class="apply-button">입사지원</button></td>    
+                              <td><button class="apply-button" @click="handlerModal(scrap.postIdx, scrap.postBizIdx, scrap)">입사지원</button></td>    
                             </template>   
 
                         </tr>
@@ -46,15 +46,30 @@
       v-model="cPage"
     />
 
+    <ApplyUserResumeModal 
+      v-if="modalStore.modalState"
+      :pIdx = "selectedPostIdx"
+      :bIdx = "selectedBizIdx"
+      :scrap = "selectedScrapList"
+    />
+
+
 </div>
 </template>
 
 <script setup>
-import { inject } from 'vue';
+import { inject, ref } from 'vue';
+import { useModalStore } from '../../../stores/modalState';
 import { useScrapListQuery } from '../../hook/scrap/useScrapListQuery';
+import ApplyUserResumeModal from '../Apply/ResumeList/ApplyUserResumeModal.vue';
 
 const cPage = ref(1);
 const injectedValue = inject("provideValue");
+const modalStore = useModalStore(); 
+const selectedPostIdx = ref(null);
+const selectedBizIdx = ref(null);
+const selectedScrapList = ref(null);
+
 const { data: scrapList, isLoading, refetch, isSuccess, isError }
     = useScrapListQuery(injectedValue, cPage);
 
@@ -64,6 +79,14 @@ const checkedList = inject("checkedList");
 const handleCheckboxChange = (scrapIdx) => {
   const index = checkedList.value.indexOf(scrapIdx);
   index > -1 ? checkedList.value.splice(index, 1) : checkedList.value.push(scrapIdx);
+};
+
+const handlerModal = (postIdx, bizIdx, scrapList) => {
+  selectedPostIdx.value = postIdx;
+  selectedBizIdx.value = bizIdx;
+  selectedScrapList.value = scrapList;
+  modalStore.setModalState();
+
 };
 
 // const handleCheckboxChange = (scrapIdx) => {
