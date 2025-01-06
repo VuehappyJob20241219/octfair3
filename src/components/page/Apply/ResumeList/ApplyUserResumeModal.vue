@@ -9,8 +9,6 @@
           <hr />
           <template
             v-if="resumeMianInfoArray"
-            class="mainResume"
-            style="background-color: #f0f8ff; border: 2px solid #3bb2ea"
           >
             <div>
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">
