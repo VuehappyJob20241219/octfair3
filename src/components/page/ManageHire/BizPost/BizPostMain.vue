@@ -78,7 +78,8 @@
       :totalItems="HirePost?.MCount || (route.name == 'managePostApproval' ? HirePost?.pendingPostCnt : HirePost?.approvalPostCnt) || 0"
       :items-per-page="5"
       :max-pages-shown="5"
-      v-model="cPage"
+      :onClick="refetch"
+      v-model="cPage"      
     />
   </div>
 </template>

@@ -1,15 +1,13 @@
 import axios from "axios";
 import { BizPost } from "../axiosApi/bizPostApi";
 
-export const insertNoticeDetail = async (detailValue, fileData, userid) => {
+export const insertBizPostDetail = async (postDetail,fileData) => {
   const textData = {
-    title: detailValue.title,
-    context: detailValue.context,
-    loginId: userid,
+    ...postDetail.value,
   };
   const formData = new FormData();
-  if (fileData) {
-    formData.append("file", fileData);
+  if (fileData.value) {
+    formData.append("file", fileData.value);
   }
   formData.append(
     "text",
@@ -17,5 +15,6 @@ export const insertNoticeDetail = async (detailValue, fileData, userid) => {
       type: "application/json",
     })
   );
-  await axios.post(Notice.InsertNoticeFile, formData);
+  const result = await axios.post(BizPost.InsertBizPost, formData);
+  return result.data;  
 };
