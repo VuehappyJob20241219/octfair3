@@ -17,13 +17,21 @@
                 <template v-if="isSuccess">
                     <template v-if="scrapList.scrapCnt > 0">
                         <tr v-for="scrap in scrapList.scrapList" :key="scrap.scrapIdx">
-                            <td><input type="checkBox"></td>
-                            <td>{{ scrap.postBizName }}</td>
-                            <td>{{ scrap.postTitle }}</td>
-                            <td>{{ scrap.postExpRequired }}</td>
-                            <td>{{ scrap.postWorkLocation }}</td>
-                            <td>{{ scrap.postEndDate }}</td>
-                            <td><button class="apply-button">입사지원</button></td>                    
+
+                            <template v-if="!scrap.postIdx">
+                              <td colspan="7">삭제된 공고입니다</td>
+                            </template>
+
+                            <template v-else>
+                              <td><input type="checkBox" @change="handleCheckboxChange(scrap.scrapIdx)" ></td>
+                              <td>{{ scrap.postBizName }}</td>
+                              <td>{{ scrap.postTitle }}</td>
+                              <td>{{ scrap.postExpRequired }}</td>
+                              <td>{{ scrap.postWorkLocation }}</td>
+                              <td>{{ scrap.postEndDate }}</td>
+                              <td><button class="apply-button" @click="handlerModal(scrap.postIdx, scrap.postBizIdx)">입사지원</button></td>    
+                            </template>   
+
                         </tr>
                     </template>
                 </template>
@@ -37,24 +45,59 @@
       :onClick="searchList"
       v-model="cPage"
     />
+  <BizPostDetail
+    v-if="modalStore.modalState"
+    :postIdx="postIdx"
+    :postBizIdx="postBizIdx"
+    
+
+  />
 
 </div>
 </template>
 
 <script setup>
 import { inject } from 'vue';
+import { useModalStore } from '../../../stores/modalState';
 import { useScrapListQuery } from '../../hook/scrap/useScrapListQuery';
+import  BizPostDetail from '../ManageHire/BizPost/BizPostDetail.vue'
 
 const cPage = ref(1);
 const injectedValue = inject("provideValue");
 const { data: scrapList, isLoading, refetch, isSuccess, isError }
     = useScrapListQuery(injectedValue, cPage);
+const modalStore = useModalStore();
+const postIdx = ref(null);
+const postBizIdx = ref(null);
 
+//체크박스 체크된 스크랩 리스트 
+const checkedList = inject("checkedList");
 
+const handleCheckboxChange = (scrapIdx) => {
+  const index = checkedList.value.indexOf(scrapIdx);
+  index > -1 ? checkedList.value.splice(index, 1) : checkedList.value.push(scrapIdx);
+};
+
+// 모달을 여는 함수
+const handlerModal = (pIdx, bIdx) => {
+  modalStore.setModalState(); // 모달 상태를 '열림'으로 설정
+  postIdx.value = pIdx;          // postIdx 값 저장
+  postBizIdx.value = bIdx;       // postBizIdx 값 저장
+};
+
+// const handleCheckboxChange = (scrapIdx) => {
+//   // 체크박스를 선택하면 `scrapIdx` 값을 배열에 추가
+//   if (!checkedList.value.includes(scrapIdx)) {
+//     checkedList.value.push(scrapIdx);
+//   } else {
+//     // 체크박스를 해제하면 `scrapIdx` 값을 배열에서 제거
+//     const index = checkedList.value.indexOf(scrapIdx);
+//     if (index > -1) {
+//       checkedList.value.splice(index, 1);
+//     }
+//   }
+// };
 </script>
-
-
-
 
 <style lang="scss" scoped>
 table {

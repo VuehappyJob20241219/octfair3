@@ -8,16 +8,20 @@ export const scrapListApi = async (injectedValue, cPage) => {
     pageSize: "4",
 
   };
-  console.log("api currentPage ------------>", param.currentPage);
-  console.log("api pageSize ------------>", param.pageSize);
-//   console.log("api keyWord ------------>", param.keyWord);
-   //const result = await axios.post(History.HistoryList, param);
 
   const result = await axios.post(Scrap.ScrapList, param, {
       headers: {
           'Content-Type': 'application/json',
       },
   });
+
+  // const postIndexes = result.data.scrapList.map(item => item.postIdx);
+
+  // await axios.post(Scrap.ScrapUpdate, { postIndexes }, {
+  //     headers: {
+  //           'Content-Type': 'application/json',
+  //       },
+  // });
 
   return result.data;
 };
