@@ -33,7 +33,7 @@
         </tr>
         <tr>
           <th>생년월일<span style="color: red">*</span></th>
-          <td><input type="date" v-model="userDetailValue.birthday" /></td>
+          <td><input type="date" v-model="userDetailValue.birthday" :max="today" /></td>
         </tr>
         <tr>
           <th>전화번호<span style="color: red">*</span></th>
@@ -82,6 +82,12 @@ const userInfo = useUserInfo();
 const userDetailValue = ref({});
 const chkRegBiz = ref({});
 const modalStatePw = useModalStore();
+
+const today = computed(() => {
+  let now_utc = new Date();
+  let timeOff = new Date().getTimezoneOffset() * 60000;
+  return new Date(now_utc - timeOff).toISOString().split("T")[0];
+})
 
 const {
   data: userDetail,
