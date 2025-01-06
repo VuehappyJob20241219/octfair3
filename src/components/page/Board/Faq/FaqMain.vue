@@ -1,7 +1,7 @@
 <template>   
   <div class="divFaqList">
-  <b-button :pressed.sync="myToggle==='personal'" variant="primary"  @click="personalFaq">개인회원</b-button>
-  <b-button :pressed.sync="myToggle==='company'" variant="primary"  @click="companyFaq">기업회원</b-button> 
+  <b-button :pressed.sync="myToggle==='personal'" :variant="myToggle === 'personal' ? 'primary' : 'secondary'" @click="personalFaq">일반회원</b-button>
+  <b-button :pressed.sync="myToggle==='company'" :variant="myToggle === 'company' ? 'primary' : 'secondary'" @click="companyFaq">기업회원</b-button> 
     <table>
       <colgroup>
         <col width="10%" />
@@ -39,8 +39,8 @@
                   >
                 </td>
               </tr>
-              <tr>              
-                <td v-show="faqAnswer === faq.faq_idx" :colspan="userInfo.user.userType === 'M' ? 5 : 4">
+              <tr>                             
+                <td class="answerWindow" v-show="faqAnswer === faq.faq_idx" :colspan="userInfo.user.userType === 'M' ? 5 : 4">
                   {{ faq.content }}
                 </td>                
               </tr>
@@ -84,9 +84,15 @@ const faqModalState = useModalStore();
 const userInfo = useUserInfo();
 const faqAnswer = ref(null);
 
-const myToggle = ref(userInfo.user.userType ==="A"? "personal" : "company");
+const myToggle = ref(
+  userInfo.user.userType === "A" ? "personal" :
+  userInfo.user.userType === "M" ? "personal" : "company"
+);
 
-const faq_fype = ref(userInfo.user.userType === "A" ? "1" : "2");
+const faq_fype = ref(
+  userInfo.user.userType === "A" ? "1" :
+  userInfo.user.userType === "M" ? "1" : "2"
+);
 
 const searchList = async () => {
   const param = new URLSearchParams({
@@ -167,15 +173,12 @@ table {
     opacity: 0.9;
     cursor: pointer;
   }
+
+  .answerWindow {
+  background-color: #f5f5f5; 
+  }
+  
 }
 
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.5s ease;
-}
 
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
 </style>

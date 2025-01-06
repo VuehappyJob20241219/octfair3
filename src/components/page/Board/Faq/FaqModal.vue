@@ -28,12 +28,14 @@ import axios from 'axios';
 
 const userInfo = useUserInfo();
 const modalState = useModalStore();
+const emit = defineEmits(["postSuccess", "modalClose"]);
+const props = defineProps(['idx']);
+
 const faqDetail = ref({
   faq_type: null,
   title: '',
   content: ''
 });
-const props = defineProps(['idx']);
 
 const handlerModal = () => {
   modalState.setModalState();
@@ -60,6 +62,7 @@ const handlerSaveBtn = () => {
   axios.post('/api/board/faqSaveRe.do', textData).then((res)=>{
       if(res.data.result === 'success'){
           modalState.setModalState();
+          emit("postSuccess"); 
       }
   });
 };
@@ -69,6 +72,7 @@ const handlerDeleteBtn = () => {
   .then((res)=>{
       if(res.data.result === 'success'){
           modalState.setModalState();
+          emit("postSuccess");
       }
   });
 };
@@ -82,6 +86,7 @@ const handlerUpdateBtn = () =>{
   axios.post('/api/board/faqUpdateRe.do', textData).then((res) => {
       if(res.data.result === 'success'){
           modalState.setModalState();
+          emit("postSuccess");
       }
   });
 };
@@ -94,6 +99,10 @@ const searchDetail = () =>{
 
 onMounted(()=>{
   props.idx && searchDetail();
+});
+
+onUnmounted(() => {
+  emit("modalClose");
 });
 
 </script>
