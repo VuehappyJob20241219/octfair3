@@ -71,13 +71,10 @@
 <script setup>
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
-import { useUserInfo } from "../../../stores/userInfo";
 import { Company } from "../../../api/axiosApi/companyApi";
 
-const userInfo = useUserInfo();
 const companyDetail = ref({});
 const imageUrl = ref("");
-const router = useRouter();
 const { params } = useRoute();
 
 const searchDetail = () => {
@@ -122,6 +119,7 @@ table {
   margin: 20px 0px 0px 0px;
   font-size: 13px;
   text-align: center;
+  vertical-align: middle;
 
   th {
     text-align: center;
