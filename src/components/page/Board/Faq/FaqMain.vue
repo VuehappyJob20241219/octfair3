@@ -5,10 +5,10 @@
     <table>
       <colgroup>
         <col width="10%" />
-        <col width="40%" />
+        <col width="50" />
         <col width="15%" />
         <col width="15%" />
-        <col width="10%" />
+        <col v-if="userInfo.user.userType === 'M'" width="10%" />
       </colgroup>
 
       <thead>
@@ -17,7 +17,7 @@
           <th scope="col">제목</th>
           <th scope="col">작성일</th>
           <th scope="col">작성자</th>
-          <th scope="col" v-if="userInfo.user.userType === 'M'">관리</th>
+          <th v-if="userInfo.user.userType === 'M'" width="10%">관리</th>
         </tr>
       </thead>
 
@@ -27,8 +27,8 @@
             <template v-for="faq in faqList.faq" :key="faq.faq_idx">
               <tr>
                 <!-- 제목 -->
-                <td>{{ faq.faq_idx }}</td>
-                <td @click="toggleAccordion(faq.faq_idx)">
+                <td>{{ faq.displayIdx }}</td>
+                <td @click="toggleFaqAnswer(faq.faq_idx)">
                   {{ faq.title }}
                 </td>
                 <td>{{ faq.created_date.substr(0, 10) }}</td>
@@ -39,13 +39,10 @@
                   >
                 </td>
               </tr>
-              <tr>
-                <!-- 내용 -->
-                <transition>
-                  <td v-if="activeAccordion === faq.faq_idx" colspan="4">
-                    {{ faq.content }}
-                  </td>
-                </transition>
+              <tr>              
+                <td v-show="faqAnswer === faq.faq_idx" :colspan="userInfo.user.userType === 'M' ? 5 : 4">
+                  {{ faq.content }}
+                </td>                
               </tr>
             </template>
           </template>
@@ -85,7 +82,7 @@ const cPage = ref(1);
 const faq_idx = ref(0);
 const faqModalState = useModalStore();
 const userInfo = useUserInfo();
-const activeAccordion = ref(null);
+const faqAnswer = ref(null);
 
 const myToggle = ref(userInfo.user.userType ==="A"? "personal" : "company");
 
@@ -102,11 +99,17 @@ const searchList = async () => {
   });
   const response = await axios.post("/api/board/faqListRe.do", param);
   faqList.value = response.data;
+
+  if (faqList.value && faqList.value.faq) {
+    faqList.value.faq.forEach((faq, index) => {
+      faq.displayIdx = faqList.value.faq.length - index;
+    });    
+  }
 };
 
 const personalFaq = () => {
   faq_fype.value = "1";
-  myToggle.value = 'personal'; // 개인회원 버튼 활성화
+  myToggle.value = 'personal'; // 개인회원 버튼 활성화  
   searchList();
 };
 
@@ -116,8 +119,10 @@ const companyFaq = () => {
   searchList();
 };
 
-const toggleAccordion = (faq_idx) => {
-  activeAccordion.value = activeAccordion.value === faq_idx ? null : faq_idx;
+
+
+const toggleFaqAnswer = (faq_idx) => {
+  faqAnswer.value = faqAnswer.value === faq_idx ? null : faq_idx;
 };
 
 const handlerModal = (idx) => {

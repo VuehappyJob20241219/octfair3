@@ -133,7 +133,7 @@ input[type="text"] {
   border-radius: 8px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
   position: relative;
-  width: 400px;
+  width: 600px;
 }
 
 .button-box {
