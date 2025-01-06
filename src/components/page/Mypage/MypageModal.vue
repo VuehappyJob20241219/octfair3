@@ -14,15 +14,15 @@
                         <tbody>
                             <tr>
                                 <th>현재 비밀번호</th>
-                                <td><input id="passwd" type="text" /></td>
+                                <td><input v-model="inputPw.passwd" type="text" /></td>
                             </tr>
                             <tr>
                                 <th>새 비밀번호</th>
-                                <td><input id="newPasswd" type="text" /></td>
+                                <td><input v-model="inputPw.newPasswd" type="text" /></td>
                             </tr>
                             <tr>
                                 <th>새 비밀번호 확인</th>
-                                <td><input id="newPasswdConfirm" type="text" /></td>
+                                <td><input v-model="inputPw.newPasswdConfirm" type="text" /></td>
                             </tr>
                         </tbody>
                     </table>
@@ -37,39 +37,17 @@
 
 
 <script setup>
-import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
 import { useUserInfo } from '../../../stores/userInfo';
+import { useMypagePwUpdateMutation } from "../../hook/mypage/useMypagePwUpdateMutation";
 
-const emit = defineEmits(["postSuccess", "modalClose"]);
+const emit = defineEmits(["modalClose"]);
 
 const userInfo = useUserInfo();
 const modalStatePw = useModalStore();
+const inputPw = ref({})
 
-
-const handlerUpdateBtn = () => {
-    const param = new URLSearchParams({
-        loginId: userInfo.user.loginId,
-        passwd: document.getElementById("passwd").value,
-        newPasswd: document.getElementById("newPasswd").value,
-        newPasswdConfirm: document.getElementById("newPasswdConfirm").value,
-    });
-
-    axios.post('/api/mypage/updatePw.do', param)
-        .then((res) => {
-            if (res.data.result === 'fail1') {
-                alert("입력하신 현재 비밀번호가 올바르지 않습니다. 다시 확인해주세요.")
-            } else if (res.data.result === 'fail2') {
-                alert("새 비밀번호와 확인용 비밀번호가 일치하지 않습니다. 다시 입력해주세요.")
-            }
-
-            if (res.data.result === 'success') {
-                alert("비밀번호를 변경하였습니다.")
-            }
-        })
-
-    handlerPwModal();
-}
+const { mutate: handlerUpdateBtn } = useMypagePwUpdateMutation(userInfo, inputPw);
 
 const handlerPwModal = () => {
     modalStatePw.setModalState();
@@ -104,7 +82,7 @@ onUnmounted(() => {
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
     position: relative;
-    width: 400px;
+    width: 500px;
 }
 
 label.title {

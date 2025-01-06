@@ -6,7 +6,6 @@ export const useMypageDetailUpdateMutation = (userDetailValue) => {
     mutationKey: ["userInfoUpdate"],
     mutationFn: () => mypageDetailUpdateApi(userDetailValue),
     onSettled: (data, error) => {
-      console.log(data.data);
       if (data.data.result === "success") {
         alert("정보를 수정하였습니다.");
       }
