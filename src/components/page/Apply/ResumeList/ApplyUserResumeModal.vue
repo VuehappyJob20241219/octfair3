@@ -80,6 +80,7 @@ const userResumes = ref(null);
 const userInfo = useUserInfo();
 const resumeIdx = ref(0);
 const resumeMianInfoArray = ref();
+const router = useRouter();
 
 const resumeList = async () => {
   const param = {
@@ -143,6 +144,14 @@ const handlerModal = () => {
 
 const handlerRadioChange = (idx) => {
   resumeIdx.value = idx;
+};
+
+const handlerModify = (resumeidx) => {
+  handlerModal();
+  router.push({
+    name: "MyResumes",
+    query: { resumeNum: resumeidx },
+  });
 };
 
 onUnmounted(() => {

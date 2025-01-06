@@ -27,13 +27,17 @@
             </td>
             <td>
               <div>
-                <button @click="handlerResume({ resIdx: list.resIdx, appId: list.appId })" style="width: 150px">
+                <b-button
+                  variant="outline-dark"
+                  @click="handlerResume({ resIdx: list.resIdx, appId: list.appId })"
+                  style="width: 180px"
+                >
                   지원자 이력서 보기
-                </button>
+                </b-button>
               </div>
               <div v-if="nowStageName !== '최종합격' && list.viewed === 1">
-                <button @click="updateProcPass(list.appId)">합격</button>
-                <button @click="updateProcFail(list.appId)">불합격</button>
+                <b-button variant="outline-primary" @click="updateProcPass(list.appId)">합격</b-button>
+                <b-button variant="outline-danger" @click="updateProcFail(list.appId)">불합격</b-button>
               </div>
             </td>
           </tr>
@@ -46,7 +50,7 @@
       </tbody>
     </table>
     <Pagination
-      :totalItems="applicantList?.applicantCnt || 0"
+      :totalItems="applicantCnt || 0"
       :items-per-page="5"
       :max-pages-shown="5"
       :onClick="loadApplicantList"
@@ -64,6 +68,8 @@ import { inject, watch } from "vue";
 import { useModalStore } from "../../../../stores/modalState";
 import { useUserInfo } from "../../../../stores/userInfo";
 import ResumePreview from "../../Apply/ResumeDetail/ResumePreview.vue";
+import { ManageJobApplicant } from "../../../../api/axiosApi/companyApi";
+import { BButton } from "bootstrap-vue-3";
 
 const cPage = ref(1);
 const applicantList = ref();
@@ -77,6 +83,8 @@ const nextStage = ref();
 const beforeStage = ref();
 const nowStageName = ref();
 
+// console.log("현재페이지 ===> " + cPage.value);
+
 const loadApplicantList = () => {
   currentStage.value = injectedValue.value.procArry.findIndex((stage) => stage === injectedValue.value.keyword);
   nowStageName.value = injectedValue.value.keyword;
@@ -85,17 +93,16 @@ const loadApplicantList = () => {
     loginId: userInfo.user.loginId,
     firstProc: injectedValue.value.procArry[0],
     pageSize: "5",
-    currentPage: "1",
+    currentPage: cPage.value.toString(),
   };
 
-  axios.post("/api/manage-hire/applicantListBody.do", params).then((res) => {
+  axios.post(ManageJobApplicant.SearchList, params).then((res) => {
     applicantList.value = res.data.list;
     applicantCnt.value = res.data.count;
   });
 };
 
 const updateProcPass = (idx) => {
-  const param = { appId: idx };
   if (currentStage.value < injectedValue.value.procArry.length - 1) {
     nextStage.value = injectedValue.value.procArry[currentStage.value + 1];
   } else if (currentStage.value === injectedValue.value.procArry.length - 1) {
@@ -106,7 +113,7 @@ const updateProcPass = (idx) => {
   } else {
     alert("합격에 실패했습니다.");
   }
-  axios.post("/api/manage-hire/statusUpdateBody.do", { appId: idx, keyword: nextStage.value }).then(() => {
+  axios.post(ManageJobApplicant.UpdateProcStatus, { appId: idx, keyword: nextStage.value }).then(() => {
     loadApplicantList();
   });
 };
@@ -117,7 +124,7 @@ const updateProcFail = (idx) => {
   } else {
     alert("불합격에 실패했습니다.");
   }
-  axios.post("/api/manage-hire/statusUpdateBody.do", { appId: idx, keyword: beforeStage.value }).then(() => {
+  axios.post(ManageJobApplicant.UpdateProcStatus, { appId: idx, keyword: beforeStage.value }).then(() => {
     loadApplicantList();
   });
 };
@@ -125,7 +132,7 @@ const updateProcFail = (idx) => {
 const handlerResume = (param) => {
   selectedResumeIdx.value = param.resIdx;
   modalStore.setModalState();
-  axios.post("/api/manage-hire/viewUpdateBody.do", { appId: param.appId }).then(() => {
+  axios.post(ManageJobApplicant.UpdateViewStatus, { appId: param.appId }).then(() => {
     loadApplicantList();
   });
 };
@@ -160,8 +167,11 @@ table {
     cursor: pointer;
   }
 }
+b-button {
+  font-size: 8px;
+}
 
-button {
+/*button {
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -185,6 +195,6 @@ button {
     background-color: #3e8e41;
     box-shadow: 0 2px #666;
     transform: translateY(2px);
-  }
-}
+  } 
+}*/
 </style>

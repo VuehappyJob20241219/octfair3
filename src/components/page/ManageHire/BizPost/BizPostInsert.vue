@@ -16,7 +16,7 @@
       </tr>
       <tr v-if="params.postIdx">
         <th>(수정 전 경력)</th>
-        <td>{{postDetail?.expRequired}}{{" "}}{{postDetail?.expYears}}</td>
+        <td>{{expRequired}}{{" "}}{{expYears}}</td>
       </tr>
       <tr>
         <th>경력 여부<span className="font_red">*</span></th>
@@ -99,7 +99,7 @@
       </tr>
       <tr v-if="params.postIdx">
         <th>(수정 전 채용절차)</th>
-        <td>{{postDetail?.hirProcess}}</td>
+        <td>{{hirProcess}}</td>
       </tr>
       <tr>
         <th>채용절차<span className="font_red">*</span></th>
@@ -186,7 +186,11 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { useQuery } from "@tanstack/vue-query";
 import router from "../../../../router";
+import { useBizPostDetailInsertMutation } from '../../../hook/bizPost/useBizPostDetailInsertMutation';
 
+const expRequired = ref(null);
+const expYears = ref(null);
+const hirProcess = ref(null);
 const { params } = useRoute();
 const postDetail = ref({});
 const years = ["1년 이상", "2년 이상", "3년 이상", "4년 이상"];
@@ -207,6 +211,9 @@ if(Object.keys(params).length>0){
     if(result.data){
     postDetail.value = result.data.postDetail;
     }
+    expRequired.value=postDetail.value.expRequired;
+    expYears.value=postDetail.value.expYears;
+    hirProcess.value=postDetail.value.hirProcess;
     return result.data;
   };
 
@@ -250,7 +257,6 @@ const handleClick = () => {
     recruitProcessList.push(trimmedProcess); //기존값 + 새로입력한값
     recruitProcessList.join(" - ");
     postDetail.value.hirProcess=recruitProcessList.join(" - ");
-    console.log(postDetail.value.hirProcess);
      //입력 필드 초기화
     postDetail.value.recruitProcess=""; // recruitProcess 상태를 초기화
 };
@@ -275,81 +281,70 @@ const handlerInsertBtn = () => {
   };
 
   for (const [key, Value] of Object.entries(reqiredFields)) {
-  // console.log(`Key: ${key}, Value: ${value}`);
-  let numberRules = /[0-9]/;
-  if (!postDetail.value[key]) {
+    let numberRules = /[0-9]/;
+    if (!postDetail.value[key]) {
     // 해당 필드가 비어있을 때만 알림을 띄움
-    alert(`${Value} 입력해 주세요`);
-    return;  // 반복문 종료
-  }
+      alert(`${Value} 입력해 주세요`);
+      return;  // 반복문 종료
+      }
 
-  if (!numberRules.test(postDetail.value.salary)) {
+    if (!numberRules.test(postDetail.value.salary)) {
         alert("급여는 숫자만 입력됩니다.");
         return;
-  }
+      }
 
-  if (!numberRules.test(postDetail.value.openings)) {
+    if (!numberRules.test(postDetail.value.openings)) {
         alert("모집인원은 숫자만 입력됩니다.");
         return;
-  }
-}
+      }
+    }
 
   for (const input in postDetail.value) {
-    console.log(`${input}`);
     if (reqiredFields[input.name] && !input) {
       // 해당 필드가 비어있을 때만 알림을 띄움
       alert(`"${reqiredFields[input.name]}" 입력해 주세요`);
       return;  // 알림을 띄운 후, 즉시 종료하여 다른 필드는 검사하지 않음
     }
   }
-
+  if (!postDetail.value.expRequired.includes('경력')){
+    postDetail.value.expYears = "";
+  }
   handlerInsert();
 }
 
-const handlerInsert = () => {
-  const textData = {
-    ...postDetail.value,
-  };
-  const formData = new FormData();
-  if (fileData.value) {
-    formData.append("file", fileData.value);
-  }
-  formData.append(
-    "text",
-    new Blob([JSON.stringify(textData)], {
-      type: "application/json",
-    }),
-  );
-  console.log(formData);
-  axios.post(`/api/manage-hire/managehireSaveFileForm.do`, formData).then((res) => {
-    if (res.data.result === "success") {
-      console.log("success");
-      
-      if(params.postIdx){
-        alert("성공적으로 수정되었습니다.");
-        router.push({ name: "bizPostDetail", params: { postIdx: params.postIdx } });
-      }else{
-        alert("성공적으로 등록되었습니다.");
-        router.push("post.do");
-      }
-    }
-  });
-  
-  
-}
+const { mutate:handlerInsert} = useBizPostDetailInsertMutation(postDetail,fileData,params);
+
+// const handlerInsert = () => {
+//   const textData = {
+//     ...postDetail.value,
+//   };
+//   const formData = new FormData();
+//   if (fileData.value) {
+//     formData.append("file", fileData.value);
+//   }
+//   formData.append(
+//     "text",
+//     new Blob([JSON.stringify(textData)], {
+//       type: "application/json",
+//     }),
+//   );
+//   axios.post(`/api/manage-hire/managehireSaveFileForm.do`, formData).then((res) => {
+//     if (res.data.result === "success") {      
+//       if(params.postIdx){
+//         alert("성공적으로 수정되었습니다.");
+//         router.push({ name: "bizPostDetail", params: { postIdx: params.postIdx } });
+//       }else{
+//         alert("성공적으로 등록되었습니다.");
+//         router.push("post.do");
+//       }
+//     }
+//   });  
+// }
+
+
 
 const handlerFile = (e) => {
   const fileinfo = e.target.files;
-  const fileinfoSplit = fileinfo[0].name.split(".");
-  // const fileExtension = fileinfoSplit[1].toLowerCase();
-  // if (
-  //   fileExtension === "jpg" ||
-  //   fileExtension === "gif" ||
-  //   fileExtension === "png" ||
-  //   fileExtension === "webp"
-  // ) {
-  //   imageUrl.value = URL.createObjectURL(fileinfo[0]);
-  // }
   fileData.value = fileinfo[0];
 };
 
