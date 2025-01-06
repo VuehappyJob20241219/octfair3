@@ -85,27 +85,26 @@ const userDetailValue = ref({});
 const chkRegBiz = ref({});
 const modalStatePw = useModalStore();
 
-
 const searchDetail = async () => {
   const param = new URLSearchParams({
     loginId: userInfo.user.loginId,
   });
 
-  const result = await axios.post("/api/mypage/userDetail.do", param)
+  const result = await axios.post("/api/mypage/userDetail.do", param);
 
   return result.data;
-}
+};
 
 const {
   data: userDetail,
   isLoading,
   isSuccess,
   isError,
-  refetch
+  refetch,
 } = useQuery({
   queryKey: ["userDetail"],
   queryFn: searchDetail,
-  enabled: !!userInfo.user.loginId
+  enabled: !!userInfo.user.loginId,
 });
 
 const openDaumPostcode = () => {
@@ -134,7 +133,7 @@ const updateUserInfoDetail = async () => {
   });
 
   return await axios.post("/api/mypage/updateUserInfo.do", param);
-}
+};
 
 const { mutate: handlerUpdateBtn } = useMutation({
   mutationFn: updateUserInfoDetail,
@@ -144,8 +143,8 @@ const { mutate: handlerUpdateBtn } = useMutation({
     if (data.data.result === "success") {
       alert("정보를 수정하였습니다.");
     }
-  }
-})
+  },
+});
 
 const checkForm = () => {
   let inputName = userDetailValue.value.name;
@@ -202,7 +201,6 @@ watchEffect(() => {
     userDetailValue.value = toRaw(userDetail.value.detail);
   }
 });
-
 </script>
 
 <style lang="scss" scoped>

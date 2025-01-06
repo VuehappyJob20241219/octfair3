@@ -1,9 +1,9 @@
 <script setup>
-import { RouterView } from 'vue-router';
+import { RouterView } from "vue-router";
 </script>
 
 <template>
-    <RouterView />
+  <RouterView />
 </template>
 
 <style>
@@ -15,10 +15,10 @@ import { RouterView } from 'vue-router';
   src: url('@/assets/fonts/NanumBarunGothic.ttf') format('truetype'); /* ttf 파일 경로 */
 }
 body {
-    -ms-overflow-style: none;
-    font-family: 'Nanum Barun Gothic', sans-serif;
+  -ms-overflow-style: none;
+  font-family: "Nanum Barun Gothic", sans-serif;
 }
 body::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 </style>

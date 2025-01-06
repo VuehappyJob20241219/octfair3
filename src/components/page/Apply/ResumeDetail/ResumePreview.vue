@@ -351,7 +351,11 @@
                           <!-- flex: 1로 수정, overflow-wrap: break-word 추가 -->
                           <span style="font-weight: 500; font-size: 15px"> {{ att.content }}</span>
                         </div>
-                        <div style="flex: 0 1 30%; padding-left: 10px" v-if="att.fileName">
+                        <div
+                          style="flex: 0 1 30%; padding-left: 10px"
+                          v-if="att.fileName"
+                          @click="ResumeFileDownload(att.attIdx)"
+                        >
                           <span style="font-weight: 900" class="file-link"> {{ att.fileName }}</span>
                         </div>
                         <div style="flex: 0 1 30%; padding-left: 10px" v-else>첨부된 파일이 없습니다.</div>
@@ -467,23 +471,29 @@ const printPage = () => {
   });
 };
 
-const ResumeFileDownload = () => {
+const ResumeFileDownload = (attIdx) => {
   let param = new URLSearchParams();
-  param.append("resIdx", props.idx);
+  param.append("attIdx", attIdx);
   const postAction = {
-    url: "/api/apply/resumeFileDownload.do",
+    url: "/api/apply/AttachmentFileDownload.do",
     method: "POST",
     data: param,
     responseType: "blob",
   };
+
   axios(postAction).then((res) => {
     const url = window.URL.createObjectURL(new Blob([res.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", resumeProperties.value.fileName);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+    // attIdx에 맞는 파일 정보를 찾기
+    const attachment = attachmentProperties.value.find((item) => item.attIdx === attIdx);
+
+    if (attachment) {
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", attachment.fileName); // 인덱스를 사용하지 않고 객체를 직접 참조
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
   });
 };
 

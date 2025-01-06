@@ -40,14 +40,16 @@
             <template v-if="userType === 'A'">            
                 <div class="p-2 d-flex justify-content-center">
                   <template v-if="isClicked.isScraped">
+                    <template v-if="postDetail?.postIdx">
                     <b-button
                       variant="warning"
                       size="lg"
                       style="width: 150px; margin-right: 20px"
-                      @click=handlerSaveScrap
+                       @click="handlerSaveScrap(params.postIdx)"
                     >
                       스크랩
                     </b-button>
+                    </template>
                   </template>
                   <template v-else>
                     <b-button
@@ -58,7 +60,7 @@
                         margin-right: 20px;
                         color: #ffc107;
                         border-color: #ffc107"
-                      @click=handlerSaveScrap
+                      @click="handlerSaveScrap(params.postIdx)"
                     >
                       스크랩
                     </b-button>                  
@@ -368,18 +370,9 @@ const handlerModal = (pIdx, bIdx) => {
 //   }
 // };
 
-
-
 //신효 - 스크랩 등록
- //const {mutate: handlerSaveScrap} = useScrapSaveMutation(postDetail.value.postIdx)
-// const handlerSaveScrap = () => {
-//   if (!postDetail.value || !postDetail.value.postIdx) {
-//     console.error("postIdx가 정의되지 않았습니다.");
-//     return;
-//   }
-//   const { mutate } = useScrapSaveMutation(postDetail.value.postIdx);
-//   mutate();
-// };
+const { mutate: handlerSaveScrap } = useScrapSaveMutation(params.postIdx);
+
 </script>
 
 <style lang="scss" scoped>
