@@ -63,7 +63,8 @@
             </template>
           </template>
           <template
-            v-if="HirePost?.MCount == 0 || HirePost.pendingList?.length == 0 || HirePost.approvalList?.length == 0"
+            v-if="HirePost.MCount == 0 || (HirePost.pendingList?.length == 0 && route.name == 'managePostApproval') 
+            || HirePost.approvalList?.length == 0"
           >
             <tr>
               <td colspan="7">채용 공고가 없습니다</td>
@@ -74,11 +75,11 @@
       </tbody>
     </table>
     <Pagination
-      :totalItems="HirePost?.MCount || HirePost?.pendingPostCnt || HirePost?.approvalPostCnt || 0"
+      :totalItems="HirePost?.MCount || (route.name == 'managePostApproval' ? HirePost?.pendingPostCnt : HirePost?.approvalPostCnt) || 0"
       :items-per-page="5"
       :max-pages-shown="5"
-      :onClick="searchList"
-      v-model="cPage"
+      :onClick="refetch"
+      v-model="cPage"      
     />
   </div>
 </template>
@@ -91,6 +92,7 @@ import { useRoute } from "vue-router";
 import router from "../../../../router";
 import { useUserInfo } from "../../../../stores/userInfo";
 import Pagination from "../../../common/Pagination.vue";
+import { useBizPostListSearchQuery } from "../../../hook/bizPost/useBizPostListSearchQuery";
 
 const userInfo = useUserInfo();
 const queryClient = useQueryClient();
@@ -99,21 +101,21 @@ const cPage = ref(1);
 const route = useRoute();
 const injectedValue = inject("bizSearchValue");
 
-const searchList = async () => {
-  const param = {
-    currentPage: cPage.value.toString(),
-    pageSize: (5).toString(),
-  };
-  if (userInfo.user.userType === "B") {
-    const result = await axios.post("/api/manage-hire/managehireListBody.do", param);
-    return result.data;
-  } else {
-    Object.assign(param, injectedValue.value);
-    console.log(param);
-    const result = await axios.post("/api/manage-post/readPostListBody.do", param);
-    return result.data;
-  }
-};
+// const searchList = async () => {
+//   const param = {
+//     currentPage: cPage.value.toString(),
+//     pageSize: (5).toString(),
+//   };
+//   if (userInfo.user.userType === "B") {
+//     const result = await axios.post("/api/manage-hire/managehireListBody.do", param);
+//     return result.data;
+//   } else {
+//     Object.assign(param, injectedValue.value);
+//     console.log(param);
+//     const result = await axios.post("/api/manage-post/readPostListBody.do", param);
+//     return result.data;
+//   }
+// };
 
 const {
   data: HirePost,
@@ -121,11 +123,19 @@ const {
   refetch,
   isSuccess,
   isError,
-} = useQuery({
-  queryKey: ["HirePost", cPage, injectedValue],
-  queryFn: searchList,
-  // staleTime: 1000 * 60,
-});
+} = useBizPostListSearchQuery(cPage, injectedValue,userInfo.user.userType);
+
+// const {
+//   data: HirePost,
+//   isLoading,
+//   refetch,
+//   isSuccess,
+//   isError,
+// } = useQuery({
+//   queryKey: ["HirePost", cPage, injectedValue],
+//   queryFn: searchList,
+//   // staleTime: 1000 * 60,
+// });
 
 const handleNewInsert = () => {
   router.push("bizPostInsert.do");

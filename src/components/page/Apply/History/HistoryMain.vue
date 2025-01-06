@@ -21,7 +21,7 @@
                       </td>
                       <td>
                         <p>{{ list.bizName }}</p>
-                        <p class="post-title">{{ list.postTitle }}</p>
+                        <p class="post-title" @click="handlerPost">{{ list.postTitle }}</p>
                         <p class="hover-text" @click="handlerResume(list.resIdx)">지원이력서</p>
                       </td>
                       <td>
@@ -75,6 +75,10 @@ const selectedResumeIdx = ref(null);
 const handlerResume = (param) => {
   selectedResumeIdx.value = param;
   modalStore.setModalState(); //모달 열기
+}
+
+const handlerPost = () => {
+  
 }
 
 const {mutate: handlerCancle} = useHistoryCancleMutation();

@@ -2,7 +2,7 @@
   <ContextBox>공고 상세 보기</ContextBox>
   <ApplyUserResumeModal
     v-if="modalState.modalState"
-    @postSuccess="searchList"
+    @postSuccess="refetch"
     @modalClose="() => ((postIdx = 0), (bizIdx = 0))"
     :pIdx="postIdx"
     :bIdx="bizIdx"
@@ -209,14 +209,14 @@
               <b-button
                 variant="outline-success"
                 class="me-2"
-                @click="handlerUpdateAppStatus(postDetail.postIdx, '승인')"
+                @click="handlerUpdateAppStatus({ postIdx: postDetail.postIdx, status: '승인' })"
               >
                 승인
               </b-button>
               <b-button
                 variant="outline-danger"
                 class="me-2"
-                @click="handlerUpdateAppStatus(postDetail.postIdx, '불허')"
+                @click="handlerUpdateAppStatus({ postIdx: postDetail.postIdx, status: '불허' })"
               >
                 불허
               </b-button>
@@ -248,6 +248,9 @@ import "bootstrap-vue-3";
 import { useRoute, useRouter } from "vue-router";
 import ApplyUserResumeModal from "../../Apply/ResumeList/ApplyUserResumeModal.vue";
 import { useScrapSaveMutation } from "../../../hook/scrap/useScrapSaveMutation";
+import { useBizPostDetailQuery } from "../../../hook/bizPost/useBizPostDetailQuery";
+import { useBizPostDetailDeleteMutation } from "../../../hook/bizPost/useBizPostDetailDeleteMutation";
+import { useBizPostStatusUpdateMutation } from "../../../hook/bizPost/useBizPostStatusUpdateMutation";
 
 const { params } = useRoute();
 const postDetail = ref(null);
@@ -259,22 +262,33 @@ const postIdx = ref(0);
 const bizIdx = ref(0);
 const modalState = useModalStore();
 
-const searchList = async () => {
-  const result = await axios.post("/api/manage-hire/readPostDetailBody.do", params);
-  if (result.data) {
-    postDetail.value = result.data.postDetail;
-    bizDetail.value = result.data.bizDetail;
-    isClicked.value = result.data.isClicked;
-    userType.value = result.data.userType;
-  }
-  return result.data;
-};
 
-const { data, isLoading, refetch, isSuccess, isError } = useQuery({
-  queryKey: ["bizPostDetail"],
-  queryFn: searchList,
+// const searchList = async () => {
+//   const result = await axios.post("/api/manage-hire/readPostDetailBody.do", params);
+//   if (Detail) {
+//     postDetail.value = result.data.postDetail;
+//     bizDetail.value = result.data.bizDetail;
+//     isClicked.value = result.data.isClicked;
+//     userType.value = result.data.userType;
+//   }
+//   return result.data;
+// };
+
+const { data: detail , isLoading, refetch, isSuccess, isError } = useBizPostDetailQuery(params);
+
+watchEffect(() => {
+  if (isSuccess.value && detail.value) {
+    postDetail.value = detail.value.postDetail;
+    bizDetail.value = detail.value.bizDetail;
+    isClicked.value = detail.value.isClicked;
+    userType.value = detail.value.userType;
+  }
 });
-// const { postDetail, bizDetail, isClicked } = data || {};
+
+// const { data, isLoading, refetch, isSuccess, isError } = useQuery({
+//   queryKey: ["bizPostDetail"],
+//   queryFn: searchList,
+// });
 
 const navigatePost = (param) => {
   if (param === "back") {
@@ -284,27 +298,20 @@ const navigatePost = (param) => {
   }
 };
 
-const handleDelete = async (pIdx, bIdx) => {
-  const params = {
-    postIdx: pIdx,
-    bizIdx: bIdx,
-  };
+const { mutate: handleDelete } = useBizPostDetailDeleteMutation(postDetail, bizDetail);
+const { mutate: handlerUpdateAppStatus } = useBizPostStatusUpdateMutation();
+// const handleDelete = async (pIdx, bIdx) => {
+//   const params = {
+//     postIdx: pIdx,
+//     bizIdx: bIdx,
+//   };
+//   const result = await axios.post("/api/manage-hire/managehireDeleteBody.do", params);
 
-  const postIndexes = [pIdx];
-  await axios.post("/api/jobs/updateScrapBody.do", { postIndexes }, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-  })
-    
-  const result = await axios.post("/api/manage-hire/managehireDeleteBody.do", params);
-
-  if (result.data.result == "success") {
-    alert("삭제 처리되었습니다.");
-
-    router.go(-1);
-  }
-};
+//   if (result.data.result == "success") {
+//     alert("삭제 처리되었습니다.");
+//     router.go(-1);
+//   }
+// };
 
 const handleDown = (pIdx, bIdx) => {
   const params = {
@@ -346,22 +353,22 @@ const handlerModal = (pIdx, bIdx) => {
   bizIdx.value = bIdx;
 };
 
-const handlerUpdateAppStatus = async (pIdx, status) => {
-  const params = {
-    postIdx: pIdx,
-    appStatus: status,
-  };
-  const result = await axios.post("/api/manage-post/statusUpdateBody.do", params);
+// const handlerUpdateAppStatus = async (pIdx, status) => {
+//   const params = {
+//     postIdx: pIdx,
+//     appStatus: status,
+//   };
+//   const result = await axios.post("/api/manage-post/statusUpdateBody.do", params);
 
-  if (result.data.result == "success") {
-    alert("처리되었습니다.");
-    if (status == "승인") {
-      router.push({ name: "managePost" });
-    } else if (status == "불허") {
-      router.push({ name: "managePostApproval" });
-    }
-  }
-};
+//   if (result.data.result == "success") {
+//     alert("처리되었습니다.");
+//     if (status == "승인") {
+//       router.push({ name: "managePost" });
+//     } else if (status == "불허") {
+//       router.push({ name: "managePostApproval" });
+//     }
+//   }
+// };
 
 //신효 - 스크랩 등록
 const { mutate: handlerSaveScrap } = useScrapSaveMutation(params.postIdx);

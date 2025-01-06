@@ -9,8 +9,6 @@
           <hr />
           <template
             v-if="resumeMianInfoArray"
-            class="mainResume"
-            style="background-color: #f0f8ff; border: 2px solid #3bb2ea"
           >
             <div>
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">
@@ -82,6 +80,7 @@ const userResumes = ref(null);
 const userInfo = useUserInfo();
 const resumeIdx = ref(0);
 const resumeMianInfoArray = ref();
+const router = useRouter();
 
 const resumeList = async () => {
   const param = {
@@ -145,6 +144,14 @@ const handlerModal = () => {
 
 const handlerRadioChange = (idx) => {
   resumeIdx.value = idx;
+};
+
+const handlerModify = (resumeidx) => {
+  handlerModal();
+  router.push({
+    name: "MyResumes",
+    query: { resumeNum: resumeidx },
+  });
 };
 
 onUnmounted(() => {
