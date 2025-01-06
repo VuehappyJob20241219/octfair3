@@ -1,17 +1,14 @@
-<template>
-  <FaqModal
-    v-if="faqModalState.modalState"
-    @postSuccess="searchList"
-    @modalClose="() => (faqSeq = 0)"
-    :idx="faq_idx"
-  />
+<template>   
   <div class="divFaqList">
+  <b-button :pressed.sync="myToggle==='personal'" variant="primary"  @click="personalFaq">개인회원</b-button>
+  <b-button :pressed.sync="myToggle==='company'" variant="primary"  @click="companyFaq">기업회원</b-button> 
     <table>
       <colgroup>
         <col width="10%" />
-        <col width="50%" />
-        <col width="30%" />
-        <col width="10%" />
+        <col width="50" />
+        <col width="15%" />
+        <col width="15%" />
+        <col v-if="userInfo.user.userType === 'M'" width="10%" />
       </colgroup>
 
       <thead>
@@ -20,22 +17,37 @@
           <th scope="col">제목</th>
           <th scope="col">작성일</th>
           <th scope="col">작성자</th>
+          <th v-if="userInfo.user.userType === 'M'" width="10%">관리</th>
         </tr>
       </thead>
+
       <tbody>
         <template v-if="faqList">
           <template v-if="faqList.faqCnt > 0">
-            <tr v-for="faq in faqList.faq" :key="faq.faq_idx">
-              <td>{{ faq.faq_idx }}</td>
-              <td @click="handlerModal(faq.faq_idx)">{{ faq.title }}</td>
-              <td>{{ faq.created_date.substr(0, 10) }}</td>
-              <td>{{ faq.author }}</td>
-            </tr>
+            <template v-for="faq in faqList.faq" :key="faq.faq_idx">
+              <tr>
+                <!-- 제목 -->
+                <td>{{ faq.displayIdx }}</td>
+                <td @click="toggleFaqAnswer(faq.faq_idx)">
+                  {{ faq.title }}
+                </td>
+                <td>{{ faq.created_date.substr(0, 10) }}</td>
+                <td>{{ faq.author }}</td>
+                <td v-if="userInfo.user.userType === 'M'">
+                  <b-button pill @click="handlerModal(faq.faq_idx)"
+                    >관리</b-button
+                  >
+                </td>
+              </tr>
+              <tr>              
+                <td v-show="faqAnswer === faq.faq_idx" :colspan="userInfo.user.userType === 'M' ? 5 : 4">
+                  {{ faq.content }}
+                </td>                
+              </tr>
+            </template>
           </template>
           <template v-else>
-            <tr>
-              <td colspan="7">일치하는 검색 결과가 없습니다</td>
-            </tr>
+            <div>일치하는 검색 결과가 없습니다.</div>
           </template>
         </template>
       </tbody>
@@ -47,6 +59,12 @@
       :onClick="searchList"
       v-model="cPage"
     />
+    <FaqModal
+    v-if="faqModalState.modalState"
+    @postSuccess="searchList"
+    @modalClose="() => (faqSeq = 0)"
+    :idx="faq_idx"
+  />
   </div>
 </template>
 <script setup>
@@ -64,8 +82,11 @@ const cPage = ref(1);
 const faq_idx = ref(0);
 const faqModalState = useModalStore();
 const userInfo = useUserInfo();
+const faqAnswer = ref(null);
 
-const faq_fype = userInfo.user.userType === "B" ? 1 : 2;
+const myToggle = ref(userInfo.user.userType ==="A"? "personal" : "company");
+
+const faq_fype = ref(userInfo.user.userType === "A" ? "1" : "2");
 
 const searchList = async () => {
   const param = new URLSearchParams({
@@ -74,25 +95,47 @@ const searchList = async () => {
     searchEdDate: route.query.searchEdDate || "",
     currentPage: cPage.value,
     pageSize: 5,
-    faq_type: faq_fype,
+    faq_type: faq_fype.value,
   });
-  await axios.post("/api/board/faqListRe.do", param).then((res) => {
-    faqList.value = res.data;
-  });
+  const response = await axios.post("/api/board/faqListRe.do", param);
+  faqList.value = response.data;
+
+  if (faqList.value && faqList.value.faq) {
+    faqList.value.faq.forEach((faq, index) => {
+      faq.displayIdx = faqList.value.faq.length - index;
+    });    
+  }
+};
+
+const personalFaq = () => {
+  faq_fype.value = "1";
+  myToggle.value = 'personal'; // 개인회원 버튼 활성화  
+  searchList();
+};
+
+const companyFaq = () => {
+  faq_fype.value = "2";
+  myToggle.value = 'company'; // 기업회원 버튼 활성화
+  searchList();
+};
+
+
+
+const toggleFaqAnswer = (faq_idx) => {
+  faqAnswer.value = faqAnswer.value === faq_idx ? null : faq_idx;
 };
 
 const handlerModal = (idx) => {
   faqModalState.setModalState();
-  axios.post("/api/board/faqDetail.do", { faqSeq: idx }).then((res) => {
-    faqList.value = res.data;
-  });
+  faq_idx.value = idx;
 };
 
-watch(route, searchList);
 
 onMounted(() => {
   searchList();
 });
+
+watch(route, searchList);
 </script>
 
 <style lang="scss" scoped>
@@ -102,6 +145,7 @@ table {
   margin: 20px 0px 0px 0px;
   font-size: 18px;
   text-align: left;
+  table-layout: auto; /* 수정: table-layout을 auto로 설정하여 셀 크기를 내용에 맞게 조정 */
 
   th,
   td {
@@ -109,6 +153,7 @@ table {
     text-align: left;
     border-bottom: 1px solid #ddd;
     text-align: center;
+    word-wrap: break-word;
   }
 
   th {
@@ -122,5 +167,15 @@ table {
     opacity: 0.9;
     cursor: pointer;
   }
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>

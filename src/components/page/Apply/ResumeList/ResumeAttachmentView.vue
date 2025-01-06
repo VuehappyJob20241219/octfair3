@@ -44,7 +44,7 @@
             </td>
           </tr>
           <tr>
-            <td colspan="1" v-if="att.fileName">
+            <td colspan="1" v-if="att.fileName" class="file-link">
               <span @click="ResumeFileDownload(att.attIdx)">{{ att.fileName }}</span>
             </td>
             <td colspan="1" v-else="">
@@ -100,12 +100,11 @@ const ResumeFileDownload = (attIdx) => {
     data: param,
     responseType: "blob",
   };
-
   axios(postAction).then((res) => {
     const url = window.URL.createObjectURL(new Blob([res.data]));
     // attIdx에 맞는 파일 정보를 찾기
     const attachment = attachmentProperties.value.attachment.find((item) => item.attIdx === attIdx);
-
+    console.log("attachment", attachment);
     if (attachment) {
       const link = document.createElement("a");
       link.href = url;
@@ -197,5 +196,15 @@ onMounted(() => {
   &:hover {
     background-color: #1565c0;
   }
+}
+
+.file-link {
+  color: #36f; /* 파란색 글씨 */
+  transition: background-color 0.3s ease; /* 부드러운 배경색 변화 */
+}
+
+.file-link:hover {
+  background-color: rgba(54, 114, 255, 0.1); /* 호버 시 배경색 변화 */
+  text-decoration: underline; /* 호버 시 밑줄 효과 */
 }
 </style>

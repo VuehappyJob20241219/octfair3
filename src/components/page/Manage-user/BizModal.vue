@@ -64,9 +64,9 @@
 </template>
 
 <script setup>
-import { useMutation, useQuery } from "@tanstack/vue-query";
-import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
+import { useBizDetailQuery } from "../../hook/biz/useBizDetailQuery";
+import { useBizDetailUpdateMutation } from "../../hook/biz/useBizDetailUpdateMutation";
 
 const emit = defineEmits(["modalClose"]);
 const props = defineProps(["bizIdx"]);
@@ -74,69 +74,15 @@ const props = defineProps(["bizIdx"]);
 const bizDetailValue = ref({});
 const modalStateBiz = useModalStore();
 
-const searchDetail = async () => {
-  const param = new URLSearchParams({
-    bizIdx: props.bizIdx,
-  });
-
-  const result = await axios.post("/api/manage-user/bizManageDetail.do", param);
-
-  return result.data;
-};
-
 const {
   data: bizDetail,
   isLoading,
   isSuccess,
   isError,
-} = useQuery({
-  queryKey: ["bizDetail"],
-  queryFn: searchDetail,
-  enabled: !!props.bizIdx,
-});
+} = useBizDetailQuery(props);
 
-const updateBizDetail = async () => {
-  if (!checkForm()) {
-    return;
-  }
 
-  const param = new URLSearchParams({
-    ...bizDetailValue.value,
-  });
-
-  return await axios.post("/api/manage-user/bizInfoUpdate.do", param);
-};
-
-const { mutate: handlerUpdateBtn } = useMutation({
-  mutationFn: updateBizDetail,
-  mutationKey: ["bizUpdate"],
-  onSettled: (data, error) => {
-    if (data) {
-      handlerModal();
-    }
-  },
-});
-
-const checkForm = () => {
-  let inputBizName = bizDetailValue.value.bizName;
-  let inputContact = bizDetailValue.value.bizContact;
-
-  const phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
-
-  if (inputBizName.length < 1) {
-    alert("사업자명을 입력하세요.");
-    return false;
-  }
-
-  if (!inputContact) {
-    //공백인 경우 저장 가능
-  } else if (!phoneRules.test(inputContact)) {
-    alert("전화번호 형식을 확인해주세요.");
-    return false;
-  }
-
-  return true;
-};
+const { mutate: handlerUpdateBtn } = useBizDetailUpdateMutation(bizDetailValue);
 
 const handlerModal = () => {
   modalStateBiz.setModalState();

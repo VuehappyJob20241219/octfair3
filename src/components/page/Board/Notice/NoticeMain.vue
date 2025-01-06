@@ -7,7 +7,6 @@
       @modalClose="() => (noticeIdx = 0)"
       :idx="noticeIdx"
     />
-    <!-- <NoticeModal v-show="modalValue"/> -->
     <table>
       <colgroup>
         <col width="10%" />
@@ -26,10 +25,10 @@
       </thead>
       <tbody>
         <template v-if="noticeList">
-          <template v-if="noticeList.noticeCnt">
-            <tr v-for="notice in noticeList.notice" :key="notice.noticeIdx" @click="handlerModal(notice.noticeIdx)">
+          <template v-if="noticeList.noticeCnt > 0">
+            <tr v-for="notice in noticeList.notice" :key="notice.noticeIdx" >
               <td>{{ notice.noticeIdx }}</td>
-              <td>{{ notice.title }}</td>
+              <td @click="handlerModal(notice.noticeIdx)">{{ notice.title }}</td>
               <td>{{ notice.createdDate.substr(0, 10) }}</td>
               <td>{{ notice.author }}</td>
             </tr>
@@ -53,21 +52,26 @@
 </template>
 
 <script setup>
-import { useModalStore } from "@/stores/modalState";
-import axios from "axios";
-import { onMounted } from "vue";
-import { useRoute } from "vue-router";
 import Pagination from "../../../common/Pagination.vue";
+import { useModalStore } from "@/stores/modalState";
+import { useRoute, useRouter } from "vue-router";
+import { useNoticeListSearchQuery } from "../../../hook/notice/useNoticeListSearchQuery";
+import { inject, onMounted, watch } from "vue";
+import axios from "axios";
+
 
 const route = useRoute();
-// console.log(route);
-// watch(route, () => console.log(route.query));
 const noticeList = ref();
-// const noticeCount = ref(0);
 const cPage = ref(1);
 const modalState = useModalStore();
 const noticeIdx = ref(0);
+// const router = useRouter();
+// const injectedValue = inject('provideValue');
 
+// const  { data: noticeList, isSuccess } 
+//     = useNoticeListSearchQuery(
+//     injectedValue, cPage
+// );
 const searchList = () => {
   const param = new URLSearchParams({
     searchTitle: route.query.searchTitle || "",
@@ -81,6 +85,13 @@ const searchList = () => {
   });
 };
 
+// const handlerModal = (param) => {
+//   router.push({
+//     name: 'noticeDetail',
+//     params: { idx: param },
+//   });
+// };
+
 const handlerModal = (idx) => {
   modalState.setModalState();
   noticeIdx.value = idx;
@@ -92,9 +103,6 @@ onMounted(() => {
   searchList();
 });
 
-// onBeforeMounted(()=>{
-//     searchList();
-// })
 </script>
 
 <style lang="scss" scoped>
