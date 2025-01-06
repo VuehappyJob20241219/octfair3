@@ -290,6 +290,7 @@ const handleDelete = async (pIdx, bIdx) => {
     bizIdx: bIdx,
   };
 
+  //신효 - 공고 삭제 시 스크랩에 업데이트
   const postIndexes = [pIdx];
   await axios.post("/api/jobs/updateScrapBody.do", { postIndexes }, {
       headers: {
@@ -301,7 +302,6 @@ const handleDelete = async (pIdx, bIdx) => {
 
   if (result.data.result == "success") {
     alert("삭제 처리되었습니다.");
-
     router.go(-1);
   }
 };
