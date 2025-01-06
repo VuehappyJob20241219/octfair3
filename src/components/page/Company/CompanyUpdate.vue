@@ -24,7 +24,7 @@
       <tr>
         <th>연락처</th>
         <td>
-          <input type="text" v-model="companyDetail.bizContact" @input="companyPhoneNumChange" />
+          <input type="text" v-model="companyDetail.bizContact" @change="companyPhoneNumChange" />
         </td>
       </tr>
       <tr>
@@ -98,6 +98,7 @@ import axios from "axios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUserInfo } from "../../../stores/userInfo";
+import { Company } from "../../../api/axiosApi/companyApi";
 
 const userInfo = useUserInfo();
 const companyDetail = ref({});
@@ -108,7 +109,7 @@ const router = useRouter();
 
 const searchDetail = () => {
   axios
-    .post("/api/company/companyUpdatePageRe.do", {
+    .post(Company.SearchCompanyUpdateDetail, {
       loginId: userInfo.user.loginId,
     })
     .then((res) => {
@@ -133,7 +134,7 @@ const handlerCompanyInsert = async () => {
   if (fileData.value) formData.append("file", fileData.value);
   formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
 
-  await axios.post("/api/company/companySaveBody.do", formData).then((res) => {
+  await axios.post(Company.InsertCompany, formData).then((res) => {
     if (res.data.result === "success") {
       alert("기업이 등록되었습니다.");
       router.go(-1);
@@ -157,7 +158,7 @@ const handlerCompanyUpdate = async () => {
   if (fileData.value) formData.append("file", fileData.value);
   formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
 
-  await axios.post("/api/company/companyUpdateBody.do", formData).then((res) => {
+  await axios.post(Company.UpdateCompany, formData).then((res) => {
     if (res.data.result === "success") {
       alert("기업정보가 수정되었습니다.");
       router.push({
@@ -183,7 +184,7 @@ const getFileImage = (idx) => {
   let param = new URLSearchParams();
   param.append("bizIdx", idx);
   const postAction = {
-    url: "/api/company/companyImageDownload.do",
+    url: Company.DownloadLogo,
     method: "POST",
     data: param,
     responseType: "blob",
@@ -287,7 +288,7 @@ const fileDownload = () => {
   let param = new URLSearchParams();
   param.append("bizIdx", companyDetail.value.bizIdx);
   const postAction = {
-    url: "/api/company/companyImageDownload.do",
+    url: Company.DownloadLogo,
     method: "POST",
     data: param,
     responseType: "blob",
@@ -304,7 +305,7 @@ const fileDownload = () => {
 };
 
 const handlerCompanyDelete = async () => {
-  await axios.post("/api/company/companyDeleteRe.do", { loginId: userInfo.user.loginId }).then((res) => {
+  await axios.post(Company.DeleteCompany, { loginId: userInfo.user.loginId }).then((res) => {
     if (res.data.result === "success") {
       alert("기업이 삭제되었습니다.");
       router.go(-1);

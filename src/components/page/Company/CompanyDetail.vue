@@ -72,6 +72,7 @@
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 import { useUserInfo } from "../../../stores/userInfo";
+import { Company } from "../../../api/axiosApi/companyApi";
 
 const userInfo = useUserInfo();
 const companyDetail = ref({});
@@ -80,7 +81,7 @@ const router = useRouter();
 const { params } = useRoute();
 
 const searchDetail = () => {
-  axios.post("/api/company/companyDetailPageRe.do/" + params.postIdx + "/" + params.bizIdx, params).then((res) => {
+  axios.post(Company.SearchCompanyDetail + params.postIdx + "/" + params.bizIdx, params).then((res) => {
     companyDetail.value = res.data.detail || {};
     if (
       companyDetail.value.fileExt === "jpg" ||
@@ -97,7 +98,7 @@ const getFileImage = (idx) => {
   let param = new URLSearchParams();
   param.append("bizIdx", idx);
   const postAction = {
-    url: "/api/company/companyImageDownload.do",
+    url: Company.DownloadLogo,
     method: "POST",
     data: param,
     responseType: "blob",

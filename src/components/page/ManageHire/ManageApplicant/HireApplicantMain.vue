@@ -64,6 +64,7 @@ import { inject, watch } from "vue";
 import { useModalStore } from "../../../../stores/modalState";
 import { useUserInfo } from "../../../../stores/userInfo";
 import ResumePreview from "../../Apply/ResumeDetail/ResumePreview.vue";
+import { ManageJobApplicant } from "../../../../api/axiosApi/companyApi";
 
 const cPage = ref(1);
 const applicantList = ref();
@@ -88,7 +89,7 @@ const loadApplicantList = () => {
     currentPage: "1",
   };
 
-  axios.post("/api/manage-hire/applicantListBody.do", params).then((res) => {
+  axios.post(ManageJobApplicant.SearchList, params).then((res) => {
     applicantList.value = res.data.list;
     applicantCnt.value = res.data.count;
   });
@@ -106,7 +107,7 @@ const updateProcPass = (idx) => {
   } else {
     alert("합격에 실패했습니다.");
   }
-  axios.post("/api/manage-hire/statusUpdateBody.do", { appId: idx, keyword: nextStage.value }).then(() => {
+  axios.post(ManageJobApplicant.UpdateProcStatus, { appId: idx, keyword: nextStage.value }).then(() => {
     loadApplicantList();
   });
 };
@@ -117,7 +118,7 @@ const updateProcFail = (idx) => {
   } else {
     alert("불합격에 실패했습니다.");
   }
-  axios.post("/api/manage-hire/statusUpdateBody.do", { appId: idx, keyword: beforeStage.value }).then(() => {
+  axios.post(ManageJobApplicant.UpdateProcStatus, { appId: idx, keyword: beforeStage.value }).then(() => {
     loadApplicantList();
   });
 };
@@ -125,7 +126,7 @@ const updateProcFail = (idx) => {
 const handlerResume = (param) => {
   selectedResumeIdx.value = param.resIdx;
   modalStore.setModalState();
-  axios.post("/api/manage-hire/viewUpdateBody.do", { appId: param.appId }).then(() => {
+  axios.post(ManageJobApplicant.UpdateViewStatus, { appId: param.appId }).then(() => {
     loadApplicantList();
   });
 };
