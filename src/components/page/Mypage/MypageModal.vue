@@ -26,9 +26,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <tr>
-                        <label class="tip">"비밀 번호는 숫자,영문자,특수문자 조합으로 8~15자리를 사용해야 합니다."</label>
-                    </tr>
+                    <label class="tip">"비밀 번호는 숫자,영문자,특수문자 조합으로 8~15자리를 사용해야 합니다."</label>
                 </div>
                 <br />
                 <button @click="handlerUpdateBtn">수정</button>
