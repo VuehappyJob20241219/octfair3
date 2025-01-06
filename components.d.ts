@@ -21,12 +21,10 @@ declare module 'vue' {
     CompanyDetail: typeof import('./src/components/page/Company/CompanyDetail.vue')['default']
     CompanyUpdate: typeof import('./src/components/page/Company/CompanyUpdate.vue')['default']
     ContextBox: typeof import('./src/components/common/ContextBox.vue')['default']
-    copy: typeof import('./src/components/page/Apply/ResumeDetail/ResumePreview copy.vue')['default']
     FaqMain: typeof import('./src/components/page/Board/Faq/FaqMain.vue')['default']
     FaqModal: typeof import('./src/components/page/Board/Faq/FaqModal.vue')['default']
     FaqSearch: typeof import('./src/components/page/Board/Faq/FaqSearch.vue')['default']
     FindIdPwModal: typeof import('./src/components/page/Login/findIdPwModal.vue')['default']
-    FirstfindIdPwModal: typeof import('./src/components/page/Login/FirstfindIdPwModal.vue')['default']
     FirstNoticeDetail: typeof import('./src/components/page/Board/Notice/FirstNoticeDetail.vue')['default']
     'FirstNoticeDetail copy': typeof import('./src/components/page/Board/Notice/FirstNoticeDetail copy.vue')['default']
     FirstNoticeMain: typeof import('./src/components/page/Board/Notice/FirstNoticeMain.vue')['default']
@@ -72,6 +70,10 @@ declare module 'vue' {
     VideoWatch: typeof import('./src/components/page/Youtube/VideoWatch.vue')['default']
     VideoYoutubeMain: typeof import('./src/components/page/Youtube/VideoYoutubeMain.vue')['default']
     WithdrawMain: typeof import('./src/components/page/Mypage/WithdrawMain.vue')['default']
+    WithdrawModal: typeof import('./src/components/page/Mypage/WithdrawModal.vue')['default']
+  }
+}
+]
     WithdrawModal: typeof import('./src/components/page/Mypage/WithdrawModal.vue')['default']
   }
 }

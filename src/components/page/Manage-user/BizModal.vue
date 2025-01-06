@@ -64,9 +64,10 @@
 </template>
 
 <script setup>
-import { useMutation, useQuery } from "@tanstack/vue-query";
+import { useMutation } from "@tanstack/vue-query";
 import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
+import { useBizDetailQuery } from "../../hook/biz/useBizDetailQuery";
 
 const emit = defineEmits(["modalClose"]);
 const props = defineProps(["bizIdx"]);
@@ -74,26 +75,12 @@ const props = defineProps(["bizIdx"]);
 const bizDetailValue = ref({});
 const modalStateBiz = useModalStore();
 
-const searchDetail = async () => {
-  const param = new URLSearchParams({
-    bizIdx: props.bizIdx,
-  });
-
-  const result = await axios.post("/api/manage-user/bizManageDetail.do", param);
-
-  return result.data;
-};
-
 const {
   data: bizDetail,
   isLoading,
   isSuccess,
   isError,
-} = useQuery({
-  queryKey: ["bizDetail"],
-  queryFn: searchDetail,
-  enabled: !!props.bizIdx,
-});
+} = useBizDetailQuery(props);
 
 const updateBizDetail = async () => {
   if (!checkForm()) {
