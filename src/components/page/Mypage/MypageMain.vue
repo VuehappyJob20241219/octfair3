@@ -66,7 +66,6 @@
     </table>
   </div>
   <button @click="handlerUpdateBtn">수정</button>
-  <button>취소</button>
 </template>
 
 <script setup>
