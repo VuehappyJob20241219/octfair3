@@ -7,7 +7,7 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { VueQueryPlugin } from "@tanstack/vue-query";
 import VueAwesomePaginate from "vue-awesome-paginate";
 import BootstrapVue3 from "bootstrap-vue-3";
-import { BContainer, BRow, BCol, BButton } from "bootstrap-vue-3";
+
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue-3/dist/bootstrap-vue-3.css";
 
@@ -15,8 +15,5 @@ const app = createApp(App);
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 app.use(VueQueryPlugin).use(pinia).use(router).use(VueAwesomePaginate).use(BootstrapVue3);
-app.component("BContainer", BContainer);
-app.component("BRow", BRow);
-app.component("BCol", BCol);
-app.component("BButton", BButton);
-app.mount("#app");
+
+app.mount('#app');
