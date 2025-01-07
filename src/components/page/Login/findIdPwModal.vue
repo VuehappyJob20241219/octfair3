@@ -9,7 +9,7 @@
                     <button @click="pwBtn">비밀번호 찾기</button>
 
                     <!-- 아이디 찾기 -->
-                    <div v-show="findId">
+                    <div v-show="findId.state">
                         <table>
                             <colgroup>
                                 <col width="200px">
@@ -20,11 +20,11 @@
                             <tbody>
                                 <tr>
                                     <th>이름을 입력하세요.</th>
-                                    <td><input id="regiName" type="text" /></td>
+                                    <td><input v-model="findId.inputName" type="text" /></td>
                                 </tr>
                                 <tr>
                                     <th>이메일을 입력하세요.</th>
-                                    <td><input id="emailName" type="text" /></td>
+                                    <td><input v-model="findId.inputEmail" type="text" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -78,7 +78,7 @@
                     </div>
                 </div>
                 <div class="checkbutton">
-                    <button v-show="findId" @click="findIdBtn">확인</button>
+                    <button v-show="findId.state" @click="findIdBtn">확인</button>
                     <button v-show="findPw" @click="findPwBtn">확인</button>
                     <button v-show="setPw.state" @click="handlerUpdateBtn">확인</button>
                     <button @click="handlerModal">취소</button>
@@ -93,10 +93,15 @@
 import { useMutation } from "@tanstack/vue-query";
 import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
+import { useFindMyIdMutation } from "../../hook/login/useFindMyIdMutation";
 
 const modalState = useModalStore();
 
-const findId = ref(false);
+const findId = ref({
+    state: false,
+    inputName: "",
+    inputEmail: ""
+});
 const findPw = ref(false);
 
 const myId = ref({
@@ -114,50 +119,15 @@ const setPw = ref({
 });
 
 const idBtn = () => {
-    findId.value = !(findId.value);
+    findId.value.state = !(findId.value.state);
     findPw.value = false;
 }
 const pwBtn = () => {
     findPw.value = !(findPw.value);
-    findId.value = false;
+    findId.value.state = false;
 }
 
-const findMyId = async () => {
-    let inputName = document.getElementById("regiName").value;
-    let inputEmail = document.getElementById("emailName").value;
-
-    if (!inputName) {
-        alert("이름을 입력하세요.");
-        return false;
-    }
-
-    if (!inputEmail) {
-        alert("이메일을 입력하세요.");
-        return false;
-    }
-
-    const param = new URLSearchParams({
-        name: inputName,
-        email: inputEmail
-    })
-
-    const result = await axios.post("/api/selectFindInfoId.do", param);
-    return result.data;
-}
-
-const { mutate: findIdBtn } = useMutation({
-    mutationFn: findMyId,
-    mutationKey: ["findMyId"],
-    onSettled: (data, error) => {
-        if (data.result === 'SUCCESS') {
-            findId.value = false;
-            myId.value.id = data.id;
-            myId.value.state = true;
-        } else if (data) {
-            alert("해당 정보로 찾으시는 ID가 존재하지 않습니다.");
-        }
-    },
-})
+const { mutate: findIdBtn } = useFindMyIdMutation(findId, myId);
 
 const findMyPw = async () => {
     let inputId = document.getElementById("regiId").value;
