@@ -1,5 +1,8 @@
 <template>
-  <template v-if="attachmentProperties.attachment.length > 0">
+  <template v-if="isLoading">
+    <p>로딩 중입니다...</p>
+  </template>
+  <template v-if="isSuccess && attachmentProperties?.attachment.length > 0">
     <div class="contents">
       <table class="att-table">
         <colgroup>
@@ -28,7 +31,7 @@
               </span>
             </td>
             <td rowspan="2">
-              <button @click="DeleteAttachment(att.attIdx)">
+              <button @click="deleteAttachment(att.attIdx)">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="20px"
@@ -45,7 +48,7 @@
           </tr>
           <tr>
             <td colspan="1" v-if="att.fileName" class="file-link">
-              <span @click="ResumeFileDownload(att.attIdx)">{{ att.fileName }}</span>
+              <span @click="fileDownloadAtt({ attIdx: att.attIdx, fileName: att.fileName })">{{ att.fileName }}</span>
             </td>
             <td colspan="1" v-else="">
               <span>첨부된 파일이 없습니다.</span>
@@ -63,65 +66,24 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { onMounted } from "vue";
-import { ResumeAddTable } from "../../../../api/axiosApi/resumeApi";
+import { useQuery } from "@tanstack/vue-query";
+import { resumeDetailAttApi } from "../../../../api/resume/resumeDetailAttApi";
+import { useResumeDeleteAttachmentMutation } from "../../../hook/resume/useResumeDeleteAttachmentMutation";
+import { useResumeFileDownloadAttachmentMutation } from "../../../hook/resume/useResumeFileDownloadAttachmentMutation";
 
-const attachmentProperties = ref({
-  attachment: [],
-});
 const props = defineProps(["idx"]);
-const emit = defineEmits(["postSuccess"]);
+const { mutate: deleteAttachment } = useResumeDeleteAttachmentMutation(props.idx);
+const { mutate: fileDownloadAtt } = useResumeFileDownloadAttachmentMutation();
 
-const attachmentDetail = async () => {
-  await axios.post(ResumeAddTable.ListAttachment, { resIdx: props.idx }).then((res) => {
-    attachmentProperties.value = res.data;
-  });
-};
-
-const DeleteAttachment = async (idx) => {
-  const param = {
-    resIdx: props.idx,
-    attIdx: idx,
-  };
-  await axios.post(ResumeAddTable.DeleteAttachment, param).then((res) => {
-    if (res.data.result === "success") {
-      attachmentDetail();
-    }
-  });
-};
-
-const ResumeFileDownload = (attIdx) => {
-  let param = new URLSearchParams();
-  param.append("attIdx", attIdx);
-  const postAction = {
-    url: "/api/apply/AttachmentFileDownload.do",
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-  axios(postAction).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    // attIdx에 맞는 파일 정보를 찾기
-    const attachment = attachmentProperties.value.attachment.find((item) => item.attIdx === attIdx);
-    console.log("attachment", attachment);
-    if (attachment) {
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", attachment.fileName); // 인덱스를 사용하지 않고 객체를 직접 참조
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    }
-  });
-};
-
-defineExpose({
-  attachmentDetail,
-});
-
-onMounted(() => {
-  attachmentDetail();
+const {
+  data: attachmentProperties,
+  isLoading,
+  isSuccess,
+} = useQuery({
+  queryKey: ["detailAtt"],
+  queryFn: () => resumeDetailAttApi(props.idx),
+  staleTime: 60000, // 1분 데이터를 신선하게 유지하며, 새로고침해도 API 재요청이 발생하지 않음. 새로고침 시 API 재요청이 발생하여 최신 데이터를 가져옴.
+  cacheTime: 300000, // 5분 동안 캐시된 데이터가 메모리 내에 유지되는 기간. 이 시간이 지나면 데이터가 삭제되고 이후 요청 시에는 서버에 요청하여 최신 데이터를 가져옴.
 });
 </script>
 

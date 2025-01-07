@@ -60,6 +60,7 @@ declare module 'vue' {
     ResumeDetail: typeof import('./src/components/page/Apply/ResumeDetail/ResumeDetail.vue')['default']
     ResumeEducationView: typeof import('./src/components/page/Apply/ResumeList/ResumeEducationView.vue')['default']
     ResumeList: typeof import('./src/components/page/Apply/ResumeMain/ResumeList.vue')['default']
+    'ResumeList copy': typeof import('./src/components/page/Apply/ResumeMain/ResumeList copy.vue')['default']
     ResumePreview: typeof import('./src/components/page/Apply/ResumeDetail/ResumePreview.vue')['default']
     'ResumePreview copy': typeof import('./src/components/page/Apply/ResumeDetail/ResumePreview copy.vue')['default']
     ResumeSkillView: typeof import('./src/components/page/Apply/ResumeList/ResumeSkillView.vue')['default']

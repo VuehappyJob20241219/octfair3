@@ -82,80 +82,47 @@
       :totalItems="resumeInfoArray?.resumeCnt || 0"
       :items-per-page="5"
       :max-pages-shown="5"
-      :onClick="handlePageChange"
+      :onClick="resumeSearchList"
       v-model="cPage"
     />
   </div>
 </template>
 
 <script setup>
-import { useQuery } from "@tanstack/vue-query";
 import axios from "axios";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { Resume } from "../../../../api/axiosApi/resumeApi";
-import { resumeGetFileImageApi } from "../../../../api/resume/resumeGetFileImageApi";
-import { resumeMainDetailApi } from "../../../../api/resume/resumeMainDetailApi";
-import { resumeSearchListApi } from "../../../../api/resume/resumeSearchListApi";
 import { useUserInfo } from "../../../../stores/userInfo";
 import Pagination from "../../../common/Pagination.vue";
 
 const userInfo = useUserInfo();
 const { user } = userInfo;
+const resumeInfoArray = ref([]);
 const cPage = ref(1);
 const resumeCopyResult = ref();
 const resumeDeleteResult = ref();
 const router = useRouter();
+const imageUrl = ref("/no_image.jpg");
+const resumeMianInfoArray = ref();
 
-const {
-  data: resumeInfoArray,
-  isLoading,
-  isSuccess,
-} = useQuery({
-  queryKey: ["resumeSearchList", cPage],
-  queryFn: async () => {
-    const param = {
-      loginId: user.loginId,
-      userNm: user.userNm,
-      userType: user.userType,
-      currentPage: cPage.value,
-      pageSize: 5,
-    };
-    return await resumeSearchListApi(param);
-  },
-  staleTime: 10000, // 10초 동안 데이터가 신선하게 유지됨
-  cacheTime: 300000, // 5분 동안 캐시 유지
-});
-
-const handlePageChange = (newPage) => {
-  cPage.value = newPage;
-  queryClient.invalidateQueries(["resumeSearchList"]);
+const resumeSearchList = async () => {
+  const param = {
+    loginId: user.loginId,
+    userNm: user.userNm,
+    userType: user.userType,
+    currentPage: cPage.value,
+    pageSize: 5,
+  };
+  await axios
+    .post(Resume.ListResume, param)
+    .then((res) => {
+      resumeInfoArray.value = res.data;
+    })
+    .catch((error) => {
+      console.error("데이터 로드 중 오류 발생:", error);
+    });
 };
-
-const {
-  data: resumeMianInfoArray,
-  isLoadingMain,
-  isSuccessMain,
-} = useQuery({
-  queryKey: ["mainResumeDetail"],
-  queryFn: async () => {
-    const param = {
-      loginId: user.loginId,
-      userNm: user.userNm,
-      userType: user.userType,
-    };
-    return await resumeMainDetailApi(param);
-  },
-  staleTime: 10000, // 10초 동안 데이터가 신선하게 유지됨
-  cacheTime: 300000, // 5분 동안 캐시 유지
-});
-
-const { data: imageUrl = "/no_image.jpg", isSuccesss } = useQuery({
-  queryKey: ["getFileImage"],
-  queryFn: () => resumeGetFileImageApi(resumeMianInfoArray.value?.resIdx),
-  staleTime: 10000, // 10초 동안 데이터가 신선하게 유지됨
-  cacheTime: 300000, // 5분 동안 캐시 유지
-});
 
 //이력서 복사
 const resumeCopy = async (idx) => {
@@ -213,6 +180,37 @@ const mainResume = async (idx) => {
   });
 };
 
+const mainResumeDetail = async () => {
+  const param = {
+    loginId: user.loginId,
+    userNm: user.userNm,
+    userType: user.userType,
+  };
+  await axios.post(Resume.MainResumeDetail, param).then((res) => {
+    resumeMianInfoArray.value = res.data.result;
+  });
+};
+
+const mainProfileImage = () => {
+  const profileImageIdx = resumeMianInfoArray.value.resIdx;
+  getFileImage(profileImageIdx);
+};
+
+const getFileImage = (idx) => {
+  let param = new URLSearchParams();
+  param.append("resIdx", idx);
+  const postAction = {
+    url: "/api/apply/resumeFileDownload.do",
+    method: "POST",
+    data: param,
+    responseType: "blob",
+  };
+  axios(postAction).then((res) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    imageUrl.value = url;
+  });
+};
+
 const calculateAge = (birthday) => {
   const birthDate = new Date(birthday); // 주어진 생일을 Date 객체로 변환
   const today = new Date(); // 현재 날짜를 Date 객체로 생성
@@ -227,6 +225,14 @@ const calculateAge = (birthday) => {
 
   return age;
 };
+
+onMounted(() => {
+  resumeSearchList().then(() => {
+    mainResumeDetail().then(() => {
+      mainProfileImage();
+    });
+  });
+});
 </script>
 
 <style lang="scss" scoped>
