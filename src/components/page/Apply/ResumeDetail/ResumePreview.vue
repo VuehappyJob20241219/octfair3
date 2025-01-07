@@ -441,6 +441,10 @@ const closeModal = () => {
 
 const resumeDetail = async () => {
   await axios.post(Resume.PreviewResume, { resIdx: props.idx }).then((res) => {
+    if (res.data.resumeInfo === null) {
+      alert("삭제된 이력서입니다.");
+      modalState.setModalState();
+    }
     resumeDetailinformation.value = res.data;
     getFileImage();
   });
