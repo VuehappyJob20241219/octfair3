@@ -2,7 +2,10 @@ import { useMutation } from "@tanstack/vue-query";
 import { applicantDetailUpdateApi } from "../../../api/applicant/applicantDetailUpdateApi";
 import { useModalStore } from "../../../stores/modalState";
 
-export const useApplicantDetailUpdateMutation = (applicantDetailValue) => {
+export const useApplicantDetailUpdateMutation = (
+  applicantDetailValue,
+  emit
+) => {
   const modalStateApplicant = useModalStore();
 
   return useMutation({
@@ -11,6 +14,7 @@ export const useApplicantDetailUpdateMutation = (applicantDetailValue) => {
     onSettled: (data, error) => {
       if (data) {
         modalStateApplicant.setModalState();
+        emit("postSuccess");
       }
     },
   });

@@ -1,6 +1,5 @@
 <template>
-  <ApplicantModal v-if="modalStateApplicant.modalState" @postSuccess="searchList" @modalClose="() => (loginId = 0)"
-    :loginId="loginId" />
+  <ApplicantModal v-if="modalStateApplicant.modalState" @postSuccess="() => refetch()" :loginId="loginId" />
   <div class="applicantList">
     <table>
       <colgroup>

@@ -91,7 +91,7 @@ import { useApplicantDetailUpdateMutation } from "../../hook/applicant/useApplic
 import { useApplicantResetPwMutation } from "../../hook/applicant/useApplicantResetPwMutation";
 
 const props = defineProps(["loginId"]);
-const emit = defineEmits(["modalClose"]);
+const emit = defineEmits(["postSuccess"]);
 
 const applicantDetailValue = ref({});
 const modalStateApplicant = useModalStore();
@@ -120,7 +120,7 @@ const openDaumPostcode = () => {
 };
 
 const { mutate: handlerUpdateBtn }
-  = useApplicantDetailUpdateMutation(applicantDetailValue);
+  = useApplicantDetailUpdateMutation(applicantDetailValue, emit);
 
 const { mutate: resetPwBtn } = useApplicantResetPwMutation(applicantDetailValue);
 
@@ -134,9 +134,6 @@ watchEffect(() => {
   }
 });
 
-onUnmounted(() => {
-  emit("modalClose");
-});
 </script>
 
 <style lang="scss" scoped>

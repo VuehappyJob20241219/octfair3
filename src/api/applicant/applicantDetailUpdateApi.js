@@ -34,6 +34,10 @@ const checkForm = (applicantDetailValue) => {
     alert("이름을 입력하세요.");
     return false;
   }
+  if (inputName.length > 20) {
+    alert("이름은 20글자 이내여야 합니다.");
+    return false;
+  }
   if (!inputBirthday) {
     alert("생일을 입력해주세요.");
     return false;
