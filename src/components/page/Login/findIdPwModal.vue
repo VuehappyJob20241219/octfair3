@@ -94,6 +94,7 @@ import { useMutation } from "@tanstack/vue-query";
 import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
 import { useFindMyIdMutation } from "../../hook/login/useFindMyIdMutation";
+import { useFindMyInfoPwMutation } from "../../hook/login/useFindMyInfoPwMutation";
 
 const modalState = useModalStore();
 
@@ -141,42 +142,7 @@ const pwBtn = () => {
 
 const { mutate: findIdBtn } = useFindMyIdMutation(findId, myId);
 
-const findMyPw = async () => {
-    let inputId = findInfoPw.value.regiId;
-    let inputEmail = findInfoPw.value.emailPwd;
-
-    if (!inputId) {
-        alert("아이디을 입력하세요.");
-        return false;
-    }
-
-    if (!inputEmail) {
-        alert("이메일을 입력하세요.");
-        return false;
-    }
-
-    const param = new URLSearchParams({
-        id: inputId,
-        email: inputEmail
-    })
-
-    const result = await axios.post("/api/selectFindInfoPw.do", param)
-    return result.data;
-}
-
-const { mutate: findPwBtn } = useMutation({
-    mutationFn: findMyPw,
-    mutationKey: ["findMyPw"],
-    onSettled: (data, error) => {
-        if (data.result === 'SUCCESS') {
-            setPw.value.id = findInfoPw.value.regiId;
-            findInfoPw.value.state = false;
-            setPw.value.state = true;
-        } else if (data) {
-            alert("해당 정보로 찾으시는 PW가 존재하지 않습니다.");
-        }
-    },
-})
+const { mutate: findPwBtn } = useFindMyInfoPwMutation(findInfoPw, setPw);
 
 const updatePW = async () => {
     let inputPw = setPw.value.newPasswd;
