@@ -204,6 +204,7 @@ import { ref } from 'vue';
 import { useQuery } from "@tanstack/vue-query";
 import router from "../../../../router";
 import { useBizPostDetailInsertMutation } from '../../../hook/bizPost/useBizPostDetailInsertMutation';
+import { useBizPostDetailQuery } from '../../../hook/bizPost/useBizPostDetailQuery';
 
 const expRequired = ref(null);
 const expYears = ref(null);
@@ -218,29 +219,39 @@ const checkBox = reactive([
 const recruitProcessList = reactive([]);
 const fileData = ref("");
 if(Object.keys(params).length>0){
-  const searchList = async () => {
-    const result = await axios.post(
-    "/api/manage-hire/readPostDetailBody.do",
-    params,
-    );
-    if(result.data){
-    postDetail.value = result.data.postDetail;
-    }
-    expRequired.value=postDetail.value.expRequired;
+  const { data: detail , refetch, isSuccess } = useBizPostDetailQuery(params);
+  // const searchList = async () => {
+  //   const result = await axios.post(
+  //   "/api/manage-hire/readPostDetailBody.do",
+  //   params,
+  //   );
+  //   if(result.data){
+  //     postDetail.value = result.data.postDetail;
+  //   }
+  //   expRequired.value=postDetail.value.expRequired;
+  //   expYears.value=postDetail.value.expYears;
+  //   hirProcess.value=postDetail.value.hirProcess;
+  //   return result.data;
+  // };
+
+  // const {
+  // data,
+  // isLoading,
+  // isError,
+  // } = useQuery({
+  // queryKey: ["bizPostDetail"],
+  // queryFn: searchList,
+  // });
+  watchEffect(() => {
+  if (isSuccess.value && detail.value) {
+    postDetail.value = detail.value.postDetail;    
+  }
+  expRequired.value=postDetail.value.expRequired;
     expYears.value=postDetail.value.expYears;
     hirProcess.value=postDetail.value.hirProcess;
-    return result.data;
-  };
-
-  const {
-  data,
-  isLoading,
-  isError,
-  } = useQuery({
-  queryKey: ["bizPostDetail"],
-  queryFn: searchList,
-  });
+});
 }
+
 
 
 //체크박스 상태 변경
