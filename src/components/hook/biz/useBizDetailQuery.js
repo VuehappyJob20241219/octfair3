@@ -3,8 +3,9 @@ import { bizDetailApi } from "../../../api/biz/bizDetailApi";
 
 export const useBizDetailQuery = (props) => {
   return useQuery({
-    queryKey: ["bizDetail"],
+    queryKey: ["bizDetail", props],
     queryFn: () => bizDetailApi(props),
     enabled: !!props.bizIdx,
+    staleTime: 1000 * 60,
   });
 };

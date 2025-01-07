@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Applicant } from "../axiosApi/applicantApi";
 
-export const ApplicantResetPw = async (applicantDetailValue) => {
+export const applicantResetPwApi = async (applicantDetailValue) => {
   const param = new URLSearchParams({
     loginId: applicantDetailValue.value.loginId,
   });

@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/vue-query";
-import { ApplicantResetPw } from "../../../api/applicant/ApplicantResetPwApi";
+import { applicantResetPwApi } from "../../../api/applicant/applicantResetPwApi";
 
 export const useApplicantResetPwMutation = (applicantDetailValue) => {
   return useMutation({
-    mutationFn: () => ApplicantResetPw(applicantDetailValue),
+    mutationFn: () => applicantResetPwApi(applicantDetailValue),
     mutationKey: ["resetPw"],
     onSettled: (data, error) => {
       if (data.result === "success") {

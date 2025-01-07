@@ -1,29 +1,27 @@
 import axios from "axios";
-import { Applicant } from "../axiosApi/applicantApi";
+import { mypage } from "../axiosApi/mypageApi";
 
-export const applicantDetailUpdateApi = async (applicantDetailValue) => {
-  if (!checkForm(applicantDetailValue)) {
+export const mypageDetailUpdateApi = async (userDetailValue) => {
+  if (!checkForm(userDetailValue)) {
     return;
   }
 
   const param = new URLSearchParams({
-    ...applicantDetailValue.value,
+    ...userDetailValue.value,
   });
 
-  return await axios.post(Applicant.ApplicantDetailUpdate, param);
+  return await axios.post(mypage.userDetailUpdate, param);
 };
 
-const checkForm = (applicantDetailValue) => {
-  let inputName = applicantDetailValue.value.name;
-  let inputBirthday = applicantDetailValue.value.birthday;
-  let inputPhone = applicantDetailValue.value.phone;
-  let inputEmail = applicantDetailValue.value.email;
-  let inputRegDate = applicantDetailValue.value.regdate;
-  let inputZipCode = applicantDetailValue.value.zipCode;
+const checkForm = (userDetailValue) => {
+  let inputName = userDetailValue.value.name;
+  let inputBirthday = userDetailValue.value.birthday;
+  let inputPhone = userDetailValue.value.phone;
+  let inputEmail = userDetailValue.value.email;
+  let inputZipCode = userDetailValue.value.zipCode;
 
   const currentDate = new Date();
   const Birthday = new Date(inputBirthday);
-  const RegDate = new Date(inputRegDate);
 
   const emailRules =
     /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
@@ -62,16 +60,8 @@ const checkForm = (applicantDetailValue) => {
     alert("이메일 형식을 확인해주세요.");
     return false;
   }
-  if (!inputRegDate) {
-    alert("가입일자를 입력해주세요.");
-    return false;
-  }
-  if (RegDate > currentDate) {
-    alert("가입일자를 미래 날짜로 선택할 수 없습니다.");
-    return false;
-  }
   if (!inputZipCode) {
-    alert("우편번호를 입력해주세요.");
+    alert("우편번호(주소)를 입력해주세요.");
     return false;
   }
   if (!ZipCodeRules.test(inputZipCode)) {

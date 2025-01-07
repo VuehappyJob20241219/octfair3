@@ -39,8 +39,17 @@
             v-model="postDetail.expYears"
             name="expYears"
             :disabled="!checkBox || !checkBox.find(checkbox => checkbox.id === 2 && checkbox.checked)">
-              <option v-for="year in years" :key={year} :value=year>
-                {{year}}
+              <option value="1년 이상">
+                1년 이상
+              </option>
+              <option value="2년 이상">
+                2년 이상
+              </option>
+              <option value="3년 이상">
+                3년 이상
+              </option>
+              <option value="4년 이상">
+                4년 이상
               </option>
           </select>
         </td>
@@ -177,7 +186,15 @@
       </table>
       <button @click="handlerInsertBtn">
           {{ params.postIdx ? "수정" : "등록" }}
-        </button>
+      </button>
+      <b-button
+                variant="secondary"
+                size="lg"
+                @click=navigatePost
+              >
+                뒤로가기
+              </b-button>
+
     </div>
 </template>
 
@@ -187,14 +204,13 @@ import { ref } from 'vue';
 import { useQuery } from "@tanstack/vue-query";
 import router from "../../../../router";
 import { useBizPostDetailInsertMutation } from '../../../hook/bizPost/useBizPostDetailInsertMutation';
+import { useBizPostDetailQuery } from '../../../hook/bizPost/useBizPostDetailQuery';
 
 const expRequired = ref(null);
 const expYears = ref(null);
 const hirProcess = ref(null);
 const { params } = useRoute();
 const postDetail = ref({});
-const years = ["1년 이상", "2년 이상", "3년 이상", "4년 이상"];
-postDetail.value.expYears= years[0];
 const checkBox = reactive([
       { id: 1, label: "신입", checked: false },
       { id: 2, label: "경력", checked: false },
@@ -203,29 +219,39 @@ const checkBox = reactive([
 const recruitProcessList = reactive([]);
 const fileData = ref("");
 if(Object.keys(params).length>0){
-  const searchList = async () => {
-    const result = await axios.post(
-    "/api/manage-hire/readPostDetailBody.do",
-    params,
-    );
-    if(result.data){
-    postDetail.value = result.data.postDetail;
-    }
-    expRequired.value=postDetail.value.expRequired;
+  const { data: detail , refetch, isSuccess } = useBizPostDetailQuery(params);
+  // const searchList = async () => {
+  //   const result = await axios.post(
+  //   "/api/manage-hire/readPostDetailBody.do",
+  //   params,
+  //   );
+  //   if(result.data){
+  //     postDetail.value = result.data.postDetail;
+  //   }
+  //   expRequired.value=postDetail.value.expRequired;
+  //   expYears.value=postDetail.value.expYears;
+  //   hirProcess.value=postDetail.value.hirProcess;
+  //   return result.data;
+  // };
+
+  // const {
+  // data,
+  // isLoading,
+  // isError,
+  // } = useQuery({
+  // queryKey: ["bizPostDetail"],
+  // queryFn: searchList,
+  // });
+  watchEffect(() => {
+  if (isSuccess.value && detail.value) {
+    postDetail.value = detail.value.postDetail;    
+  }
+  expRequired.value=postDetail.value.expRequired;
     expYears.value=postDetail.value.expYears;
     hirProcess.value=postDetail.value.hirProcess;
-    return result.data;
-  };
-
-  const {
-  data,
-  isLoading,
-  isError,
-  } = useQuery({
-  queryKey: ["bizPostDetail"],
-  queryFn: searchList,
-  });
+});
 }
+
 
 
 //체크박스 상태 변경
@@ -263,9 +289,11 @@ const handleClick = () => {
 
 //채용과정 초기화 버튼
 const handleClickRefresh = () => {
-  recruitProcessList.splice(0, checkBox.length);
+  recruitProcessList.length = 0;
   postDetail.value.recruitProcess=""; // recruitProcess 상태를 초기화
+  postDetail.value.hirProcess="";
 };
+
 const handlerInsertBtn = () => {
   const reqiredFields = {
       title: "채용제목을", 
@@ -297,7 +325,12 @@ const handlerInsertBtn = () => {
         alert("모집인원은 숫자만 입력됩니다.");
         return;
       }
-    }
+  }
+
+  if (new Date(postDetail.value.endDate) < new Date(postDetail.value.startDate)) {
+    alert("종료일자는 시작일자보다 나중이어야 합니다.");
+    return;
+  }
 
   for (const input in postDetail.value) {
     if (reqiredFields[input.name] && !input) {
@@ -341,7 +374,9 @@ const { mutate:handlerInsert} = useBizPostDetailInsertMutation(postDetail,fileDa
 //   });  
 // }
 
-
+const navigatePost = () => {
+  router.go(-1); // 뒤로가기  
+};
 
 const handlerFile = (e) => {
   const fileinfo = e.target.files;
