@@ -1,6 +1,7 @@
 <template>
   <ApplicantModal v-if="modalStateApplicant.modalState" @postSuccess="() => refetch()" :loginId="loginId" />
-  <div class="applicantList">
+  <div v-if="isLoading">로딩중 입니다</div>
+  <div v-if="isSuccess" class="applicantList">
     <table>
       <colgroup>
         <col width="15%" />
