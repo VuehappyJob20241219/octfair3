@@ -67,11 +67,11 @@
                             <tbody>
                                 <tr>
                                     <th>새 비밀번호</th>
-                                    <td><input v-model="setPw.newPasswd" type="text" /></td>
+                                    <td><input v-model="setPw.newPasswd" type="password" /></td>
                                 </tr>
                                 <tr>
                                     <th>새 비밀번호 확인</th>
-                                    <td><input v-model="setPw.newPasswdConfirm" type="text" /></td>
+                                    <td><input v-model="setPw.newPasswdConfirm" type="password" /></td>
                                 </tr>
                             </tbody>
                         </table><br>
@@ -193,13 +193,13 @@ const handlerModal = () => {
 
 
 
-input[type="text"] {
+input[type="text"],
+input[type="password"] {
     padding: 8px;
     margin-top: 5px;
     margin-bottom: 5px;
     border-radius: 4px;
     border: 1px solid #ccc;
-    // font-size: 13px;
     width: 200px;
 }
 
