@@ -35,6 +35,7 @@
                   <p>{{ resume.resumeTitle }}</p>
                   <p>{{ resume.userEmail }}</p>
                   <p>{{ resume.userPhone }}</p>
+                  <button @click="handlerModify(resume.resumeIdx)">수정</button>
                 </div>
                 <input
                   type="radio"
@@ -66,6 +67,10 @@ import "bootstrap-vue-3";
 import { ref } from "vue";
 import { Resume } from "../../../../api/axiosApi/resumeApi";
 import { useUserInfo } from "../../../../stores/userInfo";
+import { useRouter } from "vue-router";
+import { useApplyUserResumeList } from '../../../hook/apply/useApplyUserResumeListQuery';
+import { useApplyInsertMutation } from "../../../hook/apply/useApplyInsertMutation";
+
 
 const modalState = useModalStore();
 const props = defineProps({
@@ -80,18 +85,26 @@ const userResumes = ref(null);
 const userInfo = useUserInfo();
 const resumeIdx = ref(0);
 const resumeMianInfoArray = ref();
+const router = useRouter();
 
-const resumeList = async () => {
-  const param = {
-    loginId: userInfo.user.loginId,
-  };
-  const result = await axios.post("/api/jobs/applyUserResumeDetailBody.do", param);
-  if (result.data) {
-    userResumes.value = result.data.userResumeList;
-    mainResumeDetail();
-  }
-  return result.data;
-};
+// const resumeList = async () => {
+//   const param = {
+//     loginId: userInfo.user.loginId,
+//   };
+//   const result = await axios.post("/api/jobs/applyUserResumeDetailBody.do", param);
+//   if (result.data) {
+//     userResumes.value = result.data.userResumeList;
+//     mainResumeDetail();
+//   }
+//   return result.data;
+// };
+
+// const { data, isLoading, refetch, isSuccess, isError } = useQuery({
+//   queryKey: ["ResumeList"],
+//   queryFn: resumeList,
+// });
+
+const { data: applyResumeList , isLoading, refetch, isSuccess, isError } = useApplyUserResumeList(userInfo.user.loginId);
 
 const mainResumeDetail = async () => {
   const param = {
@@ -104,38 +117,47 @@ const mainResumeDetail = async () => {
   });
 };
 
-const { data, isLoading, refetch, isSuccess, isError } = useQuery({
-  queryKey: ["ResumeList"],
-  queryFn: resumeList,
+watchEffect(() => {
+  if (isSuccess.value && applyResumeList.value) {
+    userResumes.value = applyResumeList.value.userResumeList;
+    mainResumeDetail();
+  }
 });
+
 
 const handlerApply = () => {
   if (!resumeIdx.value) {
     alert("이력서를 선택하세요.");
     return;
   }
+  
   saveApply();
 };
 
-const saveApply = async () => {
-  const postIdx = props.scrap ? props.scrap.postIdx : props.pIdx;
+const { mutate: saveApply } = useApplyInsertMutation({
+  postIdx: props.scrap ? props.scrap.postIdx : props.pIdx,
+  loginId: userInfo.user.loginId,
+},resumeIdx);
 
-  const request = {
-    postIdx: postIdx,
-    resIdx: resumeIdx.value,
-    loginId: userInfo.user.loginId,
-  };
 
-  console.log(request);
-  const response = await axios.post("/api/jobs/saveApplyBody.do", request);
+// const saveApply = async () => {
+//   const postIdx = props.scrap ? props.scrap.postIdx : props.pIdx;
 
-  if (response?.data.result === "success") {
-    alert("이력서가 지원 완료되었습니다.");
-    handlerModal();
-  } else if (response?.message === "이미 지원 완료된 공고입니다.") {
-    alert("이미 지원 완료된 공고입니다.");
-  }
-};
+//   const request = {
+//     postIdx: postIdx,
+//     resIdx: resumeIdx.value,
+//     loginId: userInfo.user.loginId,
+//   };
+
+//   const response = await axios.post("/api/jobs/saveApplyBody.do", request);
+
+//   if (response?.data.result === "success") {
+//     alert("이력서가 지원 완료되었습니다.");
+//     handlerModal();
+//   } else if (response?.data.result === "fail") {
+//     alert("이미 지원 완료된 공고입니다.");
+//   }
+// };
 
 const handlerModal = () => {
   modalState.setModalState();
@@ -143,6 +165,14 @@ const handlerModal = () => {
 
 const handlerRadioChange = (idx) => {
   resumeIdx.value = idx;
+};
+
+const handlerModify = (resumeidx) => {
+  handlerModal();
+  router.push({
+    name: "MyResumes",
+    query: { resumeNum: resumeidx },
+  });
 };
 
 onUnmounted(() => {
