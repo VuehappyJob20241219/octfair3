@@ -7,7 +7,7 @@ export const useFindMyIdMutation = (findId, myId) => {
     mutationFn: () => findMyIdApi(findId),
     onSettled: (data, error) => {
       if (data.result === "SUCCESS") {
-        findId.value = false;
+        findId.value.state = false;
         myId.value.id = data.id;
         myId.value.state = true;
       } else if (data) {

@@ -34,7 +34,7 @@
                     </ContextBox>
 
                     <!-- 비밀번호 찾기 1단계 -->
-                    <div v-show="findPw">
+                    <div v-show="findPw.state">
                         <table>
                             <colgroup>
                                 <col width="200px">
@@ -45,14 +45,14 @@
                             <tbody>
                                 <tr>
                                     <th>아이디를 입력하세요.</th>
-                                    <td><input id="regiId" type="text" /></td>
+                                    <td><input v-model="findPw.regiId" type="text" /></td>
                                 </tr>
                                 <tr>
                                     <th>이메일을 입력하세요.</th>
-                                    <td><input id="emailPwd" type="text" /></td>
+                                    <td><input v-model="findPw.emailPwd" type="text" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table><br>
                     </div>
 
                     <!-- 비밀번호 찾기 2단계 -->
@@ -74,12 +74,12 @@
                                     <td><input id="newPasswdConfirm" type="text" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table><br>
                     </div>
                 </div>
                 <div class="checkbutton">
                     <button v-show="findId.state" @click="findIdBtn">확인</button>
-                    <button v-show="findPw" @click="findPwBtn">확인</button>
+                    <button v-show="findPw.state" @click="findPwBtn">확인</button>
                     <button v-show="setPw.state" @click="handlerUpdateBtn">확인</button>
                     <button @click="handlerModal">취소</button>
                 </div>
@@ -102,16 +102,21 @@ const findId = ref({
     inputName: "",
     inputEmail: ""
 });
-const findPw = ref(false);
+const findPw = ref({
+    state: false,
+    regiId: "",
+    emailPwd: ""
+});
 
 const myId = ref({
     id: "",
     state: false
 });
-const myPw = ref({
-    pw: "",
-    state: false
-});
+
+// const myPw = ref({
+//     pw: "",
+//     state: false
+// });
 
 const setPw = ref({
     id: "",
@@ -120,11 +125,15 @@ const setPw = ref({
 
 const idBtn = () => {
     findId.value.state = !(findId.value.state);
-    findPw.value = false;
+    findId.value.inputName = "";
+    findId.value.inputEmail = "";
+    findPw.value.state = false;
+    myId.value.state = false;
 }
 const pwBtn = () => {
-    findPw.value = !(findPw.value);
+    findPw.value.state = !(findPw.value.state);
     findId.value.state = false;
+    myId.value.state = false;
 }
 
 const { mutate: findIdBtn } = useFindMyIdMutation(findId, myId);
