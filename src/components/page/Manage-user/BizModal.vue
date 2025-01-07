@@ -108,7 +108,7 @@ const openDaumPostcode = () => {
   //카카오API사용
   new daum.Postcode({
     oncomplete: (data) => {
-      bizDetailValue.value.bizAddr = data.zonecode;
+      bizDetailValue.value.bizAddr = data.roadAddress;
     },
   }).open();
 };
