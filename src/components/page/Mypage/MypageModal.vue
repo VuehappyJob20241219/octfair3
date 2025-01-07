@@ -14,15 +14,15 @@
                         <tbody>
                             <tr>
                                 <th>현재 비밀번호</th>
-                                <td><input v-model="inputPw.passwd" type="text" /></td>
+                                <td><input v-model="inputPw.passwd" type="password" /></td>
                             </tr>
                             <tr>
                                 <th>새 비밀번호</th>
-                                <td><input v-model="inputPw.newPasswd" type="text" /></td>
+                                <td><input v-model="inputPw.newPasswd" type="password" /></td>
                             </tr>
                             <tr>
                                 <th>새 비밀번호 확인</th>
-                                <td><input v-model="inputPw.newPasswdConfirm" type="text" /></td>
+                                <td><input v-model="inputPw.newPasswdConfirm" type="password" /></td>
                             </tr>
                         </tbody>
                     </table>
@@ -86,12 +86,22 @@ onUnmounted(() => {
     width: 500px;
 }
 
+input[type="text"],
+input[type="password"] {
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 200px;
+}
+
 label.title {
     font-size: 18px;
 }
 
 label.tip {
-    font-size: 10px;
+    font-size: 11px;
 }
 
 table {
