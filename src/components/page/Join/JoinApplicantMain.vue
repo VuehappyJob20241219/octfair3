@@ -24,11 +24,11 @@
                     </tr>
                     <tr>
                         <th>비밀번호<span style="color: red;">*</span></th>
-                        <td><input v-model="register.password" type="text" /></td>
+                        <td><input v-model="register.password" type="password" /></td>
                     </tr>
                     <tr>
                         <th>비밀번호 확인<span style="color: red;">*</span></th>
-                        <td><input v-model="register.password1" type="text" /></td>
+                        <td><input v-model="register.password1" type="password" /></td>
                     </tr>
                     <tr>
                         <th>이름<span style="color: red;">*</span></th>
@@ -44,15 +44,16 @@
                     </tr>
                     <tr>
                         <th>생년월일<span style="color: red;">*</span></th>
-                        <td><input v-model="register.birthday" type="date" /></td>
+                        <td><input v-model="register.birthday" type="date" :max="today" /></td>
                     </tr>
                     <tr>
                         <th>전화번호<span style="color: red;">*</span></th>
-                        <td><input v-model="register.phone" type="tel" /></td>
+                        <td><input v-model="register.phone" type="tel" placeholder="예시: 02-123-4567, 010-1234-5678" />
+                        </td>
                     </tr>
                     <tr>
                         <th>이메일<span style="color: red;">*</span></th>
-                        <td><input v-model="register.email" type="email" /></td>
+                        <td><input v-model="register.email" type="email" placeholder="예시: abc@naver.com" /></td>
                     </tr>
                     <tr>
                         <th>우편번호<span style="color: red;">*</span></th>
@@ -65,7 +66,7 @@
                     </tr>
                     <tr>
                         <th>상세주소</th>
-                        <td><input id:detailAddress type="text" /></td>
+                        <td><input v-model="register.detailAddress" type="text" /></td>
                     </tr>
                 </tbody>
             </table>
@@ -85,6 +86,12 @@ const register = ref({
     sex: ""
 });
 const checkId = ref(false);
+
+const today = computed(() => {
+    let now_utc = new Date();
+    let timeOff = new Date().getTimezoneOffset() * 60000;
+    return new Date(now_utc - timeOff).toISOString().split("T")[0];
+})
 
 const openDaumPostcode = () => { //카카오API사용
     new daum.Postcode({
@@ -120,7 +127,8 @@ label.title {
 input[type="text"],
 input[type="date"],
 input[type="email"],
-input[type="tel"] {
+input[type="tel"],
+input[type="password"] {
     padding: 8px;
     margin-top: 5px;
     margin-bottom: 5px;
