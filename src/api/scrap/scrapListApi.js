@@ -5,7 +5,7 @@ export const scrapListApi = async (injectedValue, cPage) => {
   const param = {
     ...injectedValue,
     currentPage: cPage.toString(), 
-    pageSize: "4",
+    pageSize: "5",
 
   };
 

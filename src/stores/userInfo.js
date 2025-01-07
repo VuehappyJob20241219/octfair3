@@ -1,6 +1,7 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { Login } from "../api/axiosApi/loginApi";
 
 export const useUserInfo = defineStore(
   "userInfo",
@@ -10,7 +11,7 @@ export const useUserInfo = defineStore(
 
     async function setUserData(loginInfo) {
       const param = new URLSearchParams(loginInfo);
-      const result = await axios.post("/api/loginProc.do", param);
+      const result = await axios.post(Login.login, param);
       user.value = result.data;
       return result.data.result;
     }
