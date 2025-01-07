@@ -16,7 +16,7 @@
                 <template v-if="historyList.historyCnt > 0">
                   <tr v-for="list in historyList.history" :key="list.appId">
                       <td>
-                        <p>지원완료</p>
+                        <p>지원완료 ✔</p>
                         <p>{{ list.applyDate }}</p>
                       </td>
                       <td>
@@ -107,7 +107,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin: 20px 0px 0px 0px;
-  font-size: 16px; /* 글자 크기 유지 */
+  font-size: 18px; /* 글자 크기 유지 */
   //border: 2px solid #666363; /* 테이블 전체 외곽 테두리 추가 */
 
 
@@ -122,10 +122,10 @@ table {
   }
 
   th {
-    background-color: #bebebe; /* 회색 배경 */
-    color: #333; /* 검정 글씨 */
-    font-weight: 600; /* 제목 부분 글씨 굵게 */
-    height: 70px; /* 제목 셀의 세로 높이 늘리기 */
+    background-color: #DCE1E6;
+    color: #000000;
+    height: 60px; /* 제목 부분 높이 지정 */
+    border-bottom: 2px solid rgba(0, 0, 0, 0.3);
   }
 
   td {
