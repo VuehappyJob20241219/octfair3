@@ -2,7 +2,6 @@
   <ContextBox>공고 상세 보기</ContextBox>
   <ApplyUserResumeModal
     v-if="modalState.modalState"
-    @postSuccess="refetch"
     @modalClose="() => ((postIdx = 0), (bizIdx = 0))"
     :pIdx="postIdx"
     :bIdx="bizIdx"
