@@ -85,7 +85,7 @@ import { useModalStore } from "../../../stores/modalState";
 import { useBizDetailQuery } from "../../hook/biz/useBizDetailQuery";
 import { useBizDetailUpdateMutation } from "../../hook/biz/useBizDetailUpdateMutation";
 
-const emit = defineEmits(["modalClose"]);
+const emit = defineEmits(["postSuccess"]);
 const props = defineProps(["bizIdx"]);
 
 const bizDetailValue = ref({});
@@ -113,7 +113,7 @@ const openDaumPostcode = () => {
   }).open();
 };
 
-const { mutate: handlerUpdateBtn } = useBizDetailUpdateMutation(bizDetailValue);
+const { mutate: handlerUpdateBtn } = useBizDetailUpdateMutation(bizDetailValue, emit);
 
 const handlerModal = () => {
   modalStateBiz.setModalState();
@@ -125,9 +125,6 @@ watchEffect(() => {
   }
 });
 
-onUnmounted(() => {
-  emit("modalClose");
-});
 </script>
 
 <style lang="scss" scoped>

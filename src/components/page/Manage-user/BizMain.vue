@@ -1,5 +1,5 @@
 <template>
-  <BizModal v-if="modalStateBiz.modalState" :bizIdx="bizIdx" @modalClose="() => refetch()" />
+  <BizModal v-if="modalStateBiz.modalState" :bizIdx="bizIdx" @postSuccess="() => refetch()" />
   <div v-if="isLoading">로딩중 입니다</div>
   <div v-if="isSuccess" class="divManage-bizList">
     <table>
