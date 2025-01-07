@@ -50,7 +50,8 @@
               </tr>
               <tr>
                 <th>연락처</th>
-                <td><input type="text" v-model="bizDetailValue.bizContact" /></td>
+                <td><input type="text" v-model="bizDetailValue.bizContact"
+                    placeholder="예시: 02-123-4567, 010-1234-5678" /></td>
               </tr>
               <tr>
                 <th>사업자주소</th>
