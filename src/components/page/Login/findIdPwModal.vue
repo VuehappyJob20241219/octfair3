@@ -88,13 +88,11 @@
     </teleport>
 </template>
 
-
 <script setup>
-import { useMutation } from "@tanstack/vue-query";
-import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
 import { useFindMyIdMutation } from "../../hook/login/useFindMyIdMutation";
 import { useFindMyInfoPwMutation } from "../../hook/login/useFindMyInfoPwMutation";
+import { useSetMyPwMutation } from "../../hook/login/useSetMyPwMutation";
 
 const modalState = useModalStore();
 
@@ -144,53 +142,7 @@ const { mutate: findIdBtn } = useFindMyIdMutation(findId, myId);
 
 const { mutate: findPwBtn } = useFindMyInfoPwMutation(findInfoPw, setPw);
 
-const updatePW = async () => {
-    let inputPw = setPw.value.newPasswd;
-    let inputPwOk = setPw.value.newPasswdConfirm;
-
-    const passwordRules = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
-
-    if (!inputPw) {
-        alert("비밀번호를 입력하세요.");
-        return false;
-    }
-
-    if (!passwordRules.test(inputPw)) {
-        alert("비밀 번호는 숫자,영문자,특수문자 조합으로 8~15자리를 사용해야 합니다.");
-        return false;
-    }
-
-    if (!inputPwOk) {
-        alert("비밀번호 확인란을 입력하세요.");
-        return false;
-    }
-
-    if (!(inputPw === inputPwOk)) {
-        alert("새 비밀번호와 확인용 비밀번호가 일치하지 않습니다. 다시 입력해주세요.")
-        return false;
-    }
-
-    const param = new URLSearchParams({
-        id: setPw.value.id,
-        pw: inputPw,
-    });
-
-    const result = await axios.post('/api/updateFindPw.do', param)
-    return result.data;
-}
-
-const { mutate: handlerUpdateBtn } = useMutation({
-    mutationFn: updatePW,
-    mutationKey: ["updatePW"],
-    onSettled: (data, error) => {
-        if (data.result === 'SUCCESS') {
-            alert("비밀번호를 변경하였습니다.")
-            handlerModal();
-        } else {
-            alert("비밀번호 변경에 실패하였습니다.")
-        }
-    },
-})
+const { mutate: handlerUpdateBtn } = useSetMyPwMutation(setPw);
 
 const handlerModal = () => {
     modalState.setModalState();
