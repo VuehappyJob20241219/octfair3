@@ -2,7 +2,7 @@
     <div class="search-box">
         <input v-model="searchKey.searchTitle"/>
         <input type="date" v-model="searchKey.searchStDate" />
-        <input type="date" v-model="searchKey.searchEdDate" />
+        <input type="date" v-model="searchKey.searchEdDate" :min="searchKey.searchStDate" />
         <button @click="handlerSearch">검색</button>
         <button @click="handlerDelete">삭제</button>
     </div>
