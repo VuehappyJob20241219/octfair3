@@ -27,11 +27,26 @@
               </tr>
               <tr>
                 <th>사원수</th>
-                <td><input type="text" v-model="bizDetailValue.bizEmpCount" /></td>
+                <td>
+                  <select v-model="bizDetailValue.bizEmpCount">
+                    <option value="10명 이하">10명 이하</option>
+                    <option value="50명 이하">50명 이하</option>
+                    <option value="100명 이하">100명 이하</option>
+                    <option value="1000명 이하">1000명 이하</option>
+                    <option value="1000명 이상">1000명 이상</option>
+                  </select>
+                </td>
               </tr>
               <tr>
                 <th>매출액</th>
-                <td><input type="text" v-model="bizDetailValue.bizRevenue" /></td>
+                <td>
+                  <select v-model="bizDetailValue.bizRevenue">
+                    <option value="10억 이하">10억 이하</option>
+                    <option value="100억 이하">100억 이하</option>
+                    <option value="1000억 이하">1000억 이하</option>
+                    <option value="1000억 이상">1000억 이상</option>
+                  </select>
+                </td>
               </tr>
               <tr>
                 <th>연락처</th>
@@ -39,7 +54,8 @@
               </tr>
               <tr>
                 <th>사업자주소</th>
-                <td><input type="text" v-model="bizDetailValue.bizAddr" /></td>
+                <td><input type="text" v-model="bizDetailValue.bizAddr" readonly /></td>
+                <td><button @click="openDaumPostcode">주소 찾기</button></td>
               </tr>
               <tr>
                 <th>홈페이지주소</th>
@@ -47,11 +63,11 @@
               </tr>
               <tr>
                 <th>설립일</th>
-                <td><input type="date" v-model="bizDetailValue.bizFoundDate" /></td>
+                <td><input type="date" v-model="bizDetailValue.bizFoundDate" :max="today" /></td>
               </tr>
               <tr>
-                <th>회사소개</th>
-                <td><input type="text" v-model="bizDetailValue.bizIntro" /></td>
+                <th style="height:170px">회사소개</th>
+                <td><textarea rows="6" v-model="bizDetailValue.bizIntro"></textarea></td>
               </tr>
             </tbody>
           </table>
@@ -74,6 +90,12 @@ const props = defineProps(["bizIdx"]);
 const bizDetailValue = ref({});
 const modalStateBiz = useModalStore();
 
+const today = computed(() => {
+  let now_utc = new Date();
+  let timeOff = new Date().getTimezoneOffset() * 60000;
+  return new Date(now_utc - timeOff).toISOString().split("T")[0];
+})
+
 const {
   data: bizDetail,
   isLoading,
@@ -81,6 +103,14 @@ const {
   isError,
 } = useBizDetailQuery(props);
 
+const openDaumPostcode = () => {
+  //카카오API사용
+  new daum.Postcode({
+    oncomplete: (data) => {
+      bizDetailValue.value.bizAddr = data.zonecode;
+    },
+  }).open();
+};
 
 const { mutate: handlerUpdateBtn } = useBizDetailUpdateMutation(bizDetailValue);
 
@@ -133,7 +163,7 @@ label.title {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
   position: relative;
   // max-width: 60%;
-  width: 500px;
+  width: 550px;
   max-height: 90%;
   /* 모달 높이를 화면에 맞게 제한 */
   overflow-y: auto;
@@ -149,8 +179,16 @@ input[type="tel"] {
   margin-bottom: 5px;
   border-radius: 4px;
   border: 1px solid #ccc;
-  // font-size: 13px;
-  width: 300px;
+  width: 250px;
+}
+
+textarea {
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 250px;
 }
 
 select {
@@ -207,7 +245,7 @@ table {
     background-color: #2676bf;
     color: #ddd;
     display: block;
-    height: 60px;
+    min-height: 60px;
     line-height: 60px;
     padding-left: 10px;
   }
