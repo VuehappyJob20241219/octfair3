@@ -1,12 +1,13 @@
 <template>
-  <BizModal v-if="modalStateBiz.modalState" :bizIdx="bizIdx" @modalClose="() => refetch()" />
-  <div class="divManage-bizList">
+  <BizModal v-if="modalStateBiz.modalState" :bizIdx="bizIdx" @postSuccess="() => refetch()" />
+  <div v-if="isLoading">로딩중 입니다</div>
+  <div v-if="isSuccess" class="divManage-bizList">
     <table>
       <colgroup>
         <col width="15%" />
         <col width="10%" />
-        <col width="10%" />
-        <col width="25%" />
+        <col width="15%" />
+        <col width="20%" />
         <col width="20%" />
         <col width="10%" />
       </colgroup>

@@ -24,11 +24,14 @@
                     </tr>
                     <tr>
                         <th>비밀번호<span style="color: red;">*</span></th>
-                        <td><input v-model="register.password" type="text" /></td>
+                        <td><input v-model="register.password" type="password" /></td>
+                        <td><span class="tooltip-link" data-tooltip="비밀 번호는 숫자, 영문자, 특수문자 조합으로 8~15자리를 사용해야 합니다.">
+                                <img src="@/assets/info.png" alt="info-squared" />
+                            </span></td>
                     </tr>
                     <tr>
                         <th>비밀번호 확인<span style="color: red;">*</span></th>
-                        <td><input v-model="register.password1" type="text" /></td>
+                        <td><input v-model="register.password1" type="password" /></td>
                     </tr>
                     <tr>
                         <th>이름<span style="color: red;">*</span></th>
@@ -44,15 +47,16 @@
                     </tr>
                     <tr>
                         <th>생년월일<span style="color: red;">*</span></th>
-                        <td><input v-model="register.birthday" type="date" /></td>
+                        <td><input v-model="register.birthday" type="date" :max="today" /></td>
                     </tr>
                     <tr>
                         <th>전화번호<span style="color: red;">*</span></th>
-                        <td><input v-model="register.phone" type="tel" /></td>
+                        <td><input v-model="register.phone" type="tel" placeholder="예시: 02-123-4567, 010-1234-5678" />
+                        </td>
                     </tr>
                     <tr>
                         <th>이메일<span style="color: red;">*</span></th>
-                        <td><input v-model="register.email" type="email" /></td>
+                        <td><input v-model="register.email" type="email" placeholder="예시: abc@naver.com" /></td>
                     </tr>
                     <tr>
                         <th>우편번호<span style="color: red;">*</span></th>
@@ -65,7 +69,7 @@
                     </tr>
                     <tr>
                         <th>상세주소</th>
-                        <td><input id:detailAddress type="text" /></td>
+                        <td><input v-model="register.detailAddress" type="text" /></td>
                     </tr>
                 </tbody>
             </table>
@@ -85,6 +89,12 @@ const register = ref({
     sex: ""
 });
 const checkId = ref(false);
+
+const today = computed(() => {
+    let now_utc = new Date();
+    let timeOff = new Date().getTimezoneOffset() * 60000;
+    return new Date(now_utc - timeOff).toISOString().split("T")[0];
+})
 
 const openDaumPostcode = () => { //카카오API사용
     new daum.Postcode({
@@ -120,14 +130,15 @@ label.title {
 input[type="text"],
 input[type="date"],
 input[type="email"],
-input[type="tel"] {
+input[type="tel"],
+input[type="password"] {
     padding: 8px;
     margin-top: 5px;
     margin-bottom: 5px;
     border-radius: 4px;
     border: 1px solid #ccc;
     // font-size: 13px;
-    width: 200px;
+    width: 250px;
 }
 
 select {
@@ -194,12 +205,46 @@ table {
         // padding: 8px;
         text-align: left;
         border-bottom: 1px solid #ddd;
-        width: 100px;
+        width: 120px;
         height: 60px;
     }
 
     tbody {
         width: 500px;
     }
+}
+
+/* span태그 위치 option */
+.tooltip-link {
+    position: absolute;
+    // left: 25%;
+}
+
+/* span태그 option */
+.tooltip-link {
+    position: relative;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* 툴팁 option */
+.tooltip-link[data-tooltip]:not([data-tooltip=""])::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 10px 7px;
+    border-radius: 10px;
+    max-width: 300px;
+    width: 260px;
+    left: 25%;
+    top: 120%;
+    opacity: 0;
+    transition: all 0.5s linear;
+}
+
+.tooltip-link:hover[data-tooltip]:not([data-tooltip=""])::before,
+.tooltip-link:hover[data-tooltip]:not([data-tooltip=""])::after {
+    opacity: 1;
 }
 </style>

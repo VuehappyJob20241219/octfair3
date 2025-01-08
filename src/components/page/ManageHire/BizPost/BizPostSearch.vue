@@ -13,6 +13,10 @@ const injectValue = inject('bizSearchValue');
 const searchKey = ref({});
 
 const handlerSearch = () => {
+  if (new Date(searchKey.value.searchEdDate) < new Date(searchKey.value.searchStDate)) {
+  alert("종료일자는 시작일자보다 나중이어야 합니다.");
+  return;
+  }
     injectValue.value = { ...searchKey.value };
 };
 </script>

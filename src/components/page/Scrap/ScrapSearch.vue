@@ -2,7 +2,7 @@
     <div class="search-box">
         <input v-model="searchKey.searchTitle"/>
         <input type="date" v-model="searchKey.searchStDate" />
-        <input type="date" v-model="searchKey.searchEdDate" />
+        <input type="date" v-model="searchKey.searchEdDate" :min="searchKey.searchStDate" />
         <button @click="handlerSearch">검색</button>
         <button @click="handlerDelete">삭제</button>
     </div>
@@ -19,8 +19,13 @@ const checkedList = inject("checkedList");
 const handlerSearch = () => {
     injectValue.value = { ...searchKey.value };
 }
+const { mutate: deleteScrap } = useScrapDeleteMutation({ scrapIndexes: checkedList.value });
+const handlerDelete = () => {
+  if (checkedList.value && checkedList.value.length > 0) {
+    deleteScrap({ scrapIndexes: checkedList.value });
+    }
+}
 
-const { mutate: handlerDelete } = useScrapDeleteMutation({ scrapIndexes: checkedList.value });
 
 
 </script>

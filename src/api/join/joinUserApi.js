@@ -37,6 +37,9 @@ const checkForm = (register) => {
   let inputEmail = register.value.email;
   let inputZipCode = register.value.zipCode;
 
+  const currentDate = new Date();
+  const Birthday = new Date(inputBirthday);
+
   const passwordRules =
     /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
   const emailRules =
@@ -75,6 +78,10 @@ const checkForm = (register) => {
   }
   if (!inputBirthday) {
     alert("생일을 입력해주세요.");
+    return false;
+  }
+  if (Birthday > currentDate) {
+    alert("생일을 미래 날짜로 선택할 수 없습니다.");
     return false;
   }
   if (!inputPhone) {
