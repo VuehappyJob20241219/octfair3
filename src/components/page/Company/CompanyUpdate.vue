@@ -80,8 +80,10 @@
       </tr>
       <tr>
         <th>기업로고</th>
-        <td colspan="3">
-          <input type="file" id="fileInput" @change="handlerFile" />
+        <td colspan="3" class="fileClass">
+          <input type="file" style="display: none" id="fileInput" @change="handlerFile" />
+          <label class="img-label" htmlFor="fileInput">파일 첨부하기</label>
+          <span>{{ fileName ? fileName : detailValue.bizLogo }}</span>
         </td>
       </tr>
     </tbody>
@@ -109,6 +111,7 @@ const imageUrl = ref();
 const fileData = ref("");
 const router = useRouter();
 const queryClient = useQueryClient();
+const fileName = ref();
 
 // 초기 화면 로딩
 const searchDetail = async () => {
@@ -244,10 +247,11 @@ const handlerFile = (e) => {
   const fileInfo = e.target.files;
   const fileInfoSplit = fileInfo[0].name.split(".");
   const fileExtension = fileInfoSplit[1].toLowerCase();
-  if (fileExtension === "jpg" || fileExtension === "gif" || fileExtension === "png") {
+  if (fileExtension === "jpg" || fileExtension === "gif" || fileExtension === "png" || fileExtension === "webp") {
     imageUrl.value = URL.createObjectURL(fileInfo[0]);
   }
   fileData.value = fileInfo[0];
+  fileName.value = fileInfo[0].name;
 };
 
 const getFileImage = (idx) => {
@@ -377,7 +381,9 @@ textarea {
   vertical-align: middle;
 }
 
-.button-box {
+div .button-box {
+  display: flex;
+  justify-content: center;
   text-align: center;
   margin-top: 10px;
 }
@@ -392,7 +398,7 @@ img {
 }
 
 .img-label {
-  margin-top: 10px;
+  margin-right: 5px;
   padding: 6px 25px;
   background-color: #ccc;
   border-radius: 4px;
@@ -420,5 +426,11 @@ img {
     width: 70%;
     margin-right: 10px;
   }
+}
+
+.fileClass {
+  padding-left: 10px;
+  text-align: inline-block;
+  text-align: left;
 }
 </style>
