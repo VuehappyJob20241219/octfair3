@@ -87,9 +87,8 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref} from "vue";
 import { useRoute } from "vue-router";
-import axios from "axios";
 import Pagination from "../../../common/Pagination.vue";
 import QnaDetail from "./QnaDetail.vue";
 import { useUserInfo } from "../../../../stores/userInfo";
@@ -102,7 +101,6 @@ import { useQnaListGetQuery } from "../../../hook/qna/useQnaListGetQuery";
 // 상태 값 설정
 const route = useRoute();
 const itemPerPage = ref(5);
-// const qnaList = ref();
 const cPage = ref(1);
 const qnaIdx = ref(0);
 const pass = ref("");
@@ -120,26 +118,8 @@ const activeButton = ref("A");
 const setActive = (type) => {
   injectedhRequestType.requestType = "all";
   activeButton.value = type; // 클릭된 버튼 활성화
-
-  // searchList(); // 상태 변경 시 API 호출
 };
 
-// 검색 API 호출
-// const searchList = () => {
-//   const param = {
-//     searchTitle: route.query.searchTitle || "",
-//     searchStDate: route.query.searchStDate || "",
-//     searchEdDate: route.query.searchEdDate || "",
-//     qna_type: activeButton.value, // 활성 버튼 값 포함
-//     currentPage: cPage.value.toString(),
-//     pageSize: itemPerPage.value.toString(),
-//     loginId: userInfo.user.loginId,
-//     requestType: injectedhRequestType.requestType || "all", // 프로바이더 값 사용
-//   };
-//   axios.post("/api/board/qnaListRe.do", param).then((res) => {
-//     qnaList.value = res.data;
-//   });
-// };
 
 const {
   data: qnaList,
@@ -194,15 +174,6 @@ watchEffect(() => {
   }
 });
 
-// 초기화
-// onMounted(() => {
-//   searchList();
-// });
-// watch(route, qnaLogState, searchList, injectedhRequestType.requestType, injectedSaveState.saveState);
-
-// watchEffect(() => {
-//   searchList();
-// });
 </script>
 
 <style lang="scss" scoped>

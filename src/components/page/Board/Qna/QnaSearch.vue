@@ -10,9 +10,9 @@
 </template>
 
 <script setup>
+import { useQueryClient } from "@tanstack/vue-query";
 import router from "@/router";
 import { useUserInfo } from "../../../../stores/userInfo";
-import { useModalStore } from "../../../../stores/modalState";
 
 const emits = defineEmits(["saveBtn"]);
 const searchTitle = ref("");
@@ -22,6 +22,7 @@ const userInfo = useUserInfo();
 const userType = userInfo.user.userType;
 const injectedhRequestType = inject("providedRequestType");
 const injectedSaveState = inject("providedSaveState");
+const queryClient = useQueryClient();
 
 const handlerSearch = () => {
   if (new Date(searchEndDate.value) < new Date(searchStartDate.value)) {
@@ -37,18 +38,17 @@ const handlerSearch = () => {
   router.push(queryString);
 };
 
-const handlerSearchKewordBtn = () => {
-  injectedSearchValue.value = { ...searchKey.value };
-};
 
 const handlerLogState = () => {
   injectedhRequestType.requestType = "my";
 };
 const handlerSaveBtn = () => {
+  queryClient.removeQueries({
+    queryKey: ["qnaDetail"],
+  });
   injectedSaveState.saveState = true;
 };
 
-// watchEffect(() => window.location.search && router.push()); // URL이 변경되면 리셋
 </script>
 
 <style lang="scss" scoped>

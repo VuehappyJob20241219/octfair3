@@ -10,13 +10,13 @@
             <!-- 제목 -->
             <tr>
               <th scope="row">제목<span class="font_red">*</span></th>
-              <td colSpan="3">
+              <td colSpan="3">                
                 <input
                   type="text"
                   class="inputTxt p100"
                   v-model="qnaDetail.title"
                   :readonly="!!qnaDetail?.ans_content || userInfo.user.userType === 'M'"
-                />
+                  />
               </td>
             </tr>
 
@@ -135,7 +135,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from "vue";
+import { onUnmounted } from "vue";
 import { useUserInfo } from "@/stores/userInfo";
 import axios from "axios";
 import { useQnaDetailDeleteMutation } from "../../../hook/qna/useQnaDetailDeleteMutation";
@@ -147,10 +147,9 @@ import { useQnaDetailGetQuery } from "../../../hook/qna/useQnaDetailGetQuery";
 const emits = defineEmits(["postSuccess", "close"]);
 const props = defineProps(["idx", "password"]);
 const userInfo = useUserInfo();
-// const qnaDetail = ref({});
+const qnaDetail = ref({});
 const imageUrl = ref("");
 const fileData = ref("");
-
 // 일반유저가 비번을 치고 갔을 때 props.password 값을 넣고
 // 등록하기를 눌럿을때는 바인딩을 위해 qnaDetail.value.password를 넣는다
 const passwordValue = computed({
@@ -166,7 +165,7 @@ const passwordValue = computed({
 
 
 const {
-  data: qnaDetail,
+  data: detail,
   isLoading,
   refetch,
   isSuccess,
@@ -174,7 +173,8 @@ const {
 } = useQnaDetailGetQuery(props,userInfo);
 
 watchEffect(() => {
-  if (isSuccess.value && qnaDetail.value) {
+  if (isSuccess.value && detail.value) {
+    qnaDetail.value=detail.value;
     if (
       qnaDetail.value.fileExt === "jpg" ||
       qnaDetail.value.fileExt === "gif" ||
@@ -185,7 +185,6 @@ watchEffect(() => {
     }
   }
 });
-
 
 const getFileImage = () => {
   let param = new URLSearchParams();
@@ -222,11 +221,8 @@ const passwordReset = () => {
   });
 };
 
-
 const {mutate:handlerSaveBtn} = useQnaDetailSaveMutation(qnaDetail,fileData,emits);
 const {mutate:handlerUpdateBtn} = useQnaDetailUpdateMutation(qnaDetail,fileData,emits,props);
-
-
 const { mutate: handlerDeleteBtn } =useQnaDetailDeleteMutation(props.idx,emits);
 const { mutate: handlerDownloadFile } =useQnaImageGetMutation(props.idx,qnaDetail);
 
