@@ -50,7 +50,7 @@
             <td colspan="1" v-if="att.fileName" class="file-link">
               <span @click="fileDownloadAtt({ attIdx: att.attIdx, fileName: att.fileName })">{{ att.fileName }}</span>
             </td>
-            <td colspan="1" v-else="">
+            <td colspan="1" v-else>
               <span>첨부된 파일이 없습니다.</span>
             </td>
           </tr>
