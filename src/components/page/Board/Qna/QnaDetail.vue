@@ -138,11 +138,16 @@
 import { onMounted, onUnmounted } from "vue";
 import { useUserInfo } from "@/stores/userInfo";
 import axios from "axios";
+import { useQnaDetailDeleteMutation } from "../../../hook/qna/useQnaDetailDeleteMutation";
+import { useQnaDetailSaveMutation } from "../../../hook/qna/useQnaDetailSaveMutation";
+import { useQnaDetailUpdateMutation } from "../../../hook/qna/useQnaDetailUpdateMutation";
+import { useQnaImageGetMutation } from "../../../hook/qna/useQnaImageGetMutation";
+import { useQnaDetailGetQuery } from "../../../hook/qna/useQnaDetailGetQuery";
 
 const emits = defineEmits(["postSuccess", "close"]);
 const props = defineProps(["idx", "password"]);
 const userInfo = useUserInfo();
-const qnaDetail = ref({});
+// const qnaDetail = ref({});
 const imageUrl = ref("");
 const fileData = ref("");
 
@@ -158,15 +163,18 @@ const passwordValue = computed({
     qnaDetail.value.password = value;
   },
 });
-const handlerGetModalDetail = () => {
-  const param = {
-    qnaSeq: props.idx,
-    password: props.password,
-    userType: userInfo.user.userType,
-  };
-  //password
-  axios.post("/api/board/qnaDetailFileRe.do", param).then((res) => {
-    qnaDetail.value = res.data.detail;
+
+
+const {
+  data: qnaDetail,
+  isLoading,
+  refetch,
+  isSuccess,
+  isError,
+} = useQnaDetailGetQuery(props,userInfo);
+
+watchEffect(() => {
+  if (isSuccess.value && qnaDetail.value) {
     if (
       qnaDetail.value.fileExt === "jpg" ||
       qnaDetail.value.fileExt === "gif" ||
@@ -175,8 +183,9 @@ const handlerGetModalDetail = () => {
     ) {
       getFileImage();
     }
-  });
-};
+  }
+});
+
 
 const getFileImage = () => {
   let param = new URLSearchParams();
@@ -190,7 +199,6 @@ const getFileImage = () => {
   axios(postAction).then((res) => {
     const url = window.URL.createObjectURL(new Blob([res.data]));
     imageUrl.value = url;
-    console.log(res);
   });
 };
 
@@ -214,62 +222,13 @@ const passwordReset = () => {
   });
 };
 
-const handlerSaveBtn = () => {
-  const textData = {
-    qnaTit: qnaDetail.value.title,
-    qnaCon: qnaDetail.value.content,
-    password: qnaDetail.value.password,
-    loginId: userInfo.user.loginId,
-    qna_type: userInfo.user.userType,
-  };
-  const formData = new FormData();
-  if (fileData.value) formData.append("file", fileData.value);
-  formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
-  axios.post("/api/board/qnaFileSaveRe.do", formData).then((res) => {
-    if (res.data.result.toUpperCase() === "SUCCESS") {
-      emits("postSuccess");
-      emits("close");
-      alert("등록 성공했습니다.");
-    } else {
-      alert("등록 실패했습니다.");
-    }
-  });
-};
 
-const handlerUpdateBtn = () => {
-  const textData = {
-    qnaTit: qnaDetail.value.title,
-    qnaCon: qnaDetail.value.content,
-    loginId: userInfo.user.loginId,
-    qnaSeq: qnaDetail.value.qnaIdx,
-    password: props.password,
-    ans_content: qnaDetail.value.ans_content,
-  };
+const {mutate:handlerSaveBtn} = useQnaDetailSaveMutation(qnaDetail,fileData,emits);
+const {mutate:handlerUpdateBtn} = useQnaDetailUpdateMutation(qnaDetail,fileData,emits,props);
 
-  const formData = new FormData();
-  if (fileData.value) formData.append("file", fileData.value);
-  formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
-  axios.post("/api/board/qnaFileUpdateRe.do", formData).then((res) => {
-    if (res.data.result.toUpperCase() === "SUCCESS") {
-      emits("postSuccess");
-      handlerModal();
-      alert("수정 성공했습니다.");
-    } else {
-      alert("수정 실패했습니다.");
-    }
-  });
-};
 
-const handlerDeleteBtn = () => {
-  axios.post("/api/board/qnaFileDeleteRe.do", { qnaSeq: props.idx }).then((res) => {
-    if (res.data.result == "success") {
-      emits("postSuccess");
-      handlerModal();
-    } else {
-      alert("삭제를 실패했습니다.");
-    }
-  });
-};
+const { mutate: handlerDeleteBtn } =useQnaDetailDeleteMutation(props.idx,emits);
+const { mutate: handlerDownloadFile } =useQnaImageGetMutation(props.idx,qnaDetail);
 
 const handlerSelectFile = (e) => {
   const fileInfo = e.target.files;
@@ -280,38 +239,6 @@ const handlerSelectFile = (e) => {
   fileData.value = fileInfo[0];
 };
 
-const handlerDownloadFile = () => {
-  let param = new URLSearchParams();
-  param.append("qnaSeq", props.idx);
-  const postAction = {
-    url: "/api/board/qnaDownload.do",
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-
-  axios(postAction).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", qnaDetail.value.fileName);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  });
-};
-
-onMounted(() => {
-  props.idx && handlerGetModalDetail();
-});
-watch(
-  () => props.idx,
-  (newIdx) => {
-    if (newIdx) {
-      handlerGetModalDetail();
-    }
-  }
-);
 onUnmounted(() => {
   emits("close");
   emits("postSuccess");

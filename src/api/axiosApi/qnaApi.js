@@ -5,4 +5,5 @@ export const Qna ={
   SaveQnaDetail: '/api/board/qnaFileSaveRe.do',
   UpdateQnaDetail: '/api/board/qnaFileUpdateRe.do',
   DeleteQnaDetail: '/api/board/qnaFileDeleteRe.do',
+  CheckQnaPassword: '/api/board/checkPassword.do',
 }

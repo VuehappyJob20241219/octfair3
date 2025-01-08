@@ -47,6 +47,14 @@ const handlerModal = () => {
   emits("close");
 };
 
+const {
+  data: qnaDetail,
+  isLoading,
+  refetch,
+  isSuccess,
+  isError,
+} = useQnaCheckPasswordQuery(props,pass);
+
 const handlerPassWord = () => {
   const param = {
     qnaSeq: props.idx, // 프로바이더 값 사용
