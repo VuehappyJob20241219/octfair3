@@ -1,8 +1,8 @@
 <template>
   <div class="search-box">        
       <input v-model="searchKey.searchTitle" />
-      <input type="date" v-model="searchKey.searchStDate" />
-      <input type="date" v-model="searchKey.searchEdDate" />
+      <input type="date" v-model="searchKey.searchStDate" @change="checkSearchDate"/>
+      <input type="date" v-model="searchKey.searchEdDate" @change="checkSearchDate"/>
       <button @click="handlerSearch">검색</button>
       <button @click="handlerInsert">신규등록</button>
   </div>
@@ -24,6 +24,13 @@ const searchKey = ref({});
 const handlerSearch = () =>{
   injectedValue.value={...searchKey.value};
 };
+
+const checkSearchDate = () =>{
+  if (new Date(searchKey.value.searchEdDate) < new Date(searchKey.value.searchStDate)) {
+  alert("종료일자는 시작일자보다 나중이어야 합니다.");
+  return;
+  }
+}
 
 // const handlerSearch = () => {
 //   const query = [];

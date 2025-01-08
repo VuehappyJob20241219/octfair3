@@ -1,7 +1,11 @@
 <template>   
   <div class="divFaqList">
-  <b-button :pressed.sync="myToggle==='personal'" :variant="myToggle === 'personal' ? 'primary' : 'secondary'" @click="personalFaq">일반회원</b-button>
-  <b-button :pressed.sync="myToggle==='company'" :variant="myToggle === 'company' ? 'primary' : 'secondary'" @click="companyFaq">기업회원</b-button> 
+  <b-button :pressed.sync="myToggle==='personal'" 
+            :variant="myToggle === 'personal' ? 'primary' : 'secondary'" 
+            @click="personalFaq">일반회원</b-button>
+  <b-button :pressed.sync="myToggle==='company'" 
+            :variant="myToggle === 'company' ? 'primary' : 'secondary'" 
+            @click="companyFaq">기업회원</b-button> 
     <table>
       <colgroup>
         <col width="10%" />
@@ -20,23 +24,21 @@
           <th v-if="userInfo.user.userType === 'M'" width="10%">관리</th>
         </tr>
       </thead>
-
       <tbody>
-        <template v-if="faqList">
+        <template v-if="isLoading">...로딩중</template>
+        <template v-if="isSuccess">
           <template v-if="faqList.faqCnt > 0">
             <template v-for="faq in faqList.faq" :key="faq.faq_idx">
               <tr>
-                <!-- 제목 -->
-                <td>{{ faq.displayIdx }}</td>
+                <td>{{ faq.faq_idx }}</td>
                 <td @click="toggleFaqAnswer(faq.faq_idx)">
                   {{ faq.title }}
                 </td>
                 <td>{{ faq.created_date.substr(0, 10) }}</td>
                 <td>{{ faq.author }}</td>
                 <td v-if="userInfo.user.userType === 'M'">
-                  <b-button pill @click="handlerModal(faq.faq_idx)"
-                    >관리</b-button
-                  >
+                  <b-button pill @click="handlerUpdate(faq.faq_idx)"
+                    >관리</b-button>
                 </td>
               </tr>
               <tr>                             
@@ -68,80 +70,53 @@
   </div>
 </template>
 <script setup>
-import axios from "axios";
-import { onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import { useModalStore } from "../../../../stores/modalState";
 import { useUserInfo } from "../../../../stores/userInfo";
 import Pagination from "../../../common/Pagination.vue";
 import FaqModal from "./FaqModal.vue";
+import { useFaqListSearchQuery } from "../../../hook/faq/useFaqListSearchQuery";
+import { inject,} from "vue";
 
-const route = useRoute();
-const faqList = ref();
+const injectedValue = inject("provideValue");
 const cPage = ref(1);
+const userInfo = useUserInfo();
+const isPersonalUser = userInfo.user.userType === "A" || userInfo.user.userType === "M";
+const myToggle = ref(isPersonalUser ? "personal" : "company");
+const faq_fype = ref(isPersonalUser ? "1" : "2");
+const router = useRouter();
+
 const faq_idx = ref(0);
 const faqModalState = useModalStore();
-const userInfo = useUserInfo();
 const faqAnswer = ref(null);
 
-const myToggle = ref(
-  userInfo.user.userType === "A" ? "personal" :
-  userInfo.user.userType === "M" ? "personal" : "company"
-);
 
-const faq_fype = ref(
-  userInfo.user.userType === "A" ? "1" :
-  userInfo.user.userType === "M" ? "1" : "2"
-);
+const { data: faqList, isSuccess, isLoading,  } = useFaqListSearchQuery(injectedValue, cPage, faq_fype);
 
-const searchList = async () => {
-  const param = new URLSearchParams({
-    searchTitle: route.query.searchTitle || "",
-    searchStDate: route.query.searchStDate || "",
-    searchEdDate: route.query.searchEdDate || "",
-    currentPage: cPage.value,
-    pageSize: 5,
-    faq_type: faq_fype.value,
-  });
-  const response = await axios.post("/api/board/faqListRe.do", param);
-  faqList.value = response.data;
-
-  if (faqList.value && faqList.value.faq) {
-    faqList.value.faq.forEach((faq, index) => {
-      faq.displayIdx = faqList.value.faq.length - index;
-    });    
-  }
-};
 
 const personalFaq = () => {
   faq_fype.value = "1";
   myToggle.value = 'personal'; // 개인회원 버튼 활성화  
-  searchList();
+        
 };
 
 const companyFaq = () => {
-  faq_fype.value = "2";
-  myToggle.value = 'company'; // 기업회원 버튼 활성화
-  searchList();
+  faq_fype.value = "2";  
+  myToggle.value = 'company'; // 기업회원 버튼 활성화  
 };
-
-
 
 const toggleFaqAnswer = (faq_idx) => {
   faqAnswer.value = faqAnswer.value === faq_idx ? null : faq_idx;
 };
 
-const handlerModal = (idx) => {
-  faqModalState.setModalState();
-  faq_idx.value = idx;
-};
+const handlerUpdate = (faq_idx) =>{
+  console.log(faq_idx);
+  router.push({
+    name: 'faqDetail',
+    params: { idx: faq_idx},
+  })
+}
 
-
-onMounted(() => {
-  searchList();
-});
-
-watch(route, searchList);
 </script>
 
 <style lang="scss" scoped>

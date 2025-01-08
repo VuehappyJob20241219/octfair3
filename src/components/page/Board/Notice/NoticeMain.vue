@@ -1,12 +1,12 @@
 <template>
   <div class="divNoticeList">
     현재 페이지: {{ cPage }}, 총 개수: {{ noticeList?.noticeCnt }}
-    <!-- <NoticeModal
+    <NoticeModal
       v-if="modalState.modalState"
       @postSuccess="searchList"
       @modalClose="() => (noticeIdx = 0)"
       :idx="noticeIdx"
-    /> -->
+    />
     <table>
       <colgroup>
         <col width="10%" />
@@ -24,7 +24,6 @@
         </tr>
       </thead>
       <tbody>
-        <template v-if="isLoading">...로딩중</template>
         <template v-if="isSuccess">
           <template v-if="noticeList.noticeCnt > 0">
             <tr v-for="notice in noticeList.notice" :key="notice.noticeIdx" >
@@ -40,7 +39,6 @@
             </tr>
           </template>
         </template>
-        <template v-if="isError">에러</template>
       </tbody>
     </table>
     <Pagination
@@ -62,19 +60,18 @@ import { inject, onMounted, watch } from "vue";
 import axios from "axios";
 
 
-// const route = useRoute();
+const route = useRoute();
 // const noticeList = ref();
 const cPage = ref(1);
-// const modalState = useModalStore();
-// const noticeIdx = ref(0);
+const modalState = useModalStore();
+const noticeIdx = ref(0);
 const router = useRouter();
 const injectedValue = inject('provideValue');
 
-const  { data: noticeList, isSuccess, isError, isLoading } 
+const  { data: noticeList, isSuccess } 
     = useNoticeListSearchQuery(
     injectedValue, cPage
 );
-
 // const searchList = () => {
 //   const param = new URLSearchParams({
 //     searchTitle: route.query.searchTitle || "",
@@ -90,7 +87,7 @@ const  { data: noticeList, isSuccess, isError, isLoading }
 
 const handlerModal = (param) => {
   router.push({
-    name: "noticeDetail",
+    name: 'noticeDetail',
     params: { idx: param },
   });
 };
@@ -100,7 +97,7 @@ const handlerModal = (param) => {
 //   noticeIdx.value = idx;
 // };
 
-// watch(route, searchList);
+// watch(route, noticeList);
 
 // onMounted(() => {
 //   searchList();

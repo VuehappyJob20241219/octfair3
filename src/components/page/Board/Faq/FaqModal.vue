@@ -25,11 +25,18 @@
 import { useModalStore } from '@/stores/modalState';
 import { useUserInfo } from '../../../../stores/userInfo';
 import axios from 'axios';
+import { useRoute, useRouter } from 'vue-router';
+import { useQueryClient } from '@tanstack/vue-query';
 
 const userInfo = useUserInfo();
 const modalState = useModalStore();
 const emit = defineEmits(["postSuccess", "modalClose"]);
 const props = defineProps(['idx']);
+const { params } = useRoute();
+const detailValue = ref({});
+const router = useRouter();
+const queryClient = useQueryClient();
+
 
 const faqDetail = ref({
   faq_type: null,

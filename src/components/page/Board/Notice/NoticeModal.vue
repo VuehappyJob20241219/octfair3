@@ -3,28 +3,31 @@
     <div class="backdrop">
       <div v-if="isLoading">기다려주세요</div>
       <div v-else class="container">
-        <label> 제목 :<input type="text" v-model="detailValue.title" /> </label>
+        <label> 제목 :<input type="text" v-model="noticeDetail.title" /> </label>
+        <!-- <label> 제목 :<input type="text" v-model="detailValue.title" /> </label> -->
         <label>
           내용 :
-          <input type="text" v-model="detailValue.content" />
+          <input type="text" v-model="noticeDetail.content" />
+          <!-- <input type="text" v-model="detailValue.content" /> -->
         </label>
         파일 :<input type="file" style="display: none" id="fileInput" @change="handlerFile" />
         <label class="img-label" htmlFor="fileInput"> 파일 첨부하기 </label>
         <div @click="fileDownload">
-          <div v-if="detailValue.imageUrl">
+          <div v-if="imageUrl">
             <label>미리보기</label>
-            <img :src="detailValue.imageUrl" />
+            <img :src="imageUrl" />
           </div>
           <div v-else>
             <label>파일명</label>
           </div>
         </div>
         <div class="button-box">
-          <button v-if="params.idx" @click="handlerDeleteBtn">삭제</button>
-          <button @click="params.idx ? handlerUpdateBtn() : handlerSaveBtn()">
-            {{ params.idx ? "수정" : "저장" }}
+          <button v-if="props.idx" @click="handlerDeleteBtn">삭제</button>
+          <button @click="props.idx ? handlerUpdateBtn() : handlerSaveBtn()">
+            {{ props.idx ? "수정" : "저장" }}
           </button>
-          <button @click="$router.go(-1)">나가기</button>
+          <!-- <button @click="$router.go(-1)">나가기</button> -->
+          <button @click="handlerModal">나가기</button>
         </div>
       </div>
     </div>
@@ -41,23 +44,23 @@ import { useNoticeDetailDeleteMutation } from "../../../hook/notice/useNoticeDet
 import { useNoticeDetailInsertMutation } from "../../../hook/notice/useNoticeDetailInsertMutation";
 import { onMounted, onUnmounted } from "vue";
 
-const { params } = useRoute();
-const detailValue = ref({});
+// const { params } = useRoute();
+// const detailValue = ref({});
 
-const { data: noticeDetail, isSuccess } = useNoticeDetailSearchQuery(params.idx);
+// const { data: noticeDetail, isSuccess } = useNoticeDetailSearchQuery(params.idx);
 
 
 const modalState = useModalStore();
-// const noticeDetail = ref({});
+const noticeDetail = ref({});
 const userInfo = useUserInfo();
 const emit = defineEmits(["postSuccess", "modalClose"]);
 const props = defineProps(["idx"]);
 const imageUrl = ref("");
 const fileData = ref("");
 
-// const handlerModal = () => {
-//   modalState.setModalState();
-// };
+const handlerModal = () => {
+  modalState.setModalState();
+};
 
 const handlerSaveBtn = () => {
   const textData = {
@@ -84,20 +87,20 @@ const handlerSaveBtn = () => {
 };
 
 
-// const searchDetail = () => {
-//   axios.post("/api/board/noticeDetailBody.do", { noticeSeq: props.idx }).then((res) => {
-//     noticeDetail.value = res.data.detail;
-//     if (
-//       noticeDetail.value.fileExt === "jpg" ||
-//       noticeDetail.value.fileExt === "gif" ||
-//       noticeDetail.value.fileExt === "png" ||
-//       noticeDetail.value.fileExt === "webp"
-//     ) {
-//       getFileImage();
-//     }
-//     console.log(noticeDetail.value);
-//   });
-// };
+const searchDetail = () => {
+  axios.post("/api/board/noticeDetailBody.do", { noticeSeq: props.idx }).then((res) => {
+    noticeDetail.value = res.data.detail;
+    if (
+      noticeDetail.value.fileExt === "jpg" ||
+      noticeDetail.value.fileExt === "gif" ||
+      noticeDetail.value.fileExt === "png" ||
+      noticeDetail.value.fileExt === "webp"
+    ) {
+      getFileImage();
+    }
+    console.log(noticeDetail.value);
+  });
+};
 
 const handlerUpdateBtn = () => {
   const textData = {
@@ -124,16 +127,16 @@ const handlerUpdateBtn = () => {
 
 // const { mutate: handlerUpdateBtn } = useNoticeDetailInsertMutation(detailValue, fileData, userInfo.user.loginId);
 
-// const handlerDeleteBtn = () => {
-//   axios.post("/api/board/noticeDeleteBody.do", { noticeSeq: props.idx }).then((res) => {
-//     if (res.data.result === "success") {
-//       modalState.setModalState();
-//       emit("postSuccess");
-//     }
-//   });
-// };
+const handlerDeleteBtn = () => {
+  axios.post("/api/board/noticeDeleteBody.do", { noticeSeq: props.idx }).then((res) => {
+    if (res.data.result === "success") {
+      modalState.setModalState();
+      emit("postSuccess");
+    }
+  });
+};
 
-const { mutate: handlerDeleteBtn } = useNoticeDetailDeleteMutation(params.idx);
+// const { mutate: handlerDeleteBtn } = useNoticeDetailDeleteMutation(params.idx);
 
 const handlerFile = (e) => {
   const fileInfo = e.target.files;
@@ -181,20 +184,20 @@ const fileDownload = () => {
   });
 };
 
-// onMounted(() => {
-//   props.idx && searchDetail();
-// });
-
-// onUnmounted(() => {
-//   emit("modalClose");
-// });
-
-watchEffect(() => {
-  if (isSuccess.value && noticeDetail.value) {
-    console.log('Notice Detail:', noticeDetail.value);
-    detailValue.value = {...toRaw(noticeDetail.value.detail)};
-  }
+onMounted(() => {
+  props.idx && searchDetail();
 });
+
+onUnmounted(() => {
+  emit("modalClose");
+});
+
+// watchEffect(() => {
+//   if (isSuccess.value && noticeDetail.value) {
+//     console.log('Notice Detail:', noticeDetail.value);
+//     detailValue.value = {...toRaw(noticeDetail.value.detail)};
+//   }
+// });
 
 
 </script>
