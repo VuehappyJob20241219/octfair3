@@ -152,7 +152,7 @@ import { useQnaDetailGetQuery } from "../../../hook/qna/useQnaDetailGetQuery";
 const emits = defineEmits(["postSuccess", "close"]);
 const props = defineProps(["idx", "password"]);
 const userInfo = useUserInfo();
-// const qnaDetail = ref({});
+const qnaDetail = ref({});
 const imageUrl = ref("");
 const fileData = ref("");
 // 일반유저가 비번을 치고 갔을 때 props.password 값을 넣고

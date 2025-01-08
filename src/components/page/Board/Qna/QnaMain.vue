@@ -75,7 +75,6 @@
       :password="pass"
       @close="closeModal"
       @postSuccess="() => refetch()"
-      @postSuccess="() => refetch()"
     />
     <QnaPassword
       v-else-if="qnaIdx > 0 && modal.modalState"
