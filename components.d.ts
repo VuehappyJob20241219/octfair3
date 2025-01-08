@@ -7,7 +7,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    2: typeof import('./src/components/page/Apply/ResumeMain/ResumeList copy 2.vue')['default']
     ApplicantMain: typeof import('./src/components/page/Manage-user/ApplicantMain.vue')['default']
     ApplicantModal: typeof import('./src/components/page/Manage-user/ApplicantModal.vue')['default']
     ApplicantSearch: typeof import('./src/components/page/Manage-user/ApplicantSearch.vue')['default']
