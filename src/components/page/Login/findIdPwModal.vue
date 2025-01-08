@@ -9,7 +9,7 @@
                     <button @click="pwBtn">비밀번호 찾기</button>
 
                     <!-- 아이디 찾기 -->
-                    <div v-show="findId">
+                    <div v-show="findId.state">
                         <table>
                             <colgroup>
                                 <col width="200px">
@@ -20,11 +20,11 @@
                             <tbody>
                                 <tr>
                                     <th>이름을 입력하세요.</th>
-                                    <td><input id="regiName" type="text" /></td>
+                                    <td><input v-model="findId.inputName" type="text" /></td>
                                 </tr>
                                 <tr>
                                     <th>이메일을 입력하세요.</th>
-                                    <td><input id="emailName" type="text" /></td>
+                                    <td><input v-model="findId.inputEmail" type="text" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -34,7 +34,7 @@
                     </ContextBox>
 
                     <!-- 비밀번호 찾기 1단계 -->
-                    <div v-show="findPw">
+                    <div v-show="findInfoPw.state">
                         <table>
                             <colgroup>
                                 <col width="200px">
@@ -45,14 +45,14 @@
                             <tbody>
                                 <tr>
                                     <th>아이디를 입력하세요.</th>
-                                    <td><input id="regiId" type="text" /></td>
+                                    <td><input v-model="findInfoPw.regiId" type="text" /></td>
                                 </tr>
                                 <tr>
                                     <th>이메일을 입력하세요.</th>
-                                    <td><input id="emailPwd" type="text" /></td>
+                                    <td><input v-model="findInfoPw.emailPwd" type="text" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table><br>
                     </div>
 
                     <!-- 비밀번호 찾기 2단계 -->
@@ -67,19 +67,19 @@
                             <tbody>
                                 <tr>
                                     <th>새 비밀번호</th>
-                                    <td><input id="newPasswd" type="text" /></td>
+                                    <td><input v-model="setPw.newPasswd" type="password" /></td>
                                 </tr>
                                 <tr>
                                     <th>새 비밀번호 확인</th>
-                                    <td><input id="newPasswdConfirm" type="text" /></td>
+                                    <td><input v-model="setPw.newPasswdConfirm" type="password" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table><br>
                     </div>
                 </div>
                 <div class="checkbutton">
-                    <button v-show="findId" @click="findIdBtn">확인</button>
-                    <button v-show="findPw" @click="findPwBtn">확인</button>
+                    <button v-show="findId.state" @click="findIdBtn">확인</button>
+                    <button v-show="findInfoPw.state" @click="findPwBtn">확인</button>
                     <button v-show="setPw.state" @click="handlerUpdateBtn">확인</button>
                     <button @click="handlerModal">취소</button>
                 </div>
@@ -88,161 +88,61 @@
     </teleport>
 </template>
 
-
 <script setup>
-import { useMutation } from "@tanstack/vue-query";
-import axios from "axios";
 import { useModalStore } from "../../../stores/modalState";
+import { useFindMyIdMutation } from "../../hook/login/useFindMyIdMutation";
+import { useFindMyInfoPwMutation } from "../../hook/login/useFindMyInfoPwMutation";
+import { useSetMyPwMutation } from "../../hook/login/useSetMyPwMutation";
 
 const modalState = useModalStore();
 
-const findId = ref(false);
-const findPw = ref(false);
-
+const findId = ref({
+    state: false,
+    inputName: "",
+    inputEmail: ""
+});
 const myId = ref({
     id: "",
     state: false
 });
-const myPw = ref({
-    pw: "",
-    state: false
-});
 
+const findInfoPw = ref({
+    state: false,
+    regiId: "",
+    emailPwd: ""
+});
 const setPw = ref({
+    state: false,
     id: "",
-    state: false
+    newPasswd: "",
+    newPasswdConfirm: ""
 });
 
 const idBtn = () => {
-    findId.value = !(findId.value);
-    findPw.value = false;
+    findId.value.state = !(findId.value.state);
+    findId.value.inputName = "";
+    findId.value.inputEmail = "";
+    findInfoPw.value.state = false;
+    myId.value.state = false;
+    setPw.value.state = false;
 }
 const pwBtn = () => {
-    findPw.value = !(findPw.value);
-    findId.value = false;
+    findInfoPw.value.state = !(findInfoPw.value.state);
+    findInfoPw.value.regiId = "";
+    findInfoPw.value.emailPwd = "";
+    findId.value.state = false;
+    myId.value.state = false;
+    setPw.value.state = false;
+    setPw.value.Id = "";
+    setPw.value.newPasswd = "";
+    setPw.value.newPasswdConfirm = "";
 }
 
-const findMyId = async () => {
-    let inputName = document.getElementById("regiName").value;
-    let inputEmail = document.getElementById("emailName").value;
+const { mutate: findIdBtn } = useFindMyIdMutation(findId, myId);
 
-    if (!inputName) {
-        alert("이름을 입력하세요.");
-        return false;
-    }
+const { mutate: findPwBtn } = useFindMyInfoPwMutation(findInfoPw, setPw);
 
-    if (!inputEmail) {
-        alert("이메일을 입력하세요.");
-        return false;
-    }
-
-    const param = new URLSearchParams({
-        name: inputName,
-        email: inputEmail
-    })
-
-    const result = await axios.post("/api/selectFindInfoId.do", param);
-    return result.data;
-}
-
-const { mutate: findIdBtn } = useMutation({
-    mutationFn: findMyId,
-    mutationKey: ["findMyId"],
-    onSettled: (data, error) => {
-        if (data.result === 'SUCCESS') {
-            findId.value = false;
-            myId.value.id = data.id;
-            myId.value.state = true;
-        } else if (data) {
-            alert("해당 정보로 찾으시는 ID가 존재하지 않습니다.");
-        }
-    },
-})
-
-const findMyPw = async () => {
-    let inputId = document.getElementById("regiId").value;
-    let inputEmail = document.getElementById("emailPwd").value;
-
-    if (!inputId) {
-        alert("아이디을 입력하세요.");
-        return false;
-    }
-
-    if (!inputEmail) {
-        alert("이메일을 입력하세요.");
-        return false;
-    }
-
-    const param = new URLSearchParams({
-        id: document.getElementById("regiId").value,
-        email: document.getElementById("emailPwd").value
-    })
-
-    const result = await axios.post("/api/selectFindInfoPw.do", param)
-    return result.data;
-}
-
-const { mutate: findPwBtn } = useMutation({
-    mutationFn: findMyPw,
-    mutationKey: ["findMyPw"],
-    onSettled: (data, error) => {
-        if (data.result === 'SUCCESS') {
-            setPw.value.id = document.getElementById("regiId").value;
-            findPw.value = false;
-            setPw.value.state = true;
-        } else if (data) {
-            alert("해당 정보로 찾으시는 PW가 존재하지 않습니다.");
-        }
-    },
-})
-
-const updatePW = async () => {
-    let inputPw = document.getElementById("newPasswd").value;
-    let inputPwOk = document.getElementById("newPasswdConfirm").value;
-
-    const passwordRules = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
-
-    if (!inputPw) {
-        alert("비밀번호를 입력하세요.");
-        return false;
-    }
-
-    if (!passwordRules.test(inputPw)) {
-        alert("비밀 번호는 숫자,영문자,특수문자 조합으로 8~15자리를 사용해야 합니다.");
-        return false;
-    }
-
-    if (!inputPwOk) {
-        alert("비밀번호 확인란을 입력하세요.");
-        return false;
-    }
-
-    if (!(inputPw === inputPwOk)) {
-        alert("새 비밀번호와 확인용 비밀번호가 일치하지 않습니다. 다시 입력해주세요.")
-        return false;
-    }
-
-    const param = new URLSearchParams({
-        id: setPw.value.id,
-        pw: document.getElementById("newPasswd").value,
-    });
-
-    const result = await axios.post('/api/updateFindPw.do', param)
-    return result.data;
-}
-
-const { mutate: handlerUpdateBtn } = useMutation({
-    mutationFn: updatePW,
-    mutationKey: ["updatePW"],
-    onSettled: (data, error) => {
-        if (data.result === 'SUCCESS') {
-            alert("비밀번호를 변경하였습니다.")
-            handlerModal();
-        } else {
-            alert("비밀번호 변경에 실패하였습니다.")
-        }
-    },
-})
+const { mutate: handlerUpdateBtn } = useSetMyPwMutation(setPw);
 
 const handlerModal = () => {
     modalState.setModalState();
@@ -293,13 +193,13 @@ const handlerModal = () => {
 
 
 
-input[type="text"] {
+input[type="text"],
+input[type="password"] {
     padding: 8px;
     margin-top: 5px;
     margin-bottom: 5px;
     border-radius: 4px;
     border: 1px solid #ccc;
-    // font-size: 13px;
     width: 200px;
 }
 

@@ -70,17 +70,16 @@
 
 <script setup>
 import axios from "axios";
-import { useRoute, useRouter } from "vue-router";
-import { useUserInfo } from "../../../stores/userInfo";
+import { useRoute } from "vue-router";
+import { Company } from "../../../api/axiosApi/companyApi";
+import { useQuery } from "@tanstack/vue-query";
 
-const userInfo = useUserInfo();
 const companyDetail = ref({});
 const imageUrl = ref("");
-const router = useRouter();
 const { params } = useRoute();
 
 const searchDetail = () => {
-  axios.post("/api/company/companyDetailPageRe.do/" + params.postIdx + "/" + params.bizIdx, params).then((res) => {
+  axios.post(Company.SearchCompanyDetail + params.postIdx + "/" + params.bizIdx, params).then((res) => {
     companyDetail.value = res.data.detail || {};
     if (
       companyDetail.value.fileExt === "jpg" ||
@@ -93,11 +92,30 @@ const searchDetail = () => {
   });
 };
 
+// const { data: companyDetail, isLodaing, isSuccess } = useCompanyDetailSearchQuery();
+
+const useCompanyDetailSearchQuery = () => {
+  return useQuery({
+    queryKey: ["companyDetailSearch"],
+    queryFn: () => companyDetail(),
+    staleTime: 1000 * 60,
+  });
+};
+
+const companyDetailSearchApi = async () => {
+  const param = URLSearchParams({
+    ...injectedValue,
+  });
+  const result = await axios.post(Company.SearchCompanyDetail + params.postIdx + "/" + params.bizIdx, param);
+
+  return result.data;
+};
+
 const getFileImage = (idx) => {
   let param = new URLSearchParams();
   param.append("bizIdx", idx);
   const postAction = {
-    url: "/api/company/companyImageDownload.do",
+    url: Company.DownloadLogo,
     method: "POST",
     data: param,
     responseType: "blob",
@@ -121,6 +139,7 @@ table {
   margin: 20px 0px 0px 0px;
   font-size: 13px;
   text-align: center;
+  vertical-align: middle;
 
   th {
     text-align: center;

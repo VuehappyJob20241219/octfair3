@@ -14,7 +14,7 @@
                         <tbody>
                             <tr>
                                 <th>현재 비밀번호</th>
-                                <td><input id="passwd" type="text" /></td>
+                                <td><input v-model="pw.password" type="password" /></td>
                             </tr>
                         </tbody>
                     </table>
@@ -28,41 +28,13 @@
 </template>
 
 <script setup>
-import { useMutation } from "@tanstack/vue-query";
-import axios from "axios";
-import { useRouter } from "vue-router";
 import { useModalStore } from "../../../stores/modalState";
-import { useUserInfo } from "../../../stores/userInfo";
+import { useMypageWithDrawMutation } from "../../hook/mypage/useMypageWithDrawMutation";
 
-const userInfo = useUserInfo();
 const modalState = useModalStore();
-const router = useRouter();
+const pw = ref({});
 
-const withDraw = async () => {
-    const param = new URLSearchParams({
-        password: document.getElementById("passwd").value,
-    });
-
-    const result = await axios.post('/api/mypage/deleteUser.do', param);
-
-    return result.data;
-}
-
-const { mutate: handlerBtn } = useMutation({
-    mutationFn: withDraw,
-    mutationKey: ["withDraw"],
-    onSettled: (data, error) => {
-        if (data.result === 'success') {
-            alert("탈퇴 되었습니다.\n지금까지 서비스를 이용해주셔서 감사합니다.");
-            userInfo.setAuthenticated();
-            handlerModal();
-            sessionStorage.setItem("userInfo", "");
-            router.push('/');
-        } else {
-            alert("비밀번호를 확인해주세요.");
-        }
-    },
-})
+const { mutate: handlerBtn } = useMypageWithDrawMutation(pw);
 
 const handlerModal = () => {
     modalState.setModalState();
@@ -96,13 +68,13 @@ const handlerModal = () => {
     width: 500px;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="password"] {
     padding: 8px;
     margin-top: 5px;
     margin-bottom: 5px;
     border-radius: 4px;
     border: 1px solid #ccc;
-    // font-size: 13px;
     width: 200px;
 }
 

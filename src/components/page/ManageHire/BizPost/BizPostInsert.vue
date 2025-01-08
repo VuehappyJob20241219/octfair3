@@ -16,7 +16,7 @@
       </tr>
       <tr v-if="params.postIdx">
         <th>(수정 전 경력)</th>
-        <td>{{postDetail?.expRequired}}{{" "}}{{postDetail?.expYears}}</td>
+        <td>{{expRequired}}{{" "}}{{expYears}}</td>
       </tr>
       <tr>
         <th>경력 여부<span className="font_red">*</span></th>
@@ -39,8 +39,17 @@
             v-model="postDetail.expYears"
             name="expYears"
             :disabled="!checkBox || !checkBox.find(checkbox => checkbox.id === 2 && checkbox.checked)">
-              <option v-for="year in years" :key={year} :value=year>
-                {{year}}
+              <option value="1년 이상">
+                1년 이상
+              </option>
+              <option value="2년 이상">
+                2년 이상
+              </option>
+              <option value="3년 이상">
+                3년 이상
+              </option>
+              <option value="4년 이상">
+                4년 이상
               </option>
           </select>
         </td>
@@ -99,7 +108,7 @@
       </tr>
       <tr v-if="params.postIdx">
         <th>(수정 전 채용절차)</th>
-        <td>{{postDetail?.hirProcess}}</td>
+        <td>{{hirProcess}}</td>
       </tr>
       <tr>
         <th>채용절차<span className="font_red">*</span></th>
@@ -177,7 +186,15 @@
       </table>
       <button @click="handlerInsertBtn">
           {{ params.postIdx ? "수정" : "등록" }}
-        </button>
+      </button>
+      <b-button
+                variant="secondary"
+                size="lg"
+                @click=navigatePost
+              >
+                뒤로가기
+              </b-button>
+
     </div>
 </template>
 
@@ -186,11 +203,14 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { useQuery } from "@tanstack/vue-query";
 import router from "../../../../router";
+import { useBizPostDetailInsertMutation } from '../../../hook/bizPost/useBizPostDetailInsertMutation';
+import { useBizPostDetailQuery } from '../../../hook/bizPost/useBizPostDetailQuery';
 
+const expRequired = ref(null);
+const expYears = ref(null);
+const hirProcess = ref(null);
 const { params } = useRoute();
 const postDetail = ref({});
-const years = ["1년 이상", "2년 이상", "3년 이상", "4년 이상"];
-postDetail.value.expYears= years[0];
 const checkBox = reactive([
       { id: 1, label: "신입", checked: false },
       { id: 2, label: "경력", checked: false },
@@ -199,26 +219,39 @@ const checkBox = reactive([
 const recruitProcessList = reactive([]);
 const fileData = ref("");
 if(Object.keys(params).length>0){
-  const searchList = async () => {
-    const result = await axios.post(
-    "/api/manage-hire/readPostDetailBody.do",
-    params,
-    );
-    if(result.data){
-    postDetail.value = result.data.postDetail;
-    }
-    return result.data;
-  };
+  const { data: detail , refetch, isSuccess } = useBizPostDetailQuery(params);
+  // const searchList = async () => {
+  //   const result = await axios.post(
+  //   "/api/manage-hire/readPostDetailBody.do",
+  //   params,
+  //   );
+  //   if(result.data){
+  //     postDetail.value = result.data.postDetail;
+  //   }
+  //   expRequired.value=postDetail.value.expRequired;
+  //   expYears.value=postDetail.value.expYears;
+  //   hirProcess.value=postDetail.value.hirProcess;
+  //   return result.data;
+  // };
 
-  const {
-  data,
-  isLoading,
-  isError,
-  } = useQuery({
-  queryKey: ["bizPostDetail"],
-  queryFn: searchList,
-  });
+  // const {
+  // data,
+  // isLoading,
+  // isError,
+  // } = useQuery({
+  // queryKey: ["bizPostDetail"],
+  // queryFn: searchList,
+  // });
+  watchEffect(() => {
+  if (isSuccess.value && detail.value) {
+    postDetail.value = detail.value.postDetail;    
+  }
+  expRequired.value=postDetail.value.expRequired;
+    expYears.value=postDetail.value.expYears;
+    hirProcess.value=postDetail.value.hirProcess;
+});
 }
+
 
 
 //체크박스 상태 변경
@@ -250,16 +283,17 @@ const handleClick = () => {
     recruitProcessList.push(trimmedProcess); //기존값 + 새로입력한값
     recruitProcessList.join(" - ");
     postDetail.value.hirProcess=recruitProcessList.join(" - ");
-    console.log(postDetail.value.hirProcess);
      //입력 필드 초기화
     postDetail.value.recruitProcess=""; // recruitProcess 상태를 초기화
 };
 
 //채용과정 초기화 버튼
 const handleClickRefresh = () => {
-  recruitProcessList.splice(0, checkBox.length);
+  recruitProcessList.length = 0;
   postDetail.value.recruitProcess=""; // recruitProcess 상태를 초기화
+  postDetail.value.hirProcess="";
 };
+
 const handlerInsertBtn = () => {
   const reqiredFields = {
       title: "채용제목을", 
@@ -275,81 +309,77 @@ const handlerInsertBtn = () => {
   };
 
   for (const [key, Value] of Object.entries(reqiredFields)) {
-  // console.log(`Key: ${key}, Value: ${value}`);
-  let numberRules = /[0-9]/;
-  if (!postDetail.value[key]) {
+    let numberRules = /[0-9]/;
+    if (!postDetail.value[key]) {
     // 해당 필드가 비어있을 때만 알림을 띄움
-    alert(`${Value} 입력해 주세요`);
-    return;  // 반복문 종료
-  }
+      alert(`${Value} 입력해 주세요`);
+      return;  // 반복문 종료
+      }
 
-  if (!numberRules.test(postDetail.value.salary)) {
+    if (!numberRules.test(postDetail.value.salary)) {
         alert("급여는 숫자만 입력됩니다.");
         return;
-  }
+      }
 
-  if (!numberRules.test(postDetail.value.openings)) {
+    if (!numberRules.test(postDetail.value.openings)) {
         alert("모집인원은 숫자만 입력됩니다.");
         return;
+      }
   }
-}
+
+  if (new Date(postDetail.value.endDate) < new Date(postDetail.value.startDate)) {
+    alert("종료일자는 시작일자보다 나중이어야 합니다.");
+    return;
+  }
 
   for (const input in postDetail.value) {
-    console.log(`${input}`);
     if (reqiredFields[input.name] && !input) {
       // 해당 필드가 비어있을 때만 알림을 띄움
       alert(`"${reqiredFields[input.name]}" 입력해 주세요`);
       return;  // 알림을 띄운 후, 즉시 종료하여 다른 필드는 검사하지 않음
     }
   }
-
+  if (!postDetail.value.expRequired.includes('경력')){
+    postDetail.value.expYears = "";
+  }
   handlerInsert();
 }
 
-const handlerInsert = () => {
-  const textData = {
-    ...postDetail.value,
-  };
-  const formData = new FormData();
-  if (fileData.value) {
-    formData.append("file", fileData.value);
-  }
-  formData.append(
-    "text",
-    new Blob([JSON.stringify(textData)], {
-      type: "application/json",
-    }),
-  );
-  console.log(formData);
-  axios.post(`/api/manage-hire/managehireSaveFileForm.do`, formData).then((res) => {
-    if (res.data.result === "success") {
-      console.log("success");
-      
-      if(params.postIdx){
-        alert("성공적으로 수정되었습니다.");
-        router.push({ name: "bizPostDetail", params: { postIdx: params.postIdx } });
-      }else{
-        alert("성공적으로 등록되었습니다.");
-        router.push("post.do");
-      }
-    }
-  });
-  
-  
-}
+const { mutate:handlerInsert} = useBizPostDetailInsertMutation(postDetail,fileData,params);
+
+// const handlerInsert = () => {
+//   const textData = {
+//     ...postDetail.value,
+//   };
+//   const formData = new FormData();
+//   if (fileData.value) {
+//     formData.append("file", fileData.value);
+//   }
+//   formData.append(
+//     "text",
+//     new Blob([JSON.stringify(textData)], {
+//       type: "application/json",
+//     }),
+//   );
+//   axios.post(`/api/manage-hire/managehireSaveFileForm.do`, formData).then((res) => {
+//     if (res.data.result === "success") {      
+//       if(params.postIdx){
+//         alert("성공적으로 수정되었습니다.");
+//         router.push({ name: "bizPostDetail", params: { postIdx: params.postIdx } });
+//       }else{
+//         alert("성공적으로 등록되었습니다.");
+//         router.push("post.do");
+//       }
+//     }
+//   });  
+// }
+
+const navigatePost = () => {
+  router.go(-1); // 뒤로가기  
+};
 
 const handlerFile = (e) => {
   const fileinfo = e.target.files;
-  const fileinfoSplit = fileinfo[0].name.split(".");
-  // const fileExtension = fileinfoSplit[1].toLowerCase();
-  // if (
-  //   fileExtension === "jpg" ||
-  //   fileExtension === "gif" ||
-  //   fileExtension === "png" ||
-  //   fileExtension === "webp"
-  // ) {
-  //   imageUrl.value = URL.createObjectURL(fileinfo[0]);
-  // }
   fileData.value = fileinfo[0];
 };
 

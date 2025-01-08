@@ -36,19 +36,20 @@
               </tr>
               <tr>
                 <th>생년월일<span style="color: red">*</span></th>
-                <td><input type="date" v-model="applicantDetailValue.birthday" /></td>
+                <td><input type="date" v-model="applicantDetailValue.birthday" :max="today" /></td>
               </tr>
               <tr>
                 <th>전화번호<span style="color: red">*</span></th>
-                <td><input type="text" v-model="applicantDetailValue.phone" /></td>
+                <td><input type="text" v-model="applicantDetailValue.phone"
+                    placeholder="예시: 02-123-4567, 010-1234-5678" /></td>
               </tr>
               <tr>
                 <th>이메일<span style="color: red">*</span></th>
-                <td><input type="email" v-model="applicantDetailValue.email" /></td>
+                <td><input type="email" v-model="applicantDetailValue.email" placeholder="예시: abc@naver.com" /></td>
               </tr>
               <tr>
                 <th>가입일자<span style="color: red">*</span></th>
-                <td><input type="date" v-model="applicantDetailValue.regdate" /></td>
+                <td><input type="date" v-model="applicantDetailValue.regdate" :max="today" /></td>
               </tr>
               <tr>
                 <th>활성화</th>
@@ -62,7 +63,7 @@
               <tr>
                 <th>우편변호<span style="color: red">*</span></th>
                 <td><input type="text" v-model="applicantDetailValue.zipCode" readonly /></td>
-                <button @click="openDaumPostcode">우편번호 찾기</button>
+                <td><button @click="openDaumPostcode">우편번호 찾기</button></td>
               </tr>
               <tr>
                 <th>주소</th>
@@ -90,10 +91,16 @@ import { useApplicantDetailUpdateMutation } from "../../hook/applicant/useApplic
 import { useApplicantResetPwMutation } from "../../hook/applicant/useApplicantResetPwMutation";
 
 const props = defineProps(["loginId"]);
-const emit = defineEmits(["modalClose"]);
+const emit = defineEmits(["postSuccess"]);
 
 const applicantDetailValue = ref({});
 const modalStateApplicant = useModalStore();
+
+const today = computed(() => {
+  let now_utc = new Date();
+  let timeOff = new Date().getTimezoneOffset() * 60000;
+  return new Date(now_utc - timeOff).toISOString().split("T")[0];
+})
 
 const {
   data: applicantDetail,
@@ -113,7 +120,7 @@ const openDaumPostcode = () => {
 };
 
 const { mutate: handlerUpdateBtn }
-  = useApplicantDetailUpdateMutation(applicantDetailValue);
+  = useApplicantDetailUpdateMutation(applicantDetailValue, emit);
 
 const { mutate: resetPwBtn } = useApplicantResetPwMutation(applicantDetailValue);
 
@@ -127,9 +134,6 @@ watchEffect(() => {
   }
 });
 
-onUnmounted(() => {
-  emit("modalClose");
-});
 </script>
 
 <style lang="scss" scoped>

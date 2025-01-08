@@ -33,15 +33,15 @@
         </tr>
         <tr>
           <th>생년월일<span style="color: red">*</span></th>
-          <td><input type="date" v-model="userDetailValue.birthday" /></td>
+          <td><input type="date" v-model="userDetailValue.birthday" :max="today" /></td>
         </tr>
         <tr>
           <th>전화번호<span style="color: red">*</span></th>
-          <td><input type="text" v-model="userDetailValue.phone" /></td>
+          <td><input type="tel" v-model="userDetailValue.phone" placeholder="예시: 02-123-4567, 010-1234-5678" /></td>
         </tr>
         <tr>
           <th>이메일<span style="color: red">*</span></th>
-          <td><input type="email" v-model="userDetailValue.email" /></td>
+          <td><input type="email" v-model="userDetailValue.email" placeholder="예시: abc@naver.com" /></td>
         </tr>
         <tr v-if="userDetailValue.userType == 'B'">
           <th>기업정보</th>
@@ -52,7 +52,7 @@
         <tr>
           <th>우편변호<span style="color: red">*</span></th>
           <td><input type="text" v-model="userDetailValue.zipCode" readonly /></td>
-          <button @click="openDaumPostcode">우편번호 찾기</button>
+          <td><button @click="openDaumPostcode">우편번호 찾기</button></td>
         </tr>
         <tr>
           <th>주소</th>
@@ -66,35 +66,28 @@
     </table>
   </div>
   <button @click="handlerUpdateBtn">수정</button>
-  <button>취소</button>
 </template>
 
 <script setup>
-import { useMutation, useQuery } from "@tanstack/vue-query";
-import axios from "axios";
+import { toRaw } from "vue";
 import { useRouter } from "vue-router";
 import { useModalStore } from "../../../stores/modalState";
 import { useUserInfo } from "../../../stores/userInfo";
+import { useMypageDetailQuery } from "../../hook/mypage/useMypageDetailQuery";
+import { useMypageDetailUpdateMutation } from "../../hook/mypage/useMypageDetailUpdateMutation";
 
 const props = defineProps(["loginId"]);
-
 const router = useRouter();
 const userInfo = useUserInfo();
-// const userDetail = ref({});
 const userDetailValue = ref({});
 const chkRegBiz = ref({});
 const modalStatePw = useModalStore();
 
-
-const searchDetail = async () => {
-  const param = new URLSearchParams({
-    loginId: userInfo.user.loginId,
-  });
-
-  const result = await axios.post("/api/mypage/userDetail.do", param)
-
-  return result.data;
-}
+const today = computed(() => {
+  let now_utc = new Date();
+  let timeOff = new Date().getTimezoneOffset() * 60000;
+  return new Date(now_utc - timeOff).toISOString().split("T")[0];
+})
 
 const {
   data: userDetail,
@@ -102,11 +95,7 @@ const {
   isSuccess,
   isError,
   refetch
-} = useQuery({
-  queryKey: ["userDetail"],
-  queryFn: searchDetail,
-  enabled: !!userInfo.user.loginId
-});
+} = useMypageDetailQuery(userInfo);
 
 const openDaumPostcode = () => {
   //카카오API사용
@@ -124,74 +113,7 @@ const handlerUpdateBiz = () => {
   });
 };
 
-const updateUserInfoDetail = async () => {
-  if (!checkForm()) {
-    return;
-  }
-
-  const param = new URLSearchParams({
-    ...userDetailValue.value,
-  });
-
-  return await axios.post("/api/mypage/updateUserInfo.do", param);
-}
-
-const { mutate: handlerUpdateBtn } = useMutation({
-  mutationFn: updateUserInfoDetail,
-  mutationKey: ["userInfoUpdate"],
-  onSettled: (data, error) => {
-    console.log(data.data);
-    if (data.data.result === "success") {
-      alert("정보를 수정하였습니다.");
-    }
-  }
-})
-
-const checkForm = () => {
-  let inputName = userDetailValue.value.name;
-  let inputBirthday = userDetailValue.value.birthday;
-  let inputPhone = userDetailValue.value.phone;
-  let inputEmail = userDetailValue.value.email;
-  let inputZipCode = userDetailValue.value.zipCode;
-
-  const emailRules = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-  const phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
-  const ZipCodeRules = /[0-9\-]{5}/;
-
-  if (!inputName) {
-    alert("이름을 입력하세요.");
-    return false;
-  }
-  if (!inputBirthday) {
-    alert("생일을 입력해주세요.");
-    return false;
-  }
-  if (!inputPhone) {
-    alert("전화번호를 입력해주세요.");
-    return false;
-  }
-  if (!phoneRules.test(inputPhone)) {
-    alert("전화번호 형식을 확인해주세요.");
-    return false;
-  }
-  if (!inputEmail) {
-    alert("이메일을 입력해주세요.");
-    return false;
-  }
-  if (!emailRules.test(inputEmail)) {
-    alert("이메일 형식을 확인해주세요.");
-    return false;
-  }
-  if (!inputZipCode) {
-    alert("우편번호(주소)를 입력해주세요.");
-    return false;
-  }
-  if (!ZipCodeRules.test(inputZipCode)) {
-    alert("우편번호를 확인해주세요.");
-    return false;
-  }
-  return true;
-};
+const { mutate: handlerUpdateBtn } = useMypageDetailUpdateMutation(userDetailValue, chkRegBiz);
 
 const handlerPwModal = () => {
   modalStatePw.setModalState();
@@ -200,9 +122,9 @@ const handlerPwModal = () => {
 watchEffect(() => {
   if (isSuccess.value) {
     userDetailValue.value = toRaw(userDetail.value.detail);
+    chkRegBiz.value = toRaw(userDetail.value.chkRegBiz);
   }
 });
-
 </script>
 
 <style lang="scss" scoped>

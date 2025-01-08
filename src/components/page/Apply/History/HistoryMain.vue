@@ -20,8 +20,8 @@
                         <p>{{ list.applyDate }}</p>
                       </td>
                       <td>
-                        <p>{{ list.bizName }}</p>
-                        <p class="post-title">{{ list.postTitle }}</p>
+                        <p class="hover-text" @click="handleBiz(list.postingId, list.bizIdx)">{{ list.bizName }}</p>
+                        <p class="post-title" @click="handlerPost(list.postingId)">{{ list.postTitle }}</p>
                         <p class="hover-text" @click="handlerResume(list.resIdx)">지원이력서</p>
                       </td>
                       <td>
@@ -53,6 +53,7 @@
       v-if ="modalStore.modalState"
       :idx = "selectedResumeIdx"
       />
+
 </div>
 </template>
 
@@ -62,19 +63,36 @@ import { inject } from 'vue';
 import { useHistoryListQuery } from '../../../hook/history/useHistoryListQuery';
 import ResumePreview from '../ResumeDetail/ResumePreview.vue'; //이력서 모달
 import { useModalStore } from "@/stores/modalState"; //피냐 등록된 모달 상태관리
-import { useHistoryCancleMutation } from '../../../hook/history/useHistoryCancleMutation'; //지원취소소
+import { useHistoryCancleMutation } from '../../../hook/history/useHistoryCancleMutation'; //지원취소
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const cPage = inject("cPage"); // Provide에서 받아온 현재 페이지 상태
 const injectedValue = inject("provideValue");
-const { data: historyList, isLoading, refetch, isSuccess, isError }
-  = useHistoryListQuery(injectedValue, cPage);
 
+//지원내역 리스트
+const { data: historyList, isLoading, refetch, isSuccess, isError }
+  = useHistoryListQuery(injectedValue, cPage); 
+
+//이력서보기
 const modalStore = useModalStore();
 const selectedResumeIdx = ref(null);
-
-const handlerResume = (param) => {
+const handlerResume = (param) => { 
   selectedResumeIdx.value = param;
   modalStore.setModalState(); //모달 열기
+}
+
+//공고 상세보기 
+const handlerPost = (postIdx) => {
+  if (!router) {
+    return;
+  }
+  router.push({ name: "bizPostDetail", params: { postIdx } });
+}
+//기업 상세보기
+const handleBiz = (postIdx, bizIdx) => {
+  router.push({ name: "companyDetailPage", params: { postIdx, bizIdx } })
+
 }
 
 const {mutate: handlerCancle} = useHistoryCancleMutation();
@@ -139,11 +157,14 @@ table {
   .post-title {
     font-weight: 700; /* 글자 굵기 설정 */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* 텍스트에 그림자 추가 */
+    transition: all 0.3s ease; /* 부드러운 애니메이션 효과 */
   }
 
   .post-title:hover {
-  color: red; /* 마우스 오버 시 글자 색상 변경 */
-}
+    color: red; /* 마우스 오버 시 글자 색상 변경 */
+    transform: scale(1.1); /* 글자 크기 확대 */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4); /* 텍스트 그림자 확대 */
+  }
 
   .hover-text {
     font-weight: normal;
@@ -152,8 +173,10 @@ table {
   }
 
   .hover-text:hover {
-   font-weight: bold;
-   color: red;
+    font-weight: bold;
+    color: red;
+    transform: scale(1.1); /* 글자 크기 확대 */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4); /* 텍스트 그림자 확대 */
   }
   .cancel-button {
     background-color: #ff4d4f; /* 빨간색 배경 */
