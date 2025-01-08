@@ -9,6 +9,7 @@ export const Resume = {
   MainResume: "/api/apply/mainResume.do",
   MainResumeDetail: "/api/apply/mainResumeDetail.do",
   FileDownAtt: "/api/apply/AttachmentFileDownload.do",
+  // GetProfileimg: "/api/apply/resumeFileDownload.do",
   GetProfileimg: "/api/apply/resumeFileDownload.do",
 };
 

@@ -354,7 +354,7 @@
                         <div
                           style="flex: 0 1 30%; padding-left: 10px"
                           v-if="att.fileName"
-                          @click="ResumeFileDownload(att.attIdx)"
+                          @click="fileDownloadAtt({ attIdx: att.attIdx, fileName: att.fileName })"
                         >
                           <span style="font-weight: 900" class="file-link"> {{ att.fileName }}</span>
                         </div>
@@ -401,7 +401,7 @@ import { useModalStore } from "@/stores/modalState";
 import axios from "axios";
 import printJS from "print-js";
 import { computed } from "vue";
-import { Resume } from "../../../../api/axiosApi/resumeApi";
+import { useResumeFileDownloadAttachmentMutation } from "../../../hook/resume/useResumeFileDownloadAttachmentMutation";
 
 const modalState = useModalStore();
 const props = defineProps(["idx"]);
@@ -435,9 +435,18 @@ const attachmentProperties = computed(() => {
   return resumeDetailinformation.value.attInfo || []; // resumeInfo가 없을 경우 빈 객체 반환
 });
 
-const closeModal = () => {
-  modalState.setModalState();
-};
+// const {
+//   data: resumeInfo,
+//   isLoading,
+//   isSuccess,
+// } = useQuery({
+//   queryKey: ["previewResume"],
+//   queryFn: async () => {
+//     return await resumePreviewApi(props.idx);
+//   },
+//   staleTime: 10000, // 10초 동안 데이터가 신선하게 유지됨
+//   cacheTime: 300000, // 5분 동안 캐시 유지
+// });
 
 const resumeDetail = async () => {
   await axios.post(Resume.PreviewResume, { resIdx: props.idx }).then((res) => {
@@ -465,6 +474,7 @@ const getFileImage = () => {
     console.log(res);
   });
 };
+const { mutate: fileDownloadAtt } = useResumeFileDownloadAttachmentMutation();
 
 const printPage = () => {
   printJS({
@@ -474,32 +484,18 @@ const printPage = () => {
     maxWidth: "100%",
   });
 };
-
-const ResumeFileDownload = (attIdx) => {
-  let param = new URLSearchParams();
-  param.append("attIdx", attIdx);
-  const postAction = {
-    url: "/api/apply/AttachmentFileDownload.do",
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-
-  axios(postAction).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    // attIdx에 맞는 파일 정보를 찾기
-    const attachment = attachmentProperties.value.find((item) => item.attIdx === attIdx);
-
-    if (attachment) {
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", attachment.fileName); // 인덱스를 사용하지 않고 객체를 직접 참조
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    }
-  });
+const closeModal = () => {
+  modalState.setModalState();
 };
+
+// watchEffect(() => {
+//   console.log("resumeInfo.value", resumeInfo.value);
+//   if (resumeInfo.value) {
+//     resumeDetailinformation.value = toRaw(resumeInfo.value);
+//     console.log("resumeDetailinformation.value", resumeDetailinformation.value);
+//     // getFileImage(resumeDetailinformation?.value?.resIdx);
+//   }
+// });
 
 onMounted(() => {
   resumeDetail();

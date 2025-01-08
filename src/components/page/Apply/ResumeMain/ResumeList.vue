@@ -1,7 +1,7 @@
 <template>
   <button class="newResumeCreateMove" @click="newResumeCreate">새 이력서 작성</button>
   <div class="resume-container">
-    <template v-if="resumeMianInfoArray">
+    <template v-if="resumeMainInfo">
       <div class="resume-content">
         <div class="resume-details">
           <div class="resume-photo">
@@ -10,25 +10,25 @@
             </div>
           </div>
           <div class="resume-info">
-            <h3 class="resume-title">{{ resumeMianInfoArray.resTitle }}</h3>
+            <h3 class="resume-title">{{ resumeMainInfo.resTitle }}</h3>
             <div class="resume-contact">
-              <p><strong>이름:</strong> {{ resumeMianInfoArray.userNm }}</p>
+              <p><strong>이름:</strong> {{ resumeMainInfo.userNm }}</p>
               <p>
-                <strong>나이:</strong> {{ calculateAge(resumeMianInfoArray.birthday) }} 세 ({{
-                  resumeMianInfoArray.sex === 1 ? "남성" : "여성"
+                <strong>나이:</strong> {{ calculateAge(resumeMainInfo.birthday) }} 세 ({{
+                  resumeMainInfo.sex === 1 ? "남성" : "여성"
                 }})
               </p>
-              <p><strong>전화번호:</strong> {{ resumeMianInfoArray.phone }}</p>
-              <p><strong>이메일:</strong> {{ resumeMianInfoArray.email }}</p>
-              <p>{{ resumeMianInfoArray.shortIntro }}</p>
+              <p><strong>전화번호:</strong> {{ resumeMainInfo.phone }}</p>
+              <p><strong>이메일:</strong> {{ resumeMainInfo.email }}</p>
+              <p>{{ resumeMainInfo.shortIntro }}</p>
             </div>
           </div>
         </div>
       </div>
 
       <div class="resume-actions">
-        <button class="copy-button" @click="resumeIdxAdd(resumeMianInfoArray.resIdx)">수정하기</button>
-        <button class="delete-button" @click="resumeDelete(resumeMianInfoArray.resIdx)">삭제하기</button>
+        <button class="copy-button" @click="resumeIdxAdd(resumeMainInfo.resIdx)">수정하기</button>
+        <button class="delete-button" @click="resumeDelete(resumeMainInfo.resIdx)">삭제하기</button>
       </div>
     </template>
     <template v-else>
@@ -89,23 +89,26 @@
 </template>
 
 <script setup>
-import { useQuery } from "@tanstack/vue-query";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import axios from "axios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { Resume } from "../../../../api/axiosApi/resumeApi";
-import { resumeGetFileImageApi } from "../../../../api/resume/resumeGetFileImageApi";
 import { resumeMainDetailApi } from "../../../../api/resume/resumeMainDetailApi";
 import { resumeSearchListApi } from "../../../../api/resume/resumeSearchListApi";
 import { useUserInfo } from "../../../../stores/userInfo";
 import Pagination from "../../../common/Pagination.vue";
+import { useResumeCopyMutation } from "../../../hook/resume/useResumeCopyMutation";
+import { useResumeDeleteMutation } from "../../../hook/resume/useResumeDeleteMutation";
+import { useResumeMainMutation } from "../../../hook/resume/useResumeMainMutation";
 
 const userInfo = useUserInfo();
 const { user } = userInfo;
 const cPage = ref(1);
-const resumeCopyResult = ref();
-const resumeDeleteResult = ref();
 const router = useRouter();
+const queryClient = useQueryClient();
+const imageUrl = ref("/no_image.jpg");
+const resumeMainInfo = ref({});
 
 const {
   data: resumeInfoArray,
@@ -133,9 +136,9 @@ const handlePageChange = (newPage) => {
 };
 
 const {
-  data: resumeMianInfoArray,
-  isLoadingMain,
-  isSuccessMain,
+  data: resumeMainInfoArray,
+  isLoading: isLoadingMain,
+  isSuccess: isSuccessMain,
 } = useQuery({
   queryKey: ["mainResumeDetail"],
   queryFn: async () => {
@@ -147,50 +150,41 @@ const {
     return await resumeMainDetailApi(param);
   },
   staleTime: 10000, // 10초 동안 데이터가 신선하게 유지됨
-  cacheTime: 300000, // 5분 동안 캐시 유지
 });
 
-const { data: imageUrl = "/no_image.jpg", isSuccesss } = useQuery({
-  queryKey: ["getFileImage"],
-  queryFn: () => resumeGetFileImageApi(resumeMianInfoArray.value?.resIdx),
-  staleTime: 10000, // 10초 동안 데이터가 신선하게 유지됨
-  cacheTime: 300000, // 5분 동안 캐시 유지
-});
-
-//이력서 복사
-const resumeCopy = async (idx) => {
-  const param = {
-    resIdx: idx,
-  };
-  await axios.post(Resume.CopyResume, param).then((res) => {
-    resumeCopyResult.value = res.data;
-    if (resumeCopyResult.value.result === "success") {
-      resumeSearchList();
-    }
-  });
+const getFileImage = async (idx) => {
+  try {
+    let param = new URLSearchParams();
+    param.append("resIdx", idx);
+    const res = await axios.post(Resume.GetProfileimg, param, { responseType: "blob" });
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    imageUrl.value = url;
+  } catch (error) {
+    imageUrl.value = "/no_image.jpg";
+  }
 };
 
-//이력서 삭제
-const resumeDelete = async (idx) => {
-  const param = {
-    resIdx: idx,
-  };
-
-  await axios.post(Resume.DeleteResume, param).then((res) => {
-    resumeDeleteResult.value = res.data;
-    if (resumeDeleteResult.value.result === "success") {
-      resumeSearchList();
-      mainResumeDetail().then(() => {
-        mainProfileImage();
-      });
-    }
-  });
+// const { data: imageUrl, isSuccess: isSuccesss } = useQuery({
+//   queryKey: ["getFileImage"],
+//   queryFn: () => resumeGetFileImageApi(resumeMainInfo?.value?.resIdx),
+//   staleTime: 10000, // 10초 동안 데이터가 신선하게 유지됨
+//   //enabled: !!resumeMainInfo?.value?.resIdx,
+// });
+const userParam = {
+  loginId: user.loginId,
+  userNm: user.userNm,
+  userType: user.userType,
 };
+const { mutate: resumeCopy } = useResumeCopyMutation(cPage);
+const { mutate: resumeDelete } = useResumeDeleteMutation(cPage);
+const { mutate: mainResume } = useResumeMainMutation(cPage, userParam);
 
+//이력서 작성으로 이동
 const newResumeCreate = () => {
   router.push({ name: "resume-new" });
 };
 
+//이력서 상세보기로 이동
 const resumeIdxAdd = (resumeidx) => {
   router.push({
     name: "MyResumes",
@@ -198,35 +192,26 @@ const resumeIdxAdd = (resumeidx) => {
   });
 };
 
-const mainResume = async (idx) => {
-  const param = {
-    loginId: user.loginId,
-    userNm: user.userNm,
-    userType: user.userType,
-    resIdx: idx,
-  };
-  await axios.post(Resume.MainResume, param).then(() => {
-    alert("대표이력서로 설정되었습니다.");
-    mainResumeDetail().then(() => {
-      mainProfileImage();
-    });
-  });
-};
-
+//생년월일로 나이 계산
 const calculateAge = (birthday) => {
   const birthDate = new Date(birthday); // 주어진 생일을 Date 객체로 변환
   const today = new Date(); // 현재 날짜를 Date 객체로 생성
-
   let age = today.getFullYear() - birthDate.getFullYear(); // 현재 연도에서 태어난 연도를 빼서 나이를 계산
   const monthDifference = today.getMonth() - birthDate.getMonth(); // 현재 월과 생일 월의 차이 계산
-
   // 생일이 지나지 않은 경우 나이를 하나 줄임
   if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
     age--; // 생일이 지나지 않았다면 나이를 하나 줄임
   }
-
   return age;
 };
+
+//대표이미지 불러오는 함수
+watchEffect(() => {
+  if (resumeMainInfoArray.value) {
+    resumeMainInfo.value = toRaw(resumeMainInfoArray.value);
+    getFileImage(resumeMainInfoArray?.value?.resIdx);
+  }
+});
 </script>
 
 <style lang="scss" scoped>
