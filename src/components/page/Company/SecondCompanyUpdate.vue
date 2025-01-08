@@ -100,42 +100,147 @@
 <script setup>
 import axios from "axios";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { useUserInfo } from "../../../stores/userInfo";
 import { Company } from "../../../api/axiosApi/companyApi";
-import { useCompanySearchQuery } from "../../hook/company/useCompanySearchQuery";
-import { useCompanyInsertMutation } from "../../hook/company/useCompanyInsertMutation";
-import { useCompanyUpdateMutation } from "../../hook/company/useCompanyUpdateMutation";
-import { useCompanyDeleteMutation } from "../../hook/company/useCompanyDeleteMutation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const userInfo = useUserInfo();
 const detailValue = ref({});
 const imageUrl = ref();
 const fileData = ref("");
+const router = useRouter();
+const queryClient = useQueryClient();
 const fileName = ref();
 
-const loginId = userInfo.user.loginId;
-
-onMounted(() => {
-  if (isSuccess.value && companyDetail.value.detail) {
-    detailValue.value = toRaw(companyDetail.value.detail) || {};
-    const fileExt = companyDetail.value.detail.fileExt;
-    if (fileExt === "jpg" || fileExt === "gif" || fileExt === "png" || fileExt === "webp") {
-      getFileImage(companyDetail.value.detail.bizIdx);
+// 초기 화면 로딩
+const searchDetail = async () => {
+  const param = { loginId: userInfo.user.loginId };
+  try {
+    const result = await axios.post(Company.SearchCompanyUpdateDetail, param);
+    if (
+      result.data.detail.fileExt === "jpg" ||
+      result.data.detail.fileExt === "gif" ||
+      result.data.detail.fileExt === "png" ||
+      result.data.detail.fileExt === "webp"
+    ) {
+      getFileImage(result.data.detail.bizIdx);
     }
+
+    return result.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+const { data: companyDetail, isSuccess } = useQuery({
+  queryKey: ["companyDetail"],
+  queryFn: searchDetail,
+});
+
+watchEffect(() => {
+  if (isSuccess.value && companyDetail.value) {
+    detailValue.value = toRaw(companyDetail.value.detail) || {};
   }
 });
 
-// 기업 초기데이터 서치
-const { data: companyDetail, isSuccess } = useCompanySearchQuery({ loginId });
+// const apiSuccess = () => {
+//   alert("요청하신 작업에 성공하였습니다.");
+//   router.go(-1);
+//   queryClient.invalidateQueries({
+//     queryKey: ["companyList"],
+//   });
+// };
 
 // 기업 등록
-const { mutate: handlerInsertBtn } = useCompanyInsertMutation(loginId, detailValue, fileData, imageUrl, fileName);
+const insertCompanyDetail = async () => {
+  const validation = handlerValidation();
+  if (!validation) {
+    return;
+  }
+
+  const textData = {
+    ...detailValue.value,
+    loginId: userInfo.user.loginId,
+  };
+  const formData = new FormData();
+  if (fileData.value) formData.append("file", fileData.value);
+  formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
+  const res = await axios.post(Company.InsertCompany, formData);
+  return res.data;
+};
+
+const { mutate: handlerInsertBtn } = useMutation({
+  mutationFn: insertCompanyDetail,
+  mutationKey: ["companyInsert"],
+  onSuccess: (res) => {
+    if (res.result === "success") {
+      alert("기업이 등록되었습니다.");
+      router.go(-1);
+      queryClient.invalidateQueries({
+        queryKey: ["companyInsert"],
+      });
+    } else if (res.result === "fail") {
+      alert("기업등록에 실패했습니다.");
+    }
+  },
+});
 
 // 기업 수정
-const { mutate: handlerUpdateBtn } = useCompanyUpdateMutation(loginId, detailValue, fileData, imageUrl, fileName);
+const updateCompanyDetail = async () => {
+  const validation = handlerValidation();
+  if (!validation) {
+    return;
+  }
+  const textData = {
+    ...detailValue.value,
+    loginId: userInfo.user.loginId,
+  };
+  const formData = new FormData();
+  if (fileData.value) formData.append("file", fileData.value);
+  formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
+
+  const res = await axios.post(Company.UpdateCompany, formData);
+  return res.data;
+};
+
+const { mutate: handlerUpdateBtn } = useMutation({
+  mutationFn: updateCompanyDetail,
+  mutationKey: ["companyUpdate"],
+  onSuccess: (res) => {
+    if (res.result === "success") {
+      alert("기업정보가 수정되었습니다.");
+      router.go(-1);
+      queryClient.invalidateQueries({
+        queryKey: ["companyDetail"],
+      });
+    } else if (res.result === "fail") {
+      alert("기업정보 수정에 실패했습니다.");
+    }
+  },
+});
 
 // 기업 삭제
-const { mutate: handlerDeleteBtn } = useCompanyDeleteMutation({ loginId });
+const deleteCompanyDetail = async () => {
+  const res = await axios.post(Company.DeleteCompany, { loginId: userInfo.user.loginId });
+  return res.data;
+};
+
+const { mutate: handlerDeleteBtn } = useMutation({
+  mutationFn: deleteCompanyDetail,
+  mutationKey: ["companyDelete"],
+  onSuccess: (res) => {
+    if (res.result === "success") {
+      alert("기업이 삭제되었습니다.");
+      router.go(-1);
+      queryClient.invalidateQueries({
+        queryKey: ["companyDelete"],
+      });
+    } else if (res.result === "fail") {
+      alert("기업삭제에 실패했습니다.");
+    }
+  },
+});
 
 // 이미지 관련
 const handlerFile = (e) => {
@@ -193,6 +298,59 @@ const openDaumPostcode = () => {
     },
   }).open();
 };
+
+// 등록,수정 유효성 검사
+const handlerValidation = () => {
+  const today = new Date();
+  const urlPattern = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(:\d+)?(\/[^\s]*)?$/;
+  const inputs = detailValue.value;
+
+  if (!inputs.bizName) {
+    alert("사업자명을 입력해 주세요.");
+    return;
+  } else if (!inputs.bizCeoName) {
+    alert("사업자 대표를 입력해 주세요.");
+    return;
+  } else if (!inputs.bizContact) {
+    alert("연락처를 입력해 주세요.");
+    return;
+  } else if (!inputs.bizAddr) {
+    alert("사업자 주소를 입력해 주세요.");
+    return;
+  } else if (!inputs.bizEmpCount) {
+    alert("사원수를 선택해 주세요.");
+    return;
+  } else if (!inputs.bizWebUrl) {
+    alert("홈페이지 주소를 입력해 주세요.");
+    return;
+  } else if (!inputs.bizFoundDate) {
+    alert("설립일을 입력해 주세요.");
+    return;
+  } else if (!inputs.bizRevenue) {
+    alert("매출액을 입력해 주세요.");
+    return;
+  } else if (!inputs.bizIntro) {
+    alert("기업소개를 입력해 주세요.");
+    return;
+  } else if (!imageUrl.value && !fileName.value) {
+    alert("기업로고를 등록해 주세요.");
+    return;
+  }
+
+  if (today < new Date(inputs.bizFoundDate)) {
+    alert("설립일은 오늘보다 이전이어야 합니다.");
+    return;
+  }
+
+  if (!urlPattern.test(inputs.bizWebUrl)) {
+    alert("홈페이지 주소는 올바른 URL 형식으로 입력해 주세요.");
+    return;
+  }
+
+  return true;
+};
+
+// onMounted(console.log(imageUrl.value), console.log(fileName.value));
 </script>
 
 <style lang="scss" scoped>
