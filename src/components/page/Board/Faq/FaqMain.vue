@@ -110,7 +110,6 @@ const toggleFaqAnswer = (faq_idx) => {
 };
 
 const handlerUpdate = (faq_idx) =>{
-  console.log(faq_idx);
   router.push({
     name: 'faqDetail',
     params: { idx: faq_idx},
