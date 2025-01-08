@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useUserInfo } from "../stores/userInfo";
 
+import NoticeModal from "../components/page/Board/Notice/NoticeModal.vue";
 import QnaDetail from "../components/page/Board/Qna/QnaDetail.vue";
 import BizPostDetail from "../components/page/ManageHire/BizPost/BizPostDetail.vue";
 import BizPostInsert from "../components/page/ManageHire/BizPost/BizPostInsert.vue";
@@ -9,7 +10,6 @@ import Resume from "../views/Apply/Resume.vue";
 import ResumePost from "../views/Apply/ResumePost.vue";
 import Faq from "../views/Board/Faq.vue";
 import Notice from "../views/Board/Notice.vue";
-import NoticeModal from "../components/page/Board/Notice/NoticeModal.vue"
 import Qna from "../views/Board/Qna.vue";
 import CompanyEdit from "../views/Company/CompanyEdit.vue";
 import CompanyInfo from "../views/Company/CompanyInfo.vue";
@@ -51,13 +51,13 @@ const routes = [
             component: Notice,
           },
           {
-            path: 'notice.do/:idx',
-            name: 'noticeDetail',
+            path: "notice.do/:idx",
+            name: "noticeDetail",
             component: NoticeModal,
           },
           {
-            path: 'notice.do/insert',
-            name: 'noticeInsert',
+            path: "notice.do/insert",
+            name: "noticeInsert",
             component: NoticeModal,
           },
           // qna 경로
@@ -256,6 +256,10 @@ router.beforeEach(async (to, from) => {
   if (!userInfo.isAuthenticated && !["login", "join"].includes(to.name)) {
     alert("로그인이 필요합니다.");
     return { name: "login" };
+  }
+
+  if (userInfo.isAuthenticated && ["login", "join"].includes(to.name)) {
+    return { name: "vue" };
   }
 });
 
