@@ -96,7 +96,7 @@ const searchDetail = () => {
 
 const useCompanyDetailSearchQuery = () => {
   return useQuery({
-    queryKey: ["companyDetail"],
+    queryKey: ["companyDetailSearch"],
     queryFn: () => companyDetail(),
     staleTime: 1000 * 60,
   });
