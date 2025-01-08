@@ -4,6 +4,7 @@
     <input type="date" v-model="searchStartDate" />
     <input type="date" v-model="searchEndDate" />
     <button @click="handlerSearch">검색</button>
+    <button @click="handlerSearch">검색</button>
     <button v-if="userType === 'A' || userType === 'B'" @click="handlerSaveBtn">등록하기</button>
     <button v-if="userType === 'A' || userType === 'B'" @click="handlerLogState">내가 쓴 글</button>
   </div>
@@ -25,6 +26,10 @@ const injectedSaveState = inject("providedSaveState");
 const queryClient = useQueryClient();
 
 const handlerSearch = () => {
+  if (new Date(searchEndDate.value) < new Date(searchStartDate.value)) {
+  alert("종료일자는 시작일자보다 나중이어야 합니다.");
+  return;
+  }
   if (new Date(searchEndDate.value) < new Date(searchStartDate.value)) {
   alert("종료일자는 시작일자보다 나중이어야 합니다.");
   return;

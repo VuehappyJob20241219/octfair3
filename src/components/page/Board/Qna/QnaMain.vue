@@ -75,6 +75,7 @@
       :password="pass"
       @close="closeModal"
       @postSuccess="() => refetch()"
+      @postSuccess="() => refetch()"
     />
     <QnaPassword
       v-else-if="qnaIdx > 0 && modal.modalState"
@@ -96,6 +97,7 @@ import { useQnaLogState } from "../../../../stores/useQnaLogState";
 import { inject } from "vue";
 import { useModalStore } from "../../../../stores/modalState";
 import QnaPassword from "./QnaPassword.vue";
+import { useQnaListGetQuery } from "../../../hook/qna/useQnaListGetQuery";
 import { useQnaListGetQuery } from "../../../hook/qna/useQnaListGetQuery";
 
 // 상태 값 설정

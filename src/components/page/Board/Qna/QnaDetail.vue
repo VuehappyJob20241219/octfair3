@@ -143,11 +143,16 @@ import { useQnaDetailSaveMutation } from "../../../hook/qna/useQnaDetailSaveMuta
 import { useQnaDetailUpdateMutation } from "../../../hook/qna/useQnaDetailUpdateMutation";
 import { useQnaImageGetMutation } from "../../../hook/qna/useQnaImageGetMutation";
 import { useQnaDetailGetQuery } from "../../../hook/qna/useQnaDetailGetQuery";
+import { useQnaDetailDeleteMutation } from "../../../hook/qna/useQnaDetailDeleteMutation";
+import { useQnaDetailSaveMutation } from "../../../hook/qna/useQnaDetailSaveMutation";
+import { useQnaDetailUpdateMutation } from "../../../hook/qna/useQnaDetailUpdateMutation";
+import { useQnaImageGetMutation } from "../../../hook/qna/useQnaImageGetMutation";
+import { useQnaDetailGetQuery } from "../../../hook/qna/useQnaDetailGetQuery";
 
 const emits = defineEmits(["postSuccess", "close"]);
 const props = defineProps(["idx", "password"]);
 const userInfo = useUserInfo();
-const qnaDetail = ref({});
+// const qnaDetail = ref({});
 const imageUrl = ref("");
 const fileData = ref("");
 // 일반유저가 비번을 치고 갔을 때 props.password 값을 넣고
