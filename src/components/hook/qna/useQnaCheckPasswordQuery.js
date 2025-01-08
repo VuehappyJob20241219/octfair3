@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/vue-query';
 import { qnaListGetApi } from '../../../api/qna/qnaListGetApi';
 
-export const useQnaListGetQuery = (route, activeButton, cPage, itemPerPage, 
+export const useQnaCheckPasswordQuery = (route, activeButton, cPage, itemPerPage, 
     loginId, injectedhRequestType, injectedSaveState, qnaLogState) => {
     return useQuery({
-        queryKey: ['qnaList', cPage, injectedhRequestType.requestType, injectedSaveState.saveState, qnaLogState], 
+        queryKey: ['qnaPwCheckList', cPage, injectedhRequestType.requestType, injectedSaveState.saveState, qnaLogState], 
         queryFn: () => qnaListGetApi(route, activeButton, cPage, 
         itemPerPage, loginId, injectedhRequestType), // callback() 효과
         staleTime: 1000 * 60, // 캐시유지 주기

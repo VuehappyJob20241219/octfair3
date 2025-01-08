@@ -64,7 +64,6 @@
       :totalItems="qnaList?.qnaCnt || 0"
       :items-per-page="itemPerPage"
       :max-pages-shown="5"
-      :onClick="searchList"
       v-model="cPage"
     />
 
@@ -75,7 +74,7 @@
       :idx="qnaIdx"
       :password="pass"
       @close="closeModal"
-      @postSuccess="success"
+      @postSuccess="() => refetch()"
     />
     <QnaPassword
       v-else-if="qnaIdx > 0 && modal.modalState"
@@ -98,11 +97,12 @@ import { useQnaLogState } from "../../../../stores/useQnaLogState";
 import { inject } from "vue";
 import { useModalStore } from "../../../../stores/modalState";
 import QnaPassword from "./QnaPassword.vue";
+import { useQnaListGetQuery } from "../../../hook/qna/useQnaListGetQuery";
 
 // 상태 값 설정
 const route = useRoute();
-const itemPerPage = ref(10);
-const qnaList = ref();
+const itemPerPage = ref(5);
+// const qnaList = ref();
 const cPage = ref(1);
 const qnaIdx = ref(0);
 const pass = ref("");
@@ -121,25 +121,35 @@ const setActive = (type) => {
   injectedhRequestType.requestType = "all";
   activeButton.value = type; // 클릭된 버튼 활성화
 
-  searchList(); // 상태 변경 시 API 호출
+  // searchList(); // 상태 변경 시 API 호출
 };
 
 // 검색 API 호출
-const searchList = () => {
-  const param = {
-    searchTitle: route.query.searchTitle || "",
-    searchStDate: route.query.searchStDate || "",
-    searchEdDate: route.query.searchEdDate || "",
-    qna_type: activeButton.value, // 활성 버튼 값 포함
-    currentPage: cPage.value.toString(),
-    pageSize: itemPerPage.value.toString(),
-    loginId: userInfo.user.loginId,
-    requestType: injectedhRequestType.requestType || "all", // 프로바이더 값 사용
-  };
-  axios.post("/api/board/qnaListRe.do", param).then((res) => {
-    qnaList.value = res.data;
-  });
-};
+// const searchList = () => {
+//   const param = {
+//     searchTitle: route.query.searchTitle || "",
+//     searchStDate: route.query.searchStDate || "",
+//     searchEdDate: route.query.searchEdDate || "",
+//     qna_type: activeButton.value, // 활성 버튼 값 포함
+//     currentPage: cPage.value.toString(),
+//     pageSize: itemPerPage.value.toString(),
+//     loginId: userInfo.user.loginId,
+//     requestType: injectedhRequestType.requestType || "all", // 프로바이더 값 사용
+//   };
+//   axios.post("/api/board/qnaListRe.do", param).then((res) => {
+//     qnaList.value = res.data;
+//   });
+// };
+
+const {
+  data: qnaList,
+  isLoading,
+  refetch,
+  isSuccess,
+  isError,
+} = useQnaListGetQuery(route, activeButton, cPage, itemPerPage, 
+userInfo.user.loginId, injectedhRequestType, qnaLogState, injectedSaveState);
+
 // pass컴포넌트에서 받은 값 저장하기
 const handlePasswordValue = (data) => {
   if (data != null) {
@@ -173,23 +183,26 @@ const closeModal = () => {
   }
 };
 
-const success = () => {
-  searchList();
-};
-
 const setModalState = () => {
   modal.setModalState(); // 현재 값을 반대로 토글
 };
 
-// 초기화
-onMounted(() => {
-  searchList();
-});
-watch(route, qnaLogState, searchList, injectedhRequestType.requestType, injectedSaveState.saveState);
-
 watchEffect(() => {
-  searchList();
+  // watchEffect는 route.query가 변경되면 자동으로 실행됩니다.
+  if (Object.keys(route.query).length >0) {
+    refetch(); // query가 변경될 때마다 수동으로 refetch 호출
+  }
 });
+
+// 초기화
+// onMounted(() => {
+//   searchList();
+// });
+// watch(route, qnaLogState, searchList, injectedhRequestType.requestType, injectedSaveState.saveState);
+
+// watchEffect(() => {
+//   searchList();
+// });
 </script>
 
 <style lang="scss" scoped>
