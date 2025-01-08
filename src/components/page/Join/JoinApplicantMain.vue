@@ -138,7 +138,7 @@ input[type="password"] {
     border-radius: 4px;
     border: 1px solid #ccc;
     // font-size: 13px;
-    width: 200px;
+    width: 250px;
 }
 
 select {
@@ -205,7 +205,7 @@ table {
         // padding: 8px;
         text-align: left;
         border-bottom: 1px solid #ddd;
-        width: 100px;
+        width: 120px;
         height: 60px;
     }
 
