@@ -29,9 +29,9 @@
                             </tbody>
                         </table>
                     </div><br>
-                    <ContextBox class="context-box" v-show="myId.state">
+                    <div class="my-box" v-show="myId.state">
                         찾으시는 ID는 "{{ myId.id }}" 입니다.
-                    </ContextBox>
+                    </div>
 
                     <!-- 비밀번호 찾기 1단계 -->
                     <div v-show="findInfoPw.state">
@@ -177,9 +177,12 @@ const handlerModal = () => {
     width: 500px;
 }
 
-.context-box {
+.my-box {
     background-color: #E0E0E0;
+    overflow-y: auto;
     padding: 10px;
+    font-size: 16px;
+    text-align: center;
 }
 
 .content {
@@ -187,12 +190,11 @@ const handlerModal = () => {
     padding-bottom: 20px;
 }
 
-.content .context-box {
+.content .my-box {
     background-color: #2676BF;
     color: white;
     margin-top: 20px;
 }
-
 
 
 input[type="text"],
