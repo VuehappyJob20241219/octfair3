@@ -21,7 +21,7 @@
           <th scope="col">경력 사항</th>
           <th scope="col">게시일</th>
           <th scope="col">마감일</th>
-          <th scope="col">승인 여부</th>
+          <th v-if="userInfo.user.userType != 'A'" scope="col">승인 여부</th>
           <th scope="col">근무 지역</th>
         </tr>
       </thead>
@@ -57,7 +57,7 @@
                 <td>{{ MList.expRequired }}</td>
                 <td>{{ MList.postDate }}</td>
                 <td>{{ MList.endDate }}</td>
-                <td>{{ MList.appStatus }}</td>
+                <td v-if="route.name == 'managePost'">{{ MList.appStatus }}</td>
                 <td>{{ MList.workLocation }}</td>
               </tr>
             </template>
