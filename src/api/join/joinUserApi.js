@@ -1,5 +1,5 @@
 import axios from "axios";
-import { checkInputNull } from "../../common/checkInput";
+import { checkInput } from "../../common/checkInput";
 import { Join } from "../axiosApi/joinApi";
 
 export const joinUserApi = async (checkId, register) => {
@@ -39,7 +39,7 @@ const checkForm = (register) => {
     inputZipCode: register.value.zipCode,
   };
 
-  if (!checkInputNull(inputFields)) {
+  if (!checkInput(inputFields)) {
     return false;
   }
 
