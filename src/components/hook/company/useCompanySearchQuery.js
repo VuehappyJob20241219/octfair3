@@ -6,8 +6,5 @@ export const useCompanySearchQuery = (loginId) => {
   return useQuery({
     queryKey: ["companyDetail"],
     queryFn: () => companyUpdateSearchApi(loginId),
-    staleTime: 0,
-    cacheTime: 0,
-    onSuccess: () => queryClient.invalidateQueries(["companyDetail"]),
   });
 };
