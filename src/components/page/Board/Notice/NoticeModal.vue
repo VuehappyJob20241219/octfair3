@@ -108,7 +108,6 @@ const fileDownload = () => {
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", detailValue.value.fileName);
-    console.log("파일이름 ==> " + detailValue.value.fileName);
     document.body.appendChild(link);
     link.click();
     link.remove();
