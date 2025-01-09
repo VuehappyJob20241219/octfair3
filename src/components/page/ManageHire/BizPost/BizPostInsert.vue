@@ -215,12 +215,16 @@ import { ref } from 'vue';
 import router from "../../../../router";
 import { useBizPostDetailInsertMutation } from '../../../hook/bizPost/useBizPostDetailInsertMutation';
 import { useBizPostDetailQuery } from '../../../hook/bizPost/useBizPostDetailQuery';
+import { useRoute } from 'vue-router';
 
 const expRequired = ref(null);
 const expYears = ref(null);
 const hirProcess = ref(null);
 const { params } = useRoute();
-const postDetail = ref({});
+const postDetail = ref({
+  expYears : ''
+});
+const route = useRoute();
  
 const checkBox = reactive([
       { id: 1, label: "신입", checked: false },
@@ -229,6 +233,9 @@ const checkBox = reactive([
     ]);
 const recruitProcessList = reactive([]);
 const fileData = ref("");
+
+
+
 if(Object.keys(params).length>0){
   const { data: detail , refetch, isSuccess } = useBizPostDetailQuery(params);
 
@@ -335,10 +342,10 @@ const handlerInsertBtn = () => {
     }
   }
 
-  if(postDetail.value.expYears === ""){
-    alert("경력을 선택해 주세요.");
-    return;
-  }
+  // if(postDetail.value.expYears === ""){
+  //   alert("경력을 선택해 주세요.");
+  //   return;
+  // }
 
   if (!postDetail.value.expRequired.includes('경력')){
     postDetail.value.expYears = "";
