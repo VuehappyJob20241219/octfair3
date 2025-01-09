@@ -25,14 +25,19 @@
                         <p class="hover-text" @click="handlerResume(list.resIdx)">지원이력서</p>
                       </td>
                       <td>
-                        <p>{{ list.status }}</p>
+                        <p :class="statusClass(list.status)" @click="list.status === '최종합격' ? showConfetti() : null">
+                          <span v-if="list.status === '최종합격'">✨</span>
+                          {{ list.status }}
+                          <span v-if="list.status === '최종합격'">✨</span>
+                        </p>
+                     
                       </td>
                       <td>
                       
-                        <p>{{ list.viewed === '1' ? '열람' : '미열람' }}</p>
+                        <p :class="list.viewed ==='1' ? 'viewed' : 'not-viewed'">{{ list.viewed === '1' ? '열람' : '미열람' }}</p>
                       </td>
                       <td>
-                        <button class="cancel-button" @click="handlerCancle(list.appId)">지원취소</button>
+                        <button class="cancel-button" @click="handlerCancle({ appId: list.appId, status: list.status })">지원취소</button>
                       </td>
                       
                   </tr>
@@ -59,12 +64,13 @@
 
 <script setup>
 import Pagination from '../../../common/Pagination.vue';
-import { inject } from 'vue';
+import { computed, inject } from 'vue';
 import { useHistoryListQuery } from '../../../hook/history/useHistoryListQuery';
 import ResumePreview from '../ResumeDetail/ResumePreview.vue'; //이력서 모달
 import { useModalStore } from "@/stores/modalState"; //피냐 등록된 모달 상태관리
 import { useHistoryCancleMutation } from '../../../hook/history/useHistoryCancleMutation'; //지원취소
 import { useRouter } from 'vue-router';
+import JSConfetti from 'js-confetti';
 
 const router = useRouter();
 const cPage = inject("cPage"); // Provide에서 받아온 현재 페이지 상태
@@ -96,6 +102,18 @@ const handleBiz = (postIdx, bizIdx) => {
 }
 
 const {mutate: handlerCancle} = useHistoryCancleMutation();
+
+//지원자관리 상태에 따라 설정변경
+const statusClass = (status) => {
+  if (status === '최종합격') return 'success';
+  if (status === '불합격') return 'fail';
+}
+
+//최종합격 클릭했을때 폭죽효과
+const confetti = new JSConfetti()
+const showConfetti = () => {
+  confetti.addConfetti()
+}
 
 
 </script>
@@ -194,6 +212,17 @@ table {
     background-color: #d9363e; /* 호버 시 더 어두운 빨간색 */
     transform: scale(1.1); /* 크기 10% 확대 */
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* 그림자 강조 */
+  }
+  .viewed{
+    font-weight: bold;
+  }
+  .success{
+    font-weight: bold;
+    color: #002efa;
+  }
+  .fail{
+    font-weight: bold;
+    color: red;
   }
 }
 

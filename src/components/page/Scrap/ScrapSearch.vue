@@ -1,8 +1,8 @@
 <template>
     <div class="search-box">
-        <input v-model="searchKey.searchTitle"/>
-        <input type="date" v-model="searchKey.searchStDate" />
-        <input type="date" v-model="searchKey.searchEdDate" :min="searchKey.searchStDate" />
+        <input v-model="searchKey.searchTitle" placeholder="공고제목을 입력하세요"/>
+        <input type="date" v-model="searchKey.searchStDate" />~ 
+        <input type="date" v-model="searchKey.searchEdDate" :min="searchKey.searchStDate" />   
         <button @click="handlerSearch">검색</button>
         <button class="delete" @click="handlerDelete">삭제</button>
     </div>
