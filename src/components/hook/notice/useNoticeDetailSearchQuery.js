@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/vue-query";
 import { noticeDetailSearchApi } from "../../../api/notice/noticeDetailSearchApi";
 
-export const useNoticeDetailSearchQuery = (idx) => {
+export const useNoticeDetailSearchQuery = (idx) => {  
     return useQuery({
-      queryKey: ['noticeDetail', idx],
+      queryKey: ['noticeDetail'],
       queryFn: () => noticeDetailSearchApi(idx),
       enabled: !!idx,
       staleTime: 1000 * 1,

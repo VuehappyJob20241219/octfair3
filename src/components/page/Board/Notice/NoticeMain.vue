@@ -24,7 +24,7 @@
         </tr>
       </thead>
       <tbody>
-        <template v-if="noticeList">
+        <template v-if="isSuccess">
           <template v-if="noticeList.noticeCnt > 0">
             <tr v-for="notice in noticeList.notice" :key="notice.noticeIdx" >
               <td>{{ notice.noticeIdx }}</td>
@@ -54,55 +54,23 @@
 <script setup>
 import Pagination from "../../../common/Pagination.vue";
 import { useModalStore } from "@/stores/modalState";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { useNoticeListSearchQuery } from "../../../hook/notice/useNoticeListSearchQuery";
-import { inject, onMounted, watch } from "vue";
-import axios from "axios";
+import { inject } from "vue";
 
-
-const route = useRoute();
-const noticeList = ref();
 const cPage = ref(1);
 const modalState = useModalStore();
-const noticeIdx = ref(0);
-// const router = useRouter();
-// const injectedValue = inject('provideValue');
+const router = useRouter();
+const injectedValue = inject('provideValue');
 
-// const  { data: noticeList, isSuccess } 
-//     = useNoticeListSearchQuery(
-//     injectedValue, cPage
-// );
-const searchList = () => {
-  const param = new URLSearchParams({
-    searchTitle: route.query.searchTitle || "",
-    searchStDate: route.query.searchStDate || "",
-    searchEdDate: route.query.searchEdDate || "",
-    currentPage: cPage.value,
-    pageSize: 5,
-  });
-  axios.post("/api/board/noticeListJson.do", param).then((res) => {
-    noticeList.value = res.data;
+const  { data: noticeList, isSuccess } = useNoticeListSearchQuery(injectedValue, cPage);
+
+const handlerModal = (param) => {
+  router.push({
+    name: 'noticeDetail',
+    params: { idx: param },
   });
 };
-
-// const handlerModal = (param) => {
-//   router.push({
-//     name: 'noticeDetail',
-//     params: { idx: param },
-//   });
-// };
-
-const handlerModal = (idx) => {
-  modalState.setModalState();
-  noticeIdx.value = idx;
-};
-
-watch(route, searchList);
-
-onMounted(() => {
-  searchList();
-});
-
 </script>
 
 <style lang="scss" scoped>

@@ -9,6 +9,7 @@ import History from "../views/Apply/History.vue";
 import Resume from "../views/Apply/Resume.vue";
 import ResumePost from "../views/Apply/ResumePost.vue";
 import Faq from "../views/Board/Faq.vue";
+import FaqModal from "../components/page/Board/Faq/FaqModal.vue"
 import Notice from "../views/Board/Notice.vue";
 import Qna from "../views/Board/Qna.vue";
 import CompanyEdit from "../views/Company/CompanyEdit.vue";
@@ -75,11 +76,21 @@ const routes = [
             path: "qna.do/:idx",
             name: "qnaDetail",
             component: QnaDetail,
-          },
+          },          
           {
             path: "faq.do",
             name: "faq",
             component: Faq,
+          },
+          {
+            path: "faq.do/insert",
+            name: "faqInsert",
+            component: FaqModal,
+          },
+          {
+            path: "faq.do/:idx",
+            name: "faqDetail",
+            component: FaqModal,
           },
         ],
       },
