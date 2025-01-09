@@ -10,13 +10,9 @@
 <script setup>
 import { inject } from 'vue';
 import router from "@/router";
-import { useModalStore } from "@/stores/modalState";
 import { useQueryClient } from '@tanstack/vue-query';
 
-// const keyword = ref("");
-// const searchStartDate = ref("");
-// const searchEndDate = ref("");
-// const modalState = useModalStore();
+
 const queryClient = useQueryClient();
 const injectedValue = inject('provideValue');
 const searchKey = ref({});
@@ -29,18 +25,8 @@ const checkSearchDate = () =>{
   if (new Date(searchKey.value.searchEdDate) < new Date(searchKey.value.searchStDate)) {
   alert("종료일자는 시작일자보다 나중이어야 합니다.");
   return;
-  }
-}
-
-// const handlerSearch = () => {
-//   const query = [];
-//   !keyword.value || query.push(`searchTitle=${keyword.value}`);
-//   !searchStartDate.value || query.push(`searchStDate=${searchStartDate.value}`);
-//   !searchEndDate.value || query.push(`searchEdDate=${searchEndDate.value}`);
-//   const queryString = query.length > 0 ? `?${query.join("&")}` : "";
-
-//   router.push(queryString);
-// };
+  };
+};
 
 const handlerInsert = () => {
   queryClient.removeQueries({
@@ -49,9 +35,6 @@ const handlerInsert = () => {
   router.push("notice.do/insert");
 };
 
-// const handlerModal = () => {
-//   modalState.setModalState();
-// };
 </script>
 
 <style lang="scss" scoped>

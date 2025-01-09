@@ -9,6 +9,7 @@ export const useNoticeDetailDeleteMutation = (notiseIdx) => {
     mutationFn: () => noticeDetailDeleteApi(notiseIdx),
     mutationKey: ["noticeDelete"],
     onSuccess: () => {
+      alert("삭제 되었습니다.")
       router.go(-1);
       queryClient.invalidateQueries({
         queryKey: ["noticeList"],
