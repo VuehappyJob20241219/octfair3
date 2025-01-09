@@ -37,7 +37,11 @@
                         <p :class="list.viewed ==='1' ? 'viewed' : 'not-viewed'">{{ list.viewed === '1' ? '열람' : '미열람' }}</p>
                       </td>
                       <td>
-                        <button class="cancel-button" @click="handlerCancle({ appId: list.appId, status: list.status })">지원취소</button>
+                        <button class="cancel-button" @click="handlerCancle({ appId: list.appId, status: list.status })"
+                                :class="{'disabled': list.status === '불합격'}"
+                                :disabled="list.status === '불합격'">
+                        지원취소
+                        </button>
                       </td>
                       
                   </tr>
@@ -212,6 +216,13 @@ table {
     background-color: #d9363e; /* 호버 시 더 어두운 빨간색 */
     transform: scale(1.1); /* 크기 10% 확대 */
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* 그림자 강조 */
+  }
+  .cancel-button.disabled {
+    background-color: #d3d3d3; /* 회색 배경 */
+    color: #a0a0a0; /* 회색 글씨 */
+    cursor: not-allowed; /* 클릭 불가 표시 */
+    box-shadow: none; /* 그림자 제거 */
+    transform: none; /* 확대 효과 제거 */
   }
   .viewed{
     font-weight: bold;
