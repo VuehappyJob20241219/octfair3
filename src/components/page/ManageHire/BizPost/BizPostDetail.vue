@@ -254,16 +254,6 @@ const bizIdx = ref(0);
 const modalState = useModalStore();
 
 
-// const searchList = async () => {
-//   const result = await axios.post("/api/manage-hire/readPostDetailBody.do", params);
-//   if (Detail) {
-//     postDetail.value = result.data.postDetail;
-//     bizDetail.value = result.data.bizDetail;
-//     isClicked.value = result.data.isClicked;
-//     userType.value = result.data.userType;
-//   }
-//   return result.data;
-// };
 
 const { data: detail , isLoading, refetch, isSuccess, isError } = useBizPostDetailQuery(params);
 
@@ -276,11 +266,6 @@ watchEffect(() => {
   }
 });
 
-// const { data, isLoading, refetch, isSuccess, isError } = useQuery({
-//   queryKey: ["bizPostDetail"],
-//   queryFn: searchList,
-// });
-
 const navigatePost = (param) => {
   if (param === "back") {
     router.go(-1); // 뒤로가기
@@ -291,18 +276,6 @@ const navigatePost = (param) => {
 
 const { mutate: handleDelete } = useBizPostDetailDeleteMutation(postDetail, bizDetail);
 const { mutate: handlerUpdateAppStatus } = useBizPostStatusUpdateMutation();
-// const handleDelete = async (pIdx, bIdx) => {
-//   const params = {
-//     postIdx: pIdx,
-//     bizIdx: bIdx,
-//   };
-//   const result = await axios.post("/api/manage-hire/managehireDeleteBody.do", params);
-
-//   if (result.data.result == "success") {
-//     alert("삭제 처리되었습니다.");
-//     router.go(-1);
-//   }
-// };
 
 const handleDown = (pIdx, bIdx) => {
   const params = {
@@ -344,22 +317,6 @@ const handlerModal = (pIdx, bIdx) => {
   bizIdx.value = bIdx;
 };
 
-// const handlerUpdateAppStatus = async (pIdx, status) => {
-//   const params = {
-//     postIdx: pIdx,
-//     appStatus: status,
-//   };
-//   const result = await axios.post("/api/manage-post/statusUpdateBody.do", params);
-
-//   if (result.data.result == "success") {
-//     alert("처리되었습니다.");
-//     if (status == "승인") {
-//       router.push({ name: "managePost" });
-//     } else if (status == "불허") {
-//       router.push({ name: "managePostApproval" });
-//     }
-//   }
-// };
 
 //신효 - 스크랩 등록
 const { mutate: handlerSaveScrap } = useScrapSaveMutation(params.postIdx);

@@ -101,22 +101,6 @@ const cPage = ref(1);
 const route = useRoute();
 const injectedValue = inject("bizSearchValue");
 
-// const searchList = async () => {
-//   const param = {
-//     currentPage: cPage.value.toString(),
-//     pageSize: (5).toString(),
-//   };
-//   if (userInfo.user.userType === "B") {
-//     const result = await axios.post("/api/manage-hire/managehireListBody.do", param);
-//     return result.data;
-//   } else {
-//     Object.assign(param, injectedValue.value);
-//     console.log(param);
-//     const result = await axios.post("/api/manage-post/readPostListBody.do", param);
-//     return result.data;
-//   }
-// };
-
 const {
   data: HirePost,
   isLoading,
@@ -125,17 +109,6 @@ const {
   isError,
 } = useBizPostListSearchQuery(cPage, injectedValue,userInfo.user.userType);
 
-// const {
-//   data: HirePost,
-//   isLoading,
-//   refetch,
-//   isSuccess,
-//   isError,
-// } = useQuery({
-//   queryKey: ["HirePost", cPage, injectedValue],
-//   queryFn: searchList,
-//   // staleTime: 1000 * 60,
-// });
 
 const handleNewInsert = () => {
   router.push("bizPostInsert.do");

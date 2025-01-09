@@ -342,11 +342,6 @@ const handlerInsertBtn = () => {
     }
   }
 
-  // if(postDetail.value.expYears === ""){
-  //   alert("경력을 선택해 주세요.");
-  //   return;
-  // }
-
   if (!postDetail.value.expRequired.includes('경력')){
     postDetail.value.expYears = "";
   }
