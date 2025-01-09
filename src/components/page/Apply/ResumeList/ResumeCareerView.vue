@@ -1,5 +1,9 @@
 <template>
-  <template v-if="careerProperties.career.length > 0">
+  <template v-if="isLoading">
+    <p>로딩 중입니다...</p>
+  </template>
+  <template v-if="isSuccess && careerProperties?.career.length > 0">
+    <!-- <template v-if="careerProperties?.career.length > 0"> -->
     <div class="contents">
       <table class="career-table">
         <colgroup>
@@ -22,7 +26,7 @@
         </thead>
         <tbody v-for="(career, index) in careerProperties.career" :key="index">
           <tr>
-            <td rowspan="2">
+            <td rowspan="3">
               <span>
                 {{ career.startDate.substr(0, 7) }}
                 ~
@@ -41,8 +45,8 @@
             <td>
               <span>{{ career.reason }}</span>
             </td>
-            <td rowspan="2">
-              <button @click="DeleteCareer(career.crrIdx)">
+            <td rowspan="3">
+              <button @click="deleteCareer(career.crrIdx)">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="20px"
@@ -58,7 +62,12 @@
             </td>
           </tr>
           <tr>
-            <td colspan="4" style="white-space: pre-wrap; text-align: left">{{ career.crrDesc }}</td>
+            <th colspan="4" class="custom-th">담당업무</th>
+          </tr>
+          <tr>
+            <td colspan="4" style="white-space: pre-wrap; text-align: left">
+              {{ career.crrDesc }}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -72,40 +81,22 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { onMounted } from "vue";
-import { ResumeAddTable } from "../../../../api/axiosApi/resumeApi";
+import { useQuery } from "@tanstack/vue-query";
+import { resumeDetailCareerApi } from "../../../../api/resume/resumeDetailCareerApi";
+import { useResumeDeleteCareerMutation } from "../../../hook/resume/useResumeDeleteCareerMutation";
 
-const careerProperties = ref({
-  career: [],
-});
 const props = defineProps(["idx"]);
-const emit = defineEmits(["postSuccess"]);
+const { mutate: deleteCareer } = useResumeDeleteCareerMutation(props.idx);
 
-const careerDetail = async () => {
-  await axios.post(ResumeAddTable.ListCareer, { resIdx: props.idx }).then((res) => {
-    careerProperties.value = res.data;
-  });
-};
-
-const DeleteCareer = async (idx) => {
-  const param = {
-    resIdx: props.idx,
-    crrIdx: idx,
-  };
-  await axios.post(ResumeAddTable.DeleteCareer, param).then((res) => {
-    if (res.data.result === "success") {
-      careerDetail();
-    }
-  });
-};
-
-defineExpose({
-  careerDetail,
-});
-
-onMounted(() => {
-  careerDetail();
+const {
+  data: careerProperties,
+  isLoading,
+  isSuccess,
+} = useQuery({
+  queryKey: ["detailCareer"],
+  queryFn: () => resumeDetailCareerApi(props.idx),
+  staleTime: 10000, // 10초 동안 데이터가 신선하게 유지됨
+  cacheTime: 300000, // 5분 동안 캐시 유지
 });
 </script>
 
@@ -115,6 +106,13 @@ onMounted(() => {
   border-collapse: collapse;
   margin-top: 20px;
 
+  .custom-th {
+    border: 1px solid #ddd;
+    padding: 3px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #f5f5f5; /* thead 배경색과 동일 */
+  }
   th,
   td {
     border: 1px solid #ddd;

@@ -14,7 +14,7 @@
                         <tbody>
                             <tr>
                                 <th>현재 비밀번호</th>
-                                <td><input v-model="pw.password" type="text" /></td>
+                                <td><input v-model="pw.password" type="password" /></td>
                             </tr>
                         </tbody>
                     </table>
@@ -68,13 +68,13 @@ const handlerModal = () => {
     width: 500px;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="password"] {
     padding: 8px;
     margin-top: 5px;
     margin-bottom: 5px;
     border-radius: 4px;
     border: 1px solid #ccc;
-    // font-size: 13px;
     width: 200px;
 }
 

@@ -1,4 +1,4 @@
-<template>
+<template v-if="isSuccess">
   <table>
     <colgroup>
       <col width="10%" />
@@ -80,8 +80,10 @@
       </tr>
       <tr>
         <th>기업로고</th>
-        <td colspan="3">
-          <input type="file" id="fileInput" @change="handlerFile" />
+        <td colspan="3" class="fileClass">
+          <input type="file" style="display: none" id="fileInput" @change="handlerFile" />
+          <label class="img-label" htmlFor="fileInput">파일 첨부하기</label>
+          <span>{{ fileName ? fileName : detailValue.bizLogo }}</span>
         </td>
       </tr>
     </tbody>
@@ -98,156 +100,43 @@
 <script setup>
 import axios from "axios";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import { useUserInfo } from "../../../stores/userInfo";
 import { Company } from "../../../api/axiosApi/companyApi";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
+import { useCompanySearchQuery } from "../../hook/company/useCompanySearchQuery";
+import { useCompanyInsertMutation } from "../../hook/company/useCompanyInsertMutation";
+import { useCompanyUpdateMutation } from "../../hook/company/useCompanyUpdateMutation";
+import { useCompanyDeleteMutation } from "../../hook/company/useCompanyDeleteMutation";
 
 const userInfo = useUserInfo();
 const detailValue = ref({});
 const imageUrl = ref();
 const fileData = ref("");
-const router = useRouter();
-const queryClient = useQueryClient();
+const fileName = ref();
 
-// 초기 화면 로딩
-const searchDetail = async () => {
-  const param = { loginId: userInfo.user.loginId };
-  try {
-    const result = await axios.post(Company.SearchCompanyUpdateDetail, param);
-    if (
-      result.data.detail.fileExt === "jpg" ||
-      result.data.detail.fileExt === "gif" ||
-      result.data.detail.fileExt === "png" ||
-      result.data.detail.fileExt === "webp"
-    ) {
-      getFileImage(result.data.detail.bizIdx);
-    }
+const loginId = userInfo.user.loginId;
 
-    return result.data;
-  } catch (error) {
-    return error;
-  }
-};
-
-const { data: companyDetail, isSuccess } = useQuery({
-  queryKey: ["companyDetail"],
-  queryFn: searchDetail,
-});
-
-watchEffect(() => {
-  if (isSuccess.value && companyDetail.value) {
-    detailValue.value = toRaw(companyDetail.value.detail) || {};
-  }
-});
-
-// const apiSuccess = () => {
-//   alert("요청하신 작업에 성공하였습니다.");
-//   router.go(-1);
-//   queryClient.invalidateQueries({
-//     queryKey: ["companyList"],
-//   });
-// };
+// 기업 초기데이터 서치
+const { data: companyDetail, isSuccess } = useCompanySearchQuery({ loginId });
 
 // 기업 등록
-const insertCompanyDetail = async () => {
-  const validation = handlerValidation();
-  if (!validation) {
-    return;
-  }
-
-  const textData = {
-    ...detailValue.value,
-    loginId: userInfo.user.loginId,
-  };
-  const formData = new FormData();
-  if (fileData.value) formData.append("file", fileData.value);
-  formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
-  const res = await axios.post(Company.InsertCompany, formData);
-  return res.data;
-};
-
-const { mutate: handlerInsertBtn } = useMutation({
-  mutationFn: insertCompanyDetail,
-  mutationKey: ["companyInsert"],
-  onSuccess: (res) => {
-    if (res.result === "success") {
-      alert("기업이 등록되었습니다.");
-      router.go(-1);
-      queryClient.invalidateQueries({
-        queryKey: ["companyInsert"],
-      });
-    } else if (res.result === "fail") {
-      alert("기업등록에 실패했습니다.");
-    }
-  },
-});
+const { mutate: handlerInsertBtn } = useCompanyInsertMutation(loginId, detailValue, fileData, imageUrl, fileName);
 
 // 기업 수정
-const updateCompanyDetail = async () => {
-  const validation = handlerValidation();
-  if (!validation) {
-    return;
-  }
-  const textData = {
-    ...detailValue.value,
-    loginId: userInfo.user.loginId,
-  };
-  const formData = new FormData();
-  if (fileData.value) formData.append("file", fileData.value);
-  formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
-
-  const res = await axios.post(Company.UpdateCompany, formData);
-  return res.data;
-};
-
-const { mutate: handlerUpdateBtn } = useMutation({
-  mutationFn: updateCompanyDetail,
-  mutationKey: ["companyUpdate"],
-  onSuccess: (res) => {
-    if (res.result === "success") {
-      alert("기업정보가 수정되었습니다.");
-      router.go(-1);
-      queryClient.invalidateQueries({
-        queryKey: ["companyDetail"],
-      });
-    } else if (res.result === "fail") {
-      alert("기업정보 수정에 실패했습니다.");
-    }
-  },
-});
+const { mutate: handlerUpdateBtn } = useCompanyUpdateMutation(loginId, detailValue, fileData, imageUrl, fileName);
 
 // 기업 삭제
-const deleteCompanyDetail = async () => {
-  const res = await axios.post(Company.DeleteCompany, { loginId: userInfo.user.loginId });
-  return res.data;
-};
-
-const { mutate: handlerDeleteBtn } = useMutation({
-  mutationFn: deleteCompanyDetail,
-  mutationKey: ["companyDelete"],
-  onSuccess: (res) => {
-    if (res.result === "success") {
-      alert("기업이 삭제되었습니다.");
-      router.go(-1);
-      queryClient.invalidateQueries({
-        queryKey: ["companyDelete"],
-      });
-    } else if (res.result === "fail") {
-      alert("기업삭제에 실패했습니다.");
-    }
-  },
-});
+const { mutate: handlerDeleteBtn } = useCompanyDeleteMutation({ loginId });
 
 // 이미지 관련
 const handlerFile = (e) => {
   const fileInfo = e.target.files;
   const fileInfoSplit = fileInfo[0].name.split(".");
   const fileExtension = fileInfoSplit[1].toLowerCase();
-  if (fileExtension === "jpg" || fileExtension === "gif" || fileExtension === "png") {
+  if (fileExtension === "jpg" || fileExtension === "gif" || fileExtension === "png" || fileExtension === "webp") {
     imageUrl.value = URL.createObjectURL(fileInfo[0]);
   }
   fileData.value = fileInfo[0];
+  fileName.value = fileInfo[0].name;
 };
 
 const getFileImage = (idx) => {
@@ -295,56 +184,15 @@ const openDaumPostcode = () => {
   }).open();
 };
 
-// 등록,수정 유효성 검사
-const handlerValidation = () => {
-  const today = new Date();
-  const urlPattern = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(:\d+)?(\/[^\s]*)?$/;
-  const inputs = detailValue.value;
-
-  if (!inputs.bizName) {
-    alert("사업자명을 입력해 주세요.");
-    return;
-  } else if (!inputs.bizCeoName) {
-    alert("사업자 대표를 입력해 주세요.");
-    return;
-  } else if (!inputs.bizContact) {
-    alert("연락처를 입력해 주세요.");
-    return;
-  } else if (!inputs.bizAddr) {
-    alert("사업자 주소를 입력해 주세요.");
-    return;
-  } else if (!inputs.bizEmpCount) {
-    alert("사원수를 선택해 주세요.");
-    return;
-  } else if (!inputs.bizWebUrl) {
-    alert("홈페이지 주소를 입력해 주세요.");
-    return;
-  } else if (!inputs.bizFoundDate) {
-    alert("설립일을 입력해 주세요.");
-    return;
-  } else if (!inputs.bizRevenue) {
-    alert("매출액을 입력해 주세요.");
-    return;
-  } else if (!inputs.bizIntro) {
-    alert("기업소개를 입력해 주세요.");
-    return;
-    // } else if (!inputs.fileData) {
-    //   alert('로고를 등록해 주세요.');
-    //   return;
+onMounted(() => {
+  if (isSuccess.value && companyDetail.value.detail) {
+    detailValue.value = toRaw(companyDetail.value.detail) || {};
+    const fileExt = companyDetail.value.detail.fileExt;
+    if (fileExt === "jpg" || fileExt === "gif" || fileExt === "png" || fileExt === "webp") {
+      getFileImage(companyDetail.value.detail.bizIdx);
+    }
   }
-
-  if (today < new Date(inputs.bizFoundDate)) {
-    alert("설립일은 오늘보다 이전이어야 합니다.");
-    return;
-  }
-
-  if (!urlPattern.test(inputs.bizWebUrl)) {
-    alert("홈페이지 주소는 올바른 URL 형식으로 입력해 주세요.");
-    return;
-  }
-
-  return true;
-};
+});
 </script>
 
 <style lang="scss" scoped>
@@ -377,7 +225,9 @@ textarea {
   vertical-align: middle;
 }
 
-.button-box {
+div .button-box {
+  display: flex;
+  justify-content: center;
   text-align: center;
   margin-top: 10px;
 }
@@ -392,7 +242,7 @@ img {
 }
 
 .img-label {
-  margin-top: 10px;
+  margin-right: 5px;
   padding: 6px 25px;
   background-color: #ccc;
   border-radius: 4px;
@@ -420,5 +270,11 @@ img {
     width: 70%;
     margin-right: 10px;
   }
+}
+
+.fileClass {
+  padding-left: 10px;
+  text-align: inline-block;
+  text-align: left;
 }
 </style>

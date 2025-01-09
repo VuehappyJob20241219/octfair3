@@ -1,19 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router';
-import { qnaDetailSaveApi } from '../../api/qna/qnaDetailSaveApi';
+import { qnaDetailSaveApi } from '../../../api/qna/qnaDetailSaveApi';
 
-export const useQnaDetailSaveMutation = (detailValue, idx, fileData) => {
-    const queryClient = useQueryClient();
-    const router = useRouter();
-
-    return useMutation({
+export const useQnaDetailSaveMutation = (qnaDetail,fileData,emits) => {
+     return useMutation({
         mutationKey: ['qnaSave'],
-        mutationFn: () => qnaDetailSaveApi(detailValue, idx, fileData),
-        onSuccess: () => {
-            router.go(-1);
-            queryClient.invalidateQueries({ // 'noticeList'란 key로 NoticeMain에 있는 useQuery를 가동시켜 list 새로고침
-                queryKey: ['qnaList']
-            });
+        mutationFn: () => qnaDetailSaveApi(qnaDetail,fileData),
+        onSuccess: (data) => {
+            if (data.result.toUpperCase() === "SUCCESS") {
+                alert("등록 성공했습니다.");
+                emits("close");                
+              } else {
+                alert("등록 실패했습니다.");
+              }
         },
     });
 };

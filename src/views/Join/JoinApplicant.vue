@@ -1,36 +1,40 @@
 <template>
-    <ContextBox class="context-box">일반회원가입</ContextBox>
     <div class="container">
-        <div class="content">
-            <JoinApplicantMain></JoinApplicantMain>
-        </div>
+        <ContextBox class="context-box">회원가입</ContextBox>
+        <JoinApplicantMain></JoinApplicantMain>
     </div>
 </template>
 
 
 <style lang="scss" scoped>
+.context-box {
+    margin-top: 7px;
+}
+
 .container {
     display: flex;
-    /* 컨테이너를 flexbox로 설정 */
-    align-items: flex-start;
-    /* 위쪽 정렬 */
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: #3bb2ea;
-}
-
-.content {
-    flex: 1;
-    padding-left: 20px;
-    margin: 0;
-    background-color: white;
-    min-width: 500px;
+    flex-direction: column;
+    /* 세로로 배치 */
+    // align-items: center;
+    justify-content: flex-start;
+    /* 위에서부터 배치 */
     max-width: 50%;
+    background-color: white;
+    border: 2px solid #E0E0E0;
+    /* 테두리 색상과 두께 */
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 20px;
+    padding-top: 13px;
+    /* 상하 여백 */
 }
 
-.img_2148610457 {
-    // max-height: 200%;
-    max-width: 100%;
+.context-box {
+    width: 100%;
+    /* 부모와 동일한 너비 */
+    text-align: center;
+    /* 텍스트 중앙 정렬 */
+    padding: 20px;
+    /* 상하 여백 */
 }
 </style>

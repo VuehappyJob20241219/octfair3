@@ -9,6 +9,7 @@ export const useNoticeDetailUpdateMutation = (detailValue, fileData, idx) => {
     mutationFn: () => noticeDetailUpdateApi(detailValue.value, fileData.value, idx),
     mutationKey: ["noticeUpdate"],
     onSuccess: () => {
+      alert("수정 되었습니다.")
       router.go(-1);
       queryClient.invalidateQueries({
         queryKey: ["noticeList"],
