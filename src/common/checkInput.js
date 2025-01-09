@@ -1,57 +1,30 @@
-export const checkInputNull = (inputFields) => {
+export const checkInput = (inputFields) => {
+  const validationSet = [
+    { key: "UserType", message: "유저 타입을 선택해주세요." },
+    { key: "LoginId", message: "아이디를 입력해주세요." },
+    { key: "PasswordOk", message: "비밀번호 확인란을 입력해주세요" },
+    { key: "Password", message: "비밀번호를 입력해주세요." },
+    { key: "Name", message: "이름을 입력해주세요." },
+    { key: "Sex", message: "성별을 선택해주세요." },
+    { key: "Birthday", message: "생일을 선택해주세요." },
+    { key: "Phone", message: "전화번호를 입력해주세요." },
+    { key: "Email", message: "이메일을 입력해주세요." },
+    { key: "RegDate", message: "가입일자를 선택해주세요." },
+    { key: "ZipCode", message: "우편번호를 입력해주세요." },
+  ];
+
+  //여기는 Null체크
   for (const [key, inputField] of Object.entries(inputFields)) {
     if (!inputField) {
-      if (key.includes("UserType")) {
-        alert(`유저 타입을 선택해주세요.`);
-        return false;
-      }
-
-      if (key.includes("LoginId")) {
-        alert(`아이디를 입력해주세요.`);
-        return false;
-      }
-
-      if (key.includes("PasswordOk")) {
-        alert(`비밀번호 확인란을 입력해주세요.`);
-        return false;
-      }
-
-      if (key.includes("Password")) {
-        alert(`비밀번호를 입력해주세요.`);
-        return false;
-      }
-
-      if (key.includes("Name")) {
-        alert(`이름을 입력해주세요.`);
-        return false;
-      }
-
-      if (key.includes("Sex")) {
-        alert(`성별을 선택해주세요.`);
-        return false;
-      }
-
-      if (key.includes("Birthday")) {
-        alert(`생일을 선택해주세요.`);
-        return false;
-      }
-
-      if (key.includes("Phone")) {
-        alert(`전화번호를 입력해주세요.`);
-        return false;
-      }
-
-      if (key.includes("Email")) {
-        alert(`이메일을 입력해주세요.`);
-        return false;
-      }
-
-      if (key.includes("ZipCode")) {
-        alert(`우편번호를 입력해주세요.`);
-        return false;
+      for (const validation of validationSet) {
+        if (key.includes(validation.key)) {
+          alert(`${validation.message}`);
+          return false;
+        }
       }
     }
 
+    // 아래는 유효성 검사
     if (
       !key.includes("PasswordOk") &&
       key.includes("Password") &&
@@ -69,6 +42,10 @@ export const checkInputNull = (inputFields) => {
     }
 
     if (key.includes("Birthday") && !checkDateFuture(inputField, "생일을")) {
+      return false;
+    }
+
+    if (key.includes("RegDate") && !checkDateFuture(inputField, "가입일자를")) {
       return false;
     }
   }
