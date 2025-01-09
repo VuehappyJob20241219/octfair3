@@ -166,17 +166,10 @@
 									</div>
 								</div>								
 							</aside>
-        </div>
-        <template v-if="userType === 'b'">
-          <div class="d-flex justify-content-center mt-5 ">
-            <span style="color: red">
-              '대기중' 공고만 수정 및 삭제 가능합니다.
-            </span>
-          </div>
-        </template>
+        </div>        
         
         <div class="d-flex justify-content-center m-2">
-          <template v-if="userType === 'B' ">
+          <template v-if="userType === 'B' && postDetail.appStatus === '대기중'">
             <div>
               <b-button
                 variant="primary"
@@ -241,7 +234,6 @@
 
 <script setup>
 import { useModalStore } from "@/stores/modalState";
-import { useQuery } from "@tanstack/vue-query";
 import axios from "axios";
 import "bootstrap-vue-3";
 import { useRoute, useRouter } from "vue-router";

@@ -16,7 +16,7 @@
       </tr>
       <tr v-if="params.postIdx">
         <th>(수정 전 경력)</th>
-        <td>{{expRequired}}{{" "}}{{expYears}}</td>
+        <td class="modify_ex">{{expRequired}}{{" "}}{{expYears}}</td>
       </tr>
       <tr>
         <th>경력 여부<span className="font_red">*</span></th>
@@ -41,6 +41,7 @@
             v-model="postDetail.expYears"
             name="expYears"
             :disabled="!checkBox || !checkBox.find(checkbox => checkbox.id === 2 && checkbox.checked)">
+            <option disabled value="">경력 선택</option>
               <option value="1년 이상">
                 1년 이상
               </option>
@@ -113,19 +114,17 @@
       </tr>
       <tr v-if="params.postIdx">
         <th>(수정 전 채용절차)</th>
-        <td colspan="2">{{hirProcess}}</td>
+        <td colspan="3" class="modify_ex">{{hirProcess}}</td>
       </tr>
       <tr>
-        <th>채용절차<span className="font_red">*</span></th>
-        <td colspan="2">
-          <div className="recruit-process-wrapper" >
+        <th rowspan="2">채용절차<span className="font_red">*</span></th>
+        <td colspan="2">          
             <input
               type="text"
               name="hirProcess"
               v-model="postDetail.recruitProcess"
               placeholder="과정을 하나씩 적은 후 절차등록 버튼을 눌러주세요"
-            />
-          </div>
+            />          
         </td>
         <td>
             <b-button variant="outline-success" @click="handleClick"  >
@@ -133,10 +132,13 @@
             </b-button>
             <b-button variant="danger" @click="handleClickRefresh">
               초기화
-            </b-button>
-          
-          <label className="recruit-process-list" >
-            {{recruitProcessList.join(" - ")}} 
+            </b-button>   
+        </td>        
+      </tr>
+      <tr>
+        <td colspan="3">
+          <label className="recruit-process-list" placeholder="입력된 채용절차가 표시됩니다.">
+            {{ recruitProcessList.length > 0 ? recruitProcessList.join(" - ") : "입력된 채용절차가 표시됩니다." }}
           </label>
         </td>
       </tr>
@@ -186,8 +188,10 @@
       </tr>
       <tr>
         <th>첨부파일</th>
-        <td colSpan='3'>
-          <input type="file" @change="handlerFile" />
+        <td  class="fileClass">
+          <input type="file" style="display: none" id="fileInput" @change="handlerFile" />
+          <label class="img-label" htmlFor="fileInput">파일 첨부하기</label>
+          <span>{{ fileData.name }}</span>
         </td>
       </tr>
     </thead>
@@ -207,9 +211,7 @@
 </template>
 
 <script setup>
-import axios from 'axios';
 import { ref } from 'vue';
-import { useQuery } from "@tanstack/vue-query";
 import router from "../../../../router";
 import { useBizPostDetailInsertMutation } from '../../../hook/bizPost/useBizPostDetailInsertMutation';
 import { useBizPostDetailQuery } from '../../../hook/bizPost/useBizPostDetailQuery';
@@ -219,6 +221,7 @@ const expYears = ref(null);
 const hirProcess = ref(null);
 const { params } = useRoute();
 const postDetail = ref({});
+ 
 const checkBox = reactive([
       { id: 1, label: "신입", checked: false },
       { id: 2, label: "경력", checked: false },
@@ -228,40 +231,16 @@ const recruitProcessList = reactive([]);
 const fileData = ref("");
 if(Object.keys(params).length>0){
   const { data: detail , refetch, isSuccess } = useBizPostDetailQuery(params);
-  // const searchList = async () => {
-  //   const result = await axios.post(
-  //   "/api/manage-hire/readPostDetailBody.do",
-  //   params,
-  //   );
-  //   if(result.data){
-  //     postDetail.value = result.data.postDetail;
-  //   }
-  //   expRequired.value=postDetail.value.expRequired;
-  //   expYears.value=postDetail.value.expYears;
-  //   hirProcess.value=postDetail.value.hirProcess;
-  //   return result.data;
-  // };
 
-  // const {
-  // data,
-  // isLoading,
-  // isError,
-  // } = useQuery({
-  // queryKey: ["bizPostDetail"],
-  // queryFn: searchList,
-  // });
   watchEffect(() => {
   if (isSuccess.value && detail.value) {
-    postDetail.value = toRaw(detail.value.postDetail);   
+    postDetail.value = toRaw(detail.value.postDetail); 
     expRequired.value=detail.value.postDetail.expRequired;
     expYears.value=detail.value.postDetail.expYears;
     hirProcess.value=detail.value.postDetail.hirProcess; 
-  }
-  
-});
+    }  
+  });
 }
-
-
 
 //체크박스 상태 변경
 const handleCheckboxChange = (id) => {
@@ -290,6 +269,11 @@ const handleClick = () => {
     }
     
     if (trimmedProcess === "") return; //빈 값 방지
+
+    if (recruitProcessList.length >= 8) {
+      alert("채용 절차는 최대 8단계까지만 가능합니다.");
+      return;
+    }
     
     recruitProcessList.push(trimmedProcess); //기존값 + 새로입력한값
     recruitProcessList.join(" - ");
@@ -350,40 +334,26 @@ const handlerInsertBtn = () => {
       return;  // 알림을 띄운 후, 즉시 종료하여 다른 필드는 검사하지 않음
     }
   }
+
+  if(postDetail.value.expYears === ""){
+    alert("경력을 선택해 주세요.");
+    return;
+  }
+
   if (!postDetail.value.expRequired.includes('경력')){
     postDetail.value.expYears = "";
   }
+
+  if(postDetail.value.appStatus != '대기중'){
+    alert("'대기중'상태가 아닌 공고는 수정할 수 없습니다.");
+    return;
+  }
+
   handlerInsert();
 }
 
 const { mutate:handlerInsert} = useBizPostDetailInsertMutation(postDetail,fileData,params);
 
-// const handlerInsert = () => {
-//   const textData = {
-//     ...postDetail.value,
-//   };
-//   const formData = new FormData();
-//   if (fileData.value) {
-//     formData.append("file", fileData.value);
-//   }
-//   formData.append(
-//     "text",
-//     new Blob([JSON.stringify(textData)], {
-//       type: "application/json",
-//     }),
-//   );
-//   axios.post(`/api/manage-hire/managehireSaveFileForm.do`, formData).then((res) => {
-//     if (res.data.result === "success") {      
-//       if(params.postIdx){
-//         alert("성공적으로 수정되었습니다.");
-//         router.push({ name: "bizPostDetail", params: { postIdx: params.postIdx } });
-//       }else{
-//         alert("성공적으로 등록되었습니다.");
-//         router.push("post.do");
-//       }
-//     }
-//   });  
-// }
 
 const navigatePost = () => {
   router.go(-1); // 뒤로가기  
@@ -392,6 +362,7 @@ const navigatePost = () => {
 const handlerFile = (e) => {
   const fileinfo = e.target.files;
   fileData.value = fileinfo[0];
+  console.log(fileData.value);
 };
 
 
@@ -420,6 +391,10 @@ table {
   }
 }
 
+.modify_ex{
+  background-color: #eeedae;
+}
+
 label {
   display: flex;
   flex-direction: column;
@@ -440,7 +415,7 @@ label {
 input,
 select,
 textarea {
-  width: 98%;
+  width: 95%;
   height: 95%;
   border: none;
   vertical-align: middle;
@@ -482,6 +457,7 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding-left: 10px;
 }
 
 .checkbox-container {
@@ -540,5 +516,37 @@ textarea {
 .checkbox-label {
   font-size: 16px;
   margin-left: 10px;
+}
+
+.img-label {
+  height:35px;
+  margin-top:5px;
+  margin-right: 10px;
+  padding: 6px 25px;
+  background-color: #ccc;
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.9);
+  cursor: pointer;
+
+  &:hover {
+    background-color: #45a049;
+    color: white;
+  }
+
+  &:active {
+    background-color: #3e8e41;
+    box-shadow: 0 2px #666;
+    transform: translateY(2px);
+  }
+}
+
+.fileClass {
+  padding-left: 10px;
+  display:flex;
+  text-align: left;
+}
+
+span{
+  vertical-align: middle;
 }
 </style>

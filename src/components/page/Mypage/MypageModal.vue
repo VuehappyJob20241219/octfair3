@@ -14,15 +14,17 @@
                         <tbody>
                             <tr>
                                 <th>현재 비밀번호</th>
-                                <td><input v-model="inputPw.passwd" type="password" /></td>
+                                <td><input v-model="inputPw.passwd" type="password" autocomplete="new-password" /></td>
                             </tr>
                             <tr>
                                 <th>새 비밀번호</th>
-                                <td><input v-model="inputPw.newPasswd" type="password" /></td>
+                                <td><input v-model="inputPw.newPasswd" type="password" autocomplete="new-password" />
+                                </td>
                             </tr>
                             <tr>
                                 <th>새 비밀번호 확인</th>
-                                <td><input v-model="inputPw.newPasswdConfirm" type="password" /></td>
+                                <td><input v-model="inputPw.newPasswdConfirm" type="password"
+                                        autocomplete="new-password" /></td>
                             </tr>
                         </tbody>
                     </table>
