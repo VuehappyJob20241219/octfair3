@@ -597,7 +597,6 @@ const {
   data: updateInfo,
   isLoading: updateIsLoading,
   isSuccess: updateIsSuccess,
-  refetch: resumeUdateInfoRefetch,
 } = useQuery({
   queryKey: ["resumeUdateInfo"],
   queryFn: async () => {
@@ -652,7 +651,7 @@ const handlerSaveBtn = async () => {
         name: "MyResumes",
         query: { resumeNum: basicinformation.value.resIdx }, // query로 전달
       });
-      resumeUdateInfoRefetch();
+      MyResumes(parseInt(basicinformation.value.resIdx, 10));
     }
   });
 };
@@ -752,6 +751,7 @@ const addCareer = async () => {
       return;
     }
   }
+
   if (new Date(careerInfo.value.start_date) > today) {
     alert("입사일은 오늘 날짜보다 미래로 설정할 수 없습니다.");
     return;
@@ -929,7 +929,7 @@ const deleteFile = async (idx) => {
   };
   await axios.post(ResumeAddTable.DeleteAttachFile, param).then((res) => {
     if (res.data.result === "success") {
-      resumeUdateInfoRefetch();
+      MyResumes(idx);
       imageUrl.value = "/no_image.jpg";
       fileData.value = {};
     }
@@ -943,22 +943,27 @@ const triggerFileInput = () => {
 watchEffect(() => {
   if (baseIdx.value) {
     if (updateInfo) {
+      updateInfo.value;
+      console.log("업데이트 밸류 값 부여 전", updateInfo.value);
       basicinformation.value = toRaw(updateInfo.value);
+      console.log("업데이트 밸류 값 부여", basicinformation.value);
     }
   } else {
     if (basicInfo.value) {
       basicinformation.value = toRaw(basicInfo.value);
+      console.log("베이직 벨류 값 부여", basicinformation.value);
     }
   }
 });
 
-watch(() => basicinformation?.value?.fileName, getFileImage);
+watch(() => basicinformation?.value?.resIdx, getFileImage);
 
 onMounted(() => {
   const params = new URLSearchParams(window.location.search); // URL의 쿼리 파라미터 추출
   const resumeNum = params.get("resumeNum"); // 'resumeNum' 값 가져오기
   if (resumeNum) {
     baseIdx.value = parseInt(resumeNum, 10); // 숫자로 변환 후 함수 호출
+    console.log("baseIdx.value", baseIdx.value);
   }
 });
 </script>

@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    2: typeof import('./src/components/page/Apply/ResumeDetail/ResumeDetail copy 2.vue')['default']
     ApplicantMain: typeof import('./src/components/page/Manage-user/ApplicantMain.vue')['default']
     ApplicantModal: typeof import('./src/components/page/Manage-user/ApplicantModal.vue')['default']
     ApplicantSearch: typeof import('./src/components/page/Manage-user/ApplicantSearch.vue')['default']
@@ -60,6 +61,8 @@ declare module 'vue' {
     ResumeCareerView: typeof import('./src/components/page/Apply/ResumeList/ResumeCareerView.vue')['default']
     ResumeCertificationView: typeof import('./src/components/page/Apply/ResumeList/ResumeCertificationView.vue')['default']
     ResumeDetail: typeof import('./src/components/page/Apply/ResumeDetail/ResumeDetail.vue')['default']
+    'ResumeDetail copy': typeof import('./src/components/page/Apply/ResumeDetail/ResumeDetail copy.vue')['default']
+    'ResumeDetail copy 2': typeof import('./src/components/page/Apply/ResumeDetail/ResumeDetail copy 2.vue')['default']
     ResumeEducationView: typeof import('./src/components/page/Apply/ResumeList/ResumeEducationView.vue')['default']
     ResumeList: typeof import('./src/components/page/Apply/ResumeMain/ResumeList.vue')['default']
     ResumePreview: typeof import('./src/components/page/Apply/ResumeDetail/ResumePreview.vue')['default']

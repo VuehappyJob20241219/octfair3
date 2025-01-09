@@ -550,7 +550,7 @@
 import { useModalStore } from "@/stores/modalState";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import axios from "axios";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { Resume, ResumeAddTable } from "../../../../api/axiosApi/resumeApi";
 import { resumeBaseInfoApi } from "../../../../api/resume/resumeBaseInfoApi";
@@ -597,14 +597,15 @@ const {
   data: updateInfo,
   isLoading: updateIsLoading,
   isSuccess: updateIsSuccess,
-  refetch: resumeUdateInfoRefetch,
 } = useQuery({
   queryKey: ["resumeUdateInfo"],
   queryFn: async () => {
     return await resumeUpdateInfoApi(baseIdx.value);
   },
-  enabled: !!isResumeDetailPage,
+  enabled: isResumeDetailPage && baseIdx.value,
 });
+
+// const { data: updateInfo } = useResumeUdateInfoUsequery(baseIdx.value);
 
 const userParam = {
   loginId: user.loginId,
@@ -652,7 +653,7 @@ const handlerSaveBtn = async () => {
         name: "MyResumes",
         query: { resumeNum: basicinformation.value.resIdx }, // query로 전달
       });
-      resumeUdateInfoRefetch();
+      MyResumes(parseInt(basicinformation.value.resIdx, 10));
     }
   });
 };
@@ -752,6 +753,7 @@ const addCareer = async () => {
       return;
     }
   }
+
   if (new Date(careerInfo.value.start_date) > today) {
     alert("입사일은 오늘 날짜보다 미래로 설정할 수 없습니다.");
     return;
@@ -929,7 +931,7 @@ const deleteFile = async (idx) => {
   };
   await axios.post(ResumeAddTable.DeleteAttachFile, param).then((res) => {
     if (res.data.result === "success") {
-      resumeUdateInfoRefetch();
+      MyResumes(idx);
       imageUrl.value = "/no_image.jpg";
       fileData.value = {};
     }
@@ -939,20 +941,20 @@ const deleteFile = async (idx) => {
 const triggerFileInput = () => {
   fileInput.value.click();
 };
-
 watchEffect(() => {
   if (baseIdx.value) {
-    if (updateInfo) {
+    if (updateInfo && updateInfo.value) {
       basicinformation.value = toRaw(updateInfo.value);
-    }
-  } else {
-    if (basicInfo.value) {
+      console.log("디테일 벨류 값 부여", basicinformation.value);
+    } else if (basicInfo.value) {
+      console.log("베이직 벨류 값 부여ㅁㄴㅇㄴㅁㅇ", basicInfo.value);
       basicinformation.value = toRaw(basicInfo.value);
+      console.log("베이직 벨류 값 부여", basicinformation.value);
     }
   }
 });
 
-watch(() => basicinformation?.value?.fileName, getFileImage);
+watch(() => basicinformation?.value?.resIdx, getFileImage);
 
 onMounted(() => {
   const params = new URLSearchParams(window.location.search); // URL의 쿼리 파라미터 추출

@@ -15,7 +15,7 @@
               <p><strong>이름:</strong> {{ resumeMainInfo.userNm }}</p>
               <p>
                 <strong>나이:</strong> {{ calculateAge(resumeMainInfo.birthday) }} 세 ({{
-                  resumeMainInfo.sex === 1 ? "남성" : "여성"
+                  resumeMainInfo.sex === "1" ? "남성" : "여성"
                 }})
               </p>
               <p><strong>전화번호:</strong> {{ resumeMainInfo.phone }}</p>
@@ -186,6 +186,9 @@ const newResumeCreate = () => {
 
 //이력서 상세보기로 이동
 const resumeIdxAdd = (resumeidx) => {
+  queryClient.removeQueries({
+    queryKey: ["resumeUdateInfo"],
+  });
   router.push({
     name: "MyResumes",
     query: { resumeNum: resumeidx },
