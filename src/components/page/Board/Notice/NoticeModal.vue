@@ -49,36 +49,13 @@ const fileData = ref("");
 
 const { data: noticeDetail, isSuccess } = useNoticeDetailSearchQuery(params.idx);
 
-watchEffect(() => {
-  if (isSuccess.value && noticeDetail.value) { 
-    console.log(noticeDetail.value.detail.fileExt);
-    if (
-      noticeDetail.value.detail.fileExt === "jpg" ||
-      noticeDetail.value.detail.fileExt === "gif" ||
-      noticeDetail.value.detail.fileExt === "png" ||
-      noticeDetail.value.detail.fileExt === "webp"
-    ) {      
-      getFileImage();
-    }
+watchEffect(() => {  
+  if (isSuccess.value && noticeDetail.value) {
     detailValue.value = {...toRaw(noticeDetail.value.detail)};
+    imageUrl.value = noticeDetail.value.imageUrl;
   }
 });
 
-const getFileImage = () => {
-  let param = new URLSearchParams();
-  param.append("noticeSeq", params.idx);
-  const postAction = {
-    url: "/api/board/noticeDownload.do",
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-  axios(postAction).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    imageUrl.value = url;
-    console.log(res);
-  });
-};
 
 const { mutate: handlerSaveBtn } = useNoticeDetailInsertMutation(detailValue, fileData, userInfo.user.loginId);
 const { mutate: handlerUpdateBtn } = useNoticeDetailUpdateMutation(detailValue, fileData, params.idx);
