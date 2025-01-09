@@ -1,5 +1,11 @@
 export const checkInput = (inputFields) => {
+  //// 여기는 Null체크 부분
   const validationSet = [
+    //기업정보
+    { key: "BizName", message: "사업자명을 입력하세요." },
+    { key: "BizFoundDate", message: "설립일을 입력해주세요." },
+
+    //회원유저
     { key: "UserType", message: "유저 타입을 선택해주세요." },
     { key: "LoginId", message: "아이디를 입력해주세요." },
     { key: "PasswordOk", message: "비밀번호 확인란을 입력해주세요" },
@@ -13,7 +19,6 @@ export const checkInput = (inputFields) => {
     { key: "ZipCode", message: "우편번호를 입력해주세요." },
   ];
 
-  //여기는 Null체크
   for (const [key, inputField] of Object.entries(inputFields)) {
     if (!inputField) {
       for (const validation of validationSet) {
@@ -24,7 +29,7 @@ export const checkInput = (inputFields) => {
       }
     }
 
-    // 아래는 유효성 검사
+    //// 아래는 유효성 검사
     if (
       !key.includes("PasswordOk") &&
       key.includes("Password") &&
@@ -33,7 +38,10 @@ export const checkInput = (inputFields) => {
       return false;
     }
 
-    if (key.includes("Phone") && !checkPhoneRule(inputField)) {
+    if (
+      (key.includes("Phone") || key.includes("Contact")) &&
+      !checkPhoneRule(inputField)
+    ) {
       return false;
     }
 
@@ -46,6 +54,13 @@ export const checkInput = (inputFields) => {
     }
 
     if (key.includes("RegDate") && !checkDateFuture(inputField, "가입일자를")) {
+      return false;
+    }
+
+    if (
+      key.includes("BizFoundDate") &&
+      !checkDateFuture(inputField, "설립일을")
+    ) {
       return false;
     }
   }
