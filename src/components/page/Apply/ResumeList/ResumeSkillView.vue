@@ -1,5 +1,9 @@
 <template>
-  <template v-if="skillProperties.skill.length > 0">
+  <template v-if="isLoading">
+    <p>로딩 중입니다...</p>
+  </template>
+  <template v-if="isSuccess">
+    <!-- <template v-if="skillProperties?.skill?.length > 0"> -->
     <div class="contents">
       <table class="skill-table">
         <colgroup>
@@ -26,7 +30,7 @@
             </td>
 
             <td rowspan="2">
-              <button @click="DeleteSkill(skill.skillIdx)">
+              <button @click="deleteSkill(skill.skillIdx)">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="20px"
@@ -53,38 +57,22 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { ResumeAddTable } from "../../../../api/axiosApi/resumeApi";
+import { useQuery } from "@tanstack/vue-query";
+import { resumeDetailSkillApi } from "../../../../api/resume/resumeDetailSkillApi";
+import { useResumeDeleteSkillMutation } from "../../../hook/resume/useResumeDeleteSkillMutation";
 
-const skillProperties = ref({
-  skill: [],
-});
 const props = defineProps(["idx"]);
+const { mutate: deleteSkill } = useResumeDeleteSkillMutation(props.idx);
 
-const skillDetail = async () => {
-  await axios.post(ResumeAddTable.ListSkill, { resIdx: props.idx }).then((res) => {
-    skillProperties.value = res.data;
-  });
-};
-
-const DeleteSkill = async (idx) => {
-  const param = {
-    resIdx: props.idx,
-    skillIdx: idx,
-  };
-  await axios.post(ResumeAddTable.DeleteSkill, param).then((res) => {
-    if (res.data.result === "success") {
-      skillDetail();
-    }
-  });
-};
-
-defineExpose({
-  skillDetail,
-});
-
-onMounted(() => {
-  skillDetail();
+const {
+  data: skillProperties,
+  isLoading,
+  isSuccess,
+} = useQuery({
+  queryKey: ["detailSkill"],
+  queryFn: () => resumeDetailSkillApi(props.idx),
+  staleTime: 10000, // 10초 동안 데이터가 신선하게 유지됨
+  cacheTime: 300000, // 5분 동안 캐시 유지
 });
 </script>
 

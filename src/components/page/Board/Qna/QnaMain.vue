@@ -88,20 +88,19 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
-import { useRoute } from "vue-router";
 import axios from "axios";
+import { inject, onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
+import { useModalStore } from "../../../../stores/modalState";
+import { useQnaLogState } from "../../../../stores/useQnaLogState";
+import { useUserInfo } from "../../../../stores/userInfo";
 import Pagination from "../../../common/Pagination.vue";
 import QnaDetail from "./QnaDetail.vue";
-import { useUserInfo } from "../../../../stores/userInfo";
-import { useQnaLogState } from "../../../../stores/useQnaLogState";
-import { inject } from "vue";
-import { useModalStore } from "../../../../stores/modalState";
 import QnaPassword from "./QnaPassword.vue";
 
 // 상태 값 설정
 const route = useRoute();
-const itemPerPage = ref(10);
+const itemPerPage = ref(5);
 const qnaList = ref();
 const cPage = ref(1);
 const qnaIdx = ref(0);

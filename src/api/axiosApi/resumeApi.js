@@ -8,6 +8,9 @@ export const Resume = {
   MyResume: "/api/apply/resumeDetail.do",
   MainResume: "/api/apply/mainResume.do",
   MainResumeDetail: "/api/apply/mainResumeDetail.do",
+  FileDownAtt: "/api/apply/AttachmentFileDownload.do",
+  // GetProfileimg: "/api/apply/resumeFileDownload.do",
+  GetProfileimg: "/api/apply/resumeFileDownload.do",
 };
 
 export const ResumeAddTable = {
