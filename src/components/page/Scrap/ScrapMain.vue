@@ -3,7 +3,7 @@
     <table>
         <thead>
                 <tr>
-                    <th></th>
+                    <th><input type="checkBox" @change="handleCheckAll" ></th>
                     <th>기업명</th>
                     <th>공고제목</th>
                     <th>자격요건</th>
@@ -23,7 +23,7 @@
                             </template>
 
                             <template v-else>
-                              <td><input type="checkBox" @change="handleCheckboxChange(scrap.scrapIdx)" ></td>
+                              <td><input type="checkBox" @change="handleCheckboxChange(scrap.scrapIdx)" :checked="checkedList.includes(scrap.scrapIdx)"></td>
                               <td>{{ scrap.postBizName }}</td>
                               <td class="post-title" @click="handlerPost(scrap.postIdx)">{{ scrap.postTitle }}</td>
                               <td>{{ scrap.postExpRequired }}</td>
@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { inject, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { useModalStore } from '../../../stores/modalState';
 import { useScrapListQuery } from '../../hook/scrap/useScrapListQuery';
 import ApplyUserResumeModal from '../Apply/ResumeList/ApplyUserResumeModal.vue';
@@ -84,6 +84,26 @@ const handleCheckboxChange = (scrapIdx) => {
   index > -1 ? checkedList.value.splice(index, 1) : checkedList.value.push(scrapIdx);
 };
 
+//체크박스 전체 선택
+const isCheckedAll = computed(() => {
+  // scrapList.scrapList가 비어있지 않고 체크된 리스트가 정확한지 확인
+  if (!scrapList.value || !scrapList.value.scrapList) return false;
+  return scrapList.value.scrapList.every((scrap) => checkedList.value.includes(scrap.scrapIdx));
+});
+
+const handleCheckAll = () => {
+  if (scrapList.value && scrapList.value.scrapList) {
+    // 전체 선택일 경우
+    if (isCheckedAll.value) {
+      checkedList.value = []; // 체크박스 해제
+    } else {
+      // 전체 선택
+      checkedList.value = scrapList.value.scrapList.map((scrap) => scrap.scrapIdx)
+    }
+  }
+};
+
+//입사지원
 const handlerModal = (postIdx, bizIdx, scrapList) => {
   selectedPostIdx.value = postIdx;
   selectedBizIdx.value = bizIdx;

@@ -354,7 +354,7 @@
                         <div
                           style="flex: 0 1 30%; padding-left: 10px"
                           v-if="att.fileName"
-                          @click="ResumeFileDownload(att.attIdx)"
+                          @click="fileDownloadAtt({ attIdx: att.attIdx, fileName: att.fileName })"
                         >
                           <span style="font-weight: 900" class="file-link"> {{ att.fileName }}</span>
                         </div>
@@ -401,7 +401,10 @@ import { useModalStore } from "@/stores/modalState";
 import axios from "axios";
 import printJS from "print-js";
 import { computed } from "vue";
-import { Resume } from "../../../../api/axiosApi/resumeApi";
+//import { Resume } from "../../../../api/axiosApi/resumeApi";
+import { useQuery } from "@tanstack/vue-query";
+import { resumePreviewApi } from "../../../../api/resume/resumePreviewApi";
+import { useResumeFileDownloadAttachmentMutation } from "../../../hook/resume/useResumeFileDownloadAttachmentMutation";
 
 const modalState = useModalStore();
 const props = defineProps(["idx"]);
@@ -412,7 +415,7 @@ const resumeDetailinformation = ref({
 const imageUrl = ref("/no_image.jpg");
 
 const resumeProperties = computed(() => {
-  return resumeDetailinformation.value.resumeInfo || {}; // resumeInfo가 없을 경우 빈 객체 반환
+  return resumeDetailinformation.value.resumeInfo || {};
 });
 
 const careerProperties = computed(() => {
@@ -420,31 +423,32 @@ const careerProperties = computed(() => {
 });
 
 const eduProperties = computed(() => {
-  return resumeDetailinformation.value.eduInfo || []; // resumeInfo가 없을 경우 빈 객체 반환
+  return resumeDetailinformation.value.eduInfo || [];
 });
 
 const skillProperties = computed(() => {
-  return resumeDetailinformation.value.skillInfo || []; // resumeInfo가 없을 경우 빈 객체 반환
+  return resumeDetailinformation.value.skillInfo || [];
 });
 
 const certProperties = computed(() => {
-  return resumeDetailinformation.value.certInfo || []; // resumeInfo가 없을 경우 빈 객체 반환
+  return resumeDetailinformation.value.certInfo || [];
 });
 
 const attachmentProperties = computed(() => {
-  return resumeDetailinformation.value.attInfo || []; // resumeInfo가 없을 경우 빈 객체 반환
+  return resumeDetailinformation.value.attInfo || [];
 });
 
-const closeModal = () => {
-  modalState.setModalState();
-};
-
-const resumeDetail = async () => {
-  await axios.post(Resume.PreviewResume, { resIdx: props.idx }).then((res) => {
-    resumeDetailinformation.value = res.data;
-    getFileImage();
-  });
-};
+const {
+  data: resumeInfo,
+  isLoading,
+  isSuccess,
+} = useQuery({
+  queryKey: ["previewResume"],
+  queryFn: async () => {
+    return await resumePreviewApi(props.idx, modalState);
+  },
+  //삭제 이력서 열람시 창닫아줘야 되서 캐시 관리 안햇음
+});
 
 const getFileImage = () => {
   let param = new URLSearchParams();
@@ -462,6 +466,8 @@ const getFileImage = () => {
   });
 };
 
+const { mutate: fileDownloadAtt } = useResumeFileDownloadAttachmentMutation();
+
 const printPage = () => {
   printJS({
     printable: "printArea", //영역 id 값
@@ -471,34 +477,15 @@ const printPage = () => {
   });
 };
 
-const ResumeFileDownload = (attIdx) => {
-  let param = new URLSearchParams();
-  param.append("attIdx", attIdx);
-  const postAction = {
-    url: "/api/apply/AttachmentFileDownload.do",
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-
-  axios(postAction).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    // attIdx에 맞는 파일 정보를 찾기
-    const attachment = attachmentProperties.value.find((item) => item.attIdx === attIdx);
-
-    if (attachment) {
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", attachment.fileName); // 인덱스를 사용하지 않고 객체를 직접 참조
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    }
-  });
+const closeModal = () => {
+  modalState.setModalState();
 };
 
-onMounted(() => {
-  resumeDetail();
+watchEffect(() => {
+  if (resumeInfo.value) {
+    resumeDetailinformation.value = toRaw(resumeInfo.value);
+    getFileImage(resumeDetailinformation?.value?.resIdx);
+  }
 });
 </script>
 

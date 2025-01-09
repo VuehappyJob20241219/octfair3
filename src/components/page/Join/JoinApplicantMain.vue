@@ -25,6 +25,9 @@
                     <tr>
                         <th>비밀번호<span style="color: red;">*</span></th>
                         <td><input v-model="register.password" type="password" /></td>
+                        <td><span class="tooltip-link" data-tooltip="비밀 번호는 숫자, 영문자, 특수문자 조합으로 8~15자리를 사용해야 합니다.">
+                                <img src="@/assets/info.png" alt="info-squared" />
+                            </span></td>
                     </tr>
                     <tr>
                         <th>비밀번호 확인<span style="color: red;">*</span></th>
@@ -135,7 +138,7 @@ input[type="password"] {
     border-radius: 4px;
     border: 1px solid #ccc;
     // font-size: 13px;
-    width: 200px;
+    width: 250px;
 }
 
 select {
@@ -202,12 +205,46 @@ table {
         // padding: 8px;
         text-align: left;
         border-bottom: 1px solid #ddd;
-        width: 100px;
+        width: 120px;
         height: 60px;
     }
 
     tbody {
         width: 500px;
     }
+}
+
+/* span태그 위치 option */
+.tooltip-link {
+    position: absolute;
+    // left: 25%;
+}
+
+/* span태그 option */
+.tooltip-link {
+    position: relative;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* 툴팁 option */
+.tooltip-link[data-tooltip]:not([data-tooltip=""])::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 10px 7px;
+    border-radius: 10px;
+    max-width: 300px;
+    width: 260px;
+    left: 25%;
+    top: 120%;
+    opacity: 0;
+    transition: all 0.5s linear;
+}
+
+.tooltip-link:hover[data-tooltip]:not([data-tooltip=""])::before,
+.tooltip-link:hover[data-tooltip]:not([data-tooltip=""])::after {
+    opacity: 1;
 }
 </style>

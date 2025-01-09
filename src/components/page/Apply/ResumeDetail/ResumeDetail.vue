@@ -546,6 +546,7 @@
 
 <script setup>
 import { useModalStore } from "@/stores/modalState";
+import { useQueryClient } from "@tanstack/vue-query";
 import axios from "axios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -583,6 +584,7 @@ const fileInput = ref(null); // 파일 입력 요소 참조
 const attFileData = ref({});
 const fileData = ref({});
 const today = new Date();
+const queryClient = useQueryClient();
 
 const basicInfoFn = async () => {
   const param = {
@@ -641,9 +643,7 @@ const handlerSaveBtn = async () => {
 };
 
 const handlerFile = (e) => {
-  console.log("handlerFile called"); // 확인용 로그 추가
   const fileInfo = e.target.files;
-  console.log("fileInfo", fileInfo);
   const fileInfoSplit = fileInfo[0].name.split(".");
   const fileExtension = fileInfoSplit[1].toLowerCase();
   if (fileExtension === "jpg" || fileExtension === "gif" || fileExtension === "png") {
@@ -755,7 +755,7 @@ const addCareer = async () => {
   await axios.post(ResumeAddTable.InsertCareer, text).then((res) => {
     if (res.data.result === "success") {
       careerAddState.value = !careerAddState.value;
-      resumeCareerView.value.careerDetail();
+      queryClient.invalidateQueries(["detailCareer"]);
     }
   });
 };
@@ -792,7 +792,7 @@ const addEdu = async () => {
   await axios.post(ResumeAddTable.InsertEducation, text).then((res) => {
     if (res.data.result === "success") {
       eduAddState.value = !eduAddState.value;
-      resumeEducationView.value.eduDetail();
+      queryClient.invalidateQueries(["detailEdu"]);
     }
   });
 };
@@ -815,7 +815,7 @@ const addSkill = async () => {
   await axios.post(ResumeAddTable.InsertSkill, text).then((res) => {
     if (res.data.result === "success") {
       skillAddState.value = !skillAddState.value;
-      resumeSkillView.value.skillDetail();
+      queryClient.invalidateQueries(["detailSkill"]);
     }
   });
 };
@@ -840,7 +840,7 @@ const addCert = async () => {
   await axios.post(ResumeAddTable.InsertCertification, text).then((res) => {
     if (res.data.result === "success") {
       certAddState.value = !certAddState.value;
-      resumeCertificationView.value.certDetail();
+      queryClient.invalidateQueries(["detailCert"]);
     }
   });
 };
@@ -882,7 +882,7 @@ const addAtt = async () => {
   await axios.post(ResumeAddTable.InsertAttachment, formData).then((res) => {
     if (res.data.result === "success") {
       attAddState.value = !attAddState.value;
-      resumeAttachmentView.value.attachmentDetail();
+      queryClient.invalidateQueries(["detailAtt"]);
     }
   });
 };

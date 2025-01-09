@@ -1,5 +1,9 @@
 <template>
-  <template v-if="certificationProperties.cert.length > 0">
+  <template v-if="isLoading">
+    <p>로딩 중입니다...</p>
+  </template>
+  <template v-if="isSuccess">
+    <!-- <template v-if="certificationProperties?.cert.length > 0"> -->
     <div class="contents">
       <table class="career-table">
         <colgroup>
@@ -35,7 +39,7 @@
               <span>{{ cert.acqDate.substr(0, 7) }}</span>
             </td>
             <td rowspan="2">
-              <button @click="DeleteCert(cert.certIdx)">
+              <button @click="deleteCert(cert.certIdx)">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="20px"
@@ -62,38 +66,23 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { ResumeAddTable } from "../../../../api/axiosApi/resumeApi";
+import { useQuery } from "@tanstack/vue-query";
+import { resumeDetailCertApi } from "../../../../api/resume/resumeDetailCertApi";
+import { useResumeDeleteCertMutation } from "../../../hook/resume/useResumeDeleteCertMutation";
 
-const certificationProperties = ref({
-  cert: [],
-});
 const props = defineProps(["idx"]);
 
-const certDetail = async () => {
-  await axios.post(ResumeAddTable.ListCertification, { resIdx: props.idx }).then((res) => {
-    certificationProperties.value = res.data;
-  });
-};
+const { mutate: deleteCert } = useResumeDeleteCertMutation(props.idx);
 
-const DeleteCert = async (idx) => {
-  const param = {
-    resIdx: props.idx,
-    certIdx: idx,
-  };
-  await axios.post(ResumeAddTable.DeleteCertification, param).then((res) => {
-    if (res.data.result === "success") {
-      certDetail();
-    }
-  });
-};
-
-defineExpose({
-  certDetail,
-});
-
-onMounted(() => {
-  certDetail();
+const {
+  data: certificationProperties,
+  isLoading,
+  isSuccess,
+} = useQuery({
+  queryKey: ["detailCert"],
+  queryFn: () => resumeDetailCertApi(props.idx),
+  staleTime: 10000, // 10초 동안 데이터가 신선하게 유지됨
+  cacheTime: 300000, // 5분 동안 캐시 유지
 });
 </script>
 

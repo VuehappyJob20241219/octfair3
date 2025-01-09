@@ -5,5 +5,6 @@ export const useApplicantListSearchQuery = (injectedValue, cPage) => {
   return useQuery({
     queryKey: ["applicantList", injectedValue, cPage],
     queryFn: () => applicantListSearchApi(injectedValue, cPage),
+    staleTime: 1000 * 60,
   });
 };

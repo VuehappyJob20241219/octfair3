@@ -70,8 +70,9 @@
 
 <script setup>
 import axios from "axios";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { Company } from "../../../api/axiosApi/companyApi";
+import { useQuery } from "@tanstack/vue-query";
 
 const companyDetail = ref({});
 const imageUrl = ref("");
@@ -89,6 +90,25 @@ const searchDetail = () => {
       getFileImage(params.bizIdx);
     }
   });
+};
+
+// const { data: companyDetail, isLodaing, isSuccess } = useCompanyDetailSearchQuery();
+
+const useCompanyDetailSearchQuery = () => {
+  return useQuery({
+    queryKey: ["companyDetailSearch"],
+    queryFn: () => companyDetail(),
+    staleTime: 1000 * 60,
+  });
+};
+
+const companyDetailSearchApi = async () => {
+  const param = URLSearchParams({
+    ...injectedValue,
+  });
+  const result = await axios.post(Company.SearchCompanyDetail + params.postIdx + "/" + params.bizIdx, param);
+
+  return result.data;
 };
 
 const getFileImage = (idx) => {

@@ -9,35 +9,37 @@
       <tr>
         <th>사업자명</th>
         <td>
-          <input type="text" v-model="companyDetail.bizName" />
+          <input type="text" v-model="detailValue.bizName" />
         </td>
         <td rowspan="8" @click="fileDownload">
-          <img :src="imageUrl" />
+          <div v-if="imageUrl">
+            <img :src="imageUrl" />
+          </div>
         </td>
       </tr>
       <tr>
         <th>사업자 대표</th>
         <td>
-          <input type="text" v-model="companyDetail.bizCeoName" />
+          <input type="text" v-model="detailValue.bizCeoName" />
         </td>
       </tr>
       <tr>
         <th>연락처</th>
         <td>
-          <input type="text" v-model="companyDetail.bizContact" @change="companyPhoneNumChange" />
+          <input type="text" v-model="detailValue.bizContact" @change="companyPhoneNumChange" />
         </td>
       </tr>
       <tr>
         <th>사업자 주소</th>
         <td class="address">
-          <input type="text" v-model="companyDetail.bizAddr" />
+          <input type="text" v-model="detailValue.bizAddr" />
           <b-button variant="outline-success" @click="openDaumPostcode">찾기</b-button>
         </td>
       </tr>
       <tr>
         <th>사원수</th>
         <td>
-          <select v-model="companyDetail.bizEmpCount">
+          <select v-model="detailValue.bizEmpCount">
             <option value="10명 이하">10명 이하</option>
             <option value="50명 이하">50명 이하</option>
             <option value="100명 이하">100명 이하</option>
@@ -49,19 +51,19 @@
       <tr>
         <th>홈페이지 주소</th>
         <td>
-          <input type="text" v-model="companyDetail.bizWebUrl" />
+          <input type="text" v-model="detailValue.bizWebUrl" />
         </td>
       </tr>
       <tr>
         <th>설립일</th>
         <td>
-          <input type="date" v-model="companyDetail.bizFoundDate" />
+          <input type="date" v-model="detailValue.bizFoundDate" />
         </td>
       </tr>
       <tr>
         <th>매출액</th>
         <td>
-          <select v-model="companyDetail.bizRevenue">
+          <select v-model="detailValue.bizRevenue">
             <option value="10억 이하">10억 이하</option>
             <option value="100억 이하">100억 이하</option>
             <option value="1000억 이하">1000억 이하</option>
@@ -73,22 +75,24 @@
       <tr>
         <th>기업소개</th>
         <td colspan="3" style="width: 95%">
-          <textarea rows="6" v-model="companyDetail.bizIntro"></textarea>
+          <textarea rows="6" v-model="detailValue.bizIntro"></textarea>
         </td>
       </tr>
       <tr>
         <th>기업로고</th>
-        <td colspan="3">
-          <input type="file" id="fileInput" @change="handlerFile" />
+        <td colspan="3" class="fileClass">
+          <input type="file" style="display: none" id="fileInput" @change="handlerFile" />
+          <label class="img-label" htmlFor="fileInput">파일 첨부하기</label>
+          <span>{{ fileName ? fileName : detailValue.bizLogo }}</span>
         </td>
       </tr>
     </tbody>
   </table>
   <div class="button-box">
-    <b-button variant="primary" @click="companyDetail.bizIdx ? handlerCompanyUpdate() : handlerCompanyInsert()">
-      {{ companyDetail.bizIdx ? "수정" : "등록" }}
+    <b-button variant="primary" @click="detailValue.bizIdx ? handlerUpdateBtn() : handlerInsertBtn()">
+      {{ detailValue.bizIdx ? "수정" : "등록" }}
     </b-button>
-    <b-button variant="danger" @click="handlerCompanyDelete()">삭제</b-button>
+    <b-button variant="danger" @click="handlerDeleteBtn()">삭제</b-button>
     <b-button variant="secondary" @click="$router.go(-1)">돌아가기</b-button>
   </div>
 </template>
@@ -96,87 +100,53 @@
 <script setup>
 import axios from "axios";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import { useUserInfo } from "../../../stores/userInfo";
 import { Company } from "../../../api/axiosApi/companyApi";
+import { useCompanySearchQuery } from "../../hook/company/useCompanySearchQuery";
+import { useCompanyInsertMutation } from "../../hook/company/useCompanyInsertMutation";
+import { useCompanyUpdateMutation } from "../../hook/company/useCompanyUpdateMutation";
+import { useCompanyDeleteMutation } from "../../hook/company/useCompanyDeleteMutation";
 
 const userInfo = useUserInfo();
-const companyDetail = ref({});
-const imageUrl = ref("");
+const detailValue = ref({});
+const imageUrl = ref();
 const fileData = ref("");
-const router = useRouter();
+const fileName = ref();
 
-const searchDetail = () => {
-  axios
-    .post(Company.SearchCompanyUpdateDetail, {
-      loginId: userInfo.user.loginId,
-    })
-    .then((res) => {
-      companyDetail.value = res.data.detail || {};
-      if (
-        companyDetail.value.fileExt === "jpg" ||
-        companyDetail.value.fileExt === "gif" ||
-        companyDetail.value.fileExt === "png" ||
-        companyDetail.value.fileExt === "webp"
-      ) {
-        getFileImage(companyDetail.value.bizIdx);
-      }
-    });
-};
+const loginId = userInfo.user.loginId;
 
-const handlerCompanyInsert = async () => {
-  const textData = {
-    ...companyDetail.value,
-    loginId: userInfo.user.loginId,
-  };
-  const formData = new FormData();
-  if (fileData.value) formData.append("file", fileData.value);
-  formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
-
-  await axios.post(Company.InsertCompany, formData).then((res) => {
-    if (res.data.result === "success") {
-      alert("기업이 등록되었습니다.");
-      router.go(-1);
-    } else {
-      alert("기업등록이 실패하였습니다.");
+onMounted(() => {
+  if (isSuccess.value && companyDetail.value.detail) {
+    detailValue.value = toRaw(companyDetail.value.detail) || {};
+    const fileExt = companyDetail.value.detail.fileExt;
+    if (fileExt === "jpg" || fileExt === "gif" || fileExt === "png" || fileExt === "webp") {
+      getFileImage(companyDetail.value.detail.bizIdx);
     }
-  });
-};
-
-const handlerCompanyUpdate = async () => {
-  const validation = handlerValidation();
-  if (!validation) {
-    return;
   }
+});
 
-  const textData = {
-    ...companyDetail.value,
-    loginId: userInfo.user.loginId,
-  };
-  const formData = new FormData();
-  if (fileData.value) formData.append("file", fileData.value);
-  formData.append("text", new Blob([JSON.stringify(textData)], { type: "application/json" }));
+// 기업 초기데이터 서치
+const { data: companyDetail, isSuccess } = useCompanySearchQuery({ loginId });
 
-  await axios.post(Company.UpdateCompany, formData).then((res) => {
-    if (res.data.result === "success") {
-      alert("기업정보가 수정되었습니다.");
-      router.push({
-        path: "/vue/mypage/update.do",
-      });
-    } else {
-      alert("기업정보 수정이 실패하였습니다.");
-    }
-  });
-};
+// 기업 등록
+const { mutate: handlerInsertBtn } = useCompanyInsertMutation(loginId, detailValue, fileData, imageUrl, fileName);
 
+// 기업 수정
+const { mutate: handlerUpdateBtn } = useCompanyUpdateMutation(loginId, detailValue, fileData, imageUrl, fileName);
+
+// 기업 삭제
+const { mutate: handlerDeleteBtn } = useCompanyDeleteMutation({ loginId });
+
+// 이미지 관련
 const handlerFile = (e) => {
   const fileInfo = e.target.files;
   const fileInfoSplit = fileInfo[0].name.split(".");
   const fileExtension = fileInfoSplit[1].toLowerCase();
-  if (fileExtension === "jpg" || fileExtension === "gif" || fileExtension === "png") {
+  if (fileExtension === "jpg" || fileExtension === "gif" || fileExtension === "png" || fileExtension === "webp") {
     imageUrl.value = URL.createObjectURL(fileInfo[0]);
   }
   fileData.value = fileInfo[0];
+  fileName.value = fileInfo[0].name;
 };
 
 const getFileImage = (idx) => {
@@ -195,97 +165,9 @@ const getFileImage = (idx) => {
   });
 };
 
-const companyPhoneNumChange = (e) => {
-  let inputNum = e.target.value;
-  console.log("inputNum====>  " + inputNum);
-  let phone = inputNum.replace(/[^0-9]/g, "");
-
-  if (phone.length >= 3) {
-    var prefix = phone.substring(0, 3);
-    if (["010", "011", "016", "017", "019"].indexOf(prefix) === -1) {
-      alert("정확한 전화번호를 입력해주세요.");
-      return;
-    }
-  }
-  if (phone.length > 3 && phone.length <= 7) {
-    phone = phone.replace(/(\d{3})(\d{1,4})/, "$1-$2");
-  } else if (phone.length >= 8) {
-    phone = phone.replace(/(\d{3})(\d{3,4})(\d{0,4})/, "$1-$2-$3");
-  }
-  if (phone.length > 13) {
-    phone = phone.substring(0, 13);
-  }
-  return phone;
-};
-
-const openDaumPostcode = () => {
-  new daum.Postcode({
-    oncomplete: (data) => {
-      companyDetail.value.bizAddr = data.roadAddress;
-    },
-  }).open();
-};
-
-const handlerValidation = () => {
-  const today = new Date();
-  const addressPattern = /^[\w\s가-힣]+$/;
-  const urlPattern = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(:\d+)?(\/[^\s]*)?$/;
-
-  const inputs = companyDetail.value;
-
-  if (!inputs.bizName) {
-    alert("사업자명을 입력해 주세요.");
-    return;
-  } else if (!inputs.bizCeoName) {
-    alert("사업자 대표를 입력해 주세요.");
-    return;
-  } else if (!inputs.bizContact) {
-    alert("연락처를 입력해 주세요.");
-    return;
-  } else if (!inputs.bizAddr) {
-    alert("사업자 주소를 입력해 주세요.");
-    return;
-  } else if (!inputs.bizEmpCount) {
-    alert("사원수를 선택해 주세요.");
-    return;
-  } else if (!inputs.bizWebUrl) {
-    alert("홈페이지 주소를 입력해 주세요.");
-    return;
-  } else if (!inputs.bizFoundDate) {
-    alert("설립일을 입력해 주세요.");
-    return;
-  } else if (!inputs.bizRevenue) {
-    alert("매출액을 입력해 주세요.");
-    return;
-  } else if (!inputs.bizIntro) {
-    alert("기업소개를 입력해 주세요.");
-    return;
-    // } else if (!inputs.fileData) {
-    //   alert('로고를 등록해 주세요.');
-    //   return;
-  }
-
-  if (today < new Date(inputs.bizFoundDate)) {
-    alert("설립일은 오늘보다 이전이어야 합니다.");
-    return false;
-  }
-
-  if (!addressPattern.test(inputs.bizAddr)) {
-    alert("주소는 특수 문자를 포함하지 않는 형식으로 입력해 주세요.");
-    return false;
-  }
-
-  if (!urlPattern.test(inputs.bizWebUrl)) {
-    alert("홈페이지 주소는 올바른 URL 형식으로 입력해 주세요.");
-    return false;
-  }
-
-  return true;
-};
-
 const fileDownload = () => {
   let param = new URLSearchParams();
-  param.append("bizIdx", companyDetail.value.bizIdx);
+  param.append("bizIdx", detailValue.value.bizIdx);
   const postAction = {
     url: Company.DownloadLogo,
     method: "POST",
@@ -296,27 +178,21 @@ const fileDownload = () => {
     const url = window.URL.createObjectURL(new Blob([res.data]));
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", companyDetail.value.bizLogo);
+    link.setAttribute("download", detailValue.value.bizLogo);
     document.body.appendChild(link);
     link.click();
     link.remove();
   });
 };
 
-const handlerCompanyDelete = async () => {
-  await axios.post(Company.DeleteCompany, { loginId: userInfo.user.loginId }).then((res) => {
-    if (res.data.result === "success") {
-      alert("기업이 삭제되었습니다.");
-      router.go(-1);
-    } else {
-      alert("기업삭제가 실패하였습니다.");
-    }
-  });
+// 주소API
+const openDaumPostcode = () => {
+  new daum.Postcode({
+    oncomplete: (data) => {
+      detailValue.value.bizAddr = data.roadAddress;
+    },
+  }).open();
 };
-
-onMounted(() => {
-  searchDetail();
-});
 </script>
 
 <style lang="scss" scoped>
@@ -349,7 +225,9 @@ textarea {
   vertical-align: middle;
 }
 
-.button-box {
+div .button-box {
+  display: flex;
+  justify-content: center;
   text-align: center;
   margin-top: 10px;
 }
@@ -364,7 +242,7 @@ img {
 }
 
 .img-label {
-  margin-top: 10px;
+  margin-right: 5px;
   padding: 6px 25px;
   background-color: #ccc;
   border-radius: 4px;
@@ -392,5 +270,11 @@ img {
     width: 70%;
     margin-right: 10px;
   }
+}
+
+.fileClass {
+  padding-left: 10px;
+  text-align: inline-block;
+  text-align: left;
 }
 </style>

@@ -97,10 +97,6 @@ import { ref} from "vue";
 import { useRoute } from "vue-router";
 import Pagination from "../../../common/Pagination.vue";
 import QnaDetail from "./QnaDetail.vue";
-import { useUserInfo } from "../../../../stores/userInfo";
-import { useQnaLogState } from "../../../../stores/useQnaLogState";
-import { inject } from "vue";
-import { useModalStore } from "../../../../stores/modalState";
 import QnaPassword from "./QnaPassword.vue";
 import { useQnaListGetQuery } from "../../../hook/qna/useQnaListGetQuery";
 
