@@ -1,23 +1,20 @@
 import axios from "axios";
+import { checkInput } from "../../common/checkInput";
 import { Login } from "../axiosApi/loginApi";
 
 export const findMyIdApi = async (findId) => {
-  let inputName = findId.value.inputName;
-  let inputEmail = findId.value.inputEmail;
+  const inputFields = {
+    inputName: findId.value.inputName,
+    inputEmail: findId.value.inputEmail,
+  };
 
-  if (!inputName) {
-    alert("이름을 입력하세요.");
-    return false;
-  }
-
-  if (!inputEmail) {
-    alert("이메일을 입력하세요.");
+  if (!checkInput(inputFields, false)) {
     return false;
   }
 
   const param = new URLSearchParams({
-    name: inputName,
-    email: inputEmail,
+    name: inputFields.inputName,
+    email: inputFields.inputEmail,
   });
 
   const result = await axios.post(Login.findId, param);
