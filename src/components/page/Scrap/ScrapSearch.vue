@@ -1,10 +1,10 @@
 <template>
     <div class="search-box">
-        <input v-model="searchKey.searchTitle"/>
-        <input type="date" v-model="searchKey.searchStDate" />
-        <input type="date" v-model="searchKey.searchEdDate" :min="searchKey.searchStDate" />
+        <input v-model="searchKey.searchTitle" placeholder="공고제목을 입력하세요"/>
+        <input type="date" v-model="searchKey.searchStDate" />~ 
+        <input type="date" v-model="searchKey.searchEdDate" :min="searchKey.searchStDate" />   
         <button @click="handlerSearch">검색</button>
-        <button @click="handlerDelete">삭제</button>
+        <button class="delete" @click="handlerDelete">삭제</button>
     </div>
 </template>
 
@@ -71,5 +71,12 @@ button {
     box-shadow: 0 2px #666;
     transform: translateY(2px);
   }
+  .delete {
+  background-color: #3bb2ea; /* 기본 배경색 빨간색 */
+}
+.delete:hover{
+    background-color: rgba(255, 0, 0, 0.3); /* 배경색 빨간색으로 변경 */
+  color: #fff; /* 텍스트 색상을 흰색으로 변경 */
+}
 }
 </style>

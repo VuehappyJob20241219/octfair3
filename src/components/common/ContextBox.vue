@@ -11,6 +11,7 @@
 
 <style lang="scss" scoped>
 .context-box {
+    margin-top: 7px;
     background-color: #e0e0e0;
     padding: 10px 100% 10px 0px;
     border: 1px solid #ccc;
