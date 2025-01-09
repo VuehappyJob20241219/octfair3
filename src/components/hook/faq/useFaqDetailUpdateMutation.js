@@ -6,7 +6,7 @@ export const useFaqDetailUpdateMutation = (detailValue) =>{
     const queryClient = useQueryClient();
     const router = useRouter();
     return useMutation({
-        mutationKey: ["faqUpdate"],
+        mutationKey: ['faqUpdate'],
         mutationFn: () => faqDetailUpdateApi(detailValue.value),
         onSuccess: () => {
             alert("수정 되었습니다.")
