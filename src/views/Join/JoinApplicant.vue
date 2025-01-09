@@ -7,6 +7,10 @@
 
 
 <style lang="scss" scoped>
+.context-box {
+    margin-top: 7px;
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -21,6 +25,7 @@
     margin-top: 20px;
     margin-bottom: 20px;
     padding: 20px;
+    padding-top: 13px;
     /* 상하 여백 */
 }
 
