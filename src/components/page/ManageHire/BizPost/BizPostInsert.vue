@@ -22,13 +22,15 @@
         <th>경력 여부<span className="font_red">*</span></th>
         <td>
           <div className="checkbox-group" >
-              <label v-for="checkbox in checkBox" :key="checkbox.id">
+              <label v-for="checkbox in checkBox" :key="checkbox.id" class="checkbox-container">
                 <input
                   type="checkbox"
                   :name="'checkbox-' + checkbox.id"
                   :checked="checkbox.checked"
                   @click=handleCheckboxChange(checkbox.id)
+                  class="checkbox-input"
                 />
+                <span class="checkbox-custom"></span>
                 {{checkbox.label}}
               </label>            
           </div>
@@ -94,25 +96,28 @@
         </td>
       </tr>
       <tr>
-        <th>채용기간<span className="font_red">*</span></th>
-        <td colSpan={3} className="date">
-          시작<input type="date"
+        <th>채용시작일<span className="font_red">*</span></th>
+        <td className="date">
+          <input type="date"
         label="시작 날짜"
         v-model="postDetail.startDate"
-      /> ~ 
-      종료<input type="date"
+      /></td>
+        <th>채용종료일<span className="font_red">*</span></th>
+        <td className="date">
+          <input type="date"
         label="종료 날짜"
         v-model="postDetail.endDate"
       />
         </td>
+        
       </tr>
       <tr v-if="params.postIdx">
         <th>(수정 전 채용절차)</th>
-        <td>{{hirProcess}}</td>
+        <td colspan="2">{{hirProcess}}</td>
       </tr>
       <tr>
         <th>채용절차<span className="font_red">*</span></th>
-        <td colSpan='3'>
+        <td colspan="2">
           <div className="recruit-process-wrapper" >
             <input
               type="text"
@@ -120,13 +125,16 @@
               v-model="postDetail.recruitProcess"
               placeholder="과정을 하나씩 적은 후 절차등록 버튼을 눌러주세요"
             />
-            <button @click="handleClick"  >
-              절차등록
-            </button>
-            <button @click="handleClickRefresh">
-              초기화
-            </button>
           </div>
+        </td>
+        <td>
+            <b-button variant="outline-success" @click="handleClick"  >
+              절차등록
+            </b-button>
+            <b-button variant="danger" @click="handleClickRefresh">
+              초기화
+            </b-button>
+          
           <label className="recruit-process-list" >
             {{recruitProcessList.join(" - ")}} 
           </label>
@@ -184,17 +192,17 @@
       </tr>
     </thead>
       </table>
-      <button @click="handlerInsertBtn">
+      <div class="button-box">
+      <b-button  variant="primary"  @click="handlerInsertBtn">
           {{ params.postIdx ? "수정" : "등록" }}
-      </button>
+      </b-button>
       <b-button
                 variant="secondary"
-                size="lg"
                 @click=navigatePost
               >
                 뒤로가기
               </b-button>
-
+            </div>
     </div>
 </template>
 
@@ -244,11 +252,12 @@ if(Object.keys(params).length>0){
   // });
   watchEffect(() => {
   if (isSuccess.value && detail.value) {
-    postDetail.value = toRaw(detail.value.postDetail);    
+    postDetail.value = toRaw(detail.value.postDetail);   
+    expRequired.value=detail.value.postDetail.expRequired;
+    expYears.value=detail.value.postDetail.expYears;
+    hirProcess.value=detail.value.postDetail.hirProcess; 
   }
-  expRequired.value=postDetail.value.expRequired;
-    expYears.value=postDetail.value.expYears;
-    hirProcess.value=postDetail.value.hirProcess;
+  
 });
 }
 
@@ -389,25 +398,61 @@ const handlerFile = (e) => {
 </script>
 
 <style lang="scss" scoped>
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: black;
+  margin: 20px 0px 0px 0px;
+  font-size: 13px;
+  text-align: left;
+
+  th {
+    text-align: center;
+    background-color: #ccc;
+  }
+
+  td {
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    height: 50px;
+    text-align: center;
+  }
+}
+
 label {
   display: flex;
   flex-direction: column;
 }
 
-select {
-  font-size: 13px;
-  width: 100px;
-  height: 30px;
+// select {
+//   font-size: 13px;
+//   width: 100px;
+//   height: 30px;
+// }
+// input[type="text"] {
+//   padding: 8px;
+//   margin-top: 5px;
+//   margin-bottom: 5px;
+//   border-radius: 4px;
+//   border: 1px solid #ccc;
+// }
+input,
+select,
+textarea {
+  width: 98%;
+  height: 95%;
+  border: none;
+  vertical-align: middle;
 }
-input[type="text"] {
-  padding: 8px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+.button-box {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-top: 10px;
 }
 
-button {
+.button-submit {
   background-color: #3bb2ea;
   border: none;
   color: white;
@@ -431,5 +476,69 @@ button {
     box-shadow: 0 2px #666;
     transform: translateY(2px);
   }
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checkbox-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  padding-left: 30px; /* 체크박스를 왼쪽에 고정 */
+  user-select: none; /* 텍스트 선택 방지 */
+}
+
+.checkbox-input {
+  position: absolute;
+  opacity: 0; /* 기본 체크박스를 숨깁니다 */
+  pointer-events: none; /* 체크박스 자체에 이벤트를 차단 */
+}
+
+.checkbox-custom {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  background-color: #f0f0f0;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.checkbox-input:checked + .checkbox-custom {
+  background-color: #4caf50; /* 체크된 상태에서 배경색 */
+  border-color: #4caf50;
+}
+
+.checkbox-input:checked + .checkbox-custom:after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 8px;
+  height: 14px;
+  border: solid white;
+  border-width: 0 4px 4px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-container:hover .checkbox-custom {
+  border-color: #4caf50;
+}
+
+.checkbox-container:active .checkbox-custom {
+  background-color: #e0e0e0;
+}
+
+.checkbox-label {
+  font-size: 16px;
+  margin-left: 10px;
 }
 </style>
