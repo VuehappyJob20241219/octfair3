@@ -1,24 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
-import { useRouter } from 'vue-router';
-import { useModalStore } from '@/stores/modalState';
+import { qnaImageGetApi } from '../../../api/qna/qnaImageGetApi';
 
-export const useQnaImageGetMutation = (detailValue, idx, fileData, imageUrl) => {
-    const queryClient = useQueryClient();
-    const router = useRouter();
-    const modalStore = useModalStore();
-
-    const selectQnaFile = async (e) => {
-        const fileInfo = e.target.files;
-        const fileInfoSplit = fileInfo[0].name.split('.');
-        const fileExtension = fileInfoSplit[1].toLowerCase();
-    
-        if (['jpg', 'gif', 'png', 'webp'].includes(fileExtension))
-            imageUrl.value = URL.createObjectURL(fileInfo[0]);
-        fileData.value = fileInfo[0];
-    }
-
+export const useQnaImageGetMutation = (idx,qnaDetail) => {
     return useMutation({
         mutationKey: ['qnaFile'],
-        mutationFn: selectQnaFile,
+        mutationFn: () => qnaImageGetApi(idx,qnaDetail), 
+        // onSuccess: (link) => {
+        //     // link가 반환된 후, 다운로드를 트리거
+            
+        // },
+        onError: (error) => {
+            console.error("Error downloading file:", error);
+        }       
     });
 };
