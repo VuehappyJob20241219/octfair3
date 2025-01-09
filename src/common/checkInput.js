@@ -8,6 +8,8 @@ export const checkInput = (inputFields) => {
     //회원유저
     { key: "UserType", message: "유저 타입을 선택해주세요." },
     { key: "LoginId", message: "아이디를 입력해주세요." },
+    { key: "OldPassword", message: "현재 비밀번호를 입력해주세요" },
+    { key: "NewPassword", message: "새 비밀번호를 입력해주세요." },
     { key: "PasswordOk", message: "비밀번호 확인란을 입력해주세요" },
     { key: "Password", message: "비밀번호를 입력해주세요." },
     { key: "Name", message: "이름을 입력해주세요." },
@@ -31,6 +33,7 @@ export const checkInput = (inputFields) => {
 
     //// 아래는 유효성 검사
     if (
+      !key.includes("OldPassword") &&
       !key.includes("PasswordOk") &&
       key.includes("Password") &&
       !checkPasswordRule(inputField)
