@@ -1,4 +1,4 @@
-export const checkInput = (inputFields) => {
+export const checkInput = (inputFields, optionA = true) => {
   //// 여기는 Null체크 부분
   const validationSet = [
     //기업정보
@@ -32,39 +32,45 @@ export const checkInput = (inputFields) => {
     }
 
     //// 아래는 유효성 검사
-    if (
-      !key.includes("OldPassword") &&
-      !key.includes("PasswordOk") &&
-      key.includes("Password") &&
-      !checkPasswordRule(inputField)
-    ) {
-      return false;
-    }
+    if (optionA) {
+      //
+      if (
+        !key.includes("OldPassword") &&
+        !key.includes("PasswordOk") &&
+        key.includes("Password") &&
+        !checkPasswordRule(inputField)
+      ) {
+        return false;
+      }
 
-    if (
-      (key.includes("Phone") || key.includes("Contact")) &&
-      !checkPhoneRule(inputField)
-    ) {
-      return false;
-    }
+      if (
+        (key.includes("Phone") || key.includes("Contact")) &&
+        !checkPhoneRule(inputField)
+      ) {
+        return false;
+      }
 
-    if (key.includes("Email") && !checkEmailRule(inputField)) {
-      return false;
-    }
+      if (key.includes("Email") && !checkEmailRule(inputField)) {
+        return false;
+      }
 
-    if (key.includes("Birthday") && !checkDateFuture(inputField, "생일을")) {
-      return false;
-    }
+      if (key.includes("Birthday") && !checkDateFuture(inputField, "생일을")) {
+        return false;
+      }
 
-    if (key.includes("RegDate") && !checkDateFuture(inputField, "가입일자를")) {
-      return false;
-    }
+      if (
+        key.includes("RegDate") &&
+        !checkDateFuture(inputField, "가입일자를")
+      ) {
+        return false;
+      }
 
-    if (
-      key.includes("BizFoundDate") &&
-      !checkDateFuture(inputField, "설립일을")
-    ) {
-      return false;
+      if (
+        key.includes("BizFoundDate") &&
+        !checkDateFuture(inputField, "설립일을")
+      ) {
+        return false;
+      }
     }
   }
   return true;
