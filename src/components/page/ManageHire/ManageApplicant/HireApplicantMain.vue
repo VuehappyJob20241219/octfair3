@@ -2,14 +2,15 @@
   <div class="applicantList">
     <table>
       <colgroup>
-        <col width="50%" />
-        <col width="30%" />
+        <col width="40%" />
+        <col width="25%" />
+        <col width="15%" />
         <col width="20%" />
       </colgroup>
 
       <thead>
         <tr>
-          <th scope="col" colspan="3" style="text-align: left">지원자 {{ applicantCnt }}명</th>
+          <th scope="col" colspan="4" style="text-align: left">지원자 {{ applicantCnt }}명</th>
         </tr>
       </thead>
       <tbody>
@@ -28,16 +29,22 @@
             <td>
               <div>
                 <b-button
-                  variant="outline-dark"
+                  variant="outline-success"
                   @click="handlerResume({ resIdx: list.resIdx, appId: list.appId })"
-                  style="width: 180px"
+                  style="width: 130px"
                 >
-                  지원자 이력서 보기
+                  이력서 보기
                 </b-button>
               </div>
+            </td>
+            <td>
               <div v-if="nowStageName !== '최종합격' && list.viewed === 1">
-                <b-button variant="outline-primary" @click="updateProcPass(list.appId)">합격</b-button>
-                <b-button variant="outline-danger" @click="updateProcFail(list.appId)">불합격</b-button>
+                <b-button variant="primary" @click="updateProcPass(list.appId)" class="passfailbtn">{{
+                  nowStageName !== "불합격" ? "합격" : "추가합격"
+                }}</b-button>
+                <span v-if="nowStageName !== '불합격'">
+                  <b-button variant="danger" @click="updateProcFail(list.appId)" class="passfailbtn">불합격</b-button>
+                </span>
               </div>
             </td>
           </tr>
@@ -167,8 +174,9 @@ table {
     cursor: pointer;
   }
 }
-b-button {
-  font-size: 8px;
+.passfailbtn {
+  width: 100px;
+  margin-right: 10px;
 }
 
 /*button {
