@@ -67,11 +67,13 @@
                             <tbody>
                                 <tr>
                                     <th>새 비밀번호</th>
-                                    <td><input v-model="setPw.newPasswd" type="password" /></td>
+                                    <td><input v-model="setPw.newPasswd" type="password" autocomplete="new-password" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>새 비밀번호 확인</th>
-                                    <td><input v-model="setPw.newPasswdConfirm" type="password" /></td>
+                                    <td><input v-model="setPw.newPasswdConfirm" type="password"
+                                            autocomplete="new-password" /></td>
                                 </tr>
                             </tbody>
                         </table><br>
