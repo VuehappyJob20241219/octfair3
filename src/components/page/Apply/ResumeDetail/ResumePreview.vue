@@ -401,6 +401,9 @@ import { useModalStore } from "@/stores/modalState";
 import axios from "axios";
 import printJS from "print-js";
 import { computed } from "vue";
+//import { Resume } from "../../../../api/axiosApi/resumeApi";
+import { useQuery } from "@tanstack/vue-query";
+import { resumePreviewApi } from "../../../../api/resume/resumePreviewApi";
 import { useResumeFileDownloadAttachmentMutation } from "../../../hook/resume/useResumeFileDownloadAttachmentMutation";
 
 const modalState = useModalStore();
@@ -412,7 +415,7 @@ const resumeDetailinformation = ref({
 const imageUrl = ref("/no_image.jpg");
 
 const resumeProperties = computed(() => {
-  return resumeDetailinformation.value.resumeInfo || {}; // resumeInfo가 없을 경우 빈 객체 반환
+  return resumeDetailinformation.value.resumeInfo || {};
 });
 
 const careerProperties = computed(() => {
@@ -420,44 +423,32 @@ const careerProperties = computed(() => {
 });
 
 const eduProperties = computed(() => {
-  return resumeDetailinformation.value.eduInfo || []; // resumeInfo가 없을 경우 빈 객체 반환
+  return resumeDetailinformation.value.eduInfo || [];
 });
 
 const skillProperties = computed(() => {
-  return resumeDetailinformation.value.skillInfo || []; // resumeInfo가 없을 경우 빈 객체 반환
+  return resumeDetailinformation.value.skillInfo || [];
 });
 
 const certProperties = computed(() => {
-  return resumeDetailinformation.value.certInfo || []; // resumeInfo가 없을 경우 빈 객체 반환
+  return resumeDetailinformation.value.certInfo || [];
 });
 
 const attachmentProperties = computed(() => {
-  return resumeDetailinformation.value.attInfo || []; // resumeInfo가 없을 경우 빈 객체 반환
+  return resumeDetailinformation.value.attInfo || [];
 });
 
-// const {
-//   data: resumeInfo,
-//   isLoading,
-//   isSuccess,
-// } = useQuery({
-//   queryKey: ["previewResume"],
-//   queryFn: async () => {
-//     return await resumePreviewApi(props.idx);
-//   },
-//   staleTime: 10000, // 10초 동안 데이터가 신선하게 유지됨
-//   cacheTime: 300000, // 5분 동안 캐시 유지
-// });
-
-const resumeDetail = async () => {
-  await axios.post(Resume.PreviewResume, { resIdx: props.idx }).then((res) => {
-    if (res.data.resumeInfo === null) {
-      alert("삭제된 이력서입니다.");
-      modalState.setModalState();
-    }
-    resumeDetailinformation.value = res.data;
-    getFileImage();
-  });
-};
+const {
+  data: resumeInfo,
+  isLoading,
+  isSuccess,
+} = useQuery({
+  queryKey: ["previewResume"],
+  queryFn: async () => {
+    return await resumePreviewApi(props.idx, modalState);
+  },
+  //삭제 이력서 열람시 창닫아줘야 되서 캐시 관리 안햇음
+});
 
 const getFileImage = () => {
   let param = new URLSearchParams();
@@ -474,6 +465,7 @@ const getFileImage = () => {
     console.log(res);
   });
 };
+
 const { mutate: fileDownloadAtt } = useResumeFileDownloadAttachmentMutation();
 
 const printPage = () => {
@@ -484,21 +476,16 @@ const printPage = () => {
     maxWidth: "100%",
   });
 };
+
 const closeModal = () => {
   modalState.setModalState();
 };
 
-// watchEffect(() => {
-//   console.log("resumeInfo.value", resumeInfo.value);
-//   if (resumeInfo.value) {
-//     resumeDetailinformation.value = toRaw(resumeInfo.value);
-//     console.log("resumeDetailinformation.value", resumeDetailinformation.value);
-//     // getFileImage(resumeDetailinformation?.value?.resIdx);
-//   }
-// });
-
-onMounted(() => {
-  resumeDetail();
+watchEffect(() => {
+  if (resumeInfo.value) {
+    resumeDetailinformation.value = toRaw(resumeInfo.value);
+    getFileImage(resumeDetailinformation?.value?.resIdx);
+  }
 });
 </script>
 
