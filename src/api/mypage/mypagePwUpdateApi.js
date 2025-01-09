@@ -1,4 +1,5 @@
 import axios from "axios";
+import { checkInput, checkPasswordRule } from "../../common/checkInput";
 import { mypage } from "../axiosApi/mypageApi";
 
 export const mypagePwUpdateApi = async (userInfo, inputPw) => {
@@ -19,25 +20,17 @@ export const mypagePwUpdateApi = async (userInfo, inputPw) => {
 };
 
 const checkForm = (inputPw) => {
-  let newPasswd = inputPw.value.newPasswd;
-  let newPasswdConfirm = inputPw.value.newPasswdConfirm;
-  const passwordRules =
-    /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+  const inputFields = {
+    inputOldPassword: inputPw.value.passwd,
+    inputNewPassword: inputPw.value.newPasswd,
+    inputNewPasswordOk: inputPw.value.newPasswdConfirm,
+  };
 
-  if (!newPasswd) {
-    alert("새 비밀번호를 입력해 주세요.");
+  if (!checkInput(inputFields)) {
     return false;
   }
 
-  if (!passwordRules.test(newPasswd)) {
-    alert(
-      "비밀 번호는 숫자,영문자,특수문자 조합으로 8~15자리를 사용해야 합니다."
-    );
-    return false;
-  }
-
-  if (!newPasswdConfirm) {
-    alert("새 비밀번호 확인를 입력해 주세요.");
+  if (!checkPasswordRule(inputFields.inputNewPassword)) {
     return false;
   }
 
