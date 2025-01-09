@@ -32,13 +32,14 @@
 </template>
 
 <script setup>
-import axios from "axios";
 import { useUserInfo } from "../../../../stores/userInfo";
 import { useRoute } from "vue-router";
 import { useNoticeDetailSearchQuery } from "../../../hook/notice/useNoticeDetailSearchQuery";
 import { useNoticeDetailDeleteMutation } from "../../../hook/notice/useNoticeDetailDeleteMutation";
 import { useNoticeDetailInsertMutation } from "../../../hook/notice/useNoticeDetailInsertMutation";
 import { useNoticeDetailUpdateMutation } from "../../../hook/notice/useNoticeDetailUpdateMutation";
+import { noticeDetailFileDownload } from "../../../../api/notice/noticeDetailFileDownloadApi";
+
 
 const { params } = useRoute();
 const detailValue = ref({});
@@ -48,15 +49,6 @@ const fileData = ref("");
 
 
 const { data: noticeDetail, isSuccess } = useNoticeDetailSearchQuery(params.idx);
-
-watchEffect(() => {  
-  if (isSuccess.value && noticeDetail.value) {
-    detailValue.value = {...toRaw(noticeDetail.value.detail)};
-    imageUrl.value = noticeDetail.value.imageUrl;
-  }
-});
-
-
 const { mutate: handlerSaveBtn } = useNoticeDetailInsertMutation(detailValue, fileData, userInfo.user.loginId);
 const { mutate: handlerUpdateBtn } = useNoticeDetailUpdateMutation(detailValue, fileData, params.idx);
 const { mutate: handlerDeleteBtn } = useNoticeDetailDeleteMutation(params.idx);
@@ -65,32 +57,25 @@ const handlerFile = (e) => {
   const fileInfo = e.target.files;
   const fileInfoSplit = fileInfo[0].name.split(".");
   const fileExtension = fileInfoSplit[1].toLowerCase();
-  if (fileExtension === "jpg" || fileExtension === "gif" || fileExtension === "png") {
+  if(["jpg", "gif", "png", "webp"].includes(fileExtension)){
     imageUrl.value = URL.createObjectURL(fileInfo[0]);
   }
   fileData.value = fileInfo[0];
 };
 
 const fileDownload = () => {
-  let param = new URLSearchParams();
-  param.append("noticeSeq", params.idx);
-  const postAction = {
-    url: "/api/board/noticeDownload.do",
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-  axios(postAction).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", detailValue.value.fileName);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  });
+  if(detailValue.value.fileName){  
+    noticeDetailFileDownload(params.idx, detailValue.value.fileName);
+  } 
 };
 
+watchEffect(() => {  
+  if (isSuccess.value && noticeDetail.value) {
+    detailValue.value = {...toRaw(noticeDetail.value.detail)};
+    imageUrl.value = noticeDetail.value.imageUrl;
+    console.log(detailValue.value.fileName);
+  }
+});
 </script>
 
 <style lang="scss" scoped>
