@@ -26,6 +26,11 @@
         </tr>
       </thead>
       <tbody>
+        <template v-if="isLoading">
+          <tr>
+            <td colspan="4">로딩중...</td>
+          </tr>
+        </template>
         <!-- 검색 결과 표시 -->
         <template v-if="qnaList">
           <template v-if="qnaList.qnaCnt > 0">
@@ -55,6 +60,7 @@
               <td colspan="4">일치하는 검색 결과가 없습니다</td>
             </tr>
           </template>
+          <template v-if="isError">오류가 발생하였습니다.</template>
         </template>
       </tbody>
     </table>
@@ -64,7 +70,6 @@
       :totalItems="qnaList?.qnaCnt || 0"
       :items-per-page="itemPerPage"
       :max-pages-shown="5"
-      :onClick="searchList"
       v-model="cPage"
     />
 
@@ -75,7 +80,7 @@
       :idx="qnaIdx"
       :password="pass"
       @close="closeModal"
-      @postSuccess="success"
+      @postSuccess="() => refetch()"
     />
     <QnaPassword
       v-else-if="qnaIdx > 0 && modal.modalState"
@@ -88,20 +93,19 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { inject, onMounted, ref, watch } from "vue";
+import { ref, inject} from "vue";
 import { useRoute } from "vue-router";
-import { useModalStore } from "../../../../stores/modalState";
-import { useQnaLogState } from "../../../../stores/useQnaLogState";
-import { useUserInfo } from "../../../../stores/userInfo";
 import Pagination from "../../../common/Pagination.vue";
 import QnaDetail from "./QnaDetail.vue";
 import QnaPassword from "./QnaPassword.vue";
+import { useQnaListGetQuery } from "../../../hook/qna/useQnaListGetQuery";
+import { useQnaLogState } from "../../../../stores/useQnaLogState";
+import { useModalStore } from "../../../../stores/modalState";
+import { useUserInfo } from "../../../../stores/userInfo";
 
 // 상태 값 설정
 const route = useRoute();
 const itemPerPage = ref(5);
-const qnaList = ref();
 const cPage = ref(1);
 const qnaIdx = ref(0);
 const pass = ref("");
@@ -112,33 +116,35 @@ const injectedhRequestType = inject("providedRequestType");
 const injectedSaveState = inject("providedSaveState");
 const passModalState = ref(false);
 
-// 활성 버튼 상태 (디폴트: 일반회원)
-const activeButton = ref("A");
+// 활성 버튼 상태 
+const activeButton = ref("");
+if(userInfo.user.userType === 'A'){
+  activeButton.value = "A";
+}else if(userInfo.user.userType === 'B'){
+  activeButton.value = "B";
+}else{
+  activeButton.value = "A";
+}
+
+
 
 // 버튼 활성화 함수
 const setActive = (type) => {
   injectedhRequestType.requestType = "all";
   activeButton.value = type; // 클릭된 버튼 활성화
-
-  searchList(); // 상태 변경 시 API 호출
+  refetch();
 };
 
-// 검색 API 호출
-const searchList = () => {
-  const param = {
-    searchTitle: route.query.searchTitle || "",
-    searchStDate: route.query.searchStDate || "",
-    searchEdDate: route.query.searchEdDate || "",
-    qna_type: activeButton.value, // 활성 버튼 값 포함
-    currentPage: cPage.value.toString(),
-    pageSize: itemPerPage.value.toString(),
-    loginId: userInfo.user.loginId,
-    requestType: injectedhRequestType.requestType || "all", // 프로바이더 값 사용
-  };
-  axios.post("/api/board/qnaListRe.do", param).then((res) => {
-    qnaList.value = res.data;
-  });
-};
+
+const {
+  data: qnaList,
+  isLoading,
+  refetch,
+  isSuccess,
+  isError,
+} = useQnaListGetQuery(route, activeButton, cPage, itemPerPage, 
+userInfo.user.loginId, injectedhRequestType, qnaLogState, injectedSaveState);
+
 // pass컴포넌트에서 받은 값 저장하기
 const handlePasswordValue = (data) => {
   if (data != null) {
@@ -172,23 +178,21 @@ const closeModal = () => {
   }
 };
 
-const success = () => {
-  searchList();
-};
-
 const setModalState = () => {
   modal.setModalState(); // 현재 값을 반대로 토글
 };
 
-// 초기화
-onMounted(() => {
-  searchList();
-});
-watch(route, qnaLogState, searchList, injectedhRequestType.requestType, injectedSaveState.saveState);
-
 watchEffect(() => {
-  searchList();
+  if(injectedhRequestType.requestType ==="my"){
+  console.log(injectedhRequestType.requestType);
+  refetch();
+  }
+  // watchEffect는 route.query가 변경되면 자동으로 실행됩니다.
+  if (Object.keys(route.query).length >0) {
+    refetch(); // query가 변경될 때마다 수동으로 refetch 호출
+  }
 });
+
 </script>
 
 <style lang="scss" scoped>

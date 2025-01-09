@@ -1,38 +1,40 @@
 <template>
   <div class="search-box">
-    <input v-model.lazy="keyword" />
-    <input type="date" v-model="searchStartDate" />
-    <input type="date" v-model="searchEndDate" />
+    <input v-model="searchKey.searchTitle" />
+    <input type="date" v-model="searchKey.searchStDate" @change="checkSearchDate"/>
+    <input type="date" v-model="searchKey.searchEdDate" @change="checkSearchDate"/>
     <button @click="handlerSearch">검색</button>
-    <button @click="handlerModal" v-if="userInfo.user.userType==='M'">신규등록</button>
+    <button @click="handlerInsert" v-if="userInfo.user.userType==='M'">신규등록</button>
   </div>
 </template>
 <script setup>
 import router from "@/router";
-import { useModalStore } from "@/stores/modalState";
 import { useUserInfo } from "../../../../stores/userInfo";
+import { useQueryClient } from "@tanstack/vue-query";
+import { inject, ref } from "vue";
 
-const keyword = ref("");
-const searchStartDate = ref("");
-const searchEndDate = ref("");
-const modalState = useModalStore();
 const userInfo= useUserInfo();
+const queryClient = useQueryClient();
+const injectValue = inject('provideValue');
+const searchKey = ref({});
 
-const handlerSearch = () => {
-  const query = [];
-  !keyword.value || query.push(`searchTitle=${keyword.value}`);
-  !searchStartDate.value || query.push(`searchStDate=${searchStartDate.value}`);
-  !searchEndDate.value || query.push(`searchEdDate=${searchEndDate.value}`);
-  const queryString = query.length > 0 ? `?${query.join("&")}` : "";
+const handlerSearch = () =>{
+  injectValue.value={...searchKey.value};
+}
 
-  router.push(queryString);
+const checkSearchDate = () =>{
+  if (new Date(searchKey.value.searchEndDate) < new Date(searchKey.value.searchStartDate)) {
+  alert("종료일자는 시작일자보다 나중이어야 합니다.");
+  return;
+  }
+}
+
+const handlerInsert = () => {
+  queryClient.removeQueries({
+    queryKey: ["faqDetail"],
+  });
+  router.push("faq.do/insert");
 };
-
-const handlerModal = () => {
-  modalState.setModalState();
-};
-
-watchEffect(() => window.location.search && router.push(window.location.pathname, { replace: true }));
 </script>
 
 <style lang="scss" scoped>

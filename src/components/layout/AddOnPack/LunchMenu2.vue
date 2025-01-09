@@ -33,9 +33,7 @@ const filePath = `uploads/ocr_result(${formattedDate}).txt`;
         return response.text();
       })
       .then((data) => {
-        console.log(data);
         const list = data.trim().split(/\s+/);
-        console.log(list);
         this.fileContent = data; // 파일 내용을 저장
       })
       .catch((error) => {
