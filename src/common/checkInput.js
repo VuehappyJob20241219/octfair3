@@ -17,7 +17,6 @@ export const checkInput = (inputFields) => {
   for (const [key, inputField] of Object.entries(inputFields)) {
     if (!inputField) {
       for (const validation of validationSet) {
-        console.log(validation.key);
         if (key.includes(validation.key)) {
           alert(`${validation.message}`);
           return false;
