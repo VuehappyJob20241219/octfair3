@@ -20,9 +20,9 @@
           </div>
         </div>
         <div class="button-box">
-          <button v-if="params.idx" @click="handlerDeleteBtn">삭제</button>
-          <button @click="params.idx ? handlerUpdateBtn() : handlerSaveBtn()">
-            {{ params.idx ? "수정" : "저장" }}
+          <button v-if="props.idx && userInfo.user.userType === 'M'" @click="handlerDeleteBtn">삭제</button>
+          <button v-if="userInfo.user.userType === 'M'" @click="props.idx ? handlerUpdateBtn() : handlerSaveBtn()">
+            {{ props.idx ? "수정" : "저장" }}
           </button>
           <button @click="$router.go(-1)">나가기</button>          
         </div>
