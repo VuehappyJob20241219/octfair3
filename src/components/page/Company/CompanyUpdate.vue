@@ -184,7 +184,8 @@ const openDaumPostcode = () => {
   }).open();
 };
 
-onMounted(() => {
+// data 주입
+const updateData = () => {
   if (isSuccess.value && companyDetail.value.detail) {
     detailValue.value = toRaw(companyDetail.value.detail) || {};
     const fileExt = companyDetail.value.detail.fileExt;
@@ -192,6 +193,19 @@ onMounted(() => {
       getFileImage(companyDetail.value.detail.bizIdx);
     }
   }
+};
+
+watch(
+  () => companyDetail.value,
+  (newDetail) => {
+    if (newDetail) {
+      updateData();
+    }
+  }
+);
+
+onMounted(() => {
+  updateData();
 });
 </script>
 
