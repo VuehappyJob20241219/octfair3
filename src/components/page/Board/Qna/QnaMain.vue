@@ -93,12 +93,15 @@
 </template>
 
 <script setup>
-import { ref} from "vue";
+import { ref, inject} from "vue";
 import { useRoute } from "vue-router";
 import Pagination from "../../../common/Pagination.vue";
 import QnaDetail from "./QnaDetail.vue";
 import QnaPassword from "./QnaPassword.vue";
 import { useQnaListGetQuery } from "../../../hook/qna/useQnaListGetQuery";
+import { useQnaLogState } from "../../../../stores/useQnaLogState";
+import { useModalStore } from "../../../../stores/modalState";
+import { useUserInfo } from "../../../../stores/userInfo";
 
 // 상태 값 설정
 const route = useRoute();
@@ -123,9 +126,7 @@ if(userInfo.user.userType === 'A'){
   activeButton.value = "A";
 }
 
-if(injectedhRequestType.requestType ==="my"){
-  refetch();
-}
+
 
 // 버튼 활성화 함수
 const setActive = (type) => {
@@ -182,6 +183,10 @@ const setModalState = () => {
 };
 
 watchEffect(() => {
+  if(injectedhRequestType.requestType ==="my"){
+  console.log(injectedhRequestType.requestType);
+  refetch();
+  }
   // watchEffect는 route.query가 변경되면 자동으로 실행됩니다.
   if (Object.keys(route.query).length >0) {
     refetch(); // query가 변경될 때마다 수동으로 refetch 호출
