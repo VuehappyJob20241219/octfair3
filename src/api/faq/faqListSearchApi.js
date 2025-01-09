@@ -10,11 +10,14 @@ export const faqListSearchApi = async (injectValue, cPage, faq_type) => {
         faq_type: faq_type,
     })
     const result = await axios.post(Faq.SearchFaqList, param);
-    // if (result.data) {
-    //     result.data.faq.forEach((faq, index) => {
-    //         faq.faq_idx = result.data.faq.length - index;
-    //     });
-    //     console.log(result.data);
-    //   }        
+    if (result.data && result.data.faq) {
+        result.data.faq = result.data.faq.map((faq, index) => {
+            return {
+                ...faq,
+                disPlayInx: result.data.faq.length - index, // 역순 번호 부여
+            };
+        });
+        console.log(result.data);
+    }
     return result.data;
 }

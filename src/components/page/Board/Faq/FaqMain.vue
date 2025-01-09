@@ -30,7 +30,7 @@
           <template v-if="faqList.faqCnt > 0">
             <template v-for="faq in faqList.faq" :key="faq.faq_idx">
               <tr>
-                <td>{{ faq.faq_idx }}</td>
+                <td>{{ faq.disPlayInx }}</td>
                 <td @click="toggleFaqAnswer(faq.faq_idx)">
                   {{ faq.title }}
                 </td>
@@ -76,7 +76,7 @@ import { useUserInfo } from "../../../../stores/userInfo";
 import Pagination from "../../../common/Pagination.vue";
 import FaqModal from "./FaqModal.vue";
 import { useFaqListSearchQuery } from "../../../hook/faq/useFaqListSearchQuery";
-import { inject,} from "vue";
+import { computed, inject,} from "vue";
 
 const injectedValue = inject("provideValue");
 const cPage = ref(1);
@@ -90,19 +90,16 @@ const faq_idx = ref(0);
 const faqModalState = useModalStore();
 const faqAnswer = ref(null);
 
-
 const { data: faqList, isSuccess, isLoading,  } = useFaqListSearchQuery(injectedValue, cPage, faq_fype);
-
 
 const personalFaq = () => {
   faq_fype.value = "1";
-  myToggle.value = 'personal'; // 개인회원 버튼 활성화  
-        
+  myToggle.value = 'personal';
 };
 
 const companyFaq = () => {
   faq_fype.value = "2";  
-  myToggle.value = 'company'; // 기업회원 버튼 활성화  
+  myToggle.value = 'company';
 };
 
 const toggleFaqAnswer = (faq_idx) => {
