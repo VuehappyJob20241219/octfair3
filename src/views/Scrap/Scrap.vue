@@ -1,4 +1,5 @@
 <template>
+  <StarFall/>
   <ContextBox>스크랩</ContextBox>
   <ScrapSearch/>
   <ScrapMain/>
@@ -9,6 +10,7 @@
 import { provide , ref } from 'vue';
 import ScrapMain from '../../components/page/Scrap/ScrapMain.vue';
 import ScrapSearch from '../../components/page/Scrap/ScrapSearch.vue';
+import StarFall from '../../components/common/StarFall.vue';
 
 
 const provideValue = ref();

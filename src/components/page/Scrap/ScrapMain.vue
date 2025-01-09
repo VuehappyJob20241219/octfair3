@@ -145,6 +145,7 @@ table {
   margin: 20px 0px 0px 0px;
   font-size: 18px;
   text-align: left;
+  background-color: rgba(255, 255, 255, 0.719);
  
 
   th,
