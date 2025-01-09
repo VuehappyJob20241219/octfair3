@@ -4,7 +4,6 @@
     <input type="date" v-model="searchStartDate" />
     <input type="date" v-model="searchEndDate" />
     <button @click="handlerSearch">검색</button>
-    <button @click="handlerSearch">검색</button>
     <button v-if="userType === 'A' || userType === 'B'" @click="handlerSaveBtn">등록하기</button>
     <button v-if="userType === 'A' || userType === 'B'" @click="handlerLogState">내가 쓴 글</button>
   </div>
@@ -47,6 +46,7 @@ const handlerSearch = () => {
 const handlerLogState = () => {
   injectedhRequestType.requestType = "my";
 };
+
 const handlerSaveBtn = () => {
   queryClient.removeQueries({
     queryKey: ["qnaDetail"],

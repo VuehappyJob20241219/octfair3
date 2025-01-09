@@ -79,6 +79,7 @@
                       e.target.type = 'password';
                     }
                   "
+                  autocomplete="new-password"
                   :readonly="props.password !== ''"
                 />
               </td>
@@ -143,11 +144,6 @@ import { useQnaDetailSaveMutation } from "../../../hook/qna/useQnaDetailSaveMuta
 import { useQnaDetailUpdateMutation } from "../../../hook/qna/useQnaDetailUpdateMutation";
 import { useQnaImageGetMutation } from "../../../hook/qna/useQnaImageGetMutation";
 import { useQnaDetailGetQuery } from "../../../hook/qna/useQnaDetailGetQuery";
-import { useQnaDetailDeleteMutation } from "../../../hook/qna/useQnaDetailDeleteMutation";
-import { useQnaDetailSaveMutation } from "../../../hook/qna/useQnaDetailSaveMutation";
-import { useQnaDetailUpdateMutation } from "../../../hook/qna/useQnaDetailUpdateMutation";
-import { useQnaImageGetMutation } from "../../../hook/qna/useQnaImageGetMutation";
-import { useQnaDetailGetQuery } from "../../../hook/qna/useQnaDetailGetQuery";
 
 const emits = defineEmits(["postSuccess", "close"]);
 const props = defineProps(["idx", "password"]);
@@ -168,29 +164,6 @@ const passwordValue = computed({
   },
 });
 
-
-const {
-  data: detail,
-  isLoading,
-  refetch,
-  isSuccess,
-  isError,
-} = useQnaDetailGetQuery(props,userInfo);
-
-watchEffect(() => {
-  if (isSuccess.value && detail.value) {
-    qnaDetail.value=detail.value;
-    if (
-      qnaDetail.value.fileExt === "jpg" ||
-      qnaDetail.value.fileExt === "gif" ||
-      qnaDetail.value.fileExt === "png" ||
-      qnaDetail.value.fileExt === "webp"
-    ) {
-      getFileImage();
-    }
-  }
-});
-
 const getFileImage = () => {
   let param = new URLSearchParams();
   param.append("qnaSeq", props.idx);
@@ -205,6 +178,30 @@ const getFileImage = () => {
     imageUrl.value = url;
   });
 };
+
+const {
+  data: detail,
+  isLoading,
+  refetch,
+  isSuccess,
+  isError,
+} = useQnaDetailGetQuery(props,userInfo);
+
+watchEffect(() => {
+  if (isSuccess.value && detail.value) {
+    qnaDetail.value=toRaw(detail.value);
+    if (
+      qnaDetail.value.fileExt === "jpg" ||
+      qnaDetail.value.fileExt === "gif" ||
+      qnaDetail.value.fileExt === "png" ||
+      qnaDetail.value.fileExt === "webp"
+    ) {
+      getFileImage();
+    }
+  }
+});
+
+
 
 const handlerModal = () => {
   emits("close");

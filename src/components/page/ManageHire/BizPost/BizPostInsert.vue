@@ -244,7 +244,7 @@ if(Object.keys(params).length>0){
   // });
   watchEffect(() => {
   if (isSuccess.value && detail.value) {
-    postDetail.value = detail.value.postDetail;    
+    postDetail.value = toRaw(detail.value.postDetail);    
   }
   expRequired.value=postDetail.value.expRequired;
     expYears.value=postDetail.value.expYears;
@@ -273,13 +273,15 @@ const handleCheckboxChange = (id) => {
 };
 
 const handleClick = () => {
-    const trimmedProcess = postDetail.value.recruitProcess.trim(); //공백 제거
+    let trimmedProcess = "";
+    if(recruitProcessList.length != 0){
+      trimmedProcess = postDetail.value.recruitProcess.trim(); //공백 제거
+    }else{
+      trimmedProcess = postDetail.value.recruitProcess;
+    }
+    
     if (trimmedProcess === "") return; //빈 값 방지
-
-    // if (recruitProcessList.length >= 4) {
-    //   alert("채용 절차는 최대 4단계까지만 가능합니다.");
-    //   return;
-    // }
+    
     recruitProcessList.push(trimmedProcess); //기존값 + 새로입력한값
     recruitProcessList.join(" - ");
     postDetail.value.hirProcess=recruitProcessList.join(" - ");

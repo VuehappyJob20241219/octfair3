@@ -26,6 +26,11 @@
         </tr>
       </thead>
       <tbody>
+        <template v-if="isLoading">
+          <tr>
+            <td colspan="4">로딩중...</td>
+          </tr>
+        </template>
         <!-- 검색 결과 표시 -->
         <template v-if="qnaList">
           <template v-if="qnaList.qnaCnt > 0">
@@ -55,6 +60,7 @@
               <td colspan="4">일치하는 검색 결과가 없습니다</td>
             </tr>
           </template>
+          <template v-if="isError">오류가 발생하였습니다.</template>
         </template>
       </tbody>
     </table>
@@ -97,7 +103,6 @@ import { inject } from "vue";
 import { useModalStore } from "../../../../stores/modalState";
 import QnaPassword from "./QnaPassword.vue";
 import { useQnaListGetQuery } from "../../../hook/qna/useQnaListGetQuery";
-import { useQnaListGetQuery } from "../../../hook/qna/useQnaListGetQuery";
 
 // 상태 값 설정
 const route = useRoute();
@@ -112,13 +117,25 @@ const injectedhRequestType = inject("providedRequestType");
 const injectedSaveState = inject("providedSaveState");
 const passModalState = ref(false);
 
-// 활성 버튼 상태 (디폴트: 일반회원)
-const activeButton = ref("A");
+// 활성 버튼 상태 
+const activeButton = ref("");
+if(userInfo.user.userType === 'A'){
+  activeButton.value = "A";
+}else if(userInfo.user.userType === 'B'){
+  activeButton.value = "B";
+}else{
+  activeButton.value = "A";
+}
+
+if(injectedhRequestType.requestType ==="my"){
+  refetch();
+}
 
 // 버튼 활성화 함수
 const setActive = (type) => {
   injectedhRequestType.requestType = "all";
   activeButton.value = type; // 클릭된 버튼 활성화
+  refetch();
 };
 
 
