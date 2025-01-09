@@ -2,7 +2,7 @@
   <div class="divFaqList">
   <b-button :pressed.sync="myToggle==='personal'" 
             :variant="myToggle === 'personal' ? 'primary' : 'secondary'" 
-            @click="personalFaq">일반회원</b-button>
+            @click="personalFaq">개인회원</b-button>
   <b-button :pressed.sync="myToggle==='company'" 
             :variant="myToggle === 'company' ? 'primary' : 'secondary'" 
             @click="companyFaq">기업회원</b-button> 

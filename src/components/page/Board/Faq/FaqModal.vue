@@ -3,7 +3,7 @@
       <div class="backdrop">
           <div class="container">             
                 유형 :  &nbsp;
-                  <input type="radio" value="1" v-model="detailValue.faq_type">개인회원 &nbsp; &nbsp;
+                  <input type="radio" value="1" v-model="detailValue.faq_type">개인인회원 &nbsp; &nbsp;
                   <input type="radio" value="2" v-model="detailValue.faq_type">기업회원                           
               <label> 제목 : <input type="text" v-model="detailValue.title"/> </label>
               <label>

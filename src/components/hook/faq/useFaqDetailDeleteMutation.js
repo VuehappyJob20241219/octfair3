@@ -10,12 +10,10 @@ export const useFaqDetailDeleteMutation = (idx) => {
         mutationFn: () => faqDetailDeleteApi({ faqSeq: idx }),
         onSuccess: () =>{
             alert("삭제 처리되었습니다.");
-            console.log({ faqSeq: idx })
             router.go(-1);
             queryClient.invalidateQueries({
                 queryKey: ['faqList'],
-            })
-        }
-
-    })
-}
+            });
+        },
+    });
+};
