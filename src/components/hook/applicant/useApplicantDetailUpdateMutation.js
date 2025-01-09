@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/vue-query";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { applicantDetailUpdateApi } from "../../../api/applicant/applicantDetailUpdateApi";
 import { useModalStore } from "../../../stores/modalState";
 
@@ -7,6 +7,7 @@ export const useApplicantDetailUpdateMutation = (
   emit
 ) => {
   const modalStateApplicant = useModalStore();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: () => applicantDetailUpdateApi(applicantDetailValue),
@@ -14,6 +15,9 @@ export const useApplicantDetailUpdateMutation = (
     onSettled: (data, error) => {
       if (data) {
         modalStateApplicant.setModalState();
+        queryClient.removeQueries({
+          queryKey: ["applicantList"],
+        });
         emit("postSuccess");
       }
     },

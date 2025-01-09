@@ -6,7 +6,7 @@ export const useFaqDetailInsertMutation = (detailValue, userid) => {
     const router = useRouter();
     const queryClient = useQueryClient();
     return useMutation({
-        mutationKey: ["faqInsert"],
+        mutationKey: ['faqInsert'],
         mutationFn: () => faqDetailInsertApi(detailValue.value, userid),
         onSuccess: ()=>{
             router.go(-1);
