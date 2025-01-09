@@ -4,13 +4,15 @@
       <input type="date" v-model="searchStartDate" />
       <input type="date" v-model="searchEndDate" />
       <button @click="handlerSearch">검색</button>
-      <button @click="handlerModal">신규등록</button>
+      <button v-if="userInfo.user.userType === 'M'" @click="handlerModal">신규등록</button>
   </div>
 </template>
 <script setup>
 import { inject } from 'vue';
 import router from "@/router";
 import { useModalStore } from "@/stores/modalState";
+import { useUserInfo } from "../../../../stores/userInfo";
+const userInfo = useUserInfo();
 
 const keyword = ref("");
 const searchStartDate = ref("");
