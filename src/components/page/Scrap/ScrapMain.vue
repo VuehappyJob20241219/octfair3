@@ -166,7 +166,7 @@ table {
 
   /* 테이블 올렸을 때 */
   tbody tr:hover {
-    background-color: #DCE1E6;
+    background-color: #f2e1f4;;
     opacity: 0.9;
     cursor: pointer;
   }
