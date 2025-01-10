@@ -109,7 +109,7 @@
           </div>
           <div class="mt-5">
             <h5>■ 급여 </h5>
-            <span class="p-4">{{postDetail?.salary}}</span>
+            <span class="p-4">{{postDetail?.salary}}만원</span>
           </div>
           <div class="mt-5">
             <h5>■ 모집인원 </h5>
@@ -190,7 +190,7 @@
               <b-button
                 variant="secondary"
                 size="lg"
-                @click="navigatePost('back')"
+                @click="$router.go(-1)"
               >
                 뒤로가기
               </b-button>
@@ -215,13 +215,13 @@
               <b-button
                 variant="secondary"
                 size="lg"
-                @click="navigatePost('back')"
+                @click="$router.go(-1)"
               >
                 뒤로가기
               </b-button>
             </template>
             <template v-else>
-            <b-button variant="secondary" size="lg" @click="navigatePost('back')">
+            <b-button variant="secondary" size="lg" @click="$router.go(-1)">
               뒤로가기
             </b-button>
           </template>
@@ -248,61 +248,21 @@ const postDetail = ref(null);
 const bizDetail = ref(null);
 const isClicked = ref(null);
 const userType = ref(null);
-const router = useRouter();
+const route = useRouter();
 const postIdx = ref(0);
 const bizIdx = ref(0);
 const modalState = useModalStore();
 
 
-// const searchList = async () => {
-//   const result = await axios.post("/api/manage-hire/readPostDetailBody.do", params);
-//   if (Detail) {
-//     postDetail.value = result.data.postDetail;
-//     bizDetail.value = result.data.bizDetail;
-//     isClicked.value = result.data.isClicked;
-//     userType.value = result.data.userType;
-//   }
-//   return result.data;
-// };
-
 const { data: detail , isLoading, refetch, isSuccess, isError } = useBizPostDetailQuery(params);
 
-watchEffect(() => {
-  if (isSuccess.value && detail.value) {
-    postDetail.value = detail.value.postDetail;
-    bizDetail.value = detail.value.bizDetail;
-    isClicked.value = detail.value.isClicked;
-    userType.value = detail.value.userType;
-  }
-});
-
-// const { data, isLoading, refetch, isSuccess, isError } = useQuery({
-//   queryKey: ["bizPostDetail"],
-//   queryFn: searchList,
-// });
-
 const navigatePost = (param) => {
-  if (param === "back") {
-    router.go(-1); // 뒤로가기
-  } else {
-    router.push({ name: "bizPostModify", params: { postIdx: param } }); // 지정된 URL로 이동
-  }
+  route.push({ name: "bizPostModify", params: { postIdx: param } }); // 지정된 URL로 이동
+  
 };
 
 const { mutate: handleDelete } = useBizPostDetailDeleteMutation(postDetail, bizDetail);
 const { mutate: handlerUpdateAppStatus } = useBizPostStatusUpdateMutation();
-// const handleDelete = async (pIdx, bIdx) => {
-//   const params = {
-//     postIdx: pIdx,
-//     bizIdx: bIdx,
-//   };
-//   const result = await axios.post("/api/manage-hire/managehireDeleteBody.do", params);
-
-//   if (result.data.result == "success") {
-//     alert("삭제 처리되었습니다.");
-//     router.go(-1);
-//   }
-// };
 
 const handleDown = (pIdx, bIdx) => {
   const params = {
@@ -344,26 +304,18 @@ const handlerModal = (pIdx, bIdx) => {
   bizIdx.value = bIdx;
 };
 
-// const handlerUpdateAppStatus = async (pIdx, status) => {
-//   const params = {
-//     postIdx: pIdx,
-//     appStatus: status,
-//   };
-//   const result = await axios.post("/api/manage-post/statusUpdateBody.do", params);
-
-//   if (result.data.result == "success") {
-//     alert("처리되었습니다.");
-//     if (status == "승인") {
-//       router.push({ name: "managePost" });
-//     } else if (status == "불허") {
-//       router.push({ name: "managePostApproval" });
-//     }
-//   }
-// };
 
 //신효 - 스크랩 등록
 const { mutate: handlerSaveScrap } = useScrapSaveMutation(params.postIdx);
 
+watchEffect(() => {
+  if (isSuccess.value && detail.value) {
+    postDetail.value = detail.value.postDetail;
+    bizDetail.value = detail.value.bizDetail;
+    isClicked.value = detail.value.isClicked;
+    userType.value = detail.value.userType;
+  }
+});
 </script>
 
 <style lang="scss" scoped>
@@ -402,32 +354,6 @@ const { mutate: handlerSaveScrap } = useScrapSaveMutation(params.postIdx);
   border-radius: 8px;
 }
 
-// 기본 버튼 스타일
-// button {
-//   background-color: #3bb2ea;
-//   border: none;
-//   color: white;
-//   padding: 10px 22px;
-//   text-align: center;
-//   text-decoration: none;
-//   display: inline-block;
-//   font-size: 16px;
-//   margin: 4px 2px;
-//   cursor: pointer;
-//   border-radius: 12px;
-//   box-shadow: 0 4px #999;
-//   transition: 0.3s;
-
-//   &:hover {
-//     background-color: #45a049;
-//   }
-
-//   &:active {
-//     background-color: #3e8e41;
-//     box-shadow: 0 2px #666;
-//     transform: translateY(2px);
-//   }
-// }
 
 // 스크랩 버튼
 .scrapButton {
@@ -564,5 +490,17 @@ const { mutate: handlerSaveScrap } = useScrapSaveMutation(params.postIdx);
 
 .titleStyle{
   font-family: 'Nanum Barun Gothic', sans-serif;
+}
+.fileDown {
+    cursor: pointer; /* 마우스를 갖다대면 손가락 모양 */
+    font-weight: bold; /* 글씨를 두껍게 */
+    color: #007BFF; /* 파일 링크 색상 (파란색) */
+    text-decoration: underline; /* 밑줄 추가 */
+    transition: color 0.3s ease, text-decoration 0.3s ease; /* 부드러운 색상 전환과 밑줄 효과 */
+}
+
+.fileDown:hover {
+    color: #0056b3; /* 마우스 올렸을 때 색상 */
+    text-decoration: none; /* 마우스 올렸을 때 밑줄 제거 */
 }
 </style>
