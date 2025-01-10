@@ -41,7 +41,7 @@
       </tbody>
     </table>
     <Pagination :totalItems="applicantList?.applicantCnt || 0" :items-per-page="5" :max-pages-shown="5"
-      :onClick="searchList" v-model="cPage" />
+      v-model="cPage" />
   </div>
 </template>
 
