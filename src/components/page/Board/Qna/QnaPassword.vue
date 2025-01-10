@@ -47,9 +47,10 @@ const handlerModal = () => {
   emits("close");
 };
 
+
 const handlerPassWord = () => {
   const param = {
-    qnaSeq: props.idx, // 프로바이더 값 사용
+    qnaSeq: props.idx, 
     password: pass.value,
   };
   axios.post("/api/board/checkPassword.do", param).then((res) => {
@@ -64,6 +65,8 @@ const handlerPassWord = () => {
     }
   });
 };
+
+
 const handlePasswordChange = (event) => {
   pass.value = event.target.value;
 };

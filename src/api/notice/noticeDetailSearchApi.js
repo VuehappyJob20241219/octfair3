@@ -1,34 +1,14 @@
 import axios from "axios";
 import { Notice } from "../axiosApi/noticeApi";
+import { noticeImageGetApi } from "../notice/noticeImageGetApi";
 
-export const noticeDetailSearchApi = async (idx) => { 
-  console.log(idx);
-  const respone = await axios.post(Notice.SearchNoticeDetail, { noticeSeq : idx });
-  if (
-       noticeDetail.value.fileExt === "jpg" ||
-      noticeDetail.value.fileExt === "gif" ||
-      noticeDetail.value.fileExt === "png" ||
-      noticeDetail.value.fileExt === "webp"
-    ) {
-      getFileImage(idx);
-      }
-  
-  return respone.data;
+export const noticeDetailSearchApi = async (idx) => {
+  const respone = await axios.post(Notice.SearchNoticeDetail, { noticeSeq : idx });  
+  const detail = respone.data.detail;
+  let imageUrl = "";
+  if (detail.fileExt && (["jpg", "gif", "png", "webp"].includes(detail.fileExt))) {    
+    imageUrl = await noticeImageGetApi(idx);
+  }
+  return { ...respone.data, imageUrl};  
 };
 
-const getFileImage = () => {
-  let param = new URLSearchParams();
-  param.append("noticeSeq", idx);
-  const postAction = {
-    url: Notice.NoticeImageDownload,
-    method: "POST",
-    data: param,
-    responseType: "blob",
-  };
-  axios(postAction).then((res) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    const imageUrl=ref('');
-    imageUrl.value = url;
-    console.log(res);
-  });
-};

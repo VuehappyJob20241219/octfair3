@@ -3,15 +3,16 @@
     <input v-model.lazy="searchTitle" />
     <input type="date" v-model="searchStartDate" />
     <input type="date" v-model="searchEndDate" />
+    <button @click="handlerSearch">검색</button>
     <button v-if="userType === 'A' || userType === 'B'" @click="handlerSaveBtn">등록하기</button>
     <button v-if="userType === 'A' || userType === 'B'" @click="handlerLogState">내가 쓴 글</button>
   </div>
 </template>
 
 <script setup>
+import { useQueryClient } from "@tanstack/vue-query";
 import router from "@/router";
 import { useUserInfo } from "../../../../stores/userInfo";
-import { useModalStore } from "../../../../stores/modalState";
 
 const emits = defineEmits(["saveBtn"]);
 const searchTitle = ref("");
@@ -21,8 +22,17 @@ const userInfo = useUserInfo();
 const userType = userInfo.user.userType;
 const injectedhRequestType = inject("providedRequestType");
 const injectedSaveState = inject("providedSaveState");
+const queryClient = useQueryClient();
 
 const handlerSearch = () => {
+  if (new Date(searchEndDate.value) < new Date(searchStartDate.value)) {
+  alert("종료일자는 시작일자보다 나중이어야 합니다.");
+  return;
+  }
+  if (new Date(searchEndDate.value) < new Date(searchStartDate.value)) {
+  alert("종료일자는 시작일자보다 나중이어야 합니다.");
+  return;
+  }
   const query = [];
   !searchTitle.value || query.push(`searchTitle=${searchTitle.value}`);
   !searchStartDate.value || query.push(`searchStDate=${searchStartDate.value}`);
@@ -32,18 +42,18 @@ const handlerSearch = () => {
   router.push(queryString);
 };
 
-const handlerSearchKewordBtn = () => {
-  injectedSearchValue.value = { ...searchKey.value };
-};
 
 const handlerLogState = () => {
   injectedhRequestType.requestType = "my";
 };
+
 const handlerSaveBtn = () => {
+  queryClient.removeQueries({
+    queryKey: ["qnaDetail"],
+  });
   injectedSaveState.saveState = true;
 };
 
-watchEffect(() => window.location.search && router.push()); // URL이 변경되면 리셋
 </script>
 
 <style lang="scss" scoped>

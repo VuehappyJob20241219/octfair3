@@ -16,19 +16,21 @@
       </tr>
       <tr v-if="params.postIdx">
         <th>(수정 전 경력)</th>
-        <td>{{expRequired}}{{" "}}{{expYears}}</td>
+        <td class="modify_ex">{{expRequired}}{{" "}}{{expYears}}</td>
       </tr>
       <tr>
         <th>경력 여부<span className="font_red">*</span></th>
         <td>
           <div className="checkbox-group" >
-              <label v-for="checkbox in checkBox" :key="checkbox.id">
+              <label v-for="checkbox in checkBox" :key="checkbox.id" class="checkbox-container">
                 <input
                   type="checkbox"
                   :name="'checkbox-' + checkbox.id"
                   :checked="checkbox.checked"
                   @click=handleCheckboxChange(checkbox.id)
+                  class="checkbox-input"
                 />
+                <span class="checkbox-custom"></span>
                 {{checkbox.label}}
               </label>            
           </div>
@@ -39,6 +41,7 @@
             v-model="postDetail.expYears"
             name="expYears"
             :disabled="!checkBox || !checkBox.find(checkbox => checkbox.id === 2 && checkbox.checked)">
+            <option disabled value="">경력 선택</option>
               <option value="1년 이상">
                 1년 이상
               </option>
@@ -94,41 +97,48 @@
         </td>
       </tr>
       <tr>
-        <th>채용기간<span className="font_red">*</span></th>
-        <td colSpan={3} className="date">
-          시작<input type="date"
+        <th>채용시작일<span className="font_red">*</span></th>
+        <td className="date">
+          <input type="date"
         label="시작 날짜"
         v-model="postDetail.startDate"
-      /> ~ 
-      종료<input type="date"
+      /></td>
+        <th>채용종료일<span className="font_red">*</span></th>
+        <td className="date">
+          <input type="date"
         label="종료 날짜"
         v-model="postDetail.endDate"
       />
         </td>
+        
       </tr>
       <tr v-if="params.postIdx">
         <th>(수정 전 채용절차)</th>
-        <td>{{hirProcess}}</td>
+        <td colspan="3" class="modify_ex">{{hirProcess}}</td>
       </tr>
       <tr>
-        <th>채용절차<span className="font_red">*</span></th>
-        <td colSpan='3'>
-          <div className="recruit-process-wrapper" >
+        <th rowspan="2">채용절차<span className="font_red">*</span></th>
+        <td colspan="2">          
             <input
               type="text"
               name="hirProcess"
               v-model="postDetail.recruitProcess"
               placeholder="과정을 하나씩 적은 후 절차등록 버튼을 눌러주세요"
-            />
-            <button @click="handleClick"  >
+            />          
+        </td>
+        <td>
+            <b-button variant="outline-success" @click="handleClick"  >
               절차등록
-            </button>
-            <button @click="handleClickRefresh">
+            </b-button>
+            <b-button variant="danger" @click="handleClickRefresh">
               초기화
-            </button>
-          </div>
-          <label className="recruit-process-list" >
-            {{recruitProcessList.join(" - ")}} 
+            </b-button>   
+        </td>        
+      </tr>
+      <tr>
+        <td colspan="3">
+          <label className="recruit-process-list" placeholder="입력된 채용절차가 표시됩니다.">
+            {{ recruitProcessList.length > 0 ? recruitProcessList.join(" - ") : "입력된 채용절차가 표시됩니다." }}
           </label>
         </td>
       </tr>
@@ -178,39 +188,44 @@
       </tr>
       <tr>
         <th>첨부파일</th>
-        <td colSpan='3'>
-          <input type="file" @change="handlerFile" />
+        <td  class="fileClass">
+          <input type="file" style="display: none" id="fileInput" @change="handlerFile" />
+          <label class="img-label" htmlFor="fileInput">파일 첨부하기</label>
+          <span>{{ fileData.name }}</span>
         </td>
       </tr>
     </thead>
       </table>
-      <button @click="handlerInsertBtn">
+      <div class="button-box">
+      <b-button  variant="primary"  @click="handlerInsertBtn">
           {{ params.postIdx ? "수정" : "등록" }}
-      </button>
+      </b-button>
       <b-button
                 variant="secondary"
-                size="lg"
                 @click=navigatePost
               >
                 뒤로가기
               </b-button>
-
+            </div>
     </div>
 </template>
 
 <script setup>
-import axios from 'axios';
 import { ref } from 'vue';
-import { useQuery } from "@tanstack/vue-query";
 import router from "../../../../router";
 import { useBizPostDetailInsertMutation } from '../../../hook/bizPost/useBizPostDetailInsertMutation';
 import { useBizPostDetailQuery } from '../../../hook/bizPost/useBizPostDetailQuery';
+import { useRoute } from 'vue-router';
 
 const expRequired = ref(null);
 const expYears = ref(null);
 const hirProcess = ref(null);
 const { params } = useRoute();
-const postDetail = ref({});
+const postDetail = ref({
+  expYears : ''
+});
+const route = useRoute();
+ 
 const checkBox = reactive([
       { id: 1, label: "신입", checked: false },
       { id: 2, label: "경력", checked: false },
@@ -218,41 +233,21 @@ const checkBox = reactive([
     ]);
 const recruitProcessList = reactive([]);
 const fileData = ref("");
+
+
+
 if(Object.keys(params).length>0){
   const { data: detail , refetch, isSuccess } = useBizPostDetailQuery(params);
-  // const searchList = async () => {
-  //   const result = await axios.post(
-  //   "/api/manage-hire/readPostDetailBody.do",
-  //   params,
-  //   );
-  //   if(result.data){
-  //     postDetail.value = result.data.postDetail;
-  //   }
-  //   expRequired.value=postDetail.value.expRequired;
-  //   expYears.value=postDetail.value.expYears;
-  //   hirProcess.value=postDetail.value.hirProcess;
-  //   return result.data;
-  // };
 
-  // const {
-  // data,
-  // isLoading,
-  // isError,
-  // } = useQuery({
-  // queryKey: ["bizPostDetail"],
-  // queryFn: searchList,
-  // });
   watchEffect(() => {
   if (isSuccess.value && detail.value) {
-    postDetail.value = detail.value.postDetail;    
-  }
-  expRequired.value=postDetail.value.expRequired;
-    expYears.value=postDetail.value.expYears;
-    hirProcess.value=postDetail.value.hirProcess;
-});
+    postDetail.value = toRaw(detail.value.postDetail); 
+    expRequired.value=detail.value.postDetail.expRequired;
+    expYears.value=detail.value.postDetail.expYears;
+    hirProcess.value=detail.value.postDetail.hirProcess; 
+    }  
+  });
 }
-
-
 
 //체크박스 상태 변경
 const handleCheckboxChange = (id) => {
@@ -273,13 +268,20 @@ const handleCheckboxChange = (id) => {
 };
 
 const handleClick = () => {
-    const trimmedProcess = postDetail.value.recruitProcess.trim(); //공백 제거
+    let trimmedProcess = "";
+    if(recruitProcessList.length != 0){
+      trimmedProcess = postDetail.value.recruitProcess.trim(); //공백 제거
+    }else{
+      trimmedProcess = postDetail.value.recruitProcess;
+    }
+    
     if (trimmedProcess === "") return; //빈 값 방지
 
-    // if (recruitProcessList.length >= 4) {
-    //   alert("채용 절차는 최대 4단계까지만 가능합니다.");
-    //   return;
-    // }
+    if (recruitProcessList.length >= 8) {
+      alert("채용 절차는 최대 8단계까지만 가능합니다.");
+      return;
+    }
+    
     recruitProcessList.push(trimmedProcess); //기존값 + 새로입력한값
     recruitProcessList.join(" - ");
     postDetail.value.hirProcess=recruitProcessList.join(" - ");
@@ -339,40 +341,26 @@ const handlerInsertBtn = () => {
       return;  // 알림을 띄운 후, 즉시 종료하여 다른 필드는 검사하지 않음
     }
   }
+
+  // if(postDetail.value.expYears === ""){
+  //   alert("경력을 선택해 주세요.");
+  //   return;
+  // }
+
   if (!postDetail.value.expRequired.includes('경력')){
     postDetail.value.expYears = "";
   }
+
+  if(postDetail.value.appStatus != '대기중'){
+    alert("'대기중'상태가 아닌 공고는 수정할 수 없습니다.");
+    return;
+  }
+
   handlerInsert();
 }
 
 const { mutate:handlerInsert} = useBizPostDetailInsertMutation(postDetail,fileData,params);
 
-// const handlerInsert = () => {
-//   const textData = {
-//     ...postDetail.value,
-//   };
-//   const formData = new FormData();
-//   if (fileData.value) {
-//     formData.append("file", fileData.value);
-//   }
-//   formData.append(
-//     "text",
-//     new Blob([JSON.stringify(textData)], {
-//       type: "application/json",
-//     }),
-//   );
-//   axios.post(`/api/manage-hire/managehireSaveFileForm.do`, formData).then((res) => {
-//     if (res.data.result === "success") {      
-//       if(params.postIdx){
-//         alert("성공적으로 수정되었습니다.");
-//         router.push({ name: "bizPostDetail", params: { postIdx: params.postIdx } });
-//       }else{
-//         alert("성공적으로 등록되었습니다.");
-//         router.push("post.do");
-//       }
-//     }
-//   });  
-// }
 
 const navigatePost = () => {
   router.go(-1); // 뒤로가기  
@@ -381,31 +369,72 @@ const navigatePost = () => {
 const handlerFile = (e) => {
   const fileinfo = e.target.files;
   fileData.value = fileinfo[0];
+  console.log(fileData.value);
 };
 
 
 </script>
 
 <style lang="scss" scoped>
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: black;
+  margin: 20px 0px 0px 0px;
+  font-size: 13px;
+  text-align: left;
+
+  th {
+    text-align: center;
+    background-color: #ccc;
+  }
+
+  td {
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    height: 50px;
+    text-align: center;
+  }
+}
+
+.modify_ex{
+  background-color: #eeedae;
+}
+
 label {
   display: flex;
   flex-direction: column;
 }
 
-select {
-  font-size: 13px;
-  width: 100px;
-  height: 30px;
+// select {
+//   font-size: 13px;
+//   width: 100px;
+//   height: 30px;
+// }
+// input[type="text"] {
+//   padding: 8px;
+//   margin-top: 5px;
+//   margin-bottom: 5px;
+//   border-radius: 4px;
+//   border: 1px solid #ccc;
+// }
+input,
+select,
+textarea {
+  width: 95%;
+  height: 95%;
+  border: none;
+  vertical-align: middle;
 }
-input[type="text"] {
-  padding: 8px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+.button-box {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-top: 10px;
 }
 
-button {
+.button-submit {
   background-color: #3bb2ea;
   border: none;
   color: white;
@@ -429,5 +458,102 @@ button {
     box-shadow: 0 2px #666;
     transform: translateY(2px);
   }
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 10px;
+}
+
+.checkbox-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  padding-left: 30px; /* 체크박스를 왼쪽에 고정 */
+  user-select: none; /* 텍스트 선택 방지 */
+}
+
+.checkbox-input {
+  position: absolute;
+  opacity: 0; /* 기본 체크박스를 숨깁니다 */
+  pointer-events: none; /* 체크박스 자체에 이벤트를 차단 */
+}
+
+.checkbox-custom {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  background-color: #f0f0f0;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.checkbox-input:checked + .checkbox-custom {
+  background-color: #4caf50; /* 체크된 상태에서 배경색 */
+  border-color: #4caf50;
+}
+
+.checkbox-input:checked + .checkbox-custom:after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 8px;
+  height: 14px;
+  border: solid white;
+  border-width: 0 4px 4px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-container:hover .checkbox-custom {
+  border-color: #4caf50;
+}
+
+.checkbox-container:active .checkbox-custom {
+  background-color: #e0e0e0;
+}
+
+.checkbox-label {
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.img-label {
+  height:35px;
+  margin-top:5px;
+  margin-right: 10px;
+  padding: 6px 25px;
+  background-color: #ccc;
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.9);
+  cursor: pointer;
+
+  &:hover {
+    background-color: #45a049;
+    color: white;
+  }
+
+  &:active {
+    background-color: #3e8e41;
+    box-shadow: 0 2px #666;
+    transform: translateY(2px);
+  }
+}
+
+.fileClass {
+  padding-left: 10px;
+  display:flex;
+  text-align: left;
+}
+
+span{
+  vertical-align: middle;
 }
 </style>

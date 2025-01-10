@@ -5,6 +5,7 @@ export const companyInsertApi = async (loginId, detailValue, fileData, imageUrl,
   const handlerValidation = () => {
     const today = new Date();
     const urlPattern = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(:\d+)?(\/[^\s]*)?$/;
+    const phoneRules = /^\d{2,3}-\d{3,4}-\d{4}$/;
     const inputs = detailValue.value;
 
     if (!inputs.bizName) {
@@ -36,6 +37,10 @@ export const companyInsertApi = async (loginId, detailValue, fileData, imageUrl,
       return;
     } else if (!imageUrl.value && !fileName.value) {
       alert("기업로고를 등록해 주세요.");
+      return;
+    }
+    if (!phoneRules.test(inputs.bizContact)) {
+      alert("연락처를 올바른 형식으로 입력해 주세요.");
       return;
     }
     if (today < new Date(inputs.bizFoundDate)) {

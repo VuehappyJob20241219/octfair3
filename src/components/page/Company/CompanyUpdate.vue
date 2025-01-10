@@ -1,4 +1,4 @@
-<template>
+<template v-if="isSuccess">
   <table>
     <colgroup>
       <col width="10%" />
@@ -115,16 +115,6 @@ const fileName = ref();
 
 const loginId = userInfo.user.loginId;
 
-onMounted(() => {
-  if (isSuccess.value && companyDetail.value.detail) {
-    detailValue.value = toRaw(companyDetail.value.detail) || {};
-    const fileExt = companyDetail.value.detail.fileExt;
-    if (fileExt === "jpg" || fileExt === "gif" || fileExt === "png" || fileExt === "webp") {
-      getFileImage(companyDetail.value.detail.bizIdx);
-    }
-  }
-});
-
 // 기업 초기데이터 서치
 const { data: companyDetail, isSuccess } = useCompanySearchQuery({ loginId });
 
@@ -193,6 +183,30 @@ const openDaumPostcode = () => {
     },
   }).open();
 };
+
+// data 주입
+const updateData = () => {
+  if (isSuccess.value && companyDetail.value.detail) {
+    detailValue.value = toRaw(companyDetail.value.detail) || {};
+    const fileExt = companyDetail.value.detail.fileExt;
+    if (fileExt === "jpg" || fileExt === "gif" || fileExt === "png" || fileExt === "webp") {
+      getFileImage(companyDetail.value.detail.bizIdx);
+    }
+  }
+};
+
+watch(
+  () => companyDetail.value,
+  (newDetail) => {
+    if (newDetail) {
+      updateData();
+    }
+  }
+);
+
+onMounted(() => {
+  updateData();
+});
 </script>
 
 <style lang="scss" scoped>

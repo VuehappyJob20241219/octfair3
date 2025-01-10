@@ -24,14 +24,14 @@
                     </tr>
                     <tr>
                         <th>비밀번호<span style="color: red;">*</span></th>
-                        <td><input v-model="register.password" type="password" /></td>
+                        <td><input v-model="register.password" type="password" autocomplete="new-password" /></td>
                         <td><span class="tooltip-link" data-tooltip="비밀 번호는 숫자, 영문자, 특수문자 조합으로 8~15자리를 사용해야 합니다.">
                                 <img src="@/assets/info.png" alt="info-squared" />
                             </span></td>
                     </tr>
                     <tr>
                         <th>비밀번호 확인<span style="color: red;">*</span></th>
-                        <td><input v-model="register.password1" type="password" /></td>
+                        <td><input v-model="register.password1" type="password" autocomplete="new-password" /></td>
                     </tr>
                     <tr>
                         <th>이름<span style="color: red;">*</span></th>

@@ -1,8 +1,6 @@
 <template>
-  <QnaSearch />
-
   <ContextBox>QNA</ContextBox>
-
+  <QnaSearch></QnaSearch>
   <QnaMain />
 </template>
 

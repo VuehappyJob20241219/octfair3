@@ -166,17 +166,10 @@
 									</div>
 								</div>								
 							</aside>
-        </div>
-        <template v-if="userType === 'b'">
-          <div class="d-flex justify-content-center mt-5 ">
-            <span style="color: red">
-              '대기중' 공고만 수정 및 삭제 가능합니다.
-            </span>
-          </div>
-        </template>
+        </div>        
         
         <div class="d-flex justify-content-center m-2">
-          <template v-if="userType === 'B' ">
+          <template v-if="userType === 'B' && postDetail.appStatus === '대기중'">
             <div>
               <b-button
                 variant="primary"
@@ -187,7 +180,7 @@
                 수정하기
               </b-button>
               <b-button
-                variant="primary"
+                variant="danger"
                 size="lg"
                 class="mx-1"
                 @click="handleDelete(postDetail.postIdx,bizDetail.bizIdx)"              
@@ -241,7 +234,6 @@
 
 <script setup>
 import { useModalStore } from "@/stores/modalState";
-import { useQuery } from "@tanstack/vue-query";
 import axios from "axios";
 import "bootstrap-vue-3";
 import { useRoute, useRouter } from "vue-router";
@@ -411,31 +403,31 @@ const { mutate: handlerSaveScrap } = useScrapSaveMutation(params.postIdx);
 }
 
 // 기본 버튼 스타일
-button {
-  background-color: #3bb2ea;
-  border: none;
-  color: white;
-  padding: 10px 22px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 12px;
-  box-shadow: 0 4px #999;
-  transition: 0.3s;
+// button {
+//   background-color: #3bb2ea;
+//   border: none;
+//   color: white;
+//   padding: 10px 22px;
+//   text-align: center;
+//   text-decoration: none;
+//   display: inline-block;
+//   font-size: 16px;
+//   margin: 4px 2px;
+//   cursor: pointer;
+//   border-radius: 12px;
+//   box-shadow: 0 4px #999;
+//   transition: 0.3s;
 
-  &:hover {
-    background-color: #45a049;
-  }
+//   &:hover {
+//     background-color: #45a049;
+//   }
 
-  &:active {
-    background-color: #3e8e41;
-    box-shadow: 0 2px #666;
-    transform: translateY(2px);
-  }
-}
+//   &:active {
+//     background-color: #3e8e41;
+//     box-shadow: 0 2px #666;
+//     transform: translateY(2px);
+//   }
+// }
 
 // 스크랩 버튼
 .scrapButton {

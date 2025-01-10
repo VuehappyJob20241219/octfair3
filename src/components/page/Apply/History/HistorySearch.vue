@@ -17,7 +17,7 @@
       <option value="desc">최근지원순</option>
       <option value="asc">과거지원순</option>
     </select>
-    <input v-model="searchKey.keyWord" />
+    <input v-model="searchKey.keyWord" placeholder="회사명 또는 공고제목을 입력하세요"/>
 
     <button @click="handlerSearch">검색</button>
     <button @click="handlerReset">초기화</button>
