@@ -72,14 +72,12 @@
 </template>
 
 <script setup>
-import { useQuery, useQueryClient } from "@tanstack/vue-query";
+import { useQuery } from "@tanstack/vue-query";
 import { resumeDetailEduApi } from "../../../../api/resume/resumeDetailEduApi";
 import { useResumeDeleteEduMutation } from "../../../hook/resume/useResumeDeleteEduMutation";
 
 const props = defineProps(["idx"]);
 const { mutate: deleteEdu } = useResumeDeleteEduMutation(props.idx);
-const queryClient = useQueryClient();
-
 const {
   data: educationProperties,
   isLoading,
