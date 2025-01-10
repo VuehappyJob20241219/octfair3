@@ -82,8 +82,6 @@ const {
 } = useQuery({
   queryKey: ["detailAtt"],
   queryFn: () => resumeDetailAttApi(props.idx),
-  staleTime: 60000, // 1분 데이터를 신선하게 유지하며, 새로고침해도 API 재요청이 발생하지 않음. 새로고침 시 API 재요청이 발생하여 최신 데이터를 가져옴.
-  cacheTime: 300000, // 5분 동안 캐시된 데이터가 메모리 내에 유지되는 기간. 이 시간이 지나면 데이터가 삭제되고 이후 요청 시에는 서버에 요청하여 최신 데이터를 가져옴.
 });
 </script>
 

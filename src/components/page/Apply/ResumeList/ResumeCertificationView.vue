@@ -2,8 +2,7 @@
   <template v-if="isLoading">
     <p>로딩 중입니다...</p>
   </template>
-  <template v-if="isSuccess">
-    <!-- <template v-if="certificationProperties?.cert.length > 0"> -->
+  <template v-if="isSuccess && certificationProperties?.cert.length > 0">
     <div class="contents">
       <table class="career-table">
         <colgroup>
@@ -81,8 +80,6 @@ const {
 } = useQuery({
   queryKey: ["detailCert"],
   queryFn: () => resumeDetailCertApi(props.idx),
-  staleTime: 10000, // 10초 동안 데이터가 신선하게 유지됨
-  cacheTime: 300000, // 5분 동안 캐시 유지
 });
 </script>
 

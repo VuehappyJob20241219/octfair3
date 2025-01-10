@@ -87,15 +87,9 @@ const today = computed(() => {
   let now_utc = new Date();
   let timeOff = new Date().getTimezoneOffset() * 60000;
   return new Date(now_utc - timeOff).toISOString().split("T")[0];
-})
+});
 
-const {
-  data: userDetail,
-  isLoading,
-  isSuccess,
-  isError,
-  refetch
-} = useMypageDetailQuery(userInfo);
+const { data: userDetail, isLoading, isSuccess, isError, refetch } = useMypageDetailQuery(userInfo);
 
 const openDaumPostcode = () => {
   //카카오API사용
