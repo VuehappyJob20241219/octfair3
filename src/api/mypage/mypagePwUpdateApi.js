@@ -34,5 +34,17 @@ const checkForm = (inputPw) => {
     return false;
   }
 
+  if (inputFields.inputOldPassword === inputFields.inputNewPassword) {
+    alert("새 비밀번호는 현재 비밀번호와 다르게 설정해야 합니다.");
+    return false;
+  }
+
+  if (!(inputFields.inputNewPassword === inputFields.inputNewPasswordOk)) {
+    alert(
+      "새 비밀번호와 확인용 비밀번호가 일치하지 않습니다. 다시 입력해주세요."
+    );
+    return false;
+  }
+
   return true;
 };
