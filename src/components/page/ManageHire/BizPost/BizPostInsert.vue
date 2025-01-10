@@ -212,7 +212,6 @@
 
 <script setup>
 import { ref } from 'vue';
-import router from "../../../../router";
 import { useBizPostDetailInsertMutation } from '../../../hook/bizPost/useBizPostDetailInsertMutation';
 import { useBizPostDetailQuery } from '../../../hook/bizPost/useBizPostDetailQuery';
 import { useRoute } from 'vue-router';
@@ -361,10 +360,6 @@ const handlerInsertBtn = () => {
 
 const { mutate:handlerInsert} = useBizPostDetailInsertMutation(postDetail,fileData,params);
 
-
-const navigatePost = () => {
-  router.go(-1); // 뒤로가기  
-};
 
 const handlerFile = (e) => {
   const fileinfo = e.target.files;

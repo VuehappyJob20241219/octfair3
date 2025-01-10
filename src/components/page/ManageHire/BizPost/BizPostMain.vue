@@ -85,9 +85,7 @@
 </template>
 
 <script setup>
-import axios from "axios";
-// import { onMounted } from "vue";
-import { useQuery, useQueryClient } from "@tanstack/vue-query";
+import { useQueryClient } from "@tanstack/vue-query";
 import { useRoute } from "vue-router";
 import router from "../../../../router";
 import { useUserInfo } from "../../../../stores/userInfo";
@@ -96,7 +94,6 @@ import { useBizPostListSearchQuery } from "../../../hook/bizPost/useBizPostListS
 
 const userInfo = useUserInfo();
 const queryClient = useQueryClient();
-// const HirePost = ref();
 const cPage = ref(1);
 const route = useRoute();
 const injectedValue = inject("bizSearchValue");

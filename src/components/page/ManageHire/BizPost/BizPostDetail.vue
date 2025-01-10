@@ -242,7 +242,6 @@ import { useScrapSaveMutation } from "../../../hook/scrap/useScrapSaveMutation";
 import { useBizPostDetailQuery } from "../../../hook/bizPost/useBizPostDetailQuery";
 import { useBizPostDetailDeleteMutation } from "../../../hook/bizPost/useBizPostDetailDeleteMutation";
 import { useBizPostStatusUpdateMutation } from "../../../hook/bizPost/useBizPostStatusUpdateMutation";
-import router from "../../../../router";
 
 const { params } = useRoute();
 const postDetail = ref(null);
@@ -253,7 +252,6 @@ const route = useRouter();
 const postIdx = ref(0);
 const bizIdx = ref(0);
 const modalState = useModalStore();
-
 
 
 const { data: detail , isLoading, refetch, isSuccess, isError } = useBizPostDetailQuery(params);
