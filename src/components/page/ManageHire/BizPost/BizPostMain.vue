@@ -78,14 +78,12 @@
       :totalItems="HirePost?.MCount || (route.name == 'managePostApproval' ? HirePost?.pendingPostCnt : HirePost?.approvalPostCnt) || 0"
       :items-per-page="5"
       :max-pages-shown="5"
-      :onClick="refetch"
       v-model="cPage"      
     />
   </div>
 </template>
 
 <script setup>
-import { useQueryClient } from "@tanstack/vue-query";
 import { useRoute } from "vue-router";
 import router from "../../../../router";
 import { useUserInfo } from "../../../../stores/userInfo";
@@ -93,7 +91,6 @@ import Pagination from "../../../common/Pagination.vue";
 import { useBizPostListSearchQuery } from "../../../hook/bizPost/useBizPostListSearchQuery";
 
 const userInfo = useUserInfo();
-const queryClient = useQueryClient();
 const cPage = ref(1);
 const route = useRoute();
 const injectedValue = inject("bizSearchValue");
@@ -111,10 +108,7 @@ const handleNewInsert = () => {
   router.push("bizPostInsert.do");
 };
 
-const handlerDetail = (param) => {
-  queryClient.removeQueries({
-    queryKey: ["bizPostDetail"],
-  });
+const handlerDetail = (param) => {  
   router.push({ name: "bizPostDetail", params: { postIdx: param } });
 };
 </script>

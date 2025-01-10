@@ -61,7 +61,6 @@
 </template>
 <script setup>
 import { useModalStore } from "@/stores/modalState";
-import { useQuery } from "@tanstack/vue-query";
 import axios from "axios";
 import "bootstrap-vue-3";
 import { ref } from "vue";
@@ -70,7 +69,6 @@ import { useUserInfo } from "../../../../stores/userInfo";
 import { useRouter } from "vue-router";
 import { useApplyUserResumeList } from '../../../hook/apply/useApplyUserResumeListQuery';
 import { useApplyInsertMutation } from "../../../hook/apply/useApplyInsertMutation";
-
 
 const modalState = useModalStore();
 const props = defineProps({
@@ -86,23 +84,6 @@ const userInfo = useUserInfo();
 const resumeIdx = ref(0);
 const resumeMianInfoArray = ref();
 const router = useRouter();
-
-// const resumeList = async () => {
-//   const param = {
-//     loginId: userInfo.user.loginId,
-//   };
-//   const result = await axios.post("/api/jobs/applyUserResumeDetailBody.do", param);
-//   if (result.data) {
-//     userResumes.value = result.data.userResumeList;
-//     mainResumeDetail();
-//   }
-//   return result.data;
-// };
-
-// const { data, isLoading, refetch, isSuccess, isError } = useQuery({
-//   queryKey: ["ResumeList"],
-//   queryFn: resumeList,
-// });
 
 const { data: applyResumeList , isLoading, refetch, isSuccess, isError } = useApplyUserResumeList(userInfo.user.loginId);
 
@@ -129,8 +110,7 @@ const handlerApply = () => {
   if (!resumeIdx.value) {
     alert("이력서를 선택하세요.");
     return;
-  }
-  
+  }  
   saveApply();
 };
 
@@ -138,26 +118,6 @@ const { mutate: saveApply } = useApplyInsertMutation({
   postIdx: props.scrap ? props.scrap.postIdx : props.pIdx,
   loginId: userInfo.user.loginId,
 },resumeIdx);
-
-
-// const saveApply = async () => {
-//   const postIdx = props.scrap ? props.scrap.postIdx : props.pIdx;
-
-//   const request = {
-//     postIdx: postIdx,
-//     resIdx: resumeIdx.value,
-//     loginId: userInfo.user.loginId,
-//   };
-
-//   const response = await axios.post("/api/jobs/saveApplyBody.do", request);
-
-//   if (response?.data.result === "success") {
-//     alert("이력서가 지원 완료되었습니다.");
-//     handlerModal();
-//   } else if (response?.data.result === "fail") {
-//     alert("이미 지원 완료된 공고입니다.");
-//   }
-// };
 
 const handlerModal = () => {
   modalState.setModalState();
