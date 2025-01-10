@@ -58,7 +58,7 @@
         </td>
       </tr>
       <tr>
-        <th>급여<span className="font_red">*</span></th>
+        <th>급여(단위: 만원)<span className="font_red">*</span></th>
         <td>
           <input
             type="text"
@@ -202,7 +202,7 @@
       </b-button>
       <b-button
                 variant="secondary"
-                @click=navigatePost
+                @click="$router.go(-1)"
               >
                 뒤로가기
               </b-button>
@@ -212,7 +212,6 @@
 
 <script setup>
 import { ref } from 'vue';
-import router from "../../../../router";
 import { useBizPostDetailInsertMutation } from '../../../hook/bizPost/useBizPostDetailInsertMutation';
 import { useBizPostDetailQuery } from '../../../hook/bizPost/useBizPostDetailQuery';
 import { useRoute } from 'vue-router';
@@ -334,6 +333,11 @@ const handlerInsertBtn = () => {
     return;
   }
 
+  if (new Date(postDetail.value.endDate) < new Date()) {
+    alert("종료일자는 현재일자보다 나중이어야 합니다.");
+    return;
+  }
+
   for (const input in postDetail.value) {
     if (reqiredFields[input.name] && !input) {
       // 해당 필드가 비어있을 때만 알림을 띄움
@@ -342,16 +346,11 @@ const handlerInsertBtn = () => {
     }
   }
 
-  // if(postDetail.value.expYears === ""){
-  //   alert("경력을 선택해 주세요.");
-  //   return;
-  // }
-
   if (!postDetail.value.expRequired.includes('경력')){
     postDetail.value.expYears = "";
   }
 
-  if(postDetail.value.appStatus != '대기중'){
+  if(postDetail.value.appStatus && postDetail.value.appStatus != '대기중'){
     alert("'대기중'상태가 아닌 공고는 수정할 수 없습니다.");
     return;
   }
@@ -361,10 +360,6 @@ const handlerInsertBtn = () => {
 
 const { mutate:handlerInsert} = useBizPostDetailInsertMutation(postDetail,fileData,params);
 
-
-const navigatePost = () => {
-  router.go(-1); // 뒤로가기  
-};
 
 const handlerFile = (e) => {
   const fileinfo = e.target.files;
