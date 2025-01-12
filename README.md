@@ -22,7 +22,7 @@
 
 | **김영찬** | **박선준** | **오혜빈** |
 | :------: |  :------: | :------: |
-| [<img src="https://avatars.githubusercontent.com/u/154858214?v=4" height=250 width=250> <br/> @yckim8721](https://github.com/yckim8721) | [<img src="https://avatars.githubusercontent.com/u/169329496?v=4" height=250 width=250> <br/> @adventureJava](https://github.com/adventureJava)  [<img src="https://avatars.githubusercontent.com/u/155132554?v=4" height=250 width=250> <br/> @havanaoh](https://github.com/havanaoh)||
+| [<img src="https://avatars.githubusercontent.com/u/154858214?v=4" height=250 width=250> <br/> @yckim8721](https://github.com/yckim8721) | [<img src="https://avatars.githubusercontent.com/u/169329496?v=4" height=250 width=250> <br/> @adventureJava](https://github.com/adventureJava) | [<img src="https://avatars.githubusercontent.com/u/155132554?v=4" height=250 width=250> <br/> @havanaoh](https://github.com/havanaoh)||
 
 <br>
 
