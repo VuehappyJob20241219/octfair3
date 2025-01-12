@@ -34,7 +34,7 @@
 
 ## 3️⃣ 개발환경 및 기술 스택
 
-🔸 **Front** : ![Vue badge](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs) ![TypeScript badge](https://img.shields.io/badge/TypeScript-4.5-3178C6?style=flat&logo=typescript) ![Axios badge](https://img.shields.io/badge/axios-0.27.2-5A29E8?style=flat&logo=axios) ![Styled-components badge](https://img.shields.io/badge/styled--components-5.3.0-DB7093?style=flat&logo=styled-components) 
+🔸 **Front** : ![Vue badge](https://img.shields.io/badge/-Vue.js-4fc08d?style=flat&logo=vuedotjs) ![Axios badge](https://img.shields.io/badge/axios-0.27.2-5A29E8?style=flat&logo=axios) ![Styled-components badge](https://img.shields.io/badge/styled--components-5.3.0-DB7093?style=flat&logo=styled-components) 
 <br>
 🔸 **Back-end** : ![Node.js badge](https://img.shields.io/badge/Node.js-16.x-339933?style=flat&logo=node.js) ![Spring badge](https://img.shields.io/badge/Spring_Framework-5.x-brightgreen?style=flat&logo=spring) ![Java badge](https://img.shields.io/badge/Java-18-red?style=flat&logo=java)
 <br>
