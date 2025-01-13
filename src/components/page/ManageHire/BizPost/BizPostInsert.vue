@@ -105,7 +105,7 @@
       /></td>
         <th>채용종료일<span className="font_red">*</span></th>
         <td className="date">
-          <input type="date"
+          <input type="date" :min="today"
         label="종료 날짜"
         v-model="postDetail.endDate"
       />
@@ -223,7 +223,6 @@ const { params } = useRoute();
 const postDetail = ref({
   expYears : ''
 });
-const route = useRoute();
  
 const checkBox = reactive([
       { id: 1, label: "신입", checked: false },
@@ -232,7 +231,11 @@ const checkBox = reactive([
     ]);
 const recruitProcessList = reactive([]);
 const fileData = ref("");
-
+const today = computed(() => {
+    let now_utc = new Date();
+    let timeOff = new Date().getTimezoneOffset() * 60000;
+    return new Date(now_utc - timeOff).toISOString().split("T")[0];
+})
 
 
 if(Object.keys(params).length>0){
