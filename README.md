@@ -34,7 +34,7 @@
 
 ## 3️⃣ 개발환경 및 기술 스택
 
-🔸 **Front** : ![Vue badge](https://img.shields.io/badge/-Vue.js-4fc08d?style=flat&logo=vuedotjs) ![Axios badge](https://img.shields.io/badge/axios-0.27.2-5A29E8?style=flat&logo=axios) ![Styled-components badge](https://img.shields.io/badge/styled--components-5.3.0-DB7093?style=flat&logo=styled-components) 
+🔸 **Front** : ![Vue badge](https://img.shields.io/badge/-Vue.js-4fc08d?style=flat&logo=vuedotjs) ![Pinia badge](https://img.shields.io/badge/Pinia-%3E2.3-blue?color=91aac3&labelColor=439EFD) ![Tanstack badge](https://img.shields.io/badge/Tanstack%20/%20Vue%20Query-FF0000?style=flat-square&logo=Adobe&logoColor=white) ![Axios badge](https://img.shields.io/badge/axios-0.27.2-5A29E8?style=flat&logo=axios) ![Styled-components badge](https://img.shields.io/badge/styled--components-5.3.0-DB7093?style=flat&logo=styled-components) 
 <br>
 🔸 **Back-end** : ![Node.js badge](https://img.shields.io/badge/Node.js-16.x-339933?style=flat&logo=node.js) ![Spring badge](https://img.shields.io/badge/Spring_Framework-5.x-brightgreen?style=flat&logo=spring) ![Java badge](https://img.shields.io/badge/Java-18-red?style=flat&logo=java)
 <br>
@@ -50,7 +50,9 @@
 
 ## 4️⃣ 채택한 개발 기술과 그 이유
 - **Front-end**  
-  - **Vue** : Vue는 점진적으로 채택 가능한 프레임워크로, 복잡한 애플리케이션을 개발할 수 있도록 다양한 기능을 제공합니다. Vue는 직관적이고 유연한 API를 제공하며, 반응형 데이터 바인딩과 컴포넌트 기반 구조를 통해 개발자 경험을 향상시킵니다. 또한, Vue의 가상 DOM은 빠른 렌더링 성능을 제공하며, Vuex와 Vue Router를 활용해 상태 관리와 라우팅 기능을 쉽게 구현할 수 있습니다. Vue는 작은 규모의 프로젝트에서부터 대규모 애플리케이션까지 효율적으로 확장 가능합니다.     
+  - **Vue** : Vue는 점진적으로 채택 가능한 프레임워크로, 복잡한 애플리케이션을 개발할 수 있도록 다양한 기능을 제공합니다. Vue는 직관적이고 유연한 API를 제공하며, 반응형 데이터 바인딩과 컴포넌트 기반 구조를 통해 개발자 경험을 향상시킵니다. 또한, Vue의 가상 DOM은 빠른 렌더링 성능을 제공하며, Vuex와 Vue Router를 활용해 상태 관리와 라우팅 기능을 쉽게 구현할 수 있습니다. Vue는 작은 규모의 프로젝트에서부터 대규모 애플리케이션까지 효율적으로 확장 가능합니다.
+  - **Pinia** : Vue 3에서 사용되는 새로운 상태 관리 라이브러리입니다. Vuex의 후속으로  Vuex보다 더 직관적이고 간결한 API를 제공합니다.. Vue 3의 Composition API와 잘 통합됩니다. reactive state를 관리하고, getter와 action을 사용하여 상태를 업데이트하는 방식입니다.
+  - **Tanstack / Vue Query** : Vue Query는 비동기 데이터 관리 라이브러리로, 서버에서 데이터를 가져오고, 캐시하고, 동기화하는 작업을 쉽게 처리할 수 있게 도와줍니다. React Query의 Vue 버전이라고 할 수 있습니다. 서버 데이터의 캐싱, 자동 갱신, 페이지네이션, 데이터 동기화 등을 효율적으로 관리할 수 있습니다.
   - **Axios** : API 요청을 위한 HTTP 클라이언트로, 프로미스를 사용해 비동기 처리를 쉽게 할 수 있고, JSON 데이터 처리가 용이하며, 오류 처리와 인터셉터 설정 등의 기능을 제공합니다.  
   - **Styled-components** : CSS-in-JS 방식을 사용하여 컴포넌트와 스타일을 함께 정의할 수 있습니다. 이를 통해 CSS의 범위를 컴포넌트로 제한하여 스타일 충돌을 방지하고, 동적으로 스타일을 제어할 수 있습니다.
 
@@ -78,82 +80,118 @@
 
 ## 5️⃣ 역할 분담
 
+![역할](https://github.com/user-attachments/assets/7d29f11d-63d4-4ac2-8cb6-f37d25be9a77)
 
-선준
--------------------------------------------
+<br>
+## 6️⃣ 기능
 
-[기업회원이 공고 등록]
+### 🔒  페이지(사용자 공통)
+![회원가입](https://github.com/user-attachments/assets/c6b4c6b4-462a-49a9-8abf-1278b76a76b0)
+<br>
 
-구직자 - 채용정보 - 공고보기(승인)
+![idpw](https://github.com/user-attachments/assets/363bf47f-45a4-45a4-a9d6-69dd5374e641)
 
-기업 - 채용관리 - 공고관리
+<br>
+- 회원가입: 기업/개인 회원을 선택하여 가입할 수 있습니다.
+- 아이디/비밀번호 찾기: 아이디 또는 비밀번호를 잊어버린 사용자가 이를 재설정할 수 있는 링크입니다.
+<br>
 
-admin - 채용광고관리 - 공고심사(대기중, 불허)/공고보기(승인)
+### ✳ 대시보드
 
-※ 공고 상세 보기 - [기업 정보 보러 가기] 있을 시 기업회원이 등록한 기업 정보 상세 보기 필요
+![dashboard](https://github.com/user-attachments/assets/748f9243-ffb4-4c3c-b896-fc9670f78755)
+<br>
+왼쪽 사이드바는 로그인한 사용자의 역할에 따라 다르게 표시됩니다. 각 사용자는 관리자, 기업 사용자, 일반 사용자로 구분되며, 이 역할에 맞는 메뉴와 권한을 부여받습니다.
+ - 관리자: 모든 기능에 접근할 수 있는 권한을 가지며, 사용자 관리, 시스템 설정 등 관리자가 수행해야 할 작업을 할 수 있는 메뉴가 표시됩니다.
+ - 기업 사용자: 기업 관련 정보나 관리 기능에 접근할 수 있습니다. 예를 들어, 기업 대시보드, 프로젝트 관리 등 기업에 맞는 메뉴가 표시됩니다.
+ - 일반 사용자: 기본적인 기능만 사용 가능한 일반 사용자에게는 제한된 메뉴만 제공됩니다. 예를 들어, 개인 정보 확인, 설정 등이 가능합니다.
+이 역할에 따른 메뉴는 역할분담에서 확인할 수 있습니다. 로그인 시 사용자 역할에 맞춰 사이드바가 동적으로 변경되어, 사용자 경험을 향상시키고, 각 역할에 맞는 기능만을 제공하게 됩니다.
+<br>
+대시보드에서는 유튜브에서 취업 정보를 검색할 수 있는 기능과 오늘의 점심 메뉴를 보는 버튼이 존재합니다. 이 기능은 사용자가 오늘 제공되는 급식 메뉴를 쉽게 확인할 수 있도록 돕습니다. 시스템은 매일마다 해당 날짜에 맞는 급식 메뉴를 자동으로 업데이트하여, 웹 페이지에서 실시간으로 제공됩니다.
 
+### 👥 회원관리(관리자)
+![개인회원관리](https://github.com/user-attachments/assets/40aff053-b96f-44ec-a89d-8302c953391a)
+<br>
+![기업회원관리](https://github.com/user-attachments/assets/dfe91bc9-5464-4604-bf94-c9ec02c006e3)
 
-윤기
--------------------------------------------
-[구직자회원이 이력서 작성]
+- 구직자 회원 관리: 구직자의 정보를 관리하고, 회원 상태를 확인합니다.
+- 기업 회원 관리: 기업 회원의 정보 관리 및 상태 확인을 할 수 있습니다.
 
-구직자 - 입사지원 - 이력서
+<br>
 
-채용정보 - 공고보기 - 입사지원 중 해당 회원의 이력서 리스트
+### 📢 채용공고관리(관리자)
+![채용심사](https://github.com/user-attachments/assets/124d5409-7cad-454c-ac67-a05eee77054a)
+<br>
+![공고보기_관리자](https://github.com/user-attachments/assets/36c4bc25-900e-46c7-833b-608fcd34a136)
 
+- 공고심사: 기업이 올린 채용 공고의 내용과 정확성을 심사합니다.
+- 공고보기: 공개된 채용 공고를 확인하고 관리합니다.
 
-신효
--------------------------------------------
-[구직자회원이 입사 지원]
+<br>
 
-구직자 - 입사지원 - 지원내역
+### 💼 채용공고관리(기업 사용자)
+![공고관리_기업](https://github.com/user-attachments/assets/eac4d6f8-7085-4d71-8539-32d3c7e54b9d)
+<br>
+![공고등록](https://github.com/user-attachments/assets/750e847b-2300-4485-bb62-7941c2379bda)
 
-구직자 - 채용정보 - 공고보기(승인) 에서 스크랩 버튼 누를 시
+- 공고관리: 기업의 채용 공고를 작성하고 수정합니다.
+- 지원관리자: 지원자가 제출한 이력서를 관리하고, 진행 상황을 체크합니다.
 
-: 구직자 - 스크랩 (들어가면 해당 회원 정보로 저장된 스크랩 리스트)
+<br>
 
+### 📑 채용정보(일반 사용자)
+![공고보기_사용자](https://github.com/user-attachments/assets/459a0cfc-6984-4763-985b-9ac475b88cbc)
+<br>
+![스크랩](https://github.com/user-attachments/assets/d2e5a556-dee0-4157-bc4c-a7fca96de742)
+<br>
+![입사지원](https://github.com/user-attachments/assets/f5bec12b-9380-49ae-89d3-60db3e742e1b)
 
-수민
--------------------------------------------
-회원 관리
+- 공고보기: 구직자는 자신에게 맞는 채용 공고를 열람할 수 있습니다.
+- 스크랩: 마음에 드는 공고를 스크랩하여 나중에 확인할 수 있습니다.
 
--구직자 회원 관리
+### 📝 입사지원(일반 사용자)
+![이력서](https://github.com/user-attachments/assets/012b7d20-0d22-44b3-a849-e454d3c18529)
+<br>
+![이력서작성](https://github.com/user-attachments/assets/397a1cc5-efd1-4415-849b-cd47e5992fcb)
+<br>
+![지원내역](https://github.com/user-attachments/assets/d7723f00-f78a-4d14-add9-8511e87dd37f)
 
--기업 회원 관리
+- 이력서: 자신의 이력서를 작성하고 관리합니다.
+- 지원내역: 이전에 지원한 채용 공고와 그 상태를 확인할 수 있습니다.
 
--회원가입
+<br>
 
--회원정보 수정
+### 🖊 마이페이지(기업 사용자, 일반 사용자)
+![기업회원정보수정](https://github.com/user-attachments/assets/6b15c8b4-ed9c-43ae-adc0-97ebf8901f5e)
+<br>
+![기업등록수정](https://github.com/user-attachments/assets/fdfffcbb-6944-49d8-b990-b27c81f5b94a)
+<br>
+![회원탈퇴](https://github.com/user-attachments/assets/eb3eb03c-aa67-45a8-9534-33b08e57ee68)
 
--회원 탈퇴
+- 회원정보 수정: 개인 정보를 수정하고 관리할 수 있습니다.
+- 회원 탈퇴: 서비스를 더 이상 사용하지 않기로 결정을 내릴 때 탈퇴 절차를 진행합니다.
 
+<br
 
-영찬
--------------------------------------------
-기업 관리 
+### 📞 고객센터관리(관리자)
+![관리자_고객센터관리_공지사항관리2 이미지](https://github.com/octfairReact/octfair/raw/main/src/assets/gitReadMe/관리자_고객센터관리_공지사항관리2.JPG)
+![관리자_고객센터관리_FAQ관리1 이미지](https://github.com/octfairReact/octfair/raw/main/src/assets/gitReadMe/관리자_고객센터관리_FAQ관리1.JPG)
+![관리자_고객센터관리_FAQ관리2 이미지](https://github.com/octfairReact/octfair/raw/main/src/assets/gitReadMe/관리자_고객센터관리_FAQ관리2.JPG)
+![관리자_고객센터관리_QNA1 이미지](https://github.com/octfairReact/octfair/raw/main/src/assets/gitReadMe/관리자_고객센터관리_QNA1.JPG)
+![관리자_고객센터관리_QNA2 이미지](https://github.com/octfairReact/octfair/raw/main/src/assets/gitReadMe/관리자_고객센터관리_QNA2.JPG)
+- 공지사항 관리: 사용자에게 전달할 공지사항을 작성하고 관리합니다.
+- FAQ 관리: 자주 묻는 질문과 그에 대한 답변을 관리합니다.
+- Q&A 관리: 사용자들의 문의를 관리하고, 답변을 제공합니다.
 
- -기업 등록, 수정, 상세보기
+<br>
 
-기업 - 채용관리 - 지원자관리
+### 📬 고객센터관리(기업 사용자, 일반 사용자 공통)
+![기업사용자_고객센터_공지사항1 이미지](https://github.com/octfairReact/octfair/raw/main/src/assets/gitReadMe/기업사용자_고객센터_공지사항1.JPG)
+![기업사용자_고객센터_공지사항2 이미지](https://github.com/octfairReact/octfair/raw/main/src/assets/gitReadMe/기업사용자_고객센터_공지사항2.JPG)
+![기업사용자_고객센터_자주하는질문 이미지](https://github.com/octfairReact/octfair/raw/main/src/assets/gitReadMe/기업사용자_고객센터_자주하는질문.JPG)
+![기업사용자_고객센터_문의게시판1 이미지](https://github.com/octfairReact/octfair/raw/main/src/assets/gitReadMe/기업사용자_고객센터_문의게시판1.JPG)
+![기업사용자_고객센터_문의게시판2 이미지](https://github.com/octfairReact/octfair/raw/main/src/assets/gitReadMe/기업사용자_고객센터_문의게시판2.JPG)
+- 공지사항: 사이트에 등록된 공지사항을 확인합니다.
+- 자주하는 질문: 자주 묻는 질문에 대한 답변을 확인합니다.
+- 문의게시판: 사이트에 대한 질문과 피드백을 남길 수 있는 게시판입니다.
 
-
-혜빈
--------------------------------------------
-고객센터
-
--공지사항(공지사항관리)
-
--자주하는 질문(FAQ관리)
-
-
-황희
--------------------------------------------
--문의게시판(Q&A관리)
-
-메인화면
-
- -Google 유튜브 검색 API 
-
- -식단 Oci
-
-
+<br>
