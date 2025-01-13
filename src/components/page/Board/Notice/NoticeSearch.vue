@@ -4,7 +4,7 @@
       <input type="date" v-model="searchKey.searchStDate" @change="checkSearchDate"/>
       <input type="date" v-model="searchKey.searchEdDate" @change="checkSearchDate"/>
       <button @click="handlerSearch">검색</button>
-      <button v-if="userInfo.user.userType === 'M'" @click="handlerModal">신규등록</button>
+      <button v-if="userInfo.user.userType === 'M'" @click="handlerInsert">신규등록</button>
   </div>
 </template>
 <script setup>

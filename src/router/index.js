@@ -24,6 +24,7 @@ import Mypage from "../views/Mypage/Mypage.vue";
 import Withdraw from "../views/Mypage/Withdraw.vue";
 import NotFound from "../views/NotFound.vue";
 import Scrap from "../views/Scrap/Scrap.vue";
+import FaqModal from "../components/page/Board/Faq/FaqModal.vue";
 
 const routes = [
   {
@@ -80,6 +81,16 @@ const routes = [
             path: "faq.do",
             name: "faq",
             component: Faq,
+          },
+          {
+            path: "faq.do/insert",
+            name: "faqInsert",
+            component: FaqModal,
+          },
+          {
+            path: "faq.do/:idx",
+            name: "faqDetail",
+            component: FaqModal,
           },
         ],
       },

@@ -78,16 +78,12 @@
       :totalItems="HirePost?.MCount || (route.name == 'managePostApproval' ? HirePost?.pendingPostCnt : HirePost?.approvalPostCnt) || 0"
       :items-per-page="5"
       :max-pages-shown="5"
-      :onClick="refetch"
       v-model="cPage"      
     />
   </div>
 </template>
 
 <script setup>
-import axios from "axios";
-// import { onMounted } from "vue";
-import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { useRoute } from "vue-router";
 import router from "../../../../router";
 import { useUserInfo } from "../../../../stores/userInfo";
@@ -95,27 +91,9 @@ import Pagination from "../../../common/Pagination.vue";
 import { useBizPostListSearchQuery } from "../../../hook/bizPost/useBizPostListSearchQuery";
 
 const userInfo = useUserInfo();
-const queryClient = useQueryClient();
-// const HirePost = ref();
 const cPage = ref(1);
 const route = useRoute();
 const injectedValue = inject("bizSearchValue");
-
-// const searchList = async () => {
-//   const param = {
-//     currentPage: cPage.value.toString(),
-//     pageSize: (5).toString(),
-//   };
-//   if (userInfo.user.userType === "B") {
-//     const result = await axios.post("/api/manage-hire/managehireListBody.do", param);
-//     return result.data;
-//   } else {
-//     Object.assign(param, injectedValue.value);
-//     console.log(param);
-//     const result = await axios.post("/api/manage-post/readPostListBody.do", param);
-//     return result.data;
-//   }
-// };
 
 const {
   data: HirePost,
@@ -125,26 +103,12 @@ const {
   isError,
 } = useBizPostListSearchQuery(cPage, injectedValue,userInfo.user.userType);
 
-// const {
-//   data: HirePost,
-//   isLoading,
-//   refetch,
-//   isSuccess,
-//   isError,
-// } = useQuery({
-//   queryKey: ["HirePost", cPage, injectedValue],
-//   queryFn: searchList,
-//   // staleTime: 1000 * 60,
-// });
 
 const handleNewInsert = () => {
   router.push("bizPostInsert.do");
 };
 
-const handlerDetail = (param) => {
-  queryClient.removeQueries({
-    queryKey: ["bizPostDetail"],
-  });
+const handlerDetail = (param) => {  
   router.push({ name: "bizPostDetail", params: { postIdx: param } });
 };
 </script>
