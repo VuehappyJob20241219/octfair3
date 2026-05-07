@@ -14,19 +14,19 @@
 
 <div align="center">
   
-| **황윤기** | **정수민** | **손** |
+| **** | **** | **** |
 | :------: |  :------: | :------: |
 | [<img src="https://avatars.githubusercontent.com/u/151594104?v=4" height=250 width=250> <br/> @hykworld](https://github.com/hykworld) | [<img src="https://avatars.githubusercontent.com/u/150888333?v=4" height=250 width=250> <br/> @jsmin6330](https://github.com/jsmin6330) | [<img src="https://avatars.githubusercontent.com/u/113576529?v=4" height=250 width=250> <br/> @shinyorrr](https://github.com/shinyorrr) |
 
 <br>
 
-| **김** | **박** | **오혜빈** |
+| **** | **** | **** |
 | :------: |  :------: | :------: |
 | [<img src="https://avatars.githubusercontent.com/u/154858214?v=4" height=250 width=250> <br/> @yckim8721](https://github.com/yckim8721) | [<img src="https://avatars.githubusercontent.com/u/169329496?v=4" height=250 width=250> <br/> @adventureJava](https://github.com/adventureJava) | [<img src="https://avatars.githubusercontent.com/u/155132554?v=4" height=250 width=250> <br/> @havanaoh](https://github.com/havanaoh)||
 
 <br>
 
-| **우황희** |
+| **** |
 | :------: |
 [<img src="https://avatars.githubusercontent.com/u/157680899?v=4" height=250 width=250> <br/> @skh9301](https://github.com/skh9301) |
 </div>
